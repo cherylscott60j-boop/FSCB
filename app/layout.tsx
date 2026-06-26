@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Libre_Franklin } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,7 +32,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`} suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <NextTopLoader color="#8C1D25" shadow="0 0 10px #8C1D25,0 0 5px #D4AF37" height={3} showSpinner={false}/>
+        {children}
+      </body>
     </html>
   );
 }
