@@ -66,13 +66,15 @@ function relTime(iso:string){
 function mapAcct(a:Record<string,unknown>):Acct{
   const k=String(a.account_type);
   const m=ACC_META[k]??{label:k,color:GRAY,grad:"linear-gradient(135deg,#374151,#111827)"};
+  const creditLimit=Number(a.credit_limit??5000);
+  const balance=Number(a.balance);
   return {
     id:String(a.id), label:String(a.account_name),
     number:`••••  ${a.account_number_last4}`,
     accountNumber:String(a.account_number??""),
-    balance:Number(a.balance), available:k==="credit_card"?Number(a.credit_limit??0)+Number(a.balance):Number(a.available_balance),
+    balance, available:k==="credit_card"?creditLimit+balance:Number(a.available_balance),
     type:m.label, color:m.color, grad:m.grad,
-    creditLimit:Number(a.credit_limit??5000),
+    creditLimit,
     rate:Number(a.interest_rate??0),
     openedAt:String(a.opened_at??""),
     accountType:k,
