@@ -57,12 +57,14 @@ type TxRow = {
   id:string; merchant:string; category:string; amount:number;
   date:string; userId:string; accountId:string;
 };
+type ExtDetails = {bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string;};
 type PendingTx = {
   id:string; userId:string; userName:string;
   accountId:string; accountName:string; accountLast4:string;
   merchant:string; category:string; amount:number;
   transactionType:string; memo:string;
   submittedAt:string; postedAt:string;
+  extDetails?:ExtDetails;
 };
 
 /* ── Status badge ────────────────────────────────────── */
@@ -617,6 +619,17 @@ function TransactionsTab({
                       <div style={{fontSize:13,color:MID,marginBottom:3}}>{tx.merchant}</div>
                       <div style={{fontSize:12,color:GRAY}}>{tx.accountName} · Submitted {relTime(tx.submittedAt)}</div>
                       {tx.memo&&<div style={{fontSize:12,color:GRAY,marginTop:2,fontStyle:"italic"}}>"{tx.memo}"</div>}
+                      {tx.extDetails&&(
+                        <div style={{marginTop:8,background:"rgba(37,99,235,.04)",border:"1px solid rgba(37,99,235,.15)",borderRadius:8,padding:"9px 12px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 16px"}}>
+                          <div style={{gridColumn:"1/-1",fontSize:11.5,fontWeight:700,color:"#1D4ED8",letterSpacing:".05em",marginBottom:4}}>EXTERNAL WIRE DETAILS</div>
+                          {[["Bank",tx.extDetails.bankName||"—"],["Holder",tx.extDetails.holderName],["Routing #",tx.extDetails.routingNumber],["Account #",tx.extDetails.accountNumber],["Acct Type",tx.extDetails.accountType]].map(([label,val])=>(
+                            <div key={label} style={{display:"flex",gap:5,alignItems:"baseline"}}>
+                              <span style={{fontSize:11,color:GRAY,fontWeight:600,minWidth:60}}>{label}</span>
+                              <span style={{fontSize:12.5,color:DARK,fontFamily:["Routing #","Account #"].includes(label)?"monospace":"inherit",fontWeight:500}}>{val}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div style={{textAlign:"right",flexShrink:0}}>
                       <div style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:credit?"#16A34A":"#DC2626"}}>{credit?"+":"-"}{usd(tx.amount)}</div>
@@ -911,6 +924,15 @@ export default function CpanelPage(){
     const mappedPending:PendingTx[]=pendingList.map(t=>{
       const prof=profList.find(p=>p.id===t.user_id);
       const acct=acctList.find(a=>a.id===t.account_id);
+      let extDetails:ExtDetails|undefined;
+      let displayMemo=String(t.memo||"");
+      try{
+        const parsed=JSON.parse(String(t.memo||""));
+        if(parsed.type==="external_transfer"){
+          extDetails={bankName:String(parsed.bankName||""),routingNumber:String(parsed.routingNumber||""),accountNumber:String(parsed.accountNumber||""),accountType:String(parsed.accountType||""),holderName:String(parsed.holderName||""),note:String(parsed.note||"")};
+          displayMemo=parsed.note||"";
+        }
+      }catch{/* not JSON */}
       return{
         id:String(t.id),
         userId:String(t.user_id||""),
@@ -922,9 +944,10 @@ export default function CpanelPage(){
         category:String(t.category||""),
         amount:Number(t.amount||0),
         transactionType:String(t.transaction_type||"debit"),
-        memo:String(t.memo||""),
+        memo:displayMemo,
         submittedAt:String(t.submitted_at||t.posted_at||""),
         postedAt:String(t.posted_at||new Date().toISOString()),
+        extDetails,
       };
     });
 
