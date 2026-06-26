@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
@@ -179,7 +180,7 @@ function BackBtn({ onClick }:{ onClick:()=>void }) {
 }
 function NextBtn({ onClick,disabled=false,label="Continue",loading=false }:{ onClick:()=>void;disabled?:boolean;label?:string;loading?:boolean }) {
   return (
-    <button onClick={onClick} disabled={disabled} style={{background:disabled?"rgba(17,24,39,.1)":RED,color:disabled?GRAY:"#fff",border:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"13px 34px",borderRadius:12,cursor:disabled?"not-allowed":"pointer",display:"inline-flex",alignItems:"center",gap:9,boxShadow:disabled?"none":"0 4px 18px rgba(140,29,37,.35)",transition:"all .2s"}}>
+    <button onClick={onClick} disabled={disabled} style={{background:loading?RED:disabled?"rgba(17,24,39,.1)":RED,color:loading?"#fff":disabled?GRAY:"#fff",border:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"13px 34px",borderRadius:12,cursor:loading?"wait":disabled?"not-allowed":"pointer",display:"inline-flex",alignItems:"center",gap:9,boxShadow:loading||!disabled?"0 4px 18px rgba(140,29,37,.35)":"none",transition:"all .2s"}}>
       {loading&&<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>}
       {loading?"Submitting…":label}
       {!loading&&!disabled&&<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>}
@@ -195,6 +196,15 @@ export default function OpenAccountPage() {
   const [form,setForm]               = useState<FormData>(EMPTY);
   const [submitting,setSubmitting]   = useState(false);
   const [submitError,setSubmitError] = useState("");
+  const [authReady,setAuthReady]     = useState(false);
+
+  useEffect(()=>{
+    createClient().auth.getUser().then(({data:{user}})=>{
+      if(!user){ window.location.href="/login?next=/open-account"; return; }
+      setForm(p=>({...p,email:user.email??p.email}));
+      setAuthReady(true);
+    });
+  },[]);
 
   const update=(field:keyof FormData,value:string|boolean)=>setForm(p=>({...p,[field]:value}));
   const handleDeepLink=(cat:"personal"|"business",acc:Account)=>{setCategory(cat);setSelected(acc);setStep(3);};
@@ -221,6 +231,8 @@ export default function OpenAccountPage() {
       setSubmitting(false);
     }
   }
+
+  if(!authReady) return null;
 
   return(
     <div style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
@@ -536,7 +548,7 @@ export default function OpenAccountPage() {
               <div style={{display:"flex",flexDirection:"column",gap:0}}>
                 {[
                   {n:"1",title:"Application review",body:isBusiness?"A business banker will call you within 1 business day to schedule your in-branch document verification.":"Most applications are approved same day. If we need anything, you'll hear from us within 1 business day."},
-                  {n:"2",title:"Email confirmation",body:`A confirmation email has been sent to ${form.email||"the address you provided"} with your application reference number.`},
+                  {n:"2",title:"Email confirmation",body:`We'll send a confirmation to ${form.email||"the email on your account"} once your application is reviewed.`},
                   {n:"3",title:isCredit?"Card delivery":"Account activation",body:isCredit?"If approved, your card arrives in 7–10 business days. Activate it in the FSCB app or by calling us.":"Once approved, your account number will be emailed to you. Enroll in online banking and you're ready to go."},
                 ].map((item,i,arr)=>(
                   <div key={item.n} style={{display:"flex",gap:16,alignItems:"flex-start",paddingBottom:i<arr.length-1?20:0,marginBottom:i<arr.length-1?20:0,borderBottom:i<arr.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
@@ -585,6 +597,15 @@ export default function OpenAccountPage() {
         </div>
       )}
 
+      {submitting&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{background:"#fff",borderRadius:20,padding:"44px 60px",textAlign:"center",boxShadow:"0 24px 64px rgba(0,0,0,.35)",display:"flex",flexDirection:"column",alignItems:"center",gap:14}}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>
+            <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:DARK}}>Submitting Your Application</div>
+            <div style={{fontSize:14,color:GRAY,lineHeight:1.6}}>Please don&apos;t close this page…</div>
+          </div>
+        </div>
+      )}
       <Footer/>
     </div>
   );
