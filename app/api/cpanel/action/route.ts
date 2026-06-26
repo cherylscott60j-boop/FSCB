@@ -165,7 +165,7 @@ export async function POST(request: Request) {
     const outstanding = balance < 0 ? Math.abs(balance) : 0;
     if (limitNum < outstanding)
       return NextResponse.json({ error: `Limit cannot be less than the outstanding balance of ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(outstanding)}.` }, { status: 400 });
-    const { error } = await admin.from("accounts").update({ credit_limit: limitNum }).eq("id", acctId);
+    const { error } = await admin.from("accounts").update({ credit_limit: limitNum, available_balance: limitNum + balance }).eq("id", acctId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ success: true });
   }
