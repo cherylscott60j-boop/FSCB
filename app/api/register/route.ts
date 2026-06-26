@@ -34,9 +34,7 @@ export async function POST(request: Request) {
     // Ban until admin approves
     await admin.auth.admin.updateUserById(userId, { ban_duration: "876000h" });
 
-    // Upsert profile — handles both cases: trigger already created the row, or no trigger
-    await admin.from("profiles").upsert({
-      id:           userId,
+    const profileFields = {
       email,
       first_name:   firstName,
       last_name:    lastName,
@@ -44,7 +42,24 @@ export async function POST(request: Request) {
       role:         "user",
       kyc_status:   "pending",
       member_since: new Date().toISOString().split("T")[0],
-    }, { onConflict: "id" });
+    };
+
+    // Try updating first (trigger already created the row)
+    const { error: updateErr, count } = await admin
+      .from("profiles")
+      .update(profileFields)
+      .eq("id", userId)
+      .select("id", { count: "exact", head: true });
+
+    // If no row existed yet (no trigger), insert instead
+    if (!updateErr && count === 0) {
+      const { error: insertErr } = await admin
+        .from("profiles")
+        .insert({ id: userId, ...profileFields });
+      if (insertErr) console.error("[register] profile insert error:", insertErr.message);
+    } else if (updateErr) {
+      console.error("[register] profile update error:", updateErr.message);
+    }
 
     // Create application
     const referenceId = `APP-${Date.now()}`;
