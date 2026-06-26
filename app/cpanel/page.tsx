@@ -954,67 +954,52 @@ export default function CpanelPage(){
   useEffect(()=>{load();},[load]);
 
   /* ── Actions ── */
-  async function handleFreezeToggle(acctId:string, nowFrozen:boolean, userId:string){
-    const sb=createClient();
-    await sb.from("accounts").update({status:nowFrozen?"frozen":"active"}).eq("id",acctId);
-    setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,status:nowFrozen?"frozen":"active"}:a));
-    void userId;
+  async function cAction(payload:Record<string,unknown>):Promise<string|null>{
+    const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(!res.ok){const j=await res.json().catch(()=>({}));return(j as Record<string,string>).error||"Request failed";}
+    return null;
+  }
+
+  async function handleFreezeToggle(acctId:string, nowFrozen:boolean, _userId:string){
+    const err=await cAction({action:"freezeToggle",acctId,nowFrozen});
+    if(!err) setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,status:nowFrozen?"frozen":"active"}:a));
   }
 
   async function handleAppStatus(id:string, status:"approved"|"rejected"){
     if(status==="approved"){
       await fetch("/api/cpanel/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({applicationId:id})});
     } else {
-      const sb=createClient();
-      await sb.from("applications").update({status:"rejected"}).eq("id",id);
+      await cAction({action:"rejectApplication",applicationId:id});
     }
     setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));
   }
 
   async function handleApproveTransaction(tx:PendingTx, date:string){
-    const sb=createClient();
-    await sb.from("transactions").update({status:"posted",posted_at:date}).eq("id",tx.id);
-    const acct=accounts.find(a=>a.id===tx.accountId);
-    if(acct){
-      const newBal=acct.balance+tx.amount;
-      await sb.from("accounts").update({balance:newBal}).eq("id",tx.accountId);
-      setAccounts(prev=>prev.map(a=>a.id===tx.accountId?{...a,balance:newBal}:a));
+    const err=await cAction({action:"approveTransaction",txId:tx.id,accountId:tx.accountId,amount:tx.amount,date});
+    if(!err){
+      const acct=accounts.find(a=>a.id===tx.accountId);
+      if(acct) setAccounts(prev=>prev.map(a=>a.id===tx.accountId?{...a,balance:acct.balance+tx.amount}:a));
+      setPendingTxs(prev=>prev.filter(t=>t.id!==tx.id));
     }
-    setPendingTxs(prev=>prev.filter(t=>t.id!==tx.id));
   }
 
   async function handleRejectTransaction(txId:string){
-    const sb=createClient();
-    await sb.from("transactions").update({status:"rejected"}).eq("id",txId);
-    setPendingTxs(prev=>prev.filter(t=>t.id!==txId));
+    const err=await cAction({action:"rejectTransaction",txId});
+    if(!err) setPendingTxs(prev=>prev.filter(t=>t.id!==txId));
   }
 
   async function handleManualTransaction(form:{accountId:string;userId:string;amount:number;merchant:string;category:string;date:string}):Promise<string|null>{
-    const sb=createClient();
-    const {error}=await sb.from("transactions").insert({
-      account_id:form.accountId,
-      user_id:form.userId,
-      merchant:form.merchant,
-      category:form.category,
-      amount:form.amount,
-      transaction_type:form.amount>=0?"credit":"debit",
-      status:"posted",
-      posted_at:form.date,
-    });
-    if(error) return error.message;
-    const acct=accounts.find(a=>a.id===form.accountId);
-    if(acct){
-      const newBal=acct.balance+form.amount;
-      await sb.from("accounts").update({balance:newBal}).eq("id",form.accountId);
-      setAccounts(prev=>prev.map(a=>a.id===form.accountId?{...a,balance:newBal}:a));
+    const err=await cAction({action:"manualTransaction",...form});
+    if(!err){
+      const acct=accounts.find(a=>a.id===form.accountId);
+      if(acct) setAccounts(prev=>prev.map(a=>a.id===form.accountId?{...a,balance:acct.balance+form.amount}:a));
     }
-    return null;
+    return err;
   }
 
   async function handleKYCUpdate(userId:string, kycStatus:string){
-    const sb=createClient();
-    await sb.from("profiles").update({kyc_status:kycStatus,kyc_updated_at:new Date().toISOString()}).eq("id",userId);
-    setUsers(prev=>prev.map(u=>u.id===userId?{...u,kycStatus}:u));
+    const err=await cAction({action:"kycUpdate",userId,kycStatus});
+    if(!err) setUsers(prev=>prev.map(u=>u.id===userId?{...u,kycStatus}:u));
   }
 
   async function signOut(){
