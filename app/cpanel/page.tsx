@@ -968,29 +968,12 @@ export default function CpanelPage(){
   }
 
   async function handleAppStatus(id:string, status:"approved"|"rejected"){
-    const sb=createClient();
-    await sb.from("applications").update({status}).eq("id",id);
-
     if(status==="approved"){
-      const app=apps.find(a=>a.id===id);
-      if(app?.userId){
-        const dbType=ACCT_TYPE_MAP[app.accountType]??"checking";
-        const displayName=app.accountName||app.accountType.split("-").map((w:string)=>w.charAt(0).toUpperCase()+w.slice(1)).join(" ");
-        const last4=String(Math.floor(1000+Math.random()*9000));
-        await sb.from("accounts").insert({
-          user_id:               app.userId,
-          account_type:          dbType,
-          account_name:          `FSCB ${displayName}`,
-          account_number_last4:  last4,
-          balance:               0,
-          available_balance:     0,
-          interest_rate:         0,
-          status:                "active",
-          opened_at:             new Date().toISOString(),
-        });
-      }
+      await fetch("/api/cpanel/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({applicationId:id})});
+    } else {
+      const sb=createClient();
+      await sb.from("applications").update({status:"rejected"}).eq("id",id);
     }
-
     setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));
   }
 

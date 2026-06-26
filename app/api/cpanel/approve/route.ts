@@ -1,0 +1,62 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+const ACCT_TYPE_MAP: Record<string, string> = {
+  "free-checking": "checking", "premium-checking": "checking",
+  "regular-savings": "savings", "high-yield-savings": "savings",
+  "money-market": "money_market", "cd-6": "cd", "cd-12": "cd", "cd-24": "cd",
+  "rewards-card": "credit_card", "cash-back-card": "credit_card", "secured-card": "credit_card",
+  "community-card": "credit_card",
+  "business-checking": "business_checking", "business-savings": "business_savings",
+  "biz-basic-checking": "business_checking", "biz-premium-checking": "business_checking",
+  "biz-savings": "business_savings", "biz-money-market": "money_market",
+};
+
+export async function POST(request: Request) {
+  // Verify the caller is an admin
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if ((profile as Record<string, string> | null)?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { applicationId } = await request.json();
+  const admin = createAdminClient();
+
+  // Fetch the application
+  const { data: app } = await admin.from("applications").select("*").eq("id", applicationId).single();
+  if (!app) return NextResponse.json({ error: "Application not found" }, { status: 404 });
+
+  const appRow = app as Record<string, string>;
+
+  // Mark application approved
+  await admin.from("applications").update({ status: "approved" }).eq("id", applicationId);
+
+  // Unban the user so they can now log in
+  if (appRow.user_id) {
+    await admin.auth.admin.updateUserById(appRow.user_id, { ban_duration: "none" });
+
+    // Create the account
+    const dbType = ACCT_TYPE_MAP[appRow.account_type] ?? "checking";
+    const displayName = appRow.account_name || appRow.account_type;
+    const last4 = String(Math.floor(1000 + Math.random() * 9000));
+
+    await admin.from("accounts").insert({
+      user_id:              appRow.user_id,
+      account_type:         dbType,
+      account_name:         `FSCB ${displayName}`,
+      account_number_last4: last4,
+      balance:              0,
+      available_balance:    0,
+      interest_rate:        0,
+      status:               "active",
+      opened_at:            new Date().toISOString(),
+    });
+  }
+
+  return NextResponse.json({ success: true });
+}

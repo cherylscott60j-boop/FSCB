@@ -45,6 +45,7 @@ const BUSINESS_ACCOUNTS: Account[] = [
 interface FormData {
   firstName:string; lastName:string; dob:string; ssn:string;
   email:string; phone:string; usCitizen:string;
+  password:string; confirmPassword:string;
   businessName:string; businessType:string; ein:string;
   established:string; businessPhone:string; industry:string;
   street:string; city:string; state:string; zip:string;
@@ -57,6 +58,7 @@ interface FormData {
 }
 const EMPTY: FormData = {
   firstName:"",lastName:"",dob:"",ssn:"",email:"",phone:"",usCitizen:"",
+  password:"",confirmPassword:"",
   businessName:"",businessType:"",ein:"",established:"",businessPhone:"",industry:"",
   street:"",city:"",state:"",zip:"",sameMailing:"yes",
   mailingStreet:"",mailingCity:"",mailingState:"",mailingZip:"",timeAtAddress:"",
@@ -196,15 +198,16 @@ export default function OpenAccountPage() {
   const [form,setForm]               = useState<FormData>(EMPTY);
   const [submitting,setSubmitting]   = useState(false);
   const [submitError,setSubmitError] = useState("");
-  const [authReady,setAuthReady]     = useState(false);
+  const [loggedInUserId,setLoggedInUserId] = useState<string|null|undefined>(undefined);
 
   useEffect(()=>{
     createClient().auth.getUser().then(({data:{user}})=>{
-      if(!user){ window.location.href="/login?next=/open-account"; return; }
-      setForm(p=>({...p,email:user.email??p.email}));
-      setAuthReady(true);
+      setLoggedInUserId(user?.id ?? null);
+      if(user?.email) setForm(p=>({...p,email:user.email!}));
     });
   },[]);
+
+  const isGuest = loggedInUserId === null;
 
   const update=(field:keyof FormData,value:string|boolean)=>setForm(p=>({...p,[field]:value}));
   const handleDeepLink=(cat:"personal"|"business",acc:Account)=>{setCategory(cat);setSelected(acc);setStep(3);};
@@ -215,10 +218,16 @@ export default function OpenAccountPage() {
 
   async function handleSubmit(){
     if(!allDiscs||submitting) return;
+    if(isGuest){
+      if(!form.password){setSubmitError("Please create a password.");return;}
+      if(form.password!==form.confirmPassword){setSubmitError("Passwords do not match.");return;}
+      if(form.password.length<8){setSubmitError("Password must be at least 8 characters.");return;}
+    }
     setSubmitting(true);
     setSubmitError("");
     try{
-      const res=await fetch("/api/applications",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account:selectedAccount?.id,accountName:selectedAccount?.name,category,firstName:form.firstName,lastName:form.lastName,email:form.email,phone:form.phone,dob:form.dob})});
+      const endpoint = isGuest ? "/api/register" : "/api/applications";
+      const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account:selectedAccount?.id,accountName:selectedAccount?.name,category,firstName:form.firstName,lastName:form.lastName,email:form.email,phone:form.phone,dob:form.dob,password:form.password})});
       const data=await res.json();
       if(data.success){
         setStep(6);
@@ -232,7 +241,7 @@ export default function OpenAccountPage() {
     }
   }
 
-  if(!authReady) return null;
+  if(loggedInUserId === undefined) return null;
 
   return(
     <div style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
@@ -386,6 +395,15 @@ export default function OpenAccountPage() {
                 </Field>
               </div>
             </Section>
+            {isGuest&&(
+              <Section title="Create Online Banking Password">
+                <p style={{fontSize:13.5,color:GRAY,margin:"0 0 20px",lineHeight:1.55}}>You&apos;ll use your email and this password to log in once your application is approved.</p>
+                <div className="mob-form-2" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+                  <Field label="Password" hint="Minimum 8 characters."><TextInput type="password" value={form.password} onChange={v=>update("password",v)} placeholder="Create a password" autoComplete="new-password"/></Field>
+                  <Field label="Confirm Password"><TextInput type="password" value={form.confirmPassword} onChange={v=>update("confirmPassword",v)} placeholder="Re-enter password" autoComplete="new-password"/></Field>
+                </div>
+              </Section>
+            )}
             {isBusiness&&(
               <Section title="Business Information">
                 <div className="mob-form-2" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
@@ -549,7 +567,7 @@ export default function OpenAccountPage() {
                 {[
                   {n:"1",title:"Application review",body:isBusiness?"A business banker will call you within 1 business day to schedule your in-branch document verification.":"Most applications are approved same day. If we need anything, you'll hear from us within 1 business day."},
                   {n:"2",title:"Email confirmation",body:`We'll send a confirmation to ${form.email||"the email on your account"} once your application is reviewed.`},
-                  {n:"3",title:isCredit?"Card delivery":"Account activation",body:isCredit?"If approved, your card arrives in 7–10 business days. Activate it in the FSCB app or by calling us.":"Once approved, your account number will be emailed to you. Enroll in online banking and you're ready to go."},
+                  {n:"3",title:isCredit?"Card delivery":"Account activation",body:isCredit?`If approved, your card arrives in 7–10 business days.${isGuest?" You can log in with the password you created to track your application.":""}`:`Once approved, your account will be active.${isGuest?" You can log in with the email and password you created — your login is activated upon approval.":""}`},
                 ].map((item,i,arr)=>(
                   <div key={item.n} style={{display:"flex",gap:16,alignItems:"flex-start",paddingBottom:i<arr.length-1?20:0,marginBottom:i<arr.length-1?20:0,borderBottom:i<arr.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
                     <div style={{flex:"none",width:34,height:34,borderRadius:"50%",background:RED,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:14}}>{item.n}</div>
