@@ -861,20 +861,14 @@ export default function CpanelPage(){
     setIsAdmin(true);
     setAdminInfo({name:`${(myProfile as Record<string,string>)?.first_name||""} ${(myProfile as Record<string,string>)?.last_name||""}`.trim()||user.email||"Admin",email:user.email||""});
 
-    /* Fetch all data */
-    const [
-      {data:profiles},
-      {data:accts},
-      {data:transactions},
-      {data:pendingTransactions},
-      {data:applications},
-    ]=await Promise.all([
-      sb.from("profiles").select("id,email,first_name,last_name,phone,member_since,role,kyc_status"),
-      sb.from("accounts").select("id,user_id,account_type,account_name,account_number_last4,balance,status,credit_limit"),
-      sb.from("transactions").select("id,user_id,account_id,merchant,category,amount,posted_at").eq("status","posted").order("posted_at",{ascending:false}).limit(50),
-      sb.from("transactions").select("id,user_id,account_id,merchant,category,amount,transaction_type,memo,submitted_at,posted_at").eq("status","pending").order("submitted_at",{ascending:false}),
-      sb.from("applications").select("*").order("submitted_at",{ascending:false}),
-    ]);
+    /* Fetch all data via server-side route (bypasses RLS) */
+    const res = await fetch("/api/cpanel/data");
+    const json = await res.json();
+    const profiles     = json.profiles            ?? [];
+    const accts        = json.accounts            ?? [];
+    const transactions = json.transactions        ?? [];
+    const pendingTransactions = json.pendingTransactions ?? [];
+    const applications = json.applications        ?? [];
 
     /* Map users + aggregate balances */
     const acctList=(accts??[]) as Record<string,unknown>[];
