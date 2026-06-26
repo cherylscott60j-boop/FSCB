@@ -262,12 +262,15 @@ function UsersTab({
     setBusy(null);
   }
 
-  async function saveCreditLimit(acct:AcctRow){
+  async function adjustCreditLimit(acct:AcctRow, mode:"credit"|"debit"){
     const val=parseFloat(limitInput);
-    if(isNaN(val)||val<0){setLimitErr("Enter a valid amount.");return;}
-    if(val>50000){setLimitErr("Maximum limit is $50,000.");return;}
+    if(isNaN(val)||val<=0){setLimitErr("Enter a valid positive amount.");return;}
+    const current=acct.creditLimit??0;
+    const newLimit=mode==="credit"?current+val:current-val;
+    if(newLimit<0){setLimitErr("Cannot reduce limit below $0.");return;}
+    if(newLimit>50000){setLimitErr("Maximum limit is $50,000.");return;}
     setLimitBusy(true);setLimitErr("");
-    const err=await onCreditLimitUpdate(acct.id,val);
+    const err=await onCreditLimitUpdate(acct.id,newLimit);
     setLimitBusy(false);
     if(err){setLimitErr(err);return;}
     setEditingLimit(null);
@@ -354,16 +357,22 @@ function UsersTab({
                                         <div style={{position:"relative",display:"flex",alignItems:"center"}}>
                                           <span style={{position:"absolute",left:9,fontSize:13,color:GRAY,pointerEvents:"none"}}>$</span>
                                           <input
-                                            type="number" min="0" max="50000" step="100"
+                                            type="number" min="0.01" step="100"
+                                            placeholder="Amount"
                                             value={limitInput}
                                             onChange={e=>setLimitInput(e.target.value)}
-                                            onKeyDown={e=>{if(e.key==="Enter")saveCreditLimit(a);if(e.key==="Escape")setEditingLimit(null);}}
+                                            onKeyDown={e=>{if(e.key==="Escape")setEditingLimit(null);}}
                                             autoFocus
                                             style={{...INP,width:130,paddingLeft:22,fontSize:13,height:32,padding:"4px 8px 4px 22px"}}
                                           />
                                         </div>
-                                        <button disabled={limitBusy} onClick={()=>saveCreditLimit(a)} style={{background:"rgba(22,163,74,.09)",border:"1px solid rgba(22,163,74,.25)",borderRadius:7,padding:"4px 12px",fontSize:12,fontWeight:600,color:"#16A34A",cursor:limitBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:limitBusy?.5:1}}>
-                                          {limitBusy?"…":"Save"}
+                                        <button disabled={limitBusy} onClick={()=>adjustCreditLimit(a,"credit")} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(22,163,74,.09)",border:"1px solid rgba(22,163,74,.25)",borderRadius:7,padding:"4px 12px",fontSize:12,fontWeight:600,color:"#16A34A",cursor:limitBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:limitBusy?.5:1}}>
+                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                                          {limitBusy?"…":"Credit"}
+                                        </button>
+                                        <button disabled={limitBusy} onClick={()=>adjustCreditLimit(a,"debit")} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(220,38,38,.07)",border:"1px solid rgba(220,38,38,.2)",borderRadius:7,padding:"4px 12px",fontSize:12,fontWeight:600,color:"#DC2626",cursor:limitBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:limitBusy?.5:1}}>
+                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/></svg>
+                                          {limitBusy?"…":"Debit"}
                                         </button>
                                         <button onClick={()=>{setEditingLimit(null);setLimitErr("");}} style={{background:"rgba(17,24,39,.05)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
                                         {limitErr&&<span style={{fontSize:12,color:"#DC2626"}}>{limitErr}</span>}
@@ -371,9 +380,9 @@ function UsersTab({
                                     ):(
                                       <>
                                         <span style={{fontSize:13,fontWeight:700,color:DARK}}>{a.creditLimit>0?usd(a.creditLimit):"Not set"}</span>
-                                        <button onClick={()=>{setEditingLimit(a.id);setLimitInput(a.creditLimit>0?String(a.creditLimit):"");setLimitErr("");}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(212,175,55,.08)",border:"1px solid rgba(212,175,55,.3)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:"#92701A",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                                        <button onClick={()=>{setEditingLimit(a.id);setLimitInput("");setLimitErr("");}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(212,175,55,.08)",border:"1px solid rgba(212,175,55,.3)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:"#92701A",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
                                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                          {a.creditLimit>0?"Edit Limit":"Set Limit"}
+                                          Adjust Limit
                                         </button>
                                       </>
                                     )}
