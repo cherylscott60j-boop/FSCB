@@ -844,13 +844,13 @@ function ProfileTab({profile,accounts,initials}:{
         <p style={{margin:0,fontSize:13,color:GRAY}}>Your personal information and account details.</p>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,alignItems:"flex-start"}}>
+      <div className="db-profile">
 
         {/* Left — personal info */}
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
 
           {/* Avatar + name card */}
-          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"28px 28px 24px",display:"flex",alignItems:"center",gap:20}}>
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"28px 28px 24px"}}><div className="db-profile-hero">
             <div style={{width:72,height:72,borderRadius:"50%",background:`linear-gradient(145deg,${RED},#5a1018)`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:26,color:"#fff",flexShrink:0,boxShadow:"0 4px 16px rgba(140,29,37,.35)"}}>
               {initials}
             </div>
@@ -862,7 +862,7 @@ function ProfileTab({profile,accounts,initials}:{
                 </span>
                 {profile.memberSince&&<span style={{fontSize:12,color:GRAY}}>Member since {profile.memberSince}</span>}
               </div>
-            </div>
+            </div></div>{/* /db-profile-hero */}
           </div>
 
           {/* Personal details */}
