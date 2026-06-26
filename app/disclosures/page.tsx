@@ -26,7 +26,7 @@ export default function DisclosuresPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <div style={{ background: "linear-gradient(145deg,#1a1a2e,#2d2d4e)", padding: "72px 32px 64px" }}>
+      <div className="mob-px" style={{ background: "linear-gradient(145deg,#1a1a2e,#2d2d4e)", padding: "72px 32px 64px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
           <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
             Legal &amp; Regulatory
@@ -42,7 +42,7 @@ export default function DisclosuresPage() {
       </div>
 
       {/* Jump links */}
-      <div style={{ background: "rgba(140,29,37,.04)", borderBottom: "1px solid rgba(140,29,37,.1)", padding: "16px 32px" }}>
+      <div className="mob-px" style={{ background: "rgba(140,29,37,.04)", borderBottom: "1px solid rgba(140,29,37,.1)", padding: "16px 32px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", gap: 24, flexWrap: "wrap" }}>
           {[
             ["FDIC Insurance", "#fdic"],
@@ -58,7 +58,7 @@ export default function DisclosuresPage() {
       </div>
 
       {/* Content */}
-      <div style={{ background: "#fff", padding: "56px 32px" }}>
+      <div className="mob-px" style={{ background: "#fff", padding: "56px 32px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
 
           <div id="fdic">

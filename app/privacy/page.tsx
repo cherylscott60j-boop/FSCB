@@ -56,7 +56,7 @@ export default function PrivacyPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <div style={{ background: "linear-gradient(145deg,#1a1200,#3d2c00)", padding: "72px 32px 64px" }}>
+      <div className="mob-px" style={{ background: "linear-gradient(145deg,#1a1200,#3d2c00)", padding: "72px 32px 64px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
             Legal &amp; Privacy
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
       </div>
 
       {/* Quick facts box */}
-      <div style={{ background: "#fff", padding: "56px 32px" }}>
+      <div className="mob-px" style={{ background: "#fff", padding: "56px 32px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ background: "rgba(140,29,37,.04)", border: "1.5px solid rgba(140,29,37,.12)", borderRadius: 18, padding: "32px 36px", marginBottom: 52 }}>
             <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 17, color: DARK, marginBottom: 14 }}>

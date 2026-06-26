@@ -22,7 +22,7 @@ export default function TermsPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <div style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "72px 32px 64px" }}>
+      <div className="mob-px" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "72px 32px 64px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
             Legal &amp; Privacy
@@ -38,7 +38,7 @@ export default function TermsPage() {
       </div>
 
       {/* Content */}
-      <div style={{ background: "#fff", padding: "56px 32px" }}>
+      <div className="mob-px" style={{ background: "#fff", padding: "56px 32px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
 
           {/* Intro */}

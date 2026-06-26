@@ -205,10 +205,6 @@ export default function OpenAccountPage() {
     sb.auth.getUser().then(async ({data:{user}})=>{
       if(!user){ setLoggedInUserId(null); return; }
 
-      // If they already have an active account, send them to the dashboard
-      const {data:accts} = await sb.from("accounts").select("id").eq("user_id", user.id).eq("status","active").limit(1);
-      if(accts && accts.length > 0){ window.location.replace("/dashboard"); return; }
-
       setLoggedInUserId(user.id);
       // Pre-fill from existing profile
       const {data:profile} = await sb.from("profiles").select("first_name,last_name,phone,date_of_birth,email").eq("id", user.id).single();

@@ -760,7 +760,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
   }
 
   return(
-    <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,alignItems:"flex-start"}}>
+    <div className="db-action-grid">
 
       {/* Form */}
       <div style={{...CARD,overflow:"hidden"}}>
@@ -889,7 +889,7 @@ function PayBillsTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:stri
   const recentPmts=txs.filter(t=>["Housing","Shopping","Dining","Entertainment","Auto & Gas"].includes(t.category)&&t.amount<0).slice(0,6);
   const PAYEES=["Mortgage / Rent","City Electric","Water Utility","Internet / Cable","Car Insurance","Phone Bill","Health Insurance","Credit Card"];
   return(
-    <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,alignItems:"flex-start"}}>
+    <div className="db-action-grid">
 
       {/* Form */}
       <div style={{...CARD,overflow:"hidden"}}>
@@ -1445,7 +1445,7 @@ export default function DashboardPage(){
                 {notifs.length>0&&<span style={{position:"absolute",top:5,right:5,width:7,height:7,borderRadius:"50%",background:RED,border:"1.5px solid #fff"}}/>}
               </button>
               {bellOpen&&(
-                <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,width:320,background:"#fff",border:"1px solid rgba(17,24,39,.1)",borderRadius:12,boxShadow:"0 8px 32px rgba(17,24,39,.14)",zIndex:200,overflow:"hidden"}}>
+                <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,width:"min(320px, calc(100vw - 16px))",background:"#fff",border:"1px solid rgba(17,24,39,.1)",borderRadius:12,boxShadow:"0 8px 32px rgba(17,24,39,.14)",zIndex:200,overflow:"hidden"}}>
                   <div style={{padding:"13px 16px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                     <span style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Notifications</span>
                     {notifs.length>0&&<button onClick={markAllRead} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>Mark all read</button>}
