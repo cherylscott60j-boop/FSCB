@@ -678,9 +678,87 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
 /* ── Transfers Tab ──────────────────────────────── */
 function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:string}){
   const dep=accounts.filter(a=>a.type!=="Credit Card");
-  const [from,setFrom]=useState(dep[0]?.id||""); const [to,setTo]=useState(dep[1]?.id||""); const [amt,setAmt]=useState(""); const [memo,setMemo]=useState("");
+  const initTo=dep.filter(a=>a.id!==dep[0]?.id)[0]?.id||"external";
+  const [from,setFrom]=useState(dep[0]?.id||"");
+  const [to,setTo]=useState(initTo);
+  const [amt,setAmt]=useState(""); const [memo,setMemo]=useState("");
   const [err,setErr]=useState(""); const [done,setDone]=useState(false); const [busy,setBusy]=useState(false);
+
+  /* external transfer state */
+  const [extAccts,setExtAccts]=useState<ExtAcct[]>([]);
+  const [extMode,setExtMode]=useState<"pick"|"new">("pick");
+  const [selExtId,setSelExtId]=useState<string|null>(null);
+  const [saveAcct,setSaveAcct]=useState(true);
+  const [extForm,setExtForm]=useState({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});
+  const upExt=(k:keyof typeof extForm,v:string)=>setExtForm(f=>({...f,[k]:v}));
+
+  const isExt=to==="external";
   const recent=txs.filter(t=>t.category==="Transfer").slice(0,5);
+
+  useEffect(()=>{
+    if(!isExt) return;
+    createClient().from("external_accounts").select("*").eq("user_id",userId).order("created_at",{ascending:false}).then(({data})=>{
+      const list=(data||[]) as ExtAcct[];
+      setExtAccts(list);
+      if(list.length>0){setExtMode("pick");setSelExtId(list[0].id);}
+      else setExtMode("new");
+    });
+  },[isExt,userId]);
+
+  async function submit(){
+    if(!amt||parseFloat(amt)<=0){setErr("Please enter a valid amount.");return;}
+    setBusy(true); setErr("");
+    const sb=createClient();
+
+    if(isExt){
+      let ext:ExtAcct|null=null;
+      if(extMode==="pick"){
+        ext=extAccts.find(a=>a.id===selExtId)||null;
+        if(!ext){setErr("Select an external account.");setBusy(false);return;}
+      } else {
+        if(extForm.routingNumber.length!==9){setErr("Routing number must be 9 digits.");setBusy(false);return;}
+        if(!extForm.accountNumber){setErr("Enter the account number.");setBusy(false);return;}
+        if(!extForm.holderName.trim()){setErr("Enter the account holder name.");setBusy(false);return;}
+        let savedId="";
+        if(saveAcct){
+          const {data,error}=await sb.from("external_accounts").insert({
+            user_id:userId,routing_number:extForm.routingNumber,account_number:extForm.accountNumber,
+            account_type:extForm.accountType,holder_name:extForm.holderName,
+            bank_name:extForm.bankName||null,nickname:extForm.nickname||null,
+          }).select("id").single();
+          if(error){setErr(error.message);setBusy(false);return;}
+          savedId=(data as Record<string,string>)?.id||"";
+        }
+        ext={id:savedId,routingNumber:extForm.routingNumber,accountNumber:extForm.accountNumber,accountType:extForm.accountType,holderName:extForm.holderName,bankName:extForm.bankName,nickname:extForm.nickname};
+      }
+      const memoPayload=JSON.stringify({type:"external_transfer",extAccountId:ext.id||null,bankName:ext.bankName||"External Bank",routingNumber:ext.routingNumber,accountNumber:ext.accountNumber,accountType:ext.accountType,holderName:ext.holderName,note:memo||null});
+      const {error}=await sb.from("transactions").insert({
+        account_id:from,user_id:userId,
+        merchant:`External Transfer → ${ext.bankName||"External Bank"}`,
+        category:"Transfer",amount:-parseFloat(amt),transaction_type:"wire_transfer",
+        posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
+        memo:memoPayload,status:"pending",
+      });
+      setBusy(false);
+      if(error){setErr(error.message);return;}
+      setDone(true);
+      return;
+    }
+
+    /* internal transfer */
+    if(from===to){setErr("From and To must be different.");setBusy(false);return;}
+    const toName=accounts.find(a=>a.id===to)?.label||"Account";
+    const {error}=await sb.from("transactions").insert({
+      account_id:from,user_id:userId,merchant:`Transfer → ${toName}`,
+      category:"Transfer",amount:-parseFloat(amt),transaction_type:"transfer",
+      posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
+      memo:memo||null,status:"pending",
+    });
+    setBusy(false);
+    if(error){setErr(error.message);return;}
+    setDone(true);
+  }
+
   return(
     <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,alignItems:"flex-start"}}>
 
@@ -697,38 +775,92 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
             </div>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Submitted for Review</div>
             <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55}}>Your transfer request is pending admin approval.</div>
-            <button onClick={()=>{setDone(false);setAmt("");setMemo("");}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
+            <button onClick={()=>{setDone(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
           </div>
         ):(
           <div style={{padding:"24px"}}>
             <div style={{marginBottom:16}}><label style={LBL}>From Account</label><select value={from} onChange={e=>setFrom(e.target.value)} style={SEL}>{dep.map(a=><option key={a.id} value={a.id}>{a.label} — {usd(a.balance)}</option>)}</select></div>
-            <div style={{marginBottom:16}}>
+            <div style={{marginBottom:isExt?16:16}}>
               <label style={LBL}>To Account</label>
-              <select value={to} onChange={e=>setTo(e.target.value)} style={SEL}>
+              <select value={to} onChange={e=>{setTo(e.target.value);setErr("");}} style={SEL}>
                 {accounts.filter(a=>a.id!==from).map(a=><option key={a.id} value={a.id}>{a.label}</option>)}
                 <option value="external">External / Other Bank</option>
               </select>
             </div>
+
+            {/* ── External bank section ── */}
+            {isExt&&(
+              <div style={{background:"rgba(17,24,39,.03)",border:"1px solid rgba(17,24,39,.09)",borderRadius:10,padding:"14px 16px",marginBottom:16}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                  <span style={{fontSize:12.5,fontWeight:700,color:MID}}>External Bank Details</span>
+                  {extAccts.length>0&&(
+                    <button onClick={()=>setExtMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>
+                      {extMode==="pick"?"+ Add New Account":"← Saved Accounts"}
+                    </button>
+                  )}
+                </div>
+                {extMode==="pick"&&extAccts.length>0?(
+                  <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                    {extAccts.map(a=>(
+                      <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${selExtId===a.id?RED:"rgba(17,24,39,.1)"}`,borderRadius:9,background:selExtId===a.id?"rgba(140,29,37,.04)":"#fff",transition:"all .15s"}}>
+                        <input type="radio" name="extAcctTab" checked={selExtId===a.id} onChange={()=>setSelExtId(a.id)} style={{accentColor:RED,marginTop:2,flexShrink:0}}/>
+                        <div>
+                          <div style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bankName||"External Account"}</div>
+                          <div style={{fontSize:12,color:GRAY,marginTop:2}}>
+                            {a.bankName&&<>{a.bankName} · </>}
+                            <span style={{textTransform:"capitalize"}}>{a.accountType}</span>
+                            {" · "}••••{a.accountNumber.slice(-4)}
+                          </div>
+                          <div style={{fontSize:11.5,color:GRAY}}>{a.holderName} · Routing ••••{a.routingNumber.slice(-4)}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                ):(
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                    <div style={{gridColumn:"1/-1"}}>
+                      <label style={LBL}>Bank Name <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                      <input type="text" placeholder="e.g. Chase, Wells Fargo…" value={extForm.bankName} onChange={e=>upExt("bankName",e.target.value)} style={INP}/>
+                    </div>
+                    <div>
+                      <label style={LBL}>Routing Number</label>
+                      <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={extForm.routingNumber} onChange={e=>upExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                    </div>
+                    <div>
+                      <label style={LBL}>Account Number</label>
+                      <input type="text" inputMode="numeric" placeholder="Account number" value={extForm.accountNumber} onChange={e=>upExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                    </div>
+                    <div>
+                      <label style={LBL}>Account Type</label>
+                      <select value={extForm.accountType} onChange={e=>upExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
+                        <option value="checking">Checking</option>
+                        <option value="savings">Savings</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={LBL}>Account Holder Name</label>
+                      <input type="text" placeholder="Full name on account" value={extForm.holderName} onChange={e=>upExt("holderName",e.target.value)} style={INP}/>
+                    </div>
+                    <div style={{gridColumn:"1/-1"}}>
+                      <label style={LBL}>Nickname <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                      <input type="text" placeholder="e.g. My Chase Savings" value={extForm.nickname} onChange={e=>upExt("nickname",e.target.value)} style={INP}/>
+                    </div>
+                    <div style={{gridColumn:"1/-1"}}>
+                      <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
+                        <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
+                        Save this account for future transfers
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div style={{marginBottom:16}}><label style={LBL}>Amount</label><AmtInput value={amt} set={setAmt}/></div>
-            <div style={{marginBottom:20}}><label style={LBL}>Memo <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><input type="text" placeholder="e.g. Monthly savings transfer…" value={memo} onChange={e=>setMemo(e.target.value)} style={INP}/></div>
+            <div style={{marginBottom:20}}><label style={LBL}>Memo <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><input type="text" placeholder={isExt?"e.g. Rent payment, wire transfer…":"e.g. Monthly savings transfer…"} value={memo} onChange={e=>setMemo(e.target.value)} style={INP}/></div>
             <ErrBanner msg={err}/>
-            <button disabled={busy} style={{width:"100%",background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:FONT,opacity:busy?.7:1}} onClick={async()=>{
-              if(!amt||parseFloat(amt)<=0){setErr("Please enter a valid amount.");return;}
-              if(from===to){setErr("From and To must be different.");return;}
-              setBusy(true);
-              const toName=to==="external"?"External Bank":(accounts.find(a=>a.id===to)?.label||"Account");
-              const sb=createClient();
-              const {error}=await sb.from("transactions").insert({
-                account_id:from,user_id:userId,merchant:`Transfer → ${toName}`,
-                category:"Transfer",amount:-parseFloat(amt),transaction_type:"transfer",
-                posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
-                memo:memo||null,status:"pending",
-              });
-              setBusy(false);
-              if(error){setErr(error.message);return;}
-              setErr("");setDone(true);
-            }}>
-              {busy?"Submitting…":"Transfer Funds"}
+            <button disabled={busy} style={{width:"100%",background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:FONT,opacity:busy?.7:1}} onClick={submit}>
+              {busy?"Submitting…":isExt?"Send External Transfer":"Transfer Funds"}
             </button>
             <p style={{margin:"12px 0 0",fontSize:12,color:GRAY,textAlign:"center"}}>Transfers are posted once approved by the bank.</p>
           </div>
