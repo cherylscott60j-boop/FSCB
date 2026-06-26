@@ -1037,6 +1037,8 @@ export default function CpanelPage(){
     setPendingTxs(mappedPending);
     setApps(mappedApps);
     setLoading(false);
+
+    fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"syncCreditAvailableBalances"})});
   },[]);
 
   useEffect(()=>{load();},[load]);

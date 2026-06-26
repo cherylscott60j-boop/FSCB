@@ -47,10 +47,15 @@ export async function POST(request: Request) {
     const { error: txErr } = await admin.from("transactions").update({ status: "posted", posted_at: date }).eq("id", txId);
     if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
 
-    const { data: acct } = await admin.from("accounts").select("balance").eq("id", accountId).single();
+    const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", accountId).single();
     if (acct) {
-      const newBal = (acct as Record<string, number>).balance + amount;
-      await admin.from("accounts").update({ balance: newBal }).eq("id", accountId);
+      const a = acct as Record<string, unknown>;
+      const newBal = Number(a.balance) + amount;
+      const updates: Record<string, unknown> = { balance: newBal };
+      if (a.account_type === "credit_card") {
+        updates.available_balance = Number(a.credit_limit) + newBal;
+      }
+      await admin.from("accounts").update(updates).eq("id", accountId);
     }
 
     // Auto-approve the paired credit/debit for internal transfers
@@ -167,6 +172,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Limit cannot be less than the outstanding balance of ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(outstanding)}.` }, { status: 400 });
     const { error } = await admin.from("accounts").update({ credit_limit: limitNum, available_balance: limitNum + balance }).eq("id", acctId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "syncCreditAvailableBalances") {
+    const { data: cards } = await admin
+      .from("accounts")
+      .select("id, balance, credit_limit, available_balance")
+      .eq("account_type", "credit_card")
+      .gt("credit_limit", 0);
+    if (cards) {
+      const stale = (cards as Array<{ id: string; balance: number; credit_limit: number; available_balance: number }>)
+        .filter(a => a.available_balance !== a.credit_limit + a.balance);
+      await Promise.all(
+        stale.map(a => admin.from("accounts").update({ available_balance: a.credit_limit + a.balance }).eq("id", a.id))
+      );
+    }
     return NextResponse.json({ success: true });
   }
 
