@@ -967,6 +967,7 @@ export default function DashboardPage(){
       .channel(`dash_${userId}`)
       .on("postgres_changes",{event:"*",schema:"public",table:"transactions",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .on("postgres_changes",{event:"UPDATE",schema:"public",table:"accounts",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
+      .on("postgres_changes",{event:"UPDATE",schema:"public",table:"applications",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .subscribe();
     return ()=>{ sb.removeChannel(ch); };
   },[userId,loadDashboard]);

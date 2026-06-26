@@ -201,9 +201,21 @@ export default function OpenAccountPage() {
   const [loggedInUserId,setLoggedInUserId] = useState<string|null|undefined>(undefined);
 
   useEffect(()=>{
-    createClient().auth.getUser().then(({data:{user}})=>{
+    const sb = createClient();
+    sb.auth.getUser().then(async ({data:{user}})=>{
       setLoggedInUserId(user?.id ?? null);
-      if(user?.email) setForm(p=>({...p,email:user.email!}));
+      if(!user) return;
+      // Pre-fill from existing profile
+      const {data:profile} = await sb.from("profiles").select("first_name,last_name,phone,date_of_birth,email").eq("id", user.id).single();
+      const p = profile as Record<string,string>|null;
+      setForm(prev=>({
+        ...prev,
+        email:      p?.email      || user.email || prev.email,
+        firstName:  p?.first_name || prev.firstName,
+        lastName:   p?.last_name  || prev.lastName,
+        phone:      p?.phone      || prev.phone,
+        dob:        p?.date_of_birth || prev.dob,
+      }));
     });
   },[]);
 
