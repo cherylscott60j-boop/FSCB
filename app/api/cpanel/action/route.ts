@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { CREDIT } from "@/lib/bankConstants";
 
 async function verifyAdmin() {
   const supabase = await createClient();
@@ -76,6 +77,25 @@ export async function POST(request: Request) {
   if (action === "kycUpdate") {
     const { userId, kycStatus } = body;
     const { error } = await admin.from("profiles").update({ kyc_status: kycStatus, kyc_updated_at: new Date().toISOString() }).eq("id", userId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "setCreditLimit") {
+    const { acctId, limit } = body;
+    const limitNum = Number(limit);
+    if (!Number.isFinite(limitNum) || limitNum < 0)
+      return NextResponse.json({ error: "Invalid limit amount." }, { status: 400 });
+    if (limitNum > CREDIT.maxLimit)
+      return NextResponse.json({ error: `Limit cannot exceed ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(CREDIT.maxLimit)}.` }, { status: 400 });
+    const { data: acct } = await admin.from("accounts").select("balance, account_type").eq("id", acctId).single();
+    if (!acct || (acct as Record<string,unknown>).account_type !== "credit_card")
+      return NextResponse.json({ error: "Account not found or not a credit card." }, { status: 400 });
+    const balance = Number((acct as Record<string,number>).balance);
+    const outstanding = balance < 0 ? Math.abs(balance) : 0;
+    if (limitNum < outstanding)
+      return NextResponse.json({ error: `Limit cannot be less than the outstanding balance of ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(outstanding)}.` }, { status: 400 });
+    const { error } = await admin.from("accounts").update({ credit_limit: limitNum }).eq("id", acctId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ success: true });
   }

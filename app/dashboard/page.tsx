@@ -281,7 +281,7 @@ function AmtInput({value,set}:{value:string;set:(v:string)=>void}){
 function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct[];userId:string}){
   const dep=accounts.filter(a=>a.type!=="Credit Card");
   const [from,setFrom]   = useState(dep[0]?.id||"");
-  const [to,setTo]       = useState(dep[1]?.id||dep[0]?.id||"");
+  const [to,setTo]       = useState(dep[1]?.id||"external");
   const [amt,setAmt]     = useState("");
   const [note,setNote]   = useState("");
   const [err,setErr]     = useState("");
@@ -374,7 +374,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
 
         <div style={{marginBottom:14}}>
           <label style={LBL}>From Account</label>
-          <select value={from} onChange={e=>setFrom(e.target.value)} style={SEL}>
+          <select value={from} onChange={e=>{const v=e.target.value;setFrom(v);if(to===v){setTo(dep.find(a=>a.id!==v)?.id||"external");setErr("");}}} style={SEL}>
             {dep.map(a=><option key={a.id} value={a.id}>{a.label} — {usd(a.balance)}</option>)}
           </select>
         </div>
@@ -382,7 +382,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
         <div style={{marginBottom:isExt?14:14}}>
           <label style={LBL}>To Account</label>
           <select value={to} onChange={e=>{setTo(e.target.value);setErr("");}} style={SEL}>
-            {accounts.filter(a=>a.id!==from).map(a=><option key={a.id} value={a.id}>{a.label}</option>)}
+            {dep.filter(a=>a.id!==from).map(a=><option key={a.id} value={a.id}>{a.label}</option>)}
             <option value="external">External / Other Bank</option>
           </select>
         </div>
@@ -842,11 +842,11 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
           </div>
         ):(
           <div style={{padding:"24px"}}>
-            <div style={{marginBottom:16}}><label style={LBL}>From Account</label><select value={from} onChange={e=>setFrom(e.target.value)} style={SEL}>{dep.map(a=><option key={a.id} value={a.id}>{a.label} — {usd(a.balance)}</option>)}</select></div>
+            <div style={{marginBottom:16}}><label style={LBL}>From Account</label><select value={from} onChange={e=>{const v=e.target.value;setFrom(v);if(to===v){setTo(dep.find(a=>a.id!==v)?.id||"external");setErr("");}}} style={SEL}>{dep.map(a=><option key={a.id} value={a.id}>{a.label} — {usd(a.balance)}</option>)}</select></div>
             <div style={{marginBottom:isExt?16:16}}>
               <label style={LBL}>To Account</label>
               <select value={to} onChange={e=>{setTo(e.target.value);setErr("");}} style={SEL}>
-                {accounts.filter(a=>a.id!==from).map(a=><option key={a.id} value={a.id}>{a.label}</option>)}
+                {dep.filter(a=>a.id!==from).map(a=><option key={a.id} value={a.id}>{a.label}</option>)}
                 <option value="external">External / Other Bank</option>
               </select>
             </div>

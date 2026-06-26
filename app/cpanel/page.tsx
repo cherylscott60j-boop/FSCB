@@ -237,14 +237,19 @@ function OverviewTab({
    TAB: USERS
 ═══════════════════════════════════════════════════════ */
 function UsersTab({
-  users, accounts, onFreezeToggle,
+  users, accounts, onFreezeToggle, onCreditLimitUpdate,
 }:{
   users:UserRow[]; accounts:AcctRow[];
   onFreezeToggle:(acctId:string, nowFrozen:boolean, userId:string)=>Promise<void>;
+  onCreditLimitUpdate:(acctId:string, limit:number)=>Promise<string|null>;
 }){
-  const [search, setSearch]     = useState("");
-  const [expanded, setExpanded] = useState<string|null>(null);
-  const [busy, setBusy]         = useState<string|null>(null);
+  const [search, setSearch]           = useState("");
+  const [expanded, setExpanded]       = useState<string|null>(null);
+  const [busy, setBusy]               = useState<string|null>(null);
+  const [editingLimit, setEditingLimit] = useState<string|null>(null);
+  const [limitInput, setLimitInput]   = useState("");
+  const [limitErr, setLimitErr]       = useState("");
+  const [limitBusy, setLimitBusy]     = useState(false);
 
   const filtered = users.filter(u=>{
     const q=search.toLowerCase();
@@ -255,6 +260,17 @@ function UsersTab({
     setBusy(acct.id);
     await onFreezeToggle(acct.id, acct.status!=="frozen", acct.userId);
     setBusy(null);
+  }
+
+  async function saveCreditLimit(acct:AcctRow){
+    const val=parseFloat(limitInput);
+    if(isNaN(val)||val<0){setLimitErr("Enter a valid amount.");return;}
+    if(val>50000){setLimitErr("Maximum limit is $50,000.");return;}
+    setLimitBusy(true);setLimitErr("");
+    const err=await onCreditLimitUpdate(acct.id,val);
+    setLimitBusy(false);
+    if(err){setLimitErr(err);return;}
+    setEditingLimit(null);
   }
 
   return(
@@ -307,22 +323,62 @@ function UsersTab({
                         ? <div style={{fontSize:13,color:GRAY}}>No accounts linked.</div>
                         : userAccts.map(a=>{
                             const frozen=a.status==="frozen";
+                            const isCreditCard=a.accountType==="credit_card";
+                            const isEditingThis=editingLimit===a.id;
                             return(
-                              <div key={a.id} style={{...CARD,padding:"12px 16px",marginBottom:8,display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
-                                <div style={{flex:1,minWidth:160}}>
-                                  <div style={{fontWeight:600,fontSize:13,color:DARK}}>{a.accountName}</div>
-                                  <div style={{fontSize:12,color:GRAY,marginTop:2}}>
-                                    <span style={{fontFamily:"monospace",letterSpacing:".08em"}}>••••{a.last4}</span>
-                                    <span style={{margin:"0 6px"}}>·</span>
-                                    <span style={{textTransform:"capitalize"}}>{a.accountType.replace(/_/g," ")}</span>
+                              <div key={a.id} style={{...CARD,padding:"12px 16px",marginBottom:8}}>
+                                {/* Main row */}
+                                <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
+                                  <div style={{flex:1,minWidth:160}}>
+                                    <div style={{fontWeight:600,fontSize:13,color:DARK}}>{a.accountName}</div>
+                                    <div style={{fontSize:12,color:GRAY,marginTop:2}}>
+                                      <span style={{fontFamily:"monospace",letterSpacing:".08em"}}>••••{a.last4}</span>
+                                      <span style={{margin:"0 6px"}}>·</span>
+                                      <span style={{textTransform:"capitalize"}}>{a.accountType.replace(/_/g," ")}</span>
+                                    </div>
                                   </div>
+                                  <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:a.balance<0?"#DC2626":DARK}}>{usd(a.balance)}</div>
+                                  <Badge status={a.status}/>
+                                  <button disabled={busy===a.id} onClick={()=>toggle(a)} style={{display:"flex",alignItems:"center",gap:6,background:frozen?"rgba(22,163,74,.07)":"rgba(220,38,38,.07)",border:`1px solid ${frozen?"rgba(22,163,74,.2)":"rgba(220,38,38,.2)"}`,borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:frozen?"#16A34A":"#DC2626",cursor:busy===a.id?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy===a.id?.5:1,transition:"all .15s"}}>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    {busy===a.id?"…":frozen?"Unfreeze":"Freeze"}
+                                  </button>
                                 </div>
-                                <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:a.balance<0?"#DC2626":DARK}}>{usd(a.balance)}</div>
-                                <Badge status={a.status}/>
-                                <button disabled={busy===a.id} onClick={()=>toggle(a)} style={{display:"flex",alignItems:"center",gap:6,background:frozen?"rgba(22,163,74,.07)":"rgba(220,38,38,.07)",border:`1px solid ${frozen?"rgba(22,163,74,.2)":"rgba(220,38,38,.2)"}`,borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:frozen?"#16A34A":"#DC2626",cursor:busy===a.id?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy===a.id?.5:1,transition:"all .15s"}}>
-                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                                  {busy===a.id?"…":frozen?"Unfreeze":"Freeze"}
-                                </button>
+                                {/* Credit limit row */}
+                                {isCreditCard&&(
+                                  <div style={{marginTop:10,paddingTop:10,borderTop:"1px solid rgba(17,24,39,.06)",display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" style={{flexShrink:0}}><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/></svg>
+                                    <span style={{fontSize:12,fontWeight:600,color:GRAY}}>Credit Limit:</span>
+                                    {isEditingThis?(
+                                      <>
+                                        <div style={{position:"relative",display:"flex",alignItems:"center"}}>
+                                          <span style={{position:"absolute",left:9,fontSize:13,color:GRAY,pointerEvents:"none"}}>$</span>
+                                          <input
+                                            type="number" min="0" max="50000" step="100"
+                                            value={limitInput}
+                                            onChange={e=>setLimitInput(e.target.value)}
+                                            onKeyDown={e=>{if(e.key==="Enter")saveCreditLimit(a);if(e.key==="Escape")setEditingLimit(null);}}
+                                            autoFocus
+                                            style={{...INP,width:130,paddingLeft:22,fontSize:13,height:32,padding:"4px 8px 4px 22px"}}
+                                          />
+                                        </div>
+                                        <button disabled={limitBusy} onClick={()=>saveCreditLimit(a)} style={{background:"rgba(22,163,74,.09)",border:"1px solid rgba(22,163,74,.25)",borderRadius:7,padding:"4px 12px",fontSize:12,fontWeight:600,color:"#16A34A",cursor:limitBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:limitBusy?.5:1}}>
+                                          {limitBusy?"…":"Save"}
+                                        </button>
+                                        <button onClick={()=>{setEditingLimit(null);setLimitErr("");}} style={{background:"rgba(17,24,39,.05)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                                        {limitErr&&<span style={{fontSize:12,color:"#DC2626"}}>{limitErr}</span>}
+                                      </>
+                                    ):(
+                                      <>
+                                        <span style={{fontSize:13,fontWeight:700,color:DARK}}>{a.creditLimit>0?usd(a.creditLimit):"Not set"}</span>
+                                        <button onClick={()=>{setEditingLimit(a.id);setLimitInput(a.creditLimit>0?String(a.creditLimit):"");setLimitErr("");}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(212,175,55,.08)",border:"1px solid rgba(212,175,55,.3)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:"#92701A",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                          {a.creditLimit>0?"Edit Limit":"Set Limit"}
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             );
                           })
@@ -1025,6 +1081,12 @@ export default function CpanelPage(){
     if(!err) setUsers(prev=>prev.map(u=>u.id===userId?{...u,kycStatus}:u));
   }
 
+  async function handleCreditLimitUpdate(acctId:string, limit:number):Promise<string|null>{
+    const err=await cAction({action:"setCreditLimit",acctId,limit});
+    if(!err) setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,creditLimit:limit}:a));
+    return err;
+  }
+
   async function signOut(){
     const sb=createClient();
     await sb.auth.signOut();
@@ -1085,7 +1147,7 @@ export default function CpanelPage(){
         {/* Main content */}
         <main style={{padding:"28px 32px",maxWidth:1200,width:"100%"}}>
           {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
-          {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle}/>}
+          {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}

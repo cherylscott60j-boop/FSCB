@@ -5,3 +5,8 @@ export const BANK = {
   swiftCode:   "FSCBUS33",
   address:     "123 Main Street, Springfield, IL 62701",
 } as const;
+
+export const CREDIT = {
+  defaultLimit: 2_500,
+  maxLimit:     50_000,
+} as const;
