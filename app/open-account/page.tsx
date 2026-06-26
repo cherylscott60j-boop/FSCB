@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
 const RED  = "#8C1D25";
@@ -550,7 +551,7 @@ export default function OpenAccountPage() {
         )}
       </div>
 
-      {/* ── Footer strip ─────────────────────────────────────── */}
+      {/* ── Security strip ───────────────────────────────────── */}
       {step<6&&(
         <div style={{borderTop:"1px solid rgba(17,24,39,.08)",background:"#fff",padding:"18px 32px"}}>
           <div style={{maxWidth:860,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
@@ -566,6 +567,8 @@ export default function OpenAccountPage() {
           </div>
         </div>
       )}
+
+      <Footer/>
     </div>
   );
 }
