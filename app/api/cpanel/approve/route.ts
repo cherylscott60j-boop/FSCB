@@ -44,12 +44,14 @@ export async function POST(request: Request) {
     // Create the account
     const dbType = ACCT_TYPE_MAP[appRow.account_type] ?? "checking";
     const displayName = appRow.account_name || appRow.account_type;
-    const last4 = String(Math.floor(1000 + Math.random() * 9000));
+    const accountNumber = String(4_000_000_000 + Math.floor(Math.random() * 999_999_999));
+    const last4 = accountNumber.slice(-4);
 
     await admin.from("accounts").insert({
       user_id:              appRow.user_id,
       account_type:         dbType,
       account_name:         `FSCB ${displayName}`,
+      account_number:       accountNumber,
       account_number_last4: last4,
       balance:              0,
       available_balance:    0,

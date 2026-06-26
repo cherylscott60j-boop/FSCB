@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   user_id               UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   account_type          account_type NOT NULL,
   account_name          TEXT NOT NULL,
+  account_number        TEXT,
   account_number_last4  CHAR(4) NOT NULL,
   balance               NUMERIC(15,2) NOT NULL DEFAULT 0.00,
   available_balance     NUMERIC(15,2) NOT NULL DEFAULT 0.00,

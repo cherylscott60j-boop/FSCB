@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { BANK } from "@/lib/bankConstants";
 
 /* ── Design tokens ───────────────────────────────── */
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
@@ -39,7 +40,7 @@ const CAT_COLOR: Record<string,string> = {
 };
 
 /* ── Types ───────────────────────────────────────── */
-type Acct  = {id:string;label:string;number:string;balance:number;available:number;type:string;color:string;grad:string;creditLimit:number;rate:number;openedAt:string;accountType:string;};
+type Acct  = {id:string;label:string;number:string;accountNumber:string;balance:number;available:number;type:string;color:string;grad:string;creditLimit:number;rate:number;openedAt:string;accountType:string;};
 type Tx    = {id:string;date:string;merchant:string;category:string;amount:number;status:string;};
 type Spend = {category:string;amount:number;budget:number;};
 type Notif = {id:string;type:string;title:string;message:string;created_at:string;};
@@ -68,6 +69,7 @@ function mapAcct(a:Record<string,unknown>):Acct{
   return {
     id:String(a.id), label:String(a.account_name),
     number:`••••  ${a.account_number_last4}`,
+    accountNumber:String(a.account_number??""),
     balance:Number(a.balance), available:Number(a.available_balance),
     type:m.label, color:m.color, grad:m.grad,
     creditLimit:Number(a.credit_limit??5000),
@@ -349,12 +351,17 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
     /* internal transfer */
     if(from===to){setErr("From and To must be different.");setBusy(false);return;}
     const toName=accounts.find(a=>a.id===to)?.label||"Account";
-    const {error}=await sb.from("transactions").insert({
-      account_id:from,user_id:userId,merchant:`Transfer → ${toName}`,
-      category:"Transfer",amount:-parseFloat(amt),transaction_type:"transfer",
-      posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
-      memo:note||null,status:"pending",
-    });
+    const fromName=accounts.find(a=>a.id===from)?.label||"Account";
+    const now=new Date().toISOString();
+    const parsedAmt=parseFloat(amt);
+    const {error}=await sb.from("transactions").insert([
+      {account_id:from,user_id:userId,merchant:`Transfer → ${toName}`,
+       category:"Transfer",amount:-parsedAmt,transaction_type:"transfer",
+       posted_at:now,submitted_at:now,memo:note||null,status:"pending"},
+      {account_id:to,user_id:userId,merchant:`Transfer ← ${fromName}`,
+       category:"Transfer",amount:parsedAmt,transaction_type:"transfer",
+       posted_at:now,submitted_at:now,memo:note||null,status:"pending"},
+    ]);
     setBusy(false);
     if(error){setErr(error.message);return;}
     setDone(true);
@@ -748,12 +755,17 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
     /* internal transfer */
     if(from===to){setErr("From and To must be different.");setBusy(false);return;}
     const toName=accounts.find(a=>a.id===to)?.label||"Account";
-    const {error}=await sb.from("transactions").insert({
-      account_id:from,user_id:userId,merchant:`Transfer → ${toName}`,
-      category:"Transfer",amount:-parseFloat(amt),transaction_type:"transfer",
-      posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
-      memo:memo||null,status:"pending",
-    });
+    const fromName=accounts.find(a=>a.id===from)?.label||"Account";
+    const now=new Date().toISOString();
+    const parsedAmt=parseFloat(amt);
+    const {error}=await sb.from("transactions").insert([
+      {account_id:from,user_id:userId,merchant:`Transfer → ${toName}`,
+       category:"Transfer",amount:-parsedAmt,transaction_type:"transfer",
+       posted_at:now,submitted_at:now,memo:memo||null,status:"pending"},
+      {account_id:to,user_id:userId,merchant:`Transfer ← ${fromName}`,
+       category:"Transfer",amount:parsedAmt,transaction_type:"transfer",
+       posted_at:now,submitted_at:now,memo:memo||null,status:"pending"},
+    ]);
     setBusy(false);
     if(error){setErr(error.message);return;}
     setDone(true);
