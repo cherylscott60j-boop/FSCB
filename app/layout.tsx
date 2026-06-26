@@ -1,0 +1,32 @@
+import type { Metadata } from "next";
+import { Inter, Libre_Franklin } from "next/font/google";
+import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const montserrat = Libre_Franklin({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "FSCB — First State Community Bank",
+  description:
+    "Decades of community trust. Banking built for your family, your business, and your future.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en" className={`${inter.variable} ${montserrat.variable}`} suppressHydrationWarning>
+      <body>{children}</body>
+    </html>
+  );
+}
