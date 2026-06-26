@@ -36,21 +36,86 @@ export async function POST(request: Request) {
 
   if (action === "approveTransaction") {
     const { txId, accountId, amount, date } = body;
+
+    const { data: tx, error: fetchErr } = await admin
+      .from("transactions")
+      .select("transaction_type, user_id, submitted_at")
+      .eq("id", txId)
+      .single();
+    if (fetchErr) return NextResponse.json({ error: fetchErr.message }, { status: 500 });
+
     const { error: txErr } = await admin.from("transactions").update({ status: "posted", posted_at: date }).eq("id", txId);
     if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
+
     const { data: acct } = await admin.from("accounts").select("balance").eq("id", accountId).single();
     if (acct) {
       const newBal = (acct as Record<string, number>).balance + amount;
       await admin.from("accounts").update({ balance: newBal }).eq("id", accountId);
     }
-    return NextResponse.json({ success: true });
+
+    // Auto-approve the paired credit/debit for internal transfers
+    let pairedTxId: string | null = null;
+    const txRecord = tx as Record<string, unknown>;
+    if (txRecord.transaction_type === "transfer") {
+      const { data: pair } = await admin
+        .from("transactions")
+        .select("id, account_id, amount")
+        .eq("user_id", txRecord.user_id as string)
+        .eq("submitted_at", txRecord.submitted_at as string)
+        .eq("transaction_type", "transfer")
+        .eq("status", "pending")
+        .neq("id", txId)
+        .maybeSingle();
+      if (pair) {
+        const p = pair as { id: string; account_id: string; amount: number };
+        await admin.from("transactions").update({ status: "posted", posted_at: date }).eq("id", p.id);
+        const { data: pAcct } = await admin.from("accounts").select("balance").eq("id", p.account_id).single();
+        if (pAcct) {
+          await admin.from("accounts")
+            .update({ balance: (pAcct as Record<string, number>).balance + p.amount })
+            .eq("id", p.account_id);
+        }
+        pairedTxId = p.id;
+      }
+    }
+
+    return NextResponse.json({ success: true, pairedTxId });
   }
 
   if (action === "rejectTransaction") {
     const { txId } = body;
+
+    const { data: tx } = await admin
+      .from("transactions")
+      .select("transaction_type, user_id, submitted_at")
+      .eq("id", txId)
+      .single();
+
     const { error } = await admin.from("transactions").update({ status: "rejected" }).eq("id", txId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ success: true });
+
+    // Auto-reject the paired credit/debit for internal transfers
+    let pairedTxId: string | null = null;
+    if (tx) {
+      const txRecord = tx as Record<string, unknown>;
+      if (txRecord.transaction_type === "transfer") {
+        const { data: pair } = await admin
+          .from("transactions")
+          .select("id")
+          .eq("user_id", txRecord.user_id as string)
+          .eq("submitted_at", txRecord.submitted_at as string)
+          .eq("transaction_type", "transfer")
+          .eq("status", "pending")
+          .neq("id", txId)
+          .maybeSingle();
+        if (pair) {
+          await admin.from("transactions").update({ status: "rejected" }).eq("id", (pair as { id: string }).id);
+          pairedTxId = (pair as { id: string }).id;
+        }
+      }
+    }
+
+    return NextResponse.json({ success: true, pairedTxId });
   }
 
   if (action === "manualTransaction") {
@@ -66,10 +131,15 @@ export async function POST(request: Request) {
       posted_at:        date,
     });
     if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
-    const { data: acct } = await admin.from("accounts").select("balance").eq("id", accountId).single();
+    const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", accountId).single();
     if (acct) {
-      const newBal = (acct as Record<string, number>).balance + amount;
-      await admin.from("accounts").update({ balance: newBal }).eq("id", accountId);
+      const a = acct as Record<string, unknown>;
+      const newBal = Number(a.balance) + amount;
+      const updates: Record<string, unknown> = { balance: newBal };
+      if (a.account_type === "credit_card") {
+        updates.available_balance = Number(a.credit_limit) + newBal;
+      }
+      await admin.from("accounts").update(updates).eq("id", accountId);
     }
     return NextResponse.json({ success: true });
   }

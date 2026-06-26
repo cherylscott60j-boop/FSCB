@@ -1063,17 +1063,23 @@ export default function CpanelPage(){
   }
 
   async function handleApproveTransaction(tx:PendingTx, date:string){
-    const err=await cAction({action:"approveTransaction",txId:tx.id,accountId:tx.accountId,amount:tx.amount,date});
-    if(!err){
-      const acct=accounts.find(a=>a.id===tx.accountId);
-      if(acct) setAccounts(prev=>prev.map(a=>a.id===tx.accountId?{...a,balance:acct.balance+tx.amount}:a));
-      setPendingTxs(prev=>prev.filter(t=>t.id!==tx.id));
-    }
+    const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"approveTransaction",txId:tx.id,accountId:tx.accountId,amount:tx.amount,date})});
+    if(!res.ok) return;
+    const {pairedTxId}=await res.json() as {pairedTxId:string|null};
+    const pairedTx=pairedTxId?pendingTxs.find(t=>t.id===pairedTxId):null;
+    setAccounts(prev=>{
+      let next=prev.map(a=>a.id===tx.accountId?{...a,balance:a.balance+tx.amount}:a);
+      if(pairedTx) next=next.map(a=>a.id===pairedTx.accountId?{...a,balance:a.balance+pairedTx.amount}:a);
+      return next;
+    });
+    setPendingTxs(prev=>prev.filter(t=>t.id!==tx.id&&t.id!==pairedTxId));
   }
 
   async function handleRejectTransaction(txId:string){
-    const err=await cAction({action:"rejectTransaction",txId});
-    if(!err) setPendingTxs(prev=>prev.filter(t=>t.id!==txId));
+    const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"rejectTransaction",txId})});
+    if(!res.ok) return;
+    const {pairedTxId}=await res.json() as {pairedTxId:string|null};
+    setPendingTxs(prev=>prev.filter(t=>t.id!==txId&&t.id!==pairedTxId));
   }
 
   async function handleManualTransaction(form:{accountId:string;userId:string;amount:number;merchant:string;category:string;date:string}):Promise<string|null>{
