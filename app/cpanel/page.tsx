@@ -1081,10 +1081,10 @@ export default function CpanelPage(){
       </header>
 
       {/* ── Layout ── */}
-      <div style={{display:"grid",gridTemplateColumns:"240px 1fr",minHeight:"calc(100vh - 60px)"}}>
+      <div className="cpanel-layout" style={{display:"grid",gridTemplateColumns:"240px 1fr",minHeight:"calc(100vh - 60px)"}}>
 
         {/* Sidebar */}
-        <div style={{borderRight:"1px solid rgba(17,24,39,.08)",background:"#fff",position:"sticky",top:60,height:"calc(100vh - 60px)"}}>
+        <div className="cpanel-sidebar" style={{borderRight:"1px solid rgba(17,24,39,.08)",background:"#fff",position:"sticky",top:60,height:"calc(100vh - 60px)"}}>
           <AdminSidebar
             active={tab}
             set={setTab}

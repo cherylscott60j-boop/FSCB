@@ -130,7 +130,8 @@ const STEPS = ["Account Type","Choose Account","Your Info","Address","Review & S
 
 function StepTracker({ current }:{ current:number }) {
   return (
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0,padding:"28px 32px 24px",background:"#fff",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+    <div className="step-tracker-wrap" style={{background:"#fff",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0,padding:"28px 32px 24px",minWidth:"fit-content",margin:"0 auto"}}>
       {STEPS.map((label,i)=>{
         const n=i+1;
         const done=n<current;
@@ -145,10 +146,11 @@ function StepTracker({ current }:{ current:number }) {
               </div>
               <span className="step-label" style={{fontSize:11,fontWeight:active?700:500,color:active?RED:done?MID:GRAY,whiteSpace:"nowrap",letterSpacing:".01em"}}>{label}</span>
             </div>
-            {i<STEPS.length-1&&<div style={{width:60,height:2,background:done?"rgba(140,29,37,.35)":"rgba(17,24,39,.08)",margin:"0 6px 20px",flexShrink:0,transition:"background .25s"}}/>}
+            {i<STEPS.length-1&&<div className="step-connector" style={{width:60,height:2,background:done?"rgba(140,29,37,.35)":"rgba(17,24,39,.08)",margin:"0 6px 20px",flexShrink:0,transition:"background .25s"}}/>}
           </div>
         );
       })}
+    </div>
     </div>
   );
 }
