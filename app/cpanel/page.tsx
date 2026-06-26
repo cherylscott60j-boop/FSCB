@@ -340,7 +340,12 @@ function UsersTab({
                                       <span style={{textTransform:"capitalize"}}>{a.accountType.replace(/_/g," ")}</span>
                                     </div>
                                   </div>
-                                  <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:a.balance<0?"#DC2626":DARK}}>{usd(a.balance)}</div>
+                                  <div style={{textAlign:"right"}}>
+                                    <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:isCreditCard?(a.balance<0?"#DC2626":"#16A34A"):(a.balance<0?"#DC2626":DARK)}}>
+                                      {isCreditCard?`${usd(a.balance)} owed`:usd(a.balance)}
+                                    </div>
+                                    {isCreditCard&&a.creditLimit>0&&<div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{usd(a.creditLimit+a.balance)} available</div>}
+                                  </div>
                                   <Badge status={a.status}/>
                                   <button disabled={busy===a.id} onClick={()=>toggle(a)} style={{display:"flex",alignItems:"center",gap:6,background:frozen?"rgba(22,163,74,.07)":"rgba(220,38,38,.07)",border:`1px solid ${frozen?"rgba(22,163,74,.2)":"rgba(220,38,38,.2)"}`,borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:frozen?"#16A34A":"#DC2626",cursor:busy===a.id?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy===a.id?.5:1,transition:"all .15s"}}>
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -736,7 +741,7 @@ function TransactionsTab({
             <div style={{padding:"20px"}}>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
                 <div><label style={LBL}>User</label><select value={selUser} onChange={e=>{setSelUser(e.target.value);setSelAcct("");}} style={SEL}>{users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>)}</select></div>
-                <div><label style={LBL}>Account</label><select value={selAcct} onChange={e=>setSelAcct(e.target.value)} style={SEL}><option value="">Select account…</option>{userAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({usd(a.balance)})</option>)}</select></div>
+                <div><label style={LBL}>Account</label><select value={selAcct} onChange={e=>setSelAcct(e.target.value)} style={SEL}><option value="">Select account…</option>{userAccts.map(a=>{const isCC=a.accountType==="credit_card";const info=isCC?`owed: ${usd(a.balance)} · avail: ${usd(a.creditLimit+a.balance)}`:`bal: ${usd(a.balance)}`;return <option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({info})</option>;})}</select></div>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={LBL}>Type</label>
