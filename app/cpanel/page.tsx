@@ -344,7 +344,7 @@ function UsersTab({
                                     <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:isCreditCard?(a.balance<0?"#DC2626":"#16A34A"):(a.balance<0?"#DC2626":DARK)}}>
                                       {isCreditCard?`${usd(a.balance)} owed`:usd(a.balance)}
                                     </div>
-                                    {isCreditCard&&a.creditLimit>0&&<div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{usd(a.creditLimit+a.balance)} available</div>}
+                                    {isCreditCard&&<div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{usd(a.creditLimit+a.balance)} available</div>}
                                   </div>
                                   <Badge status={a.status}/>
                                   <button disabled={busy===a.id} onClick={()=>toggle(a)} style={{display:"flex",alignItems:"center",gap:6,background:frozen?"rgba(22,163,74,.07)":"rgba(220,38,38,.07)",border:`1px solid ${frozen?"rgba(22,163,74,.2)":"rgba(220,38,38,.2)"}`,borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:frozen?"#16A34A":"#DC2626",cursor:busy===a.id?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy===a.id?.5:1,transition:"all .15s"}}>
@@ -980,7 +980,7 @@ export default function CpanelPage(){
       last4:String(a.account_number_last4||""),
       balance:Number(a.balance||0),
       status:String(a.status||"active"),
-      creditLimit:Number(a.credit_limit||0),
+      creditLimit:Number(a.credit_limit??5000),
     }));
 
     const mappedTxs:TxRow[]=((transactions??[]) as Record<string,unknown>[]).map(t=>({
