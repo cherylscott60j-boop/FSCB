@@ -194,6 +194,7 @@ export default function OpenAccountPage() {
   const [selectedAccount,setSelected]= useState<Account|null>(null);
   const [form,setForm]               = useState<FormData>(EMPTY);
   const [submitting,setSubmitting]   = useState(false);
+  const [submitError,setSubmitError] = useState("");
 
   const update=(field:keyof FormData,value:string|boolean)=>setForm(p=>({...p,[field]:value}));
   const handleDeepLink=(cat:"personal"|"business",acc:Account)=>{setCategory(cat);setSelected(acc);setStep(3);};
@@ -205,12 +206,20 @@ export default function OpenAccountPage() {
   async function handleSubmit(){
     if(!allDiscs||submitting) return;
     setSubmitting(true);
+    setSubmitError("");
     try{
       const res=await fetch("/api/applications",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account:selectedAccount?.id,accountName:selectedAccount?.name,category,firstName:form.firstName,lastName:form.lastName,email:form.email,phone:form.phone,dob:form.dob})});
       const data=await res.json();
-      if(data.success) setStep(6);
-    }catch{/* surface in future iteration */}
-    finally{setSubmitting(false);}
+      if(data.success){
+        setStep(6);
+      } else {
+        setSubmitError(data.error||"Something went wrong. Please try again.");
+      }
+    }catch{
+      setSubmitError("Network error. Please check your connection and try again.");
+    }finally{
+      setSubmitting(false);
+    }
   }
 
   return(
@@ -491,6 +500,12 @@ export default function OpenAccountPage() {
               </div>
             )}
 
+            {submitError&&(
+              <div style={{background:"rgba(220,38,38,.06)",border:"1px solid rgba(220,38,38,.2)",borderRadius:10,padding:"12px 16px",marginBottom:16,display:"flex",alignItems:"flex-start",gap:10}}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" style={{flexShrink:0,marginTop:1}}><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                <span style={{fontSize:13.5,color:"#991B1B",lineHeight:1.5}}>{submitError}</span>
+              </div>
+            )}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <BackBtn onClick={()=>setStep(4)}/>
               <NextBtn onClick={handleSubmit} disabled={!allDiscs||submitting} label="Submit Application" loading={submitting}/>
