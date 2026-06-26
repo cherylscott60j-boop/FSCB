@@ -346,7 +346,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
       const {error}=await sb.from("transactions").insert({
         account_id:from,user_id:userId,
         merchant:`External Transfer → ${ext.bankName||"External Bank"}`,
-        category:"Transfer",amount:-parseFloat(amt),transaction_type:"wire_transfer",
+        category:"Transfer",amount:-parseFloat(amt),transaction_type:"transfer",
         posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
         memo:memoPayload,status:"pending",
       });
@@ -801,7 +801,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
       const {error}=await sb.from("transactions").insert({
         account_id:from,user_id:userId,
         merchant:`External Transfer → ${ext.bankName||"External Bank"}`,
-        category:"Transfer",amount:-parseFloat(amt),transaction_type:"wire_transfer",
+        category:"Transfer",amount:-parseFloat(amt),transaction_type:"transfer",
         posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
         memo:memoPayload,status:"pending",
       });
