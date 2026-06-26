@@ -599,7 +599,41 @@ function ZelleModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct[];
 ═════════════════════════════════════════════════════ */
 
 /* ── Accounts Tab ───────────────────────────────── */
+function DetailRow({label,value,copyVal,revealed,onToggleReveal,canHide}:{label:string;value:string;copyVal:string;revealed:boolean;onToggleReveal?:()=>void;canHide?:boolean}){
+  const [copied,setCopied]=useState(false);
+  function doCopy(){navigator.clipboard.writeText(copyVal).catch(()=>{});setCopied(true);setTimeout(()=>setCopied(false),1500);}
+  const display=canHide&&!revealed?value.replace(/\S/g,"•"):value;
+  return(
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 0",borderBottom:"1px solid rgba(17,24,39,.05)"}}>
+      <span style={{fontSize:12,color:GRAY,fontWeight:500,minWidth:180}}>{label}</span>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <span style={{fontSize:13,fontFamily:"monospace",color:DARK,fontWeight:600,letterSpacing:".06em"}}>{display}</span>
+        {canHide&&onToggleReveal&&(
+          <button onClick={onToggleReveal} title={revealed?"Hide":"Show"} style={{background:"none",border:"none",cursor:"pointer",padding:2,color:GRAY,display:"flex",alignItems:"center"}}>
+            {revealed
+              ?<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              :<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            }
+          </button>
+        )}
+        <button onClick={doCopy} title="Copy" style={{background:"none",border:"none",cursor:"pointer",padding:2,color:copied?"#059669":GRAY,display:"flex",alignItems:"center",transition:"color .2s"}}>
+          {copied
+            ?<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            :<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          }
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalKey)=>void}){
+  const [expandedId,setExpandedId]=useState<string|null>(null);
+  const [revealedIds,setRevealedIds]=useState<Set<string>>(new Set());
+
+  function toggleExpand(id:string){setExpandedId(v=>v===id?null:id);}
+  function toggleReveal(key:string){setRevealedIds(v=>{const s=new Set(v);s.has(key)?s.delete(key):s.add(key);return s;});}
+
   return(
     <div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:10}}>
@@ -616,6 +650,7 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
       {accounts.map(a=>{
         const isCC=a.type==="Credit Card";
         const util=isCC?Math.round((Math.abs(Math.min(a.balance,0))/a.creditLimit)*100):null;
+        const isExpanded=expandedId===a.id;
         return(
           <div key={a.id} style={{...CARD,marginBottom:12,overflow:"hidden"}}>
             <div style={{display:"flex",alignItems:"center",gap:16,padding:"18px 20px",flexWrap:"wrap"}}>
@@ -667,7 +702,23 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
                   {btn.label}
                 </button>
               ))}
+              <button onClick={()=>toggleExpand(a.id)} style={{background:isExpanded?"rgba(140,29,37,.07)":"rgba(17,24,39,.04)",border:`1px solid ${isExpanded?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"6px 14px",fontSize:12.5,fontWeight:600,color:isExpanded?RED:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",display:"flex",alignItems:"center",gap:5}}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+                {isExpanded?"Hide Details":"Account Details"}
+              </button>
             </div>
+
+            {/* Expandable banking details */}
+            {isExpanded&&(
+              <div style={{borderTop:"1px solid rgba(17,24,39,.06)",padding:"14px 20px 6px",background:"rgba(249,250,251,.7)"}}>
+                <div style={{fontSize:11,fontWeight:700,color:GRAY,letterSpacing:".08em",marginBottom:8,textTransform:"uppercase"}}>Banking Details</div>
+                <DetailRow label="Account Number" value={a.accountNumber||"Not assigned"} copyVal={a.accountNumber||""} revealed={revealedIds.has(a.id+"-acct")} onToggleReveal={()=>toggleReveal(a.id+"-acct")} canHide/>
+                <DetailRow label="ABA / ACH Routing" value={BANK.achRouting} copyVal={BANK.achRouting} revealed/>
+                <DetailRow label="Domestic Wire Routing" value={BANK.wireRouting} copyVal={BANK.wireRouting} revealed/>
+                <DetailRow label="SWIFT / BIC (International)" value={BANK.swiftCode} copyVal={BANK.swiftCode} revealed/>
+                <p style={{fontSize:11,color:GRAY,margin:"10px 0 8px",lineHeight:1.5}}>Use these details to receive wire transfers or set up direct deposits. For international transfers, provide your bank name: <strong>First State Community Bank</strong>.</p>
+              </div>
+            )}
           </div>
         );
       })}
