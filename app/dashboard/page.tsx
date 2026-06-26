@@ -928,7 +928,7 @@ export default function DashboardPage(){
     const [{data:p},{data:a},{data:t},{data:tp},{data:b},{data:n},{data:aps}]=await Promise.all([
       sb.from("profiles").select("first_name,last_name,member_since,role,kyc_status").eq("id",user.id).single(),
       sb.from("accounts").select("*").eq("user_id",user.id).eq("status","active").order("opened_at"),
-      sb.from("transactions").select("*").eq("user_id",user.id).eq("status","posted").gte("posted_at",`${yr}-${mm}-01`).order("posted_at",{ascending:false}).limit(50),
+      sb.from("transactions").select("*").eq("user_id",user.id).eq("status","posted").order("posted_at",{ascending:false}).limit(100),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","pending").order("submitted_at",{ascending:false}),
       sb.from("budgets").select("*").eq("user_id",user.id).eq("month",mo).eq("year",yr),
       sb.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(5),
@@ -942,7 +942,8 @@ export default function DashboardPage(){
     const pendingRows=(tp??[]) as Record<string,unknown>[];
     const rt=[...pendingRows,...posted];
     setTxs(rt.map(mapTx));
-    setSpend(calcSpend(posted,(b??[]) as Record<string,unknown>[]));
+    const thisMonthPosted=posted.filter(tx=>{ const d=new Date(String(tx.posted_at)); return d.getFullYear()===yr&&d.getMonth()+1===mo; });
+    setSpend(calcSpend(thisMonthPosted,(b??[]) as Record<string,unknown>[]));
     setNotifs((n??[]) as Notif[]);
     setPendingApps(((aps??[]) as Record<string,unknown>[]).filter(a=>a.status==="pending").map(a=>({
       id:String(a.id),
