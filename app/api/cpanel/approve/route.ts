@@ -36,9 +36,10 @@ export async function POST(request: Request) {
   // Mark application approved
   await admin.from("applications").update({ status: "approved" }).eq("id", applicationId);
 
-  // Unban the user so they can now log in
+  // Unban the user and mark KYC verified
   if (appRow.user_id) {
     await admin.auth.admin.updateUserById(appRow.user_id, { ban_duration: "none" });
+    await admin.from("profiles").update({ kyc_status: "verified", kyc_updated_at: new Date().toISOString() }).eq("id", appRow.user_id);
 
     // Create the account
     const dbType = ACCT_TYPE_MAP[appRow.account_type] ?? "checking";
