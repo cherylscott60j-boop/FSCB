@@ -814,6 +814,123 @@ function StatementsTab({onClose,accounts}:{onClose:()=>void;accounts:Acct[]}){
   );
 }
 
+/* ── Profile Tab ────────────────────────────────── */
+function ProfileTab({profile,accounts,initials}:{
+  profile:{firstName:string;lastName:string;email:string;phone:string;dob:string;lastLogin:string;memberSince:string;kycStatus:string};
+  accounts:Acct[];
+  initials:string;
+}){
+  const KYC_COLOR:Record<string,{bg:string;text:string}>={
+    verified:{bg:"rgba(22,163,74,.1)",text:"#16A34A"},
+    pending: {bg:"rgba(217,119,6,.1)", text:"#D97706"},
+    rejected:{bg:"rgba(220,38,38,.1)", text:"#DC2626"},
+  };
+  const kyc=KYC_COLOR[profile.kycStatus]??KYC_COLOR.pending;
+  const totalBalance=accounts.reduce((s,a)=>s+a.balance,0);
+
+  function Row({label,value}:{label:string;value:string}){
+    return(
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 0",borderBottom:"1px solid rgba(17,24,39,.06)"}}>
+        <span style={{fontSize:13,color:GRAY,fontWeight:500}}>{label}</span>
+        <span style={{fontSize:13.5,color:DARK,fontWeight:600,textAlign:"right",maxWidth:"60%",wordBreak:"break-all"}}>{value||"—"}</span>
+      </div>
+    );
+  }
+
+  return(
+    <div>
+      <div style={{marginBottom:20}}>
+        <h2 style={{margin:"0 0 4px",fontFamily:FONT,fontWeight:800,fontSize:20,color:DARK}}>My Profile</h2>
+        <p style={{margin:0,fontSize:13,color:GRAY}}>Your personal information and account details.</p>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,alignItems:"flex-start"}}>
+
+        {/* Left — personal info */}
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+
+          {/* Avatar + name card */}
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"28px 28px 24px",display:"flex",alignItems:"center",gap:20}}>
+            <div style={{width:72,height:72,borderRadius:"50%",background:`linear-gradient(145deg,${RED},#5a1018)`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:26,color:"#fff",flexShrink:0,boxShadow:"0 4px 16px rgba(140,29,37,.35)"}}>
+              {initials}
+            </div>
+            <div>
+              <div style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:DARK,marginBottom:6}}>{profile.firstName} {profile.lastName}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                <span style={{fontSize:12,fontWeight:700,padding:"3px 10px",borderRadius:99,background:kyc.bg,color:kyc.text,textTransform:"capitalize",letterSpacing:".03em"}}>
+                  {profile.kycStatus==="verified"?"✓ Verified":profile.kycStatus==="rejected"?"✕ Rejected":"⏳ Pending Verification"}
+                </span>
+                {profile.memberSince&&<span style={{fontSize:12,color:GRAY}}>Member since {profile.memberSince}</span>}
+              </div>
+            </div>
+          </div>
+
+          {/* Personal details */}
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"20px 24px"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:4}}>Personal Information</div>
+            <div style={{fontSize:12,color:GRAY,marginBottom:16}}>Contact support to update your details.</div>
+            <Row label="Full Name"    value={`${profile.firstName} ${profile.lastName}`.trim()}/>
+            <Row label="Email Address" value={profile.email}/>
+            <Row label="Phone Number" value={profile.phone}/>
+            <Row label="Date of Birth" value={profile.dob ? new Date(profile.dob+"T00:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}) : ""}/>
+          </div>
+
+          {/* Security */}
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"20px 24px"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:16}}>Security</div>
+            <Row label="Last Login"  value={profile.lastLogin}/>
+            <div style={{padding:"14px 0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:13,color:GRAY,fontWeight:500}}>Password</span>
+              <span style={{fontSize:13,color:GRAY,fontFamily:"monospace",letterSpacing:".2em"}}>••••••••••</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right — account summary */}
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+
+          {/* Account summary */}
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"20px 24px"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:16}}>Account Summary</div>
+            <div style={{display:"flex",gap:12,marginBottom:16}}>
+              <div style={{flex:1,background:"rgba(140,29,37,.05)",borderRadius:12,padding:"14px 16px",textAlign:"center"}}>
+                <div style={{fontFamily:FONT,fontWeight:800,fontSize:24,color:RED}}>{accounts.length}</div>
+                <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>Active Account{accounts.length!==1?"s":""}</div>
+              </div>
+              <div style={{flex:1,background:"rgba(22,163,74,.05)",borderRadius:12,padding:"14px 16px",textAlign:"center"}}>
+                <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:"#16A34A"}}>{new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",notation:"compact",maximumFractionDigits:1}).format(totalBalance)}</div>
+                <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>Total Balance</div>
+              </div>
+            </div>
+            {accounts.map(a=>(
+              <div key={a.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid rgba(17,24,39,.05)"}}>
+                <div style={{width:34,height:34,borderRadius:8,background:a.grad,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" strokeWidth="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/></svg>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:600,color:DARK,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.label}</div>
+                  <div style={{fontSize:11.5,color:GRAY,fontFamily:"monospace",letterSpacing:".06em"}}>{a.number}</div>
+                </div>
+                <div style={{fontSize:13,fontWeight:700,color:DARK,fontFamily:FONT,flexShrink:0}}>{new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(a.balance)}</div>
+              </div>
+            ))}
+            {accounts.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:GRAY}}>No active accounts.</div>}
+          </div>
+
+          {/* Need help */}
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"18px 20px"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK,marginBottom:8}}>Need to update your info?</div>
+            <p style={{margin:"0 0 14px",fontSize:12.5,color:GRAY,lineHeight:1.55}}>To change your name, address, or other personal details, please contact our support team.</p>
+            <Link href="/about/contact" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:RED,color:"#fff",borderRadius:9,padding:"9px 0",fontSize:13,fontWeight:600,textDecoration:"none",fontFamily:FONT}}>
+              Contact Support
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ═════════════════════════════════════════════════════
    SIDEBAR
 ═════════════════════════════════════════════════════ */
@@ -824,6 +941,7 @@ const NAV_ITEMS=[
   {id:"Pay Bills",  label:"Pay Bills",  icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Cards",      label:"Cards",      icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"},
   {id:"Statements", label:"Statements", icon:"M21 8v13H3V8M23 3H1v5h22V3zM10 12h4"},
+  {id:"Profile",    label:"Profile",    icon:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"},
 ];
 
 const QUICK_ITEMS=[
@@ -907,7 +1025,7 @@ export default function DashboardPage(){
   const [loading,setLoading]   = useState(true);
   const [modal,setModal]       = useState<ModalKey|null>(null);
 
-  const [profile,setProfile]   = useState({firstName:"",lastName:"",lastLogin:"",memberSince:"",role:"",kycStatus:""});
+  const [profile,setProfile]   = useState({firstName:"",lastName:"",email:"",phone:"",dob:"",lastLogin:"",memberSince:"",role:"",kycStatus:""});
   const [userId,setUserId]     = useState("");
   const [accounts,setAccounts] = useState<Acct[]>([]);
   const [txs,setTxs]           = useState<Tx[]>([]);
@@ -923,7 +1041,7 @@ export default function DashboardPage(){
     if(!user){window.location.href="/login";return;}
     const now=new Date(),mo=now.getMonth()+1,yr=now.getFullYear(),mm=String(mo).padStart(2,"0");
     const [{data:p},{data:a},{data:t},{data:tp},{data:n},{data:aps}]=await Promise.all([
-      sb.from("profiles").select("first_name,last_name,member_since,role,kyc_status").eq("id",user.id).single(),
+      sb.from("profiles").select("first_name,last_name,email,phone,date_of_birth,member_since,role,kyc_status").eq("id",user.id).single(),
       sb.from("accounts").select("*").eq("user_id",user.id).eq("status","active").order("opened_at"),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","posted").order("posted_at",{ascending:false}).limit(100),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","pending").order("submitted_at",{ascending:false}),
@@ -931,7 +1049,8 @@ export default function DashboardPage(){
       sb.from("applications").select("id,account_type,account_name,reference_id,submitted_at,status").eq("user_id",user.id).in("status",["pending","approved"]).order("submitted_at",{ascending:false}),
     ]);
     const ll=user.last_sign_in_at?new Date(user.last_sign_in_at).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}):"";
-    setProfile({firstName:p?.first_name||user.email?.split("@")[0]||"User",lastName:p?.last_name||"",lastLogin:ll,memberSince:p?.member_since?new Date(p.member_since).getFullYear().toString():"",role:String((p as Record<string,unknown>)?.role||""),kycStatus:String((p as Record<string,unknown>)?.kyc_status||"pending")});
+    const pr=p as Record<string,string>|null;
+    setProfile({firstName:pr?.first_name||user.email?.split("@")[0]||"User",lastName:pr?.last_name||"",email:pr?.email||user.email||"",phone:pr?.phone||"",dob:pr?.date_of_birth||"",lastLogin:ll,memberSince:pr?.member_since?new Date(pr.member_since).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}):"",role:pr?.role||"",kycStatus:pr?.kyc_status||"pending"});
     setUserId(user.id);
     setAccounts(((a??[]) as Record<string,unknown>[]).map(mapAcct));
     const posted=(t??[]) as Record<string,unknown>[];
@@ -1288,6 +1407,9 @@ export default function DashboardPage(){
 
           {/* ── Statements ── */}
           {tab==="Statements"&&<StatementsTab onClose={()=>setTab("Overview")} accounts={accounts}/>}
+
+          {/* ── Profile ── */}
+          {tab==="Profile"&&<ProfileTab profile={profile} accounts={accounts} initials={initials}/>}
 
         </main>
       </div>{/* /db-layout */}
