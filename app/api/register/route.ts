@@ -71,7 +71,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, referenceId });
 
   } catch (err) {
-    console.error("[register] unexpected error:", err);
-    return NextResponse.json({ success: false, error: "An unexpected error occurred." }, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[register] unexpected error:", msg);
+    return NextResponse.json({ success: false, error: msg }, { status: 500 });
   }
 }
