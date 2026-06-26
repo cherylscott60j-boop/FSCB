@@ -417,9 +417,9 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                       <div style={{fontSize:12,color:GRAY,marginTop:2}}>
                         {a.bankName&&<>{a.bankName} · </>}
                         <span style={{textTransform:"capitalize"}}>{a.accountType}</span>
-                        {" · "}••••{a.accountNumber.slice(-4)}
+                        {" · "}••••{(a.accountNumber||"").slice(-4)}
                       </div>
-                      <div style={{fontSize:11.5,color:GRAY}}>{a.holderName} · Routing ••••{a.routingNumber.slice(-4)}</div>
+                      <div style={{fontSize:11.5,color:GRAY}}>{a.holderName} · Routing ••••{(a.routingNumber||"").slice(-4)}</div>
                     </div>
                   </label>
                 ))}
@@ -880,9 +880,9 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                           <div style={{fontSize:12,color:GRAY,marginTop:2}}>
                             {a.bankName&&<>{a.bankName} · </>}
                             <span style={{textTransform:"capitalize"}}>{a.accountType}</span>
-                            {" · "}••••{a.accountNumber.slice(-4)}
+                            {" · "}••••{(a.accountNumber||"").slice(-4)}
                           </div>
-                          <div style={{fontSize:11.5,color:GRAY}}>{a.holderName} · Routing ••••{a.routingNumber.slice(-4)}</div>
+                          <div style={{fontSize:11.5,color:GRAY}}>{a.holderName} · Routing ••••{(a.routingNumber||"").slice(-4)}</div>
                         </div>
                       </label>
                     ))}
