@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { createBrowserClient } from "@supabase/ssr";
 
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
@@ -22,7 +21,6 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPw,   setShowPw]   = useState(false);
-  const [remember, setRemember] = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
 
@@ -37,7 +35,6 @@ export default function LoginPage() {
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { auth: { persistSession: remember } },
     );
     const { error: authError } = await supabase.auth.signInWithPassword({
       email: username, password,
@@ -231,17 +228,6 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
-
-              {/* Remember me */}
-              <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  style={{ width: 17, height: 17, accentColor: RED, cursor: "pointer", flexShrink: 0 }}
-                />
-                <span style={{ fontSize: 14, color: DARK }}>Remember this device for 30 days</span>
-              </label>
 
               {/* Sign In button */}
               <button
