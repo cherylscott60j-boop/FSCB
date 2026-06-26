@@ -228,14 +228,15 @@ export default function OpenAccountPage() {
     try{
       const endpoint = isGuest ? "/api/register" : "/api/applications";
       const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account:selectedAccount?.id,accountName:selectedAccount?.name,category,firstName:form.firstName,lastName:form.lastName,email:form.email,phone:form.phone,dob:form.dob,password:form.password})});
-      const data=await res.json();
+      let data:{success:boolean;error?:string}={success:false,error:"Unexpected server error."};
+      try{ data=await res.json(); }catch{ /* non-JSON response */ }
       if(data.success){
         setStep(6);
       } else {
         setSubmitError(data.error||"Something went wrong. Please try again.");
       }
     }catch{
-      setSubmitError("Network error. Please check your connection and try again.");
+      setSubmitError("Could not reach the server. Please check your connection.");
     }finally{
       setSubmitting(false);
     }
