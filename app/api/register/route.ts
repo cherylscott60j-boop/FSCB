@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, firstName, lastName, phone, dob, account, accountName, category } = body;
+    const { email, password, firstName, lastName, phone, dob, street, city, state, zip, account, accountName, category } = body;
 
     if (!email || !password || !firstName || !lastName) {
       return NextResponse.json({ success: false, error: "Missing required fields." }, { status: 400 });
@@ -36,12 +36,17 @@ export async function POST(request: Request) {
 
     const profileFields = {
       email,
-      first_name:   firstName,
-      last_name:    lastName,
-      phone:        phone || null,
-      role:         "user",
-      kyc_status:   "pending",
-      member_since: new Date().toISOString().split("T")[0],
+      first_name:    firstName,
+      last_name:     lastName,
+      phone:         phone   || null,
+      date_of_birth: dob     || null,
+      address:       street  || null,
+      city:          city    || null,
+      state:         state   || null,
+      zip:           zip     || null,
+      role:          "user",
+      kyc_status:    "pending",
+      member_since:  new Date().toISOString().split("T")[0],
     };
 
     // Try updating first (trigger already created the row)

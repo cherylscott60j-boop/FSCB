@@ -10,6 +10,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: "Not authenticated" }, { status: 401 });
   }
 
+  // Update profile with any fields provided in the form
+  const profileUpdate: Record<string, string | null> = {};
+  if (body.dob)    profileUpdate.date_of_birth = body.dob;
+  if (body.phone)  profileUpdate.phone         = body.phone;
+  if (body.street) profileUpdate.address       = body.street;
+  if (body.city)   profileUpdate.city          = body.city;
+  if (body.state)  profileUpdate.state         = body.state;
+  if (body.zip)    profileUpdate.zip           = body.zip;
+  if (Object.keys(profileUpdate).length > 0) {
+    await supabase.from("profiles").update(profileUpdate).eq("id", user.id);
+  }
+
   const referenceId = `APP-${Date.now()}`;
 
   const { error } = await supabase.from("applications").insert({
