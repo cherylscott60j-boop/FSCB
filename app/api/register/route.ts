@@ -45,14 +45,14 @@ export async function POST(request: Request) {
     };
 
     // Try updating first (trigger already created the row)
-    const { error: updateErr, count } = await admin
+    const { data: updated, error: updateErr } = await admin
       .from("profiles")
       .update(profileFields)
       .eq("id", userId)
-      .select("id", { count: "exact", head: true });
+      .select("id");
 
     // If no row existed yet (no trigger), insert instead
-    if (!updateErr && count === 0) {
+    if (!updateErr && (!updated || updated.length === 0)) {
       const { error: insertErr } = await admin
         .from("profiles")
         .insert({ id: userId, ...profileFields });
