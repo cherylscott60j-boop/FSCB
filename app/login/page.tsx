@@ -36,16 +36,23 @@ export default function LoginPage() {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     );
-    const { error: authError } = await supabase.auth.signInWithPassword({
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email: username, password,
     });
-    setLoading(false);
     if (authError) {
+      setLoading(false);
       setError(authError.message ?? "Invalid credentials. Please try again.");
       return;
     }
-    const next = new URLSearchParams(window.location.search).get("next") ?? "/dashboard";
-    window.location.href = next;
+    const explicit = new URLSearchParams(window.location.search).get("next");
+    if (explicit) { window.location.href = explicit; return; }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", authData.user.id)
+      .single();
+    setLoading(false);
+    window.location.href = (profile as Record<string,string>|null)?.role === "admin" ? "/cpanel" : "/dashboard";
   }
 
   return (
