@@ -595,13 +595,22 @@ export default function OpenAccountPage() {
             </div>
 
             <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
-              <Link href="/login" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:12,display:"inline-flex",alignItems:"center",gap:8,boxShadow:"0 4px 18px rgba(140,29,37,.35)"}}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
-                Enroll in Online Banking
-              </Link>
-              <Link href="/" style={{background:"#fff",color:DARK,textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:600,padding:"14px 30px",borderRadius:12,border:"1.5px solid rgba(17,24,39,.13)",display:"inline-block"}}>
-                Return to Home
-              </Link>
+              {isGuest?(
+                <>
+                  <Link href="/login" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:12,display:"inline-flex",alignItems:"center",gap:8,boxShadow:"0 4px 18px rgba(140,29,37,.35)"}}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+                    Enroll in Online Banking
+                  </Link>
+                  <Link href="/" style={{background:"#fff",color:DARK,textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:600,padding:"14px 30px",borderRadius:12,border:"1.5px solid rgba(17,24,39,.13)",display:"inline-block"}}>
+                    Return to Home
+                  </Link>
+                </>
+              ):(
+                <Link href="/dashboard" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:12,display:"inline-flex",alignItems:"center",gap:8,boxShadow:"0 4px 18px rgba(140,29,37,.35)"}}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                  Return to Dashboard
+                </Link>
+              )}
             </div>
 
             <p style={{marginTop:28,fontSize:13,color:GRAY,lineHeight:1.6}}>
