@@ -83,10 +83,11 @@ function mapTx(t:Record<string,unknown>):Tx{
     status:String(t.status||"posted"),
   };
 }
-function calcSpend(txs:Record<string,unknown>[],buds:Record<string,unknown>[]):Spend[]{
+function calcSpend(txs:Record<string,unknown>[]):Spend[]{
   const totals:Record<string,number>={};
   txs.forEach(t=>{ if(Number(t.amount)<0){ const c=String(t.category); totals[c]=(totals[c]??0)+Math.abs(Number(t.amount)); } });
-  return buds.map(b=>({category:String(b.category),amount:totals[String(b.category)]??0,budget:Number(b.amount)}));
+  const max=Math.max(...Object.values(totals),1);
+  return Object.entries(totals).sort((a,b)=>b[1]-a[1]).map(([category,amount])=>({category,amount,budget:max}));
 }
 
 /* ═════════════════════════════════════════════════════
@@ -151,16 +152,12 @@ function TxRow({tx}:{tx:Tx}){
 
 function SpendRow({s}:{s:Spend}){
   const p=Math.min((s.amount/s.budget)*100,100);
-  const over=s.amount>s.budget;
-  const bar=over?"#DC2626":p>80?"#D97706":"#2563EB";
+  const bar=CAT_COLOR[s.category]??GRAY;
   return(
     <div style={{padding:"10px 0"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
         <span style={{fontSize:13,color:MID,fontWeight:500}}>{s.category}</span>
-        <span style={{fontSize:12.5}}>
-          <span style={{fontWeight:600,color:over?"#DC2626":DARK}}>{usd(s.amount)}</span>
-          <span style={{marginLeft:4,color:"rgba(17,24,39,.3)"}}>/ {usd(s.budget)}</span>
-        </span>
+        <span style={{fontSize:12.5,fontWeight:600,color:DARK}}>{usd(s.amount)}</span>
       </div>
       <div style={{height:5,background:"rgba(17,24,39,.08)",borderRadius:99,overflow:"hidden"}}>
         <div style={{height:"100%",width:`${p}%`,background:bar,borderRadius:99}}/>
@@ -925,13 +922,12 @@ export default function DashboardPage(){
     const {data:{user}}=await sb.auth.getUser();
     if(!user){window.location.href="/login";return;}
     const now=new Date(),mo=now.getMonth()+1,yr=now.getFullYear(),mm=String(mo).padStart(2,"0");
-    const [{data:p},{data:a},{data:t},{data:tp},{data:b},{data:n},{data:aps}]=await Promise.all([
+    const [{data:p},{data:a},{data:t},{data:tp},{data:n},{data:aps}]=await Promise.all([
       sb.from("profiles").select("first_name,last_name,member_since,role,kyc_status").eq("id",user.id).single(),
       sb.from("accounts").select("*").eq("user_id",user.id).eq("status","active").order("opened_at"),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","posted").order("posted_at",{ascending:false}).limit(100),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","pending").order("submitted_at",{ascending:false}),
-      sb.from("budgets").select("*").eq("user_id",user.id).eq("month",mo).eq("year",yr),
-      sb.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(5),
+      sb.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(20),
       sb.from("applications").select("id,account_type,account_name,reference_id,submitted_at,status").eq("user_id",user.id).in("status",["pending","approved"]).order("submitted_at",{ascending:false}),
     ]);
     const ll=user.last_sign_in_at?new Date(user.last_sign_in_at).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}):"";
@@ -943,7 +939,7 @@ export default function DashboardPage(){
     const rt=[...pendingRows,...posted];
     setTxs(rt.map(mapTx));
     const thisMonthPosted=posted.filter(tx=>{ const d=new Date(String(tx.posted_at)); return d.getFullYear()===yr&&d.getMonth()+1===mo; });
-    setSpend(calcSpend(thisMonthPosted,(b??[]) as Record<string,unknown>[]));
+    setSpend(calcSpend(thisMonthPosted));
     setNotifs((n??[]) as Notif[]);
     setPendingApps(((aps??[]) as Record<string,unknown>[]).filter(a=>a.status==="pending").map(a=>({
       id:String(a.id),
@@ -969,6 +965,7 @@ export default function DashboardPage(){
       .on("postgres_changes",{event:"*",schema:"public",table:"transactions",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .on("postgres_changes",{event:"UPDATE",schema:"public",table:"accounts",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .on("postgres_changes",{event:"UPDATE",schema:"public",table:"applications",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .subscribe();
     return ()=>{ sb.removeChannel(ch); };
   },[userId,loadDashboard]);
@@ -1224,11 +1221,10 @@ export default function DashboardPage(){
                   <div style={{...CARD,overflow:"hidden"}}>
                     <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                       <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Monthly Spending</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
-                      <span style={{fontSize:12,color:GRAY}}>vs budget</span>
                     </div>
                     <div style={{padding:"4px 20px 0"}}>
                       {spend.length===0
-                        ?<div style={{padding:"28px 0",textAlign:"center",color:GRAY,fontSize:13}}>No budget data for this month.</div>
+                        ?<div style={{padding:"28px 0",textAlign:"center",color:GRAY,fontSize:13}}>No spending this month yet.</div>
                         :spend.map(s=><SpendRow key={s.category} s={s}/>)
                       }
                     </div>
