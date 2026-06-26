@@ -611,7 +611,7 @@ export default function Nav() {
         </div>
 
         {/* Accordion links */}
-        <nav style={{ flex: 1, paddingTop: 4, overflowY: "auto" }}>
+        <nav style={{ paddingTop: 4 }}>
           {NAV_KEYS.map((key) => {
             const isOpen = mobileExpanded === key;
             const data = MENU_DATA[key];
