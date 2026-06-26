@@ -116,7 +116,7 @@ function AccountCard({a}:{a:Acct}){
       </div>
       <div style={{marginTop:20,position:"relative"}}>
         <div style={{fontSize:10.5,fontWeight:600,color:"rgba(255,255,255,.45)",letterSpacing:".1em",textTransform:"uppercase",marginBottom:4}}>{isCC?"Current Balance":"Account Balance"}</div>
-        <div style={{fontFamily:FONT,fontWeight:800,fontSize:30,color:"#fff",letterSpacing:"-.025em",lineHeight:1}}>{a.balance<0?"–":""}{usd(a.balance)}</div>
+        <div style={{fontFamily:FONT,fontWeight:800,fontSize:30,color:"#fff",letterSpacing:"-.025em",lineHeight:1}}>{isCC?usd(Math.abs(Math.min(a.balance,0))):<>{a.balance<0?"–":""}{usd(a.balance)}</>}</div>
       </div>
       <div style={{height:1,background:"rgba(255,255,255,.12)",margin:"14px 0 10px"}}/>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative"}}>
