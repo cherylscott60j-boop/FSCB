@@ -1725,7 +1725,7 @@ export default function DashboardPage(){
                 <div style={{...CARD,overflow:"hidden"}}>
                   <div style={{padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
                     <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
-                    <button onClick={()=>setTab("Accounts")} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
+                    <button onClick={()=>{setTxFilter("all");setTxShown(txs.length||1000);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
                   </div>
                   <div style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
                     {(["all","debits","credits"] as const).map(f=>(
