@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { BANK } from "@/lib/bankConstants";
 
@@ -123,6 +123,12 @@ function AccountCard({a}:{a:Acct}){
         <span style={{fontSize:11.5,color:"rgba(255,255,255,.45)",fontWeight:500}}>{isCC?"Available Credit":"Available Balance"}</span>
         <span style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:"rgba(255,255,255,.85)"}}>{usd(a.available)}</span>
       </div>
+      {isCC&&a.creditLimit>0&&(
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",marginTop:6}}>
+          <span style={{fontSize:11.5,color:"rgba(255,255,255,.45)",fontWeight:500}}>Credit Limit</span>
+          <span style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:"rgba(255,255,255,.85)"}}>{usd(a.creditLimit)}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -1381,6 +1387,11 @@ export default function DashboardPage(){
   const [txShown,setTxShown]   = useState(10);
   const [bellOpen,setBellOpen] = useState(false);
   const [pendingApps,setPendingApps]=useState<{id:string;accountName:string;referenceId:string;submittedAt:string}[]>([]);
+  const [showSessionWarning,setShowSessionWarning] = useState(false);
+  const [countdown,setCountdown] = useState(60);
+
+  const inactivityTimer = useRef<ReturnType<typeof setTimeout>|null>(null);
+  const warningActive   = useRef(false);
 
   const loadDashboard=useCallback(async()=>{
     const sb=createClient();
@@ -1436,6 +1447,49 @@ export default function DashboardPage(){
     return ()=>{ sb.removeChannel(ch); };
   },[userId,loadDashboard]);
 
+  const signOut = useCallback(async()=>{
+    const sb=createClient();
+    await sb.auth.signOut();
+    window.location.replace("/login");
+  },[]);
+
+  /* ── Back-button lock: keep logged-in users on dashboard ── */
+  useEffect(()=>{
+    window.history.pushState({dashboardLocked:true},"","/dashboard");
+    function handlePop(){ window.history.pushState({dashboardLocked:true},"","/dashboard"); }
+    window.addEventListener("popstate",handlePop);
+    return ()=>{ window.removeEventListener("popstate",handlePop); };
+  },[]);
+
+  /* ── Inactivity timer: show warning after 5 min of no activity ── */
+  useEffect(()=>{
+    const TIMEOUT=5*60*1000;
+    function startTimer(){
+      if(inactivityTimer.current) clearTimeout(inactivityTimer.current);
+      inactivityTimer.current=setTimeout(()=>{
+        warningActive.current=true;
+        setShowSessionWarning(true);
+        setCountdown(60);
+      },TIMEOUT);
+    }
+    function handleActivity(){ if(!warningActive.current) startTimer(); }
+    const events=["mousemove","mousedown","keydown","touchstart","scroll"] as const;
+    events.forEach(e=>window.addEventListener(e,handleActivity,{passive:true}));
+    startTimer();
+    return ()=>{
+      if(inactivityTimer.current) clearTimeout(inactivityTimer.current);
+      events.forEach(e=>window.removeEventListener(e,handleActivity));
+    };
+  },[]);
+
+  /* ── Countdown tick: auto-logout when countdown reaches 0 ── */
+  useEffect(()=>{
+    if(!showSessionWarning) return;
+    if(countdown<=0){ signOut(); return; }
+    const t=setTimeout(()=>setCountdown(c=>c-1),1000);
+    return ()=>clearTimeout(t);
+  },[showSessionWarning,countdown,signOut]);
+
   if(loading)return <PageSkeleton/>;
 
   const netWorth = accounts.reduce((s,a)=>s+a.balance,0);
@@ -1455,8 +1509,6 @@ export default function DashboardPage(){
     error:"M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01",
   };
 
-  async function signOut(){const sb=createClient();await sb.auth.signOut();window.location.href="/login";}
-
   async function markRead(id:string){
     const sb=createClient();
     await sb.from("notifications").update({read:true}).eq("id",id);
@@ -1470,6 +1522,18 @@ export default function DashboardPage(){
   }
 
   function setTabAndClose(t:string){setTab(t);setSidebarOpen(false);}
+
+  function continueSession(){
+    warningActive.current=false;
+    setShowSessionWarning(false);
+    setCountdown(60);
+    if(inactivityTimer.current) clearTimeout(inactivityTimer.current);
+    inactivityTimer.current=setTimeout(()=>{
+      warningActive.current=true;
+      setShowSessionWarning(true);
+      setCountdown(60);
+    },5*60*1000);
+  }
 
   return(
     <div onClick={()=>{setBellOpen(false);setSidebarOpen(false);}} style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
@@ -1768,6 +1832,50 @@ export default function DashboardPage(){
       {modal==="paybill"  && <PayBillModal      onClose={()=>setModal(null)} accounts={accounts} userId={userId}/>}
       {modal==="deposit"  && <DepositCheckModal onClose={()=>setModal(null)} accounts={accounts} userId={userId}/>}
       {modal==="zelle"    && <ZelleModal        onClose={()=>setModal(null)} accounts={accounts} userId={userId}/>}
+
+      {/* ═══ SESSION TIMEOUT WARNING ══════════════════════════ */}
+      {showSessionWarning&&(
+        <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:"16px"}}
+          onClick={e=>e.stopPropagation()}>
+          {/* Backdrop */}
+          <div style={{position:"absolute",inset:0,background:"rgba(17,24,39,.55)",backdropFilter:"blur(3px)"}}/>
+          {/* Card */}
+          <div style={{position:"relative",width:"100%",maxWidth:400,background:"#fff",borderRadius:16,boxShadow:"0 20px 60px rgba(17,24,39,.22)",padding:"32px 28px 28px",textAlign:"center"}}>
+            {/* Warning icon */}
+            <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(217,119,6,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px"}}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:DARK,marginBottom:8}}>Session Expiring Soon</div>
+            <div style={{fontSize:14,color:GRAY,lineHeight:1.6,marginBottom:24}}>
+              You&apos;ve been inactive for a while. For your security, your session will automatically end in
+            </div>
+            {/* Countdown circle */}
+            <div style={{width:72,height:72,borderRadius:"50%",border:`4px solid ${countdown>10?"#D97706":"#DC2626"}`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px",transition:"border-color .3s"}}>
+              <span style={{fontFamily:FONT,fontWeight:800,fontSize:24,color:countdown>10?"#D97706":"#DC2626",transition:"color .3s"}}>{countdown}</span>
+            </div>
+            <div style={{fontSize:12,color:GRAY,marginBottom:28}}>seconds</div>
+            {/* Buttons */}
+            <div style={{display:"flex",gap:10,flexDirection:"column"}}>
+              <button onClick={continueSession}
+                style={{width:"100%",padding:"12px",background:RED,border:"none",borderRadius:10,fontFamily:FONT,fontWeight:700,fontSize:14,color:"#fff",cursor:"pointer",transition:"opacity .15s"}}
+                onMouseEnter={e=>(e.currentTarget.style.opacity=".88")}
+                onMouseLeave={e=>(e.currentTarget.style.opacity="1")}>
+                Continue Session
+              </button>
+              <button onClick={()=>signOut()}
+                style={{width:"100%",padding:"12px",background:"none",border:"1px solid rgba(17,24,39,.15)",borderRadius:10,fontFamily:FONT,fontWeight:600,fontSize:14,color:GRAY,cursor:"pointer",transition:"all .15s"}}
+                onMouseEnter={e=>{e.currentTarget.style.color=RED;e.currentTarget.style.borderColor="rgba(140,29,37,.3)";}}
+                onMouseLeave={e=>{e.currentTarget.style.color=GRAY;e.currentTarget.style.borderColor="rgba(17,24,39,.15)";}}>
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

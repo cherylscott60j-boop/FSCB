@@ -9,10 +9,12 @@ import DigitalBanking from "@/components/DigitalBanking";
 import Testimonials from "@/components/Testimonials";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import AuthRedirect from "@/components/AuthRedirect";
 
 export default function Home() {
   return (
     <>
+      <AuthRedirect />
       <TopBar />
       <Nav />
       <main>
