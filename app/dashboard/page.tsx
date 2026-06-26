@@ -1287,11 +1287,52 @@ function ProfileTab({profile,accounts,initials}:{
 }
 
 /* ═════════════════════════════════════════════════════
+   HISTORY TAB
+═════════════════════════════════════════════════════ */
+function HistoryTab({txs}:{txs:Tx[]}){
+  const [filter,setFilter]=useState<"all"|"debits"|"credits">("all");
+  const [shown,setShown]=useState(25);
+  const filtered=txs.filter(t=>filter==="all"||(filter==="debits"&&t.amount<0)||(filter==="credits"&&t.amount>0));
+  return(
+    <div>
+      <div style={{marginBottom:20}}>
+        <h2 style={{margin:"0 0 4px",fontFamily:FONT,fontWeight:800,fontSize:20,color:DARK}}>Transaction History</h2>
+        <p style={{margin:0,fontSize:13,color:GRAY}}>{txs.length} total posted transaction{txs.length!==1?"s":""}</p>
+      </div>
+      <div style={{...CARD,overflow:"hidden"}}>
+        <div style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+          {(["all","debits","credits"] as const).map(f=>(
+            <button key={f} onClick={()=>{setFilter(f);setShown(25);}} style={{background:filter===f?"rgba(140,29,37,.08)":"transparent",color:filter===f?RED:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize"}}>
+              {f==="all"?"All":f==="debits"?"Debits":"Credits"}
+            </button>
+          ))}
+          <span style={{marginLeft:"auto",fontSize:12,color:GRAY,alignSelf:"center"}}>{filtered.length} transaction{filtered.length!==1?"s":""}</span>
+        </div>
+        {filtered.length===0
+          ?<div style={{padding:"40px 20px",textAlign:"center",color:GRAY,fontSize:13.5}}>No transactions match this filter.</div>
+          :filtered.slice(0,shown).map(tx=><TxRow key={tx.id} tx={tx}/>)
+        }
+        {filtered.length>shown&&(
+          <div style={{padding:"14px 20px",borderTop:"1px solid rgba(17,24,39,.06)",textAlign:"center"}}>
+            <button onClick={()=>setShown(n=>n+25)} style={{background:"none",border:"1px solid rgba(17,24,39,.12)",borderRadius:8,padding:"8px 22px",fontSize:13,color:MID,cursor:"pointer",fontFamily:"inherit"}}
+              onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor=RED;b.style.color=RED;}}
+              onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor="rgba(17,24,39,.12)";b.style.color=MID;}}>
+              Load more
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ═════════════════════════════════════════════════════
    SIDEBAR
 ═════════════════════════════════════════════════════ */
 const NAV_ITEMS=[
   {id:"Overview",   label:"Overview",   icon:"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"},
   {id:"Accounts",   label:"Accounts",   icon:"M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"},
+  {id:"History",    label:"History",    icon:"M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"},
   {id:"Transfers",  label:"Transfers",  icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
   {id:"Pay Bills",  label:"Pay Bills",  icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Cards",      label:"Cards",      icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"},
@@ -1725,7 +1766,7 @@ export default function DashboardPage(){
                 <div style={{...CARD,overflow:"hidden"}}>
                   <div style={{padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
                     <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
-                    <button onClick={()=>{setTxFilter("all");setTxShown(txs.length||1000);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
+                    <button onClick={()=>setTab("History")} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
                   </div>
                   <div style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
                     {(["all","debits","credits"] as const).map(f=>(
@@ -1805,6 +1846,9 @@ export default function DashboardPage(){
               </div>{/* /db-main */}
             </div>
           )}
+
+          {/* ── History ── */}
+          {tab==="History"&&<HistoryTab txs={txs}/>}
 
           {/* ── Accounts ── */}
           {tab==="Accounts"&&<AccountsTab accounts={accounts} onSetModal={setModal}/>}
