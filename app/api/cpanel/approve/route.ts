@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { logAction } from "@/lib/audit";
 
 const ACCT_TYPE_MAP: Record<string, string> = {
   "free-checking": "checking", "premium-checking": "checking",
@@ -61,5 +62,6 @@ export async function POST(request: Request) {
     });
   }
 
+  logAction({ adminId: user.id, adminEmail: user.email ?? "", action: "application.approve", entityType: "application", entityId: applicationId, details: { accountType: appRow.account_type, userId: appRow.user_id } });
   return NextResponse.json({ success: true });
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { CREDIT } from "@/lib/bankConstants";
+import { logAction } from "@/lib/audit";
 
 async function verifyAdmin() {
   const supabase = await createClient();
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
     const { acctId, nowFrozen } = body;
     const { error } = await admin.from("accounts").update({ status: nowFrozen ? "frozen" : "active" }).eq("id", acctId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: nowFrozen ? "account.freeze" : "account.unfreeze", entityType: "account", entityId: acctId, details: { acctId } });
     return NextResponse.json({ success: true });
   }
 
@@ -31,6 +33,7 @@ export async function POST(request: Request) {
     const { applicationId } = body;
     const { error } = await admin.from("applications").update({ status: "rejected" }).eq("id", applicationId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "application.reject", entityType: "application", entityId: applicationId });
     return NextResponse.json({ success: true });
   }
 
@@ -84,6 +87,7 @@ export async function POST(request: Request) {
       }
     }
 
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "transaction.approve", entityType: "transaction", entityId: txId, details: { accountId, amount, date, pairedTxId } });
     return NextResponse.json({ success: true, pairedTxId });
   }
 
@@ -120,6 +124,7 @@ export async function POST(request: Request) {
       }
     }
 
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "transaction.reject", entityType: "transaction", entityId: txId, details: { pairedTxId } });
     return NextResponse.json({ success: true, pairedTxId });
   }
 
@@ -146,6 +151,7 @@ export async function POST(request: Request) {
       }
       await admin.from("accounts").update(updates).eq("id", accountId);
     }
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "transaction.manual_post", entityType: "transaction", entityId: accountId, details: { amount, merchant, category, date, userId } });
     return NextResponse.json({ success: true });
   }
 
@@ -153,6 +159,7 @@ export async function POST(request: Request) {
     const { userId, kycStatus } = body;
     const { error } = await admin.from("profiles").update({ kyc_status: kycStatus, kyc_updated_at: new Date().toISOString() }).eq("id", userId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "kyc.update", entityType: "kyc", entityId: userId, details: { newStatus: kycStatus } });
     return NextResponse.json({ success: true });
   }
 
@@ -163,7 +170,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid limit amount." }, { status: 400 });
     if (limitNum > CREDIT.maxLimit)
       return NextResponse.json({ error: `Limit cannot exceed ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(CREDIT.maxLimit)}.` }, { status: 400 });
-    const { data: acct } = await admin.from("accounts").select("balance, account_type").eq("id", acctId).single();
+    const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", acctId).single();
     if (!acct || (acct as Record<string,unknown>).account_type !== "credit_card")
       return NextResponse.json({ error: "Account not found or not a credit card." }, { status: 400 });
     const balance = Number((acct as Record<string,number>).balance);
@@ -172,6 +179,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Limit cannot be less than the outstanding balance of ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(outstanding)}.` }, { status: 400 });
     const { error } = await admin.from("accounts").update({ credit_limit: limitNum, available_balance: limitNum + balance }).eq("id", acctId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "account.credit_limit_set", entityType: "account", entityId: acctId, details: { oldLimit: Number((acct as Record<string,number>).credit_limit), newLimit: limitNum } });
     return NextResponse.json({ success: true });
   }
 
@@ -191,6 +199,7 @@ export async function POST(request: Request) {
       status:         "open",
     });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "dispute.open", entityType: "dispute", entityId: refId, details: { disputeType, amount, merchant, userId, accountId } });
     return NextResponse.json({ success: true, refId });
   }
 
@@ -231,6 +240,7 @@ export async function POST(request: Request) {
     }).eq("id", disputeId);
     if (dErr) return NextResponse.json({ error: dErr.message }, { status: 500 });
 
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "dispute.approve", entityType: "dispute", entityId: disputeId, details: { amount, merchant, accountId, creditTxId } });
     return NextResponse.json({ success: true, creditTxId, newBalance: acct ? Number((acct as Record<string,number>).balance) + Math.abs(Number(amount)) : null });
   }
 
@@ -243,6 +253,7 @@ export async function POST(request: Request) {
       resolved_by: admin_user.id,
     }).eq("id", disputeId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "dispute.deny", entityType: "dispute", entityId: disputeId, details: { adminNotes } });
     return NextResponse.json({ success: true });
   }
 
@@ -253,6 +264,7 @@ export async function POST(request: Request) {
       admin_notes: adminNotes || null,
     }).eq("id", disputeId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "dispute.request_info", entityType: "dispute", entityId: disputeId, details: { adminNotes } });
     return NextResponse.json({ success: true });
   }
 
@@ -260,6 +272,7 @@ export async function POST(request: Request) {
     const { disputeId } = body;
     const { error } = await admin.from("disputes").update({ status: "under_review" }).eq("id", disputeId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "dispute.mark_review", entityType: "dispute", entityId: disputeId });
     return NextResponse.json({ success: true });
   }
 
@@ -270,6 +283,7 @@ export async function POST(request: Request) {
       .update({ status: "dismissed", reviewed_at: new Date().toISOString(), reviewed_by: admin_user.id })
       .eq("id", alertId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "fraud.alert_dismiss", entityType: "fraud", entityId: alertId });
     return NextResponse.json({ success: true });
   }
 
@@ -281,6 +295,7 @@ export async function POST(request: Request) {
     ]);
     if (freezeErr) return NextResponse.json({ error: freezeErr.message }, { status: 500 });
     if (alertErr)  return NextResponse.json({ error: alertErr.message  }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "fraud.account_freeze", entityType: "fraud", entityId: alertId, details: { acctId } });
     return NextResponse.json({ success: true });
   }
 

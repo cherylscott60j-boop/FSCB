@@ -65,6 +65,11 @@ type FraudAlert = {
   details:Record<string,unknown>;
   status:string; createdAt:string;
 };
+type AuditLog = {
+  id:string; adminId:string; adminEmail:string;
+  action:string; entityType:string; entityId:string|null;
+  details:Record<string,unknown>; createdAt:string;
+};
 type DisputeRow = {
   id:string; userId:string; accountId:string;
   transactionId:string|null; referenceId:string;
@@ -613,6 +618,130 @@ function NotificationsTab({users}:{users:UserRow[]}){
             <p style={{margin:0,fontSize:12,color:MID,lineHeight:1.5}}>Notifications appear immediately in the user&apos;s dashboard bell. They can dismiss individual alerts or mark all as read.</p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB: AUDIT LOG
+═══════════════════════════════════════════════════════ */
+const ACTION_META:Record<string,{label:string;color:string;bg:string;category:string}>={
+  "account.freeze":           {label:"Account Frozen",    color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Account"},
+  "account.unfreeze":         {label:"Account Unfrozen",  color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Account"},
+  "account.credit_limit_set": {label:"Credit Limit Set",  color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Account"},
+  "transaction.approve":      {label:"Tx Approved",       color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Transaction"},
+  "transaction.reject":       {label:"Tx Rejected",       color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Transaction"},
+  "transaction.manual_post":  {label:"Manual Post",       color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Transaction"},
+  "application.approve":      {label:"App Approved",      color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Application"},
+  "application.reject":       {label:"App Rejected",      color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Application"},
+  "kyc.update":               {label:"KYC Updated",       color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"KYC"},
+  "fraud.alert_dismiss":      {label:"Alert Dismissed",   color:GRAY,      bg:"rgba(107,114,128,.1)", category:"Fraud"},
+  "fraud.account_freeze":     {label:"Fraud Freeze",      color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Fraud"},
+  "dispute.open":             {label:"Dispute Opened",    color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Dispute"},
+  "dispute.approve":          {label:"Dispute Approved",  color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Dispute"},
+  "dispute.deny":             {label:"Dispute Denied",    color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Dispute"},
+  "dispute.request_info":     {label:"Info Requested",    color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Dispute"},
+  "dispute.mark_review":      {label:"Under Review",      color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Dispute"},
+};
+
+const AUDIT_CATEGORIES=["All","Account","Transaction","Application","KYC","Fraud","Dispute"] as const;
+
+function AuditTab({logs}:{logs:AuditLog[]}){
+  const [search,  setSearch]  = useState("");
+  const [cat,     setCat]     = useState<typeof AUDIT_CATEGORIES[number]>("All");
+  const [expanded,setExpanded]= useState<string|null>(null);
+
+  const filtered = logs.filter(l=>{
+    const meta = ACTION_META[l.action];
+    const matchCat = cat==="All" || meta?.category===cat;
+    const q = search.toLowerCase();
+    const matchQ = !q || l.adminEmail.toLowerCase().includes(q) || l.action.includes(q) || (l.entityId||"").toLowerCase().includes(q) || JSON.stringify(l.details).toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
+  function detailSummary(log:AuditLog):string{
+    const d=log.details;
+    if(!d||Object.keys(d).length===0) return "";
+    const pairs=Object.entries(d).filter(([,v])=>v!==null&&v!==undefined&&v!=="").slice(0,4);
+    return pairs.map(([k,v])=>`${k}: ${typeof v==="object"?JSON.stringify(v):String(v)}`).join(" · ");
+  }
+
+  return(
+    <div>
+      <SectionHead title="Audit Log" sub={`${logs.length} actions recorded — every admin action is logged automatically`}/>
+
+      {/* Controls */}
+      <div style={{display:"flex",gap:10,marginBottom:16,flexWrap:"wrap",alignItems:"center"}}>
+        <div style={{position:"relative",flex:1,minWidth:220}}>
+          <svg style={{position:"absolute",left:11,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2"><path d="M21 21l-6-6M11 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>
+          <input type="text" placeholder="Search by admin, action, entity ID…" value={search} onChange={e=>setSearch(e.target.value)} style={{...INP,paddingLeft:34}}/>
+        </div>
+        <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+          {AUDIT_CATEGORIES.map(c=>(
+            <button key={c} onClick={()=>setCat(c)} style={{background:cat===c?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:cat===c?RED:GRAY,border:`1px solid ${cat===c?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 12px",fontSize:12.5,fontWeight:cat===c?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{fontSize:12,color:GRAY,marginBottom:12}}>{filtered.length} record{filtered.length!==1?"s":""} {cat!=="All"?`in ${cat}`:"total"}</div>
+
+      {/* Log table */}
+      <div style={{...CARD,overflow:"hidden"}}>
+        {filtered.length===0
+          ?<Empty msg="No audit log entries yet. Actions will appear here once you start using the panel."/>
+          :filtered.map((log,i)=>{
+            const meta=ACTION_META[log.action]??{label:log.action,color:GRAY,bg:"rgba(107,114,128,.1)",category:"Other"};
+            const isOpen=expanded===log.id;
+            const summary=detailSummary(log);
+            return(
+              <div key={log.id} style={{borderBottom:i<filtered.length-1?"1px solid rgba(17,24,39,.05)":"none"}}>
+                <button onClick={()=>setExpanded(isOpen?null:log.id)} style={{width:"100%",display:"grid",gridTemplateColumns:"140px 1fr auto auto",alignItems:"center",gap:14,padding:"12px 20px",background:isOpen?"rgba(17,24,39,.02)":"transparent",border:"none",cursor:"pointer",fontFamily:"inherit",textAlign:"left",transition:"background .12s"}}>
+                  {/* Timestamp */}
+                  <div>
+                    <div style={{fontSize:12,fontWeight:600,color:DARK}}>{new Date(log.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                    <div style={{fontSize:11,color:GRAY}}>{new Date(log.createdAt).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})}</div>
+                  </div>
+                  {/* Action + detail */}
+                  <div style={{minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
+                      <span style={{fontSize:11.5,fontWeight:700,padding:"2px 8px",borderRadius:99,background:meta.bg,color:meta.color,letterSpacing:".04em",flexShrink:0}}>{meta.label}</span>
+                      <span style={{fontSize:12,color:GRAY,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{log.adminEmail}</span>
+                    </div>
+                    {summary&&<div style={{fontSize:11.5,color:GRAY,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{summary}</div>}
+                  </div>
+                  {/* Entity ID */}
+                  {log.entityId&&<span style={{fontSize:11,color:GRAY,fontFamily:"monospace",letterSpacing:".04em",flexShrink:0,display:"none"}} className="audit-entity">{log.entityId.slice(0,8)}…</span>}
+                  {/* Chevron */}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2" style={{transform:isOpen?"rotate(90deg)":"none",transition:"transform .2s",flexShrink:0}}><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+
+                {/* Expanded detail */}
+                {isOpen&&(
+                  <div style={{background:"rgba(238,240,244,.5)",padding:"12px 20px",borderTop:"1px solid rgba(17,24,39,.05)"}}>
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:10}}>
+                      {[
+                        ["Action",    log.action],
+                        ["Admin",     log.adminEmail],
+                        ["Entity",    log.entityType],
+                        ["Entity ID", log.entityId||"—"],
+                        ["Timestamp", new Date(log.createdAt).toLocaleString()],
+                        ...Object.entries(log.details).map(([k,v])=>[k, typeof v==="object"?JSON.stringify(v):String(v)]),
+                      ].map(([k,v])=>(
+                        <div key={k} style={{...CARD,padding:"8px 12px"}}>
+                          <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".08em",color:GRAY,textTransform:"uppercase",marginBottom:3}}>{k}</div>
+                          <div style={{fontSize:12.5,color:DARK,fontFamily:["Entity ID","Admin ID","Timestamp"].includes(k as string)?"monospace":"inherit",wordBreak:"break-all"}}>{String(v)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        }
       </div>
     </div>
   );
@@ -1291,6 +1420,7 @@ const CP_NAV=[
   {id:"KYC",           label:"KYC",            icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"},
   {id:"Fraud",         label:"Fraud & Risk",   icon:"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"},
   {id:"Statements",    label:"Statements",     icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"},
+  {id:"Audit",         label:"Audit Log",      icon:"M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2M12 12h.01M12 16h.01"},
   {id:"Disputes",      label:"Disputes",       icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
@@ -1615,6 +1745,7 @@ export default function CpanelPage(){
   const [apps,        setApps]        = useState<AppRow[]>([]);
   const [fraudAlerts, setFraudAlerts] = useState<FraudAlert[]>([]);
   const [disputes,    setDisputes]    = useState<DisputeRow[]>([]);
+  const [auditLogs,   setAuditLogs]   = useState<AuditLog[]>([]);
 
   const load = useCallback(async()=>{
     const sb=createClient();
@@ -1639,6 +1770,7 @@ export default function CpanelPage(){
     const applications        = json.applications        ?? [];
     const fraudAlertsRaw      = (json.fraudAlerts        ?? []) as Record<string,unknown>[];
     const disputesRaw         = (json.disputes           ?? []) as Record<string,unknown>[];
+    const auditLogsRaw        = (json.auditLogs          ?? []) as Record<string,unknown>[];
 
     /* Map users + aggregate balances */
     const acctList=(accts??[]) as Record<string,unknown>[];
@@ -1758,7 +1890,19 @@ export default function CpanelPage(){
     setPendingTxs(mappedPending);
     setApps(mappedApps);
     setFraudAlerts(mappedFraud);
+    const mappedAudit:AuditLog[]=auditLogsRaw.map(l=>({
+      id:String(l.id),
+      adminId:String(l.admin_id||""),
+      adminEmail:String(l.admin_email||""),
+      action:String(l.action||""),
+      entityType:String(l.entity_type||""),
+      entityId:l.entity_id?String(l.entity_id):null,
+      details:(l.details as Record<string,unknown>)??{},
+      createdAt:String(l.created_at||""),
+    }));
+
     setDisputes(mappedDisputes);
+    setAuditLogs(mappedAudit);
     setLoading(false);
 
     fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"syncCreditAvailableBalances"})});
@@ -1947,6 +2091,7 @@ export default function CpanelPage(){
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
+          {tab==="Audit"         && <AuditTab logs={auditLogs}/>}
           {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
           {tab==="Disputes"      && <DisputesTab disputes={disputes} users={users} accounts={accounts} txs={txs} onOpen={handleOpenDispute} onApprove={handleApproveDispute} onDeny={handleDenyDispute} onRequestInfo={handleRequestDisputeInfo} onReview={handleReviewDispute}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}

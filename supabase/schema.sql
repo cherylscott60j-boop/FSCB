@@ -422,7 +422,30 @@ CREATE TRIGGER trg_disputes_updated_at
 
 
 -- ============================================================
--- 11. BUDGETS
+-- 11. AUDIT LOGS
+--    Immutable record of every admin action. No RLS needed —
+--    only the service role writes/reads this table.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_id    UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  admin_email TEXT NOT NULL,
+  action      TEXT NOT NULL,      -- e.g. 'account.freeze', 'dispute.approve'
+  entity_type TEXT NOT NULL,      -- 'account' | 'transaction' | 'application' | 'dispute' | 'fraud' | 'kyc'
+  entity_id   TEXT,
+  details     JSONB NOT NULL DEFAULT '{}',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX IF NOT EXISTS idx_audit_logs_admin_id   ON audit_logs(admin_id);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_action     ON audit_logs(action);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
+
+
+-- ============================================================
+-- 12. BUDGETS
 --    Monthly spending cap per category, set by the user.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS budgets (

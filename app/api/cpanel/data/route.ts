@@ -23,6 +23,7 @@ export async function GET() {
     { data: applications },
     { data: fraudAlerts },
     { data: disputes },
+    { data: auditLogs },
   ] = await Promise.all([
     admin.from("profiles").select("id,email,first_name,last_name,phone,member_since,role,kyc_status"),
     admin.from("accounts").select("id,user_id,account_type,account_name,account_number_last4,balance,status,credit_limit"),
@@ -31,7 +32,8 @@ export async function GET() {
     admin.from("applications").select("*").order("submitted_at", { ascending: false }),
     admin.from("fraud_alerts").select("id,account_id,user_id,transaction_id,rule,severity,details,status,created_at").order("created_at", { ascending: false }).limit(300),
     admin.from("disputes").select("id,user_id,account_id,transaction_id,reference_id,dispute_type,amount,merchant,description,status,admin_notes,credit_tx_id,opened_at,resolved_at,created_at").order("opened_at", { ascending: false }).limit(300),
+    admin.from("audit_logs").select("id,admin_id,admin_email,action,entity_type,entity_id,details,created_at").order("created_at", { ascending: false }).limit(200),
   ]);
 
-  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications, fraudAlerts: fraudAlerts ?? [], disputes: disputes ?? [] });
+  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications, fraudAlerts: fraudAlerts ?? [], disputes: disputes ?? [], auditLogs: auditLogs ?? [] });
 }
