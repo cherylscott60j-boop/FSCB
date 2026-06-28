@@ -1421,6 +1421,7 @@ const CP_NAV=[
   {id:"Fraud",         label:"Fraud & Risk",   icon:"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"},
   {id:"Statements",    label:"Statements",     icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"},
   {id:"Audit",         label:"Audit Log",      icon:"M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2M12 12h.01M12 16h.01"},
+  {id:"Reports",       label:"Reports",        icon:"M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v14a2 2 0 0 0-2 2h-2a2 2 0 0 0-2-2z"},
   {id:"Disputes",      label:"Disputes",       icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
@@ -1663,6 +1664,240 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB: REPORTS & ANALYTICS
+═══════════════════════════════════════════════════════ */
+function HBar({items,fmt}:{items:{label:string;value:number;color:string}[];fmt:(n:number)=>string}){
+  const max=Math.max(...items.map(i=>Math.abs(i.value)),1);
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:10}}>
+      {items.map(item=>{
+        const pct=Math.round((Math.abs(item.value)/max)*100);
+        return(
+          <div key={item.label}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
+              <span style={{fontSize:12.5,color:MID,fontWeight:500}}>{item.label}</span>
+              <span style={{fontSize:12.5,fontWeight:700,color:DARK}}>{fmt(item.value)}</span>
+            </div>
+            <div style={{height:7,borderRadius:99,background:"rgba(17,24,39,.07)",overflow:"hidden"}}>
+              <div style={{width:`${pct}%`,height:"100%",borderRadius:99,background:item.color,transition:"width .5s ease"}}/>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRow[];accounts:AcctRow[];txs:TxRow[];apps:AppRow[];disputes:DisputeRow[];fraudAlerts:FraudAlert[]}){
+  const depositAccts     = accounts.filter(a=>a.accountType!=="credit_card");
+  const creditAccts      = accounts.filter(a=>a.accountType==="credit_card");
+  const totalDeposits    = depositAccts.reduce((s,a)=>s+Math.max(a.balance,0),0);
+  const totalOwed        = creditAccts.reduce((s,a)=>s+Math.abs(Math.min(a.balance,0)),0);
+  const customerUsers    = users.filter(u=>u.role!=="admin");
+  const openDisputes     = disputes.filter(d=>["open","under_review","more_info_needed"].includes(d.status));
+  const openDisputeValue = openDisputes.reduce((s,d)=>s+d.amount,0);
+  const openFraud        = fraudAlerts.filter(a=>a.status==="open").length;
+
+  const TYPE_LABELS:Record<string,string>={
+    checking:"Checking",savings:"Savings",credit_card:"Credit Card",
+    money_market:"Money Market",cd:"CD",business_checking:"Business Checking",business_savings:"Business Savings",
+  };
+  const TYPE_COLORS:Record<string,string>={
+    checking:"#2563EB",savings:"#16A34A",credit_card:RED,
+    money_market:"#7C3AED",cd:"#D97706",business_checking:"#0891B2",business_savings:"#059669",
+  };
+
+  const acctByType=accounts.reduce((m,a)=>{
+    const k=a.accountType||"other";
+    if(!m[k]) m[k]={count:0,balance:0};
+    m[k].count++;
+    m[k].balance+=a.accountType==="credit_card"?0:Math.max(a.balance,0);
+    return m;
+  },{} as Record<string,{count:number;balance:number}>);
+
+  const acctTypeItems=Object.entries(acctByType)
+    .sort((a,b)=>b[1].balance-a[1].balance)
+    .map(([type,{count,balance}])=>({
+      label:`${TYPE_LABELS[type]||type} (${count})`,
+      value:balance,
+      color:TYPE_COLORS[type]||GRAY,
+    }));
+
+  const catMap=txs.reduce((m,t)=>{
+    const cat=t.category||"Other";
+    if(!m[cat]) m[cat]=0;
+    m[cat]+=Math.abs(t.amount);
+    return m;
+  },{} as Record<string,number>);
+
+  const catItems=Object.entries(catMap)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,8)
+    .map(([label,value])=>({label,value,color:"#2563EB"}));
+
+  const kycCounts={
+    verified:users.filter(u=>u.kycStatus==="verified").length,
+    pending: users.filter(u=>u.kycStatus==="pending").length,
+    rejected:users.filter(u=>u.kycStatus==="rejected").length,
+  };
+  const appCounts={
+    approved:apps.filter(a=>a.status==="approved").length,
+    pending: apps.filter(a=>a.status==="pending").length,
+    rejected:apps.filter(a=>a.status==="rejected").length,
+  };
+  const disputeByType=disputes.reduce((m,d)=>{
+    const k=DISPUTE_TYPES.find(t=>t.v===d.disputeType)?.l||d.disputeType;
+    if(!m[k]) m[k]=0; m[k]+=d.amount; return m;
+  },{} as Record<string,number>);
+
+  const fraudByRule=fraudAlerts.reduce((m,a)=>{
+    const k=RULE_META[a.rule]?.label||a.rule;
+    if(!m[k]) m[k]=0; m[k]++; return m;
+  },{} as Record<string,number>);
+
+  function downloadCSV(filename:string, rows:string[][]){
+    const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+    const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportAccounts(){ downloadCSV(`fscb-accounts-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Name","Type","Last4","Balance","Status","User ID","Credit Limit"],...accounts.map(a=>[a.id,a.accountName,a.accountType,a.last4,String(a.balance),a.status,a.userId,String(a.creditLimit||"")])]); }
+  function exportUsers(){    downloadCSV(`fscb-users-${new Date().toISOString().slice(0,10)}.csv`,[["ID","First","Last","Email","Phone","Since","KYC","Role","Accts","Balance"],...users.map(u=>[u.id,u.firstName,u.lastName,u.email,u.phone,u.memberSince,u.kycStatus,u.role,String(u.accountCount),String(u.totalBalance)])]); }
+  function exportTxs(){      downloadCSV(`fscb-transactions-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Merchant","Category","Amount","Date","User ID","Account ID"],...txs.map(t=>[t.id,t.merchant,t.category,String(t.amount),t.date,t.userId,t.accountId])]); }
+  function exportDisputes(){ downloadCSV(`fscb-disputes-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Reference","Type","Amount","Merchant","Status","Description","Opened","Resolved"],...disputes.map(d=>[d.id,d.referenceId,d.disputeType,String(d.amount),d.merchant,d.status,d.description,d.openedAt,d.resolvedAt||""])]); }
+
+  const EXPORTS=[
+    {label:"Export Accounts",     desc:`${accounts.length} accounts`,       fn:exportAccounts, color:"#2563EB", icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"},
+    {label:"Export Customers",    desc:`${customerUsers.length} customers`,  fn:exportUsers,    color:"#7C3AED", icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"},
+    {label:"Export Transactions", desc:`${txs.length} recent posted`,        fn:exportTxs,      color:"#059669", icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
+    {label:"Export Disputes",     desc:`${disputes.length} cases`,           fn:exportDisputes, color:"#D97706", icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
+  ] as const;
+
+  return(
+    <div>
+      <SectionHead title="Reports & Analytics" sub="Live data computed from the loaded snapshot — use CSV exports for full datasets"/>
+
+      {/* Top stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(165px,1fr))",gap:14,marginBottom:24}}>
+        <StatCard label="Total Deposits"     value={usd(totalDeposits)}     sub={`${depositAccts.length} deposit accounts`}     color="#059669" icon="M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"/>
+        <StatCard label="Credit Outstanding" value={usd(totalOwed)}         sub={`${creditAccts.length} credit accounts`}       color={RED}     icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
+        <StatCard label="Active Customers"   value={String(customerUsers.length)} sub={`${users.length} total registered`}    color="#2563EB" icon="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+        <StatCard label="Disputes at Risk"   value={usd(openDisputeValue)}  sub={`${openDisputes.length} open cases`}           color="#D97706" icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/>
+        <StatCard label="Open Fraud Alerts"  value={String(openFraud)}      sub="requiring action"                              color={openFraud>0?"#DC2626":GRAY} icon="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
+        <StatCard label="Pending Apps"       value={String(appCounts.pending)} sub={`${apps.length} total submitted`}          color={appCounts.pending>0?"#D97706":GRAY} icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
+      </div>
+
+      {/* Main charts row */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:20}}>
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Balance by Account Type</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:2}}>Deposit balance under management, by product</div>
+          </div>
+          <div style={{padding:"20px"}}>
+            {acctTypeItems.length===0
+              ?<Empty msg="No accounts yet."/>
+              :<HBar items={acctTypeItems} fmt={usd}/>
+            }
+          </div>
+        </div>
+
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Top Transaction Categories</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:2}}>Volume from last 50 posted transactions</div>
+          </div>
+          <div style={{padding:"20px"}}>
+            {catItems.length===0
+              ?<Empty msg="No transactions yet."/>
+              :<HBar items={catItems} fmt={usd}/>
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* Small metric cards */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20,marginBottom:20}}>
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK}}>KYC Verification Status</div>
+          </div>
+          <div style={{padding:"16px 18px"}}>
+            <HBar items={[
+              {label:`Verified (${kycCounts.verified})`,  value:kycCounts.verified,  color:"#16A34A"},
+              {label:`Pending (${kycCounts.pending})`,    value:kycCounts.pending,   color:"#D97706"},
+              {label:`Rejected (${kycCounts.rejected})`,  value:kycCounts.rejected,  color:"#DC2626"},
+            ]} fmt={n=>String(n)}/>
+          </div>
+        </div>
+
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK}}>Application Outcomes</div>
+          </div>
+          <div style={{padding:"16px 18px"}}>
+            <HBar items={[
+              {label:`Approved (${appCounts.approved})`, value:appCounts.approved, color:"#16A34A"},
+              {label:`Pending (${appCounts.pending})`,   value:appCounts.pending,  color:"#D97706"},
+              {label:`Rejected (${appCounts.rejected})`, value:appCounts.rejected, color:"#DC2626"},
+            ]} fmt={n=>String(n)}/>
+          </div>
+        </div>
+
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK}}>Fraud Alerts by Rule</div>
+          </div>
+          <div style={{padding:"16px 18px"}}>
+            {Object.keys(fraudByRule).length===0
+              ?<Empty msg="No fraud alerts yet."/>
+              :<HBar items={Object.entries(fraudByRule).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value,color:RED}))} fmt={n=>String(n)}/>
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* Disputes breakdown */}
+      {Object.keys(disputeByType).length>0&&(
+        <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Dispute Volume by Type</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:2}}>Total disputed amount across all cases, grouped by dispute category</div>
+          </div>
+          <div style={{padding:"20px"}}>
+            <HBar items={Object.entries(disputeByType).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value,color:"#2563EB"}))} fmt={usd}/>
+          </div>
+        </div>
+      )}
+
+      {/* CSV Exports */}
+      <div style={{...CARD,overflow:"hidden"}}>
+        <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Data Exports</div>
+          <div style={{fontSize:12,color:GRAY,marginTop:2}}>Download CSV files — all data currently loaded in this session</div>
+        </div>
+        <div style={{padding:"20px",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12}}>
+          {EXPORTS.map(item=>(
+            <button key={item.label} onClick={item.fn} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",background:`${item.color}08`,border:`1px solid ${item.color}25`,borderRadius:10,cursor:"pointer",fontFamily:"inherit",textAlign:"left",transition:"all .15s",width:"100%"}}>
+              <div style={{width:38,height:38,borderRadius:9,background:`${item.color}15`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:item.color}}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={item.icon}/></svg>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13.5,fontWeight:700,color:DARK,marginBottom:2}}>{item.label}</div>
+                <div style={{fontSize:12,color:GRAY}}>{item.desc}</div>
+              </div>
+              <svg style={{flexShrink:0}} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={item.color} strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -2092,6 +2327,7 @@ export default function CpanelPage(){
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
           {tab==="Audit"         && <AuditTab logs={auditLogs}/>}
+          {tab==="Reports"       && <ReportsTab users={users} accounts={accounts} txs={txs} apps={apps} disputes={disputes} fraudAlerts={fraudAlerts}/>}
           {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
           {tab==="Disputes"      && <DisputesTab disputes={disputes} users={users} accounts={accounts} txs={txs} onOpen={handleOpenDispute} onApprove={handleApproveDispute} onDeny={handleDenyDispute} onRequestInfo={handleRequestDisputeInfo} onReview={handleReviewDispute}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}
