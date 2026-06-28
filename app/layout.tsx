@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   description:
     "Decades of community trust. Banking built for your family, your business, and your future.",
   icons: {
-    icon: "/fscb-horizontal-logo.webp",
-    apple: "/fscb-horizontal-logo.webp",
+    icon: "/pngfavicon.svg",
+    apple: "/pngfavicon.svg",
   },
 };
 

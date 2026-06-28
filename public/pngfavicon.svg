@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A52030"/>
+      <stop offset="1" stop-color="#5A1018"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E2B93B"/>
+      <stop offset="1" stop-color="#C49530"/>
+    </linearGradient>
+    <linearGradient id="goldflat" x1="0" y1="0" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C547"/>
+      <stop offset="0.5" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#BF9B2A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="13" fill="url(#bg)"/>
+
+  <!-- Subtle inner vignette -->
+  <rect width="64" height="64" rx="13" fill="url(#bg)" opacity="0.3"/>
+
+  <!-- Pediment (triangular roof) -->
+  <path d="M5 23L32 5L59 23Z" fill="url(#goldflat)"/>
+  <!-- Pediment inner highlight -->
+  <path d="M15 23L32 11L49 23Z" fill="rgba(255,255,255,0.12)"/>
+
+  <!-- Entablature (horizontal band above columns) -->
+  <rect x="7" y="21" width="50" height="6" rx="1" fill="url(#gold)"/>
+
+  <!-- Four classical columns -->
+  <rect x="14" y="27" width="6" height="19" rx="1.5" fill="rgba(255,255,255,0.95)"/>
+  <rect x="24" y="27" width="6" height="19" rx="1.5" fill="rgba(255,255,255,0.95)"/>
+  <rect x="34" y="27" width="6" height="19" rx="1.5" fill="rgba(255,255,255,0.95)"/>
+  <rect x="44" y="27" width="6" height="19" rx="1.5" fill="rgba(255,255,255,0.95)"/>
+
+  <!-- Column capitals (top caps) -->
+  <rect x="12" y="26" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.6)"/>
+  <rect x="22" y="26" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.6)"/>
+  <rect x="32" y="26" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.6)"/>
+  <rect x="42" y="26" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.6)"/>
+
+  <!-- Column bases (bottom caps) -->
+  <rect x="12" y="44" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+  <rect x="22" y="44" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+  <rect x="32" y="44" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+  <rect x="42" y="44" width="10" height="2" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+
+  <!-- Stylobate step 1 -->
+  <rect x="8" y="46" width="48" height="5" rx="1" fill="url(#goldflat)" opacity="0.8"/>
+  <!-- Stylobate step 2 (base) -->
+  <rect x="4" y="51" width="56" height="6" rx="2" fill="url(#goldflat)"/>
+</svg>
