@@ -194,21 +194,59 @@ const BOT_NAV=[
   {label:"Accounts", icon:"M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7",          tab:"Accounts"},
   {label:"Transfer", icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4",           tab:"Transfers"},
   {label:"Cards",    icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z", tab:"Cards"},
-  {label:"More",     icon:"M4 6h16M4 12h16M4 18h16",                                       tab:"Statements"},
+  {label:"More",     icon:"M4 6h16M4 12h16M4 18h16",                                       tab:"__more__"},
 ];
-function BottomNav({active,set}:{active:string;set:(t:string)=>void}){
+const MORE_TABS = new Set(["History","Pay Bills","Statements","Profile"]);
+const MORE_ITEMS=[
+  {id:"History",    label:"History",    icon:"M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"},
+  {id:"Pay Bills",  label:"Pay Bills",  icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
+  {id:"Statements", label:"Statements", icon:"M21 8v13H3V8M23 3H1v5h22V3zM10 12h4"},
+  {id:"Profile",    label:"Profile",    icon:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"},
+];
+function BottomNav({active,set,onMore}:{active:string;set:(t:string)=>void;onMore:()=>void}){
   return(
     <nav className="db-bottom-nav">
       {BOT_NAV.map(t=>{
-        const on=active===t.tab;
+        const isMore=t.tab==="__more__";
+        const on=isMore?MORE_TABS.has(active):active===t.tab;
         return(
-          <button key={t.label} onClick={()=>set(t.tab)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",padding:"6px 10px",color:on?RED:GRAY,fontFamily:"inherit",flex:1,transition:"color .15s"}}>
+          <button key={t.label} onClick={()=>isMore?onMore():set(t.tab)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",padding:"6px 10px",color:on?RED:GRAY,fontFamily:"inherit",flex:1,transition:"color .15s"}}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.5:1.8}><path d={t.icon}/></svg>
             <span style={{fontSize:10,fontWeight:on?700:500}}>{t.label}</span>
           </button>
         );
       })}
     </nav>
+  );
+}
+function MoreSheet({open,onClose,onSelect,onSignOut}:{open:boolean;onClose:()=>void;onSelect:(t:string)=>void;onSignOut:()=>void}){
+  if(!open)return null;
+  return(
+    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:300,background:"rgba(0,0,0,.45)"}}>
+      <div onClick={e=>e.stopPropagation()} className="more-sheet-panel" style={{
+        position:"absolute",bottom:0,left:0,right:0,
+        background:"#fff",borderRadius:"20px 20px 0 0",
+        paddingBottom:"calc(16px + env(safe-area-inset-bottom))",
+        boxShadow:"0 -4px 32px rgba(17,24,39,.15)"
+      }}>
+        <div style={{width:36,height:4,background:"rgba(17,24,39,.12)",borderRadius:2,margin:"12px auto 14px"}}/>
+        <div style={{padding:"0 20px 10px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+          <span style={{fontSize:11,letterSpacing:".08em",textTransform:"uppercase",color:GRAY,fontWeight:600}}>More</span>
+        </div>
+        {MORE_ITEMS.map(item=>(
+          <button key={item.id} onClick={()=>{onSelect(item.id);onClose();}} style={{display:"flex",alignItems:"center",gap:14,width:"100%",background:"none",border:"none",padding:"14px 24px",cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="1.8"><path d={item.icon}/></svg>
+            <span style={{fontSize:15,color:DARK,fontWeight:500}}>{item.label}</span>
+          </button>
+        ))}
+        <div style={{margin:"4px 16px 0",borderTop:"1px solid rgba(17,24,39,.07)",paddingTop:4}}>
+          <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:14,width:"100%",background:"none",border:"none",padding:"14px 8px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",color:RED}}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            <span style={{fontSize:15,fontWeight:500}}>Sign out</span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1419,6 +1457,7 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
 export default function DashboardPage(){
   const [tab,setTab]           = useState("Overview");
   const [sidebarOpen,setSidebarOpen] = useState(false);
+  const [moreOpen,setMoreOpen] = useState(false);
   const [txFilter,setTxFilter] = useState<"all"|"debits"|"credits">("all");
   const [loading,setLoading]   = useState(true);
   const [modal,setModal]       = useState<ModalKey|null>(null);
@@ -1581,7 +1620,7 @@ export default function DashboardPage(){
   }
 
   return(
-    <div onClick={()=>{setBellOpen(false);setSidebarOpen(false);}} className="db-shell" style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
+    <div onClick={()=>{setBellOpen(false);setSidebarOpen(false);setMoreOpen(false);}} className="db-shell" style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
 
       {/* ═══ HEADER ═══════════════════════════════════════════ */}
       <header className="db-header" style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)",boxShadow:"0 1px 4px rgba(17,24,39,.06)"}}>
@@ -1873,7 +1912,8 @@ export default function DashboardPage(){
         </main>
       </div>{/* /db-layout */}</div>{/* /db-body */}
 
-      <BottomNav active={tab} set={setTabAndClose}/>
+      <BottomNav active={tab} set={setTabAndClose} onMore={()=>setMoreOpen(true)}/>
+      <MoreSheet open={moreOpen} onClose={()=>setMoreOpen(false)} onSelect={t=>{setTab(t);setMoreOpen(false);setSidebarOpen(false);}} onSignOut={signOut}/>
 
       {/* ═══ MODALS ═══════════════════════════════════════════ */}
       {modal==="transfer" && <TransferModal     onClose={()=>setModal(null)} accounts={accounts} userId={userId}/>}
