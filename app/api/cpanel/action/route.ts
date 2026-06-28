@@ -443,5 +443,81 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  if (action === "manualInternalTransfer") {
+    const { userId, fromAccountId, toAccountId, amount, date, memo } = body;
+    const parsedAmt = Math.abs(Number(amount));
+    if (!Number.isFinite(parsedAmt) || parsedAmt <= 0)
+      return NextResponse.json({ error: "Invalid amount." }, { status: 400 });
+    if (fromAccountId === toAccountId)
+      return NextResponse.json({ error: "From and To accounts must be different." }, { status: 400 });
+
+    const { data: acctNames } = await admin.from("accounts").select("id, account_name").in("id", [fromAccountId, toAccountId]);
+    const nameMap = Object.fromEntries(((acctNames as Array<{id:string;account_name:string}>)||[]).map(a=>[a.id,a.account_name]));
+    const fromName = nameMap[fromAccountId] || "Account";
+    const toName   = nameMap[toAccountId]   || "Account";
+
+    const now = new Date().toISOString();
+    const { error: txErr } = await admin.from("transactions").insert([
+      { account_id:fromAccountId, user_id:userId, merchant:`Transfer → ${toName}`,   category:"Transfer", amount:-parsedAmt, transaction_type:"transfer", status:"posted", posted_at:date, submitted_at:now, memo:memo||null },
+      { account_id:toAccountId,   user_id:userId, merchant:`Transfer ← ${fromName}`, category:"Transfer", amount:+parsedAmt, transaction_type:"transfer", status:"posted", posted_at:date, submitted_at:now, memo:memo||null },
+    ]);
+    if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
+
+    const [{ data: fromAcct }, { data: toAcct }] = await Promise.all([
+      admin.from("accounts").select("balance, account_type, credit_limit").eq("id", fromAccountId).single(),
+      admin.from("accounts").select("balance, account_type, credit_limit").eq("id", toAccountId).single(),
+    ]);
+    if (fromAcct) {
+      const a = fromAcct as Record<string,unknown>;
+      const nb = Number(a.balance) - parsedAmt;
+      const upd: Record<string,unknown> = { balance: nb };
+      if (a.account_type === "credit_card") upd.available_balance = Number(a.credit_limit) + nb;
+      await admin.from("accounts").update(upd).eq("id", fromAccountId);
+    }
+    if (toAcct) {
+      const a = toAcct as Record<string,unknown>;
+      const nb = Number(a.balance) + parsedAmt;
+      const upd: Record<string,unknown> = { balance: nb };
+      if (a.account_type === "credit_card") upd.available_balance = Number(a.credit_limit) + nb;
+      await admin.from("accounts").update(upd).eq("id", toAccountId);
+    }
+
+    logAction({ adminId:admin_user.id, adminEmail:admin_user.email??"", action:"transaction.manual_internal_transfer", entityType:"transaction", entityId:fromAccountId, details:{ fromAccountId, toAccountId, amount:parsedAmt, date, userId } });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "manualExternalTransfer") {
+    const { userId, accountId, amount, date, bankName, routingNumber, accountNumber, accountType, holderName, note } = body;
+    const parsedAmt = Math.abs(Number(amount));
+    if (!Number.isFinite(parsedAmt) || parsedAmt <= 0)
+      return NextResponse.json({ error: "Invalid amount." }, { status: 400 });
+
+    const memoPayload = JSON.stringify({
+      type:"external_transfer", extAccountId:null,
+      bankName: bankName||"External Bank", routingNumber, accountNumber,
+      accountType: accountType||"checking", holderName, note:note||null,
+    });
+    const { error: txErr } = await admin.from("transactions").insert({
+      account_id:accountId, user_id:userId,
+      merchant:`External Transfer → ${bankName||"External Bank"}`,
+      category:"Transfer", amount:-parsedAmt, transaction_type:"transfer",
+      status:"posted", posted_at:date, submitted_at:new Date().toISOString(),
+      memo:memoPayload,
+    });
+    if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
+
+    const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", accountId).single();
+    if (acct) {
+      const a = acct as Record<string,unknown>;
+      const nb = Number(a.balance) - parsedAmt;
+      const upd: Record<string,unknown> = { balance: nb };
+      if (a.account_type === "credit_card") upd.available_balance = Number(a.credit_limit) + nb;
+      await admin.from("accounts").update(upd).eq("id", accountId);
+    }
+
+    logAction({ adminId:admin_user.id, adminEmail:admin_user.email??"", action:"transaction.manual_external_transfer", entityType:"transaction", entityId:accountId, details:{ accountId, amount:parsedAmt, date, bankName, holderName, userId } });
+    return NextResponse.json({ success: true });
+  }
+
   return NextResponse.json({ error: "Unknown action" }, { status: 400 });
 }

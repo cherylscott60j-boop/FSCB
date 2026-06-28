@@ -1514,12 +1514,14 @@ const CP_NAV=[
 ═══════════════════════════════════════════════════════ */
 function TransactionsTab({
   users,accounts,pendingTxs,
-  onApprove,onReject,onManual,
+  onApprove,onReject,onManual,onInternalTransfer,onExternalTransfer,
 }:{
   users:UserRow[];accounts:AcctRow[];pendingTxs:PendingTx[];
   onApprove:(tx:PendingTx,date:string)=>Promise<void>;
   onReject:(txId:string)=>Promise<void>;
   onManual:(d:{accountId:string;userId:string;amount:number;merchant:string;category:string;date:string})=>Promise<string|null>;
+  onInternalTransfer:(d:{userId:string;fromAccountId:string;toAccountId:string;amount:number;date:string;memo:string})=>Promise<string|null>;
+  onExternalTransfer:(d:{userId:string;accountId:string;amount:number;date:string;bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string})=>Promise<string|null>;
 }){
   const [dates,setDates]=useState<Record<string,string>>({});
   const [busy,setBusy]=useState<string|null>(null);
@@ -1531,6 +1533,37 @@ function TransactionsTab({
   const [manErr,setManErr]=useState(""); const [manDone,setManDone]=useState(false); const [manBusy,setManBusy]=useState(false);
   const userAccts=accounts.filter(a=>a.userId===selUser);
   const CATS=["Income","Transfer","Groceries","Dining","Shopping","Auto & Gas","Entertainment","Housing","Bill Payment","Deposit","Withdrawal","Fee","Other"];
+
+  /* ── Post Transfer state ── */
+  const [trMode,setTrMode]=useState<"internal"|"external">("internal");
+  const [trUser,setTrUser]=useState(users[0]?.id||"");
+  const [trFrom,setTrFrom]=useState(""); const [trTo,setTrTo]=useState("");
+  const [trAmt,setTrAmt]=useState(""); const [trDate,setTrDate]=useState(new Date().toISOString().split("T")[0]);
+  const [trMemo,setTrMemo]=useState("");
+  const [trExt,setTrExt]=useState({bankName:"",routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",note:""});
+  const [trErr,setTrErr]=useState(""); const [trDone,setTrDone]=useState(false); const [trBusy,setTrBusy]=useState(false);
+  const upTrExt=(k:keyof typeof trExt,v:string)=>setTrExt(f=>({...f,[k]:v}));
+  const trUserAccts=accounts.filter(a=>a.userId===trUser);
+  function resetTr(){setTrAmt("");setTrMemo("");setTrFrom("");setTrTo("");setTrExt({bankName:"",routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",note:""});}
+  async function submitTransfer(){
+    setTrErr(""); setTrBusy(true);
+    if(!trFrom){setTrErr("Select a From account.");setTrBusy(false);return;}
+    if(!trAmt||parseFloat(trAmt)<=0){setTrErr("Enter a valid amount.");setTrBusy(false);return;}
+    if(trMode==="internal"){
+      if(!trTo){setTrErr("Select a To account.");setTrBusy(false);return;}
+      if(trFrom===trTo){setTrErr("From and To accounts must be different.");setTrBusy(false);return;}
+      const err=await onInternalTransfer({userId:trUser,fromAccountId:trFrom,toAccountId:trTo,amount:parseFloat(trAmt),date:trDate,memo:trMemo});
+      setTrBusy(false); if(err){setTrErr(err);return;}
+    } else {
+      if(!trExt.bankName.trim()){setTrErr("Enter the bank name.");setTrBusy(false);return;}
+      if(trExt.routingNumber.length!==9){setTrErr("Routing number must be 9 digits.");setTrBusy(false);return;}
+      if(!trExt.accountNumber){setTrErr("Enter the account number.");setTrBusy(false);return;}
+      if(!trExt.holderName.trim()){setTrErr("Enter the account holder name.");setTrBusy(false);return;}
+      const err=await onExternalTransfer({userId:trUser,accountId:trFrom,amount:parseFloat(trAmt),date:trDate,...trExt});
+      setTrBusy(false); if(err){setTrErr(err);return;}
+    }
+    setTrDone(true);
+  }
 
   async function approve(tx:PendingTx){
     setBusy(tx.id);
@@ -1684,6 +1717,124 @@ function TransactionsTab({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── Post Transfer ── */}
+      <div style={{...CARD,overflow:"hidden",marginTop:24}}>
+        <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Post Transfer</div>
+          <div style={{fontSize:12.5,color:GRAY,marginTop:3}}>Post a backdated internal or external transfer — immediately posted and updates the balance.</div>
+        </div>
+        {trDone?(
+          <div style={{padding:"40px 24px",textAlign:"center"}}>
+            <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(22,163,74,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",color:"#16A34A"}}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:16,color:DARK}}>Transfer Posted</div>
+            <div style={{fontSize:13,color:GRAY,marginTop:6}}>Balance{trMode==="internal"?"s":""} updated — user will see it on next refresh.</div>
+            <button onClick={()=>{setTrDone(false);resetTr();}} style={{marginTop:16,background:RED,color:"#fff",border:"none",borderRadius:9,padding:"9px 22px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Post Another</button>
+          </div>
+        ):(
+          <div style={{padding:"20px"}}>
+            {/* Mode toggle */}
+            <div style={{marginBottom:16}}>
+              <label style={LBL}>Transfer Type</label>
+              <div style={{display:"flex",gap:8}}>
+                {(["internal","external"] as const).map(m=>(
+                  <button key={m} onClick={()=>{setTrMode(m);setTrErr("");}} style={{flex:1,padding:"9px 0",borderRadius:8,border:`1px solid ${trMode===m?"rgba(140,29,37,.35)":"rgba(17,24,39,.12)"}`,background:trMode===m?"rgba(140,29,37,.08)":"transparent",fontSize:13,fontWeight:trMode===m?700:400,color:trMode===m?RED:GRAY,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                    {m==="internal"?"Internal (between accounts)":"External (other bank)"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* User + Date */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+              <div>
+                <label style={LBL}>User</label>
+                <select value={trUser} onChange={e=>{setTrUser(e.target.value);setTrFrom("");setTrTo("");}} style={SEL}>
+                  {users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LBL}>Transfer Date (backdating allowed)</label>
+                <input type="date" value={trDate} onChange={e=>setTrDate(e.target.value)} style={INP}/>
+              </div>
+            </div>
+
+            {/* From Account */}
+            <div style={{marginBottom:14}}>
+              <label style={LBL}>From Account</label>
+              <select value={trFrom} onChange={e=>{setTrFrom(e.target.value);setTrTo("");}} style={SEL}>
+                <option value="">Select account…</option>
+                {trUserAccts.map(a=>{const isCC=a.accountType==="credit_card";return <option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({isCC?`owed: ${usd(a.balance)}`:`bal: ${usd(a.balance)}`})</option>;})}
+              </select>
+            </div>
+
+            {/* Internal: To Account + Amount + Memo */}
+            {trMode==="internal"&&(
+              <>
+                <div style={{marginBottom:14}}>
+                  <label style={LBL}>To Account</label>
+                  <select value={trTo} onChange={e=>setTrTo(e.target.value)} style={SEL}>
+                    <option value="">Select account…</option>
+                    {trUserAccts.filter(a=>a.id!==trFrom).map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} (bal: {usd(a.balance)})</option>)}
+                  </select>
+                </div>
+                <div style={{marginBottom:14}}>
+                  <label style={LBL}>Amount</label>
+                  <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
+                </div>
+                <div style={{marginBottom:18}}>
+                  <label style={LBL}>Memo <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                  <input type="text" placeholder="e.g. Savings transfer…" value={trMemo} onChange={e=>setTrMemo(e.target.value)} style={INP}/>
+                </div>
+              </>
+            )}
+
+            {/* External: bank fields + Amount */}
+            {trMode==="external"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+                <div style={{gridColumn:"1/-1"}}>
+                  <label style={LBL}>Bank Name</label>
+                  <input type="text" placeholder="e.g. Chase, Wells Fargo…" value={trExt.bankName} onChange={e=>upTrExt("bankName",e.target.value)} style={INP}/>
+                </div>
+                <div>
+                  <label style={LBL}>Routing Number</label>
+                  <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={trExt.routingNumber} onChange={e=>upTrExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                </div>
+                <div>
+                  <label style={LBL}>Account Number</label>
+                  <input type="text" inputMode="numeric" placeholder="Account number" value={trExt.accountNumber} onChange={e=>upTrExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                </div>
+                <div>
+                  <label style={LBL}>Account Type</label>
+                  <select value={trExt.accountType} onChange={e=>upTrExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
+                    <option value="checking">Checking</option>
+                    <option value="savings">Savings</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={LBL}>Account Holder Name</label>
+                  <input type="text" placeholder="Full name on account" value={trExt.holderName} onChange={e=>upTrExt("holderName",e.target.value)} style={INP}/>
+                </div>
+                <div style={{gridColumn:"1/-1"}}>
+                  <label style={LBL}>Amount</label>
+                  <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
+                </div>
+                <div style={{gridColumn:"1/-1"}}>
+                  <label style={LBL}>Note <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                  <input type="text" placeholder="e.g. Wire transfer, rent payment…" value={trExt.note} onChange={e=>upTrExt("note",e.target.value)} style={INP}/>
+                </div>
+              </div>
+            )}
+
+            {trErr&&<div style={{fontSize:13,color:"#DC2626",marginBottom:12,padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{trErr}</div>}
+            <button disabled={trBusy} onClick={submitTransfer} style={{width:"100%",background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:trBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:trBusy?.7:1}}>
+              {trBusy?"Posting…":trMode==="internal"?"Post Internal Transfer":"Post External Transfer"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -3031,6 +3182,24 @@ export default function CpanelPage(){
     return err;
   }
 
+  async function handleInternalTransfer(form:{userId:string;fromAccountId:string;toAccountId:string;amount:number;date:string;memo:string}):Promise<string|null>{
+    const err=await cAction({action:"manualInternalTransfer",...form});
+    if(!err){
+      setAccounts(prev=>prev.map(a=>{
+        if(a.id===form.fromAccountId) return {...a,balance:a.balance-form.amount};
+        if(a.id===form.toAccountId)   return {...a,balance:a.balance+form.amount};
+        return a;
+      }));
+    }
+    return err;
+  }
+
+  async function handleExternalTransfer(form:{userId:string;accountId:string;amount:number;date:string;bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string}):Promise<string|null>{
+    const err=await cAction({action:"manualExternalTransfer",...form});
+    if(!err) setAccounts(prev=>prev.map(a=>a.id===form.accountId?{...a,balance:a.balance-form.amount}:a));
+    return err;
+  }
+
   async function handleKYCUpdate(userId:string, kycStatus:string){
     const err=await cAction({action:"kycUpdate",userId,kycStatus});
     if(!err) setUsers(prev=>prev.map(u=>u.id===userId?{...u,kycStatus}:u));
@@ -3215,7 +3384,7 @@ export default function CpanelPage(){
         <main style={{flex:1,padding:"28px 36px",width:"100%",boxSizing:"border-box"}}>
           {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
-          {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
+          {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction} onInternalTransfer={handleInternalTransfer} onExternalTransfer={handleExternalTransfer}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
           {tab==="Audit"         && <AuditTab logs={auditLogs}/>}
