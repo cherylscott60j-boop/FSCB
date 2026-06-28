@@ -3414,11 +3414,11 @@ export default function CpanelPage(){
   if(!isAdmin) return <AccessDenied/>;
 
   return(
-    <div style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif",display:"flex"}}>
+    <div style={{height:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif",display:"flex",overflow:"hidden"}}>
 
-      {/* ── Fixed red sidebar ── */}
+      {/* ── Sidebar — flex child, no position:fixed needed ── */}
       <div style={{
-        width:262,flexShrink:0,position:"fixed",top:0,left:0,bottom:0,zIndex:40,
+        width:262,flexShrink:0,zIndex:40,
         background:RED,display:"flex",flexDirection:"column",
         boxShadow:"3px 0 16px rgba(0,0,0,.18)"
       }}>
@@ -3433,10 +3433,10 @@ export default function CpanelPage(){
         />
       </div>
 
-      {/* ── Main column ── */}
-      <div style={{marginLeft:262,flex:1,display:"flex",flexDirection:"column",minHeight:"100vh",minWidth:0}}>
+      {/* ── Main column — scrolls independently of sidebar ── */}
+      <div style={{flex:1,display:"flex",flexDirection:"column",overflowY:"auto",overflowX:"hidden",minWidth:0}}>
 
-        {/* Red topbar */}
+        {/* Red topbar — sticky within this scroll container */}
         <header style={{
           position:"sticky",top:0,zIndex:30,
           background:RED,
@@ -3454,8 +3454,8 @@ export default function CpanelPage(){
           </div>
         </header>
 
-        {/* Content — full width, no maxWidth cap */}
-        <main style={{flex:1,padding:"28px 36px",width:"100%",boxSizing:"border-box"}}>
+        {/* Content */}
+        <main style={{flex:1,padding:"28px 36px",boxSizing:"border-box"}}>
           {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction} onInternalTransfer={handleInternalTransfer} onExternalTransfer={handleExternalTransfer}/>}
