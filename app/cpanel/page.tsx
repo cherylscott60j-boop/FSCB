@@ -164,14 +164,14 @@ WHERE email = 'your-email@example.com';`}
 function StatCard({label,value,sub,color,icon}:{label:string;value:string;sub?:string;color?:string;icon:string}){
   const c=color??RED;
   return(
-    <div style={{...CARD,padding:"20px 22px",display:"flex",alignItems:"flex-start",gap:14}}>
-      <div style={{width:42,height:42,borderRadius:10,background:c+"15",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:c}}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={icon}/></svg>
+    <div style={{...CARD,padding:"18px 20px",display:"flex",alignItems:"flex-start",gap:14,overflow:"hidden"}}>
+      <div style={{width:40,height:40,borderRadius:10,background:c+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:c}}>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={icon}/></svg>
       </div>
-      <div>
-        <div style={{fontSize:11.5,fontWeight:600,color:GRAY,letterSpacing:".06em",textTransform:"uppercase",marginBottom:4}}>{label}</div>
-        <div style={{fontFamily:FONT,fontWeight:800,fontSize:24,color:DARK,letterSpacing:"-.02em"}}>{value}</div>
-        {sub&&<div style={{fontSize:12,color:GRAY,marginTop:2}}>{sub}</div>}
+      <div style={{minWidth:0,flex:1}}>
+        <div style={{fontSize:11,fontWeight:600,color:GRAY,letterSpacing:".06em",textTransform:"uppercase",marginBottom:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{label}</div>
+        <div style={{fontFamily:FONT,fontWeight:800,fontSize:21,color:DARK,letterSpacing:"-.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{value}</div>
+        {sub&&<div style={{fontSize:11.5,color:GRAY,marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{sub}</div>}
       </div>
     </div>
   );
