@@ -1393,7 +1393,6 @@ function ProfileTab({profile,accounts,initials}:{
                 <span style={{fontSize:12,fontWeight:700,padding:"3px 10px",borderRadius:99,background:kyc.bg,color:kyc.text,textTransform:"capitalize",letterSpacing:".03em"}}>
                   {profile.kycStatus==="verified"?"✓ Verified":profile.kycStatus==="rejected"?"✕ Rejected":"⏳ Pending Verification"}
                 </span>
-                {profile.memberSince&&<span style={{fontSize:12,color:GRAY}}>Member since {profile.memberSince}</span>}
               </div>
             </div></div>{/* /db-profile-hero */}
           </div>
@@ -1575,7 +1574,6 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
           <div style={{width:34,height:34,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:"#fff",flexShrink:0}}>{initials}</div>
           <div style={{minWidth:0}}>
             <div style={{fontSize:13.5,fontWeight:600,color:DARK,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{profile.firstName}</div>
-            {profile.memberSince&&<div style={{fontSize:11.5,color:GRAY}}>Member since {profile.memberSince}</div>}
           </div>
         </div>
         <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:8,width:"100%",background:"none",border:"1px solid rgba(17,24,39,.1)",borderRadius:8,padding:"8px 12px",fontSize:13,color:GRAY,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}
