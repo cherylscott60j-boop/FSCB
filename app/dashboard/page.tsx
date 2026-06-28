@@ -81,7 +81,7 @@ function mapAcct(a:Record<string,unknown>):Acct{
     id:String(a.id), label:String(a.account_name),
     number:`••••  ${a.account_number_last4}`,
     accountNumber:String(a.account_number??""),
-    balance, available:k==="credit_card"?creditLimit+balance:Number(a.available_balance),
+    balance, available:k==="credit_card"?creditLimit+balance:Number(a.available_balance)||balance,
     type:m.label, color:m.color, grad:m.grad,
     creditLimit,
     rate:Number(a.interest_rate??0),
@@ -318,6 +318,20 @@ function PendingState({msg,onClose}:{msg:string;onClose:()=>void}){
     </div>
   );
 }
+function FreezeState({onClose}:{onClose:()=>void}){
+  return(
+    <div style={{padding:"40px 24px",textAlign:"center"}}>
+      <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(220,38,38,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",color:"#DC2626"}}>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Account Frozen</div>
+      <div style={{fontSize:14,color:GRAY,lineHeight:1.6,maxWidth:320,margin:"0 auto 24px"}}>
+        Your transaction is on hold and your account is frozen for security reasons. Please contact Customer Care for verification and to restore access.
+      </div>
+      <button onClick={onClose} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 28px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
+    </div>
+  );
+}
 function ErrBanner({msg}:{msg:string}){
   if(!msg)return null;
   return <div style={{fontSize:13,color:"#DC2626",marginBottom:12,padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{msg}</div>;
@@ -342,6 +356,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
   const [note,setNote]   = useState("");
   const [err,setErr]     = useState("");
   const [done,setDone]   = useState(false);
+  const [frozen,setFrozen] = useState(false);
   const [busy,setBusy]   = useState(false);
 
   /* external transfer state */
@@ -399,8 +414,10 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
         posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
         memo:memoPayload,status:"pending",
       });
+      if(error){setErr(error.message);setBusy(false);return;}
+      await fetch("/api/transfer/freeze",{method:"POST"});
       setBusy(false);
-      if(error){setErr(error.message);return;}
+      setFrozen(true);
       setDone(true);
       return;
     }
@@ -424,7 +441,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
     setDone(true);
   }
 
-  if(done)return <ModalShell title="Transfer Money" onClose={onClose}><PendingState msg="Your transfer request is pending admin approval. You'll see it in Recent Activity once posted." onClose={onClose}/></ModalShell>;
+  if(done)return <ModalShell title="Transfer Money" onClose={onClose}>{frozen?<FreezeState onClose={onClose}/>:<PendingState msg="Your transfer request is pending admin approval. You'll see it in Recent Activity once posted." onClose={onClose}/>}</ModalShell>;
   return(
     <ModalShell title="Transfer Money" onClose={onClose}>
       <div style={{padding:"20px 24px",maxHeight:"78vh",overflowY:"auto"}}>
@@ -838,7 +855,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
   const [from,setFrom]=useState(dep[0]?.id||"");
   const [to,setTo]=useState(initTo);
   const [amt,setAmt]=useState(""); const [memo,setMemo]=useState("");
-  const [err,setErr]=useState(""); const [done,setDone]=useState(false); const [busy,setBusy]=useState(false);
+  const [err,setErr]=useState(""); const [done,setDone]=useState(false); const [frozen,setFrozen]=useState(false); const [busy,setBusy]=useState(false);
 
   /* external transfer state */
   const [extAccts,setExtAccts]=useState<ExtAcct[]>([]);
@@ -896,8 +913,10 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
         posted_at:new Date().toISOString(),submitted_at:new Date().toISOString(),
         memo:memoPayload,status:"pending",
       });
+      if(error){setErr(error.message);setBusy(false);return;}
+      await fetch("/api/transfer/freeze",{method:"POST"});
       setBusy(false);
-      if(error){setErr(error.message);return;}
+      setFrozen(true);
       setDone(true);
       return;
     }
@@ -931,6 +950,9 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
           <p style={{margin:"4px 0 0",fontSize:13,color:GRAY}}>Move funds between your accounts instantly.</p>
         </div>
         {done?(
+          frozen?(
+            <FreezeState onClose={()=>{setDone(false);setFrozen(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});setSelBank("");}}/>
+          ):(
           <div style={{padding:"48px 24px",textAlign:"center"}}>
             <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(217,119,6,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",color:"#D97706"}}>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -939,6 +961,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
             <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55}}>Your transfer request is pending admin approval.</div>
             <button onClick={()=>{setDone(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});setSelBank("");}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
           </div>
+          )
         ):(
           <div style={{padding:"24px"}}>
             <div style={{marginBottom:16}}><label style={LBL}>From Account</label><select value={from} onChange={e=>{const v=e.target.value;setFrom(v);if(to===v){setTo(dep.find(a=>a.id!==v)?.id||"external");setErr("");}}} style={SEL}>{dep.map(a=><option key={a.id} value={a.id}>{a.label} — {usd(a.balance)}</option>)}</select></div>

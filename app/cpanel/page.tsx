@@ -51,7 +51,7 @@ const ACCT_TYPE_MAP:Record<string,string>={
 };
 type AcctRow = {
   id:string; userId:string; accountType:string; accountName:string;
-  last4:string; balance:number; status:string; creditLimit:number;
+  last4:string; balance:number; status:string; freezeReason:string|null; creditLimit:number;
 };
 type TxRow = {
   id:string; merchant:string; category:string; amount:number;
@@ -649,6 +649,7 @@ function NotificationsTab({users}:{users:UserRow[]}){
 ═══════════════════════════════════════════════════════ */
 const ACTION_META:Record<string,{label:string;color:string;bg:string;category:string}>={
   "account.freeze":           {label:"Account Frozen",    color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Account"},
+  "account.transfer_freeze":  {label:"Transfer Hold",     color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Account"},
   "account.unfreeze":         {label:"Account Unfrozen",  color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Account"},
   "account.credit_limit_set": {label:"Credit Limit Set",  color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Account"},
   "transaction.approve":      {label:"Tx Approved",       color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Transaction"},
@@ -1513,9 +1514,127 @@ const CP_NAV=[
 /* ═══════════════════════════════════════════════════════
    TAB: TRANSACTIONS
 ═══════════════════════════════════════════════════════ */
+function SecurityReviewQueue({
+  users,accounts,pendingTxs,onUnfreeze,
+}:{
+  users:UserRow[];accounts:AcctRow[];pendingTxs:PendingTx[];
+  onUnfreeze:(userId:string,notes:string)=>Promise<string|null>;
+}){
+  const [notes,setNotes]=useState<Record<string,string>>({});
+  const [busy,setBusy]=useState<string|null>(null);
+  const [errs,setErrs]=useState<Record<string,string>>({});
+
+  const frozenAccts=accounts.filter(a=>a.status==="frozen"&&a.freezeReason==="transfer_hold");
+  const frozenUserIds=Array.from(new Set(frozenAccts.map(a=>a.userId)));
+
+  const queue=frozenUserIds.map(uid=>({
+    user:users.find(u=>u.id===uid),
+    frozenAccounts:frozenAccts.filter(a=>a.userId===uid),
+    heldTxs:pendingTxs.filter(tx=>tx.userId===uid),
+  })).filter(q=>q.user);
+
+  async function unfreeze(userId:string){
+    setBusy(userId);
+    const err=await onUnfreeze(userId,notes[userId]||"");
+    setBusy(null);
+    if(err) setErrs(e=>({...e,[userId]:err}));
+  }
+
+  return(
+    <div style={{...CARD,overflow:"hidden",marginBottom:24}}>
+      <div style={{padding:"14px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Security Review Queue</div>
+          <div style={{fontSize:12.5,color:GRAY,marginTop:2}}>Accounts frozen after external transfer — verify the customer and restore access.</div>
+        </div>
+        <span style={{fontSize:12.5,fontWeight:700,padding:"2px 10px",borderRadius:99,background:queue.length>0?"rgba(220,38,38,.1)":"rgba(17,24,39,.06)",color:queue.length>0?"#DC2626":GRAY}}>{queue.length} frozen</span>
+      </div>
+      {queue.length===0
+        ?<Empty msg="No frozen accounts pending review — all clear."/>
+        :queue.map((q,i)=>{
+          const user=q.user!;
+          const isBusy=busy===user.id;
+          return(
+            <div key={user.id} style={{padding:"18px 20px",borderBottom:i<queue.length-1?"1px solid rgba(17,24,39,.05)":"none"}}>
+              {/* User header */}
+              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+                <div style={{width:36,height:36,borderRadius:"50%",background:"rgba(220,38,38,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#DC2626"}}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontWeight:700,fontSize:14,color:DARK}}>{user.firstName} {user.lastName}</div>
+                  <div style={{fontSize:12,color:GRAY}}>{user.email}</div>
+                </div>
+                <span style={{fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:99,background:"rgba(220,38,38,.1)",color:"#DC2626",letterSpacing:".04em"}}>FROZEN</span>
+              </div>
+
+              {/* Affected accounts */}
+              <div style={{marginBottom:12}}>
+                <div style={{fontSize:12,fontWeight:600,color:MID,marginBottom:6}}>Affected Accounts</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {q.frozenAccounts.map(a=>(
+                    <span key={a.id} style={{fontSize:12,padding:"3px 10px",borderRadius:6,background:"rgba(220,38,38,.06)",border:"1px solid rgba(220,38,38,.15)",color:"#DC2626"}}>
+                      {a.accountName} ••••{a.last4}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Held transactions */}
+              {q.heldTxs.length>0&&(
+                <div style={{marginBottom:12,background:"rgba(37,99,235,.04)",border:"1px solid rgba(37,99,235,.12)",borderRadius:9,padding:"12px 14px"}}>
+                  <div style={{fontSize:12,fontWeight:700,color:"#1D4ED8",marginBottom:8,letterSpacing:".03em"}}>HELD TRANSACTIONS ({q.heldTxs.length})</div>
+                  {q.heldTxs.map(tx=>(
+                    <div key={tx.id} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:13,fontWeight:500,color:DARK}}>{tx.merchant}</div>
+                        {tx.extDetails&&(
+                          <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>
+                            {tx.extDetails.bankName} · {tx.extDetails.holderName} · Routing ••••{(tx.extDetails.routingNumber||"").slice(-4)} · Acct ••••{(tx.extDetails.accountNumber||"").slice(-4)}
+                          </div>
+                        )}
+                        <div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{tx.accountName} · Submitted {relTime(tx.submittedAt)}</div>
+                      </div>
+                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:tx.amount>0?"#16A34A":"#DC2626",flexShrink:0,marginLeft:12}}>
+                        {tx.amount>0?"+":"-"}{usd(tx.amount)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Verification notes */}
+              <div style={{marginBottom:12}}>
+                <label style={LBL}>Verification Notes</label>
+                <textarea
+                  rows={2}
+                  placeholder="Document verification steps (e.g. called customer, identity confirmed via phone)…"
+                  value={notes[user.id]||""}
+                  onChange={e=>setNotes(n=>({...n,[user.id]:e.target.value}))}
+                  style={{...INP,resize:"vertical",height:"auto"}}
+                />
+              </div>
+
+              {errs[user.id]&&<div style={{fontSize:12.5,color:"#DC2626",marginBottom:10}}>{errs[user.id]}</div>}
+
+              <button
+                disabled={isBusy}
+                onClick={()=>unfreeze(user.id)}
+                style={{background:"rgba(22,163,74,.09)",border:"1px solid rgba(22,163,74,.25)",borderRadius:8,padding:"8px 20px",fontSize:13,fontWeight:600,color:"#16A34A",cursor:isBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:isBusy?.5:1,transition:"all .15s"}}
+              >
+                {isBusy?"…":"✓ Verify & Unfreeze Account"}
+              </button>
+            </div>
+          );
+        })
+      }
+    </div>
+  );
+}
+
 function TransactionsTab({
   users,accounts,pendingTxs,
-  onApprove,onReject,onManual,onInternalTransfer,onExternalTransfer,
+  onApprove,onReject,onManual,onInternalTransfer,onExternalTransfer,onUnfreeze,
 }:{
   users:UserRow[];accounts:AcctRow[];pendingTxs:PendingTx[];
   onApprove:(tx:PendingTx,date:string)=>Promise<void>;
@@ -1523,6 +1642,7 @@ function TransactionsTab({
   onManual:(d:{accountId:string;userId:string;amount:number;merchant:string;category:string;date:string})=>Promise<string|null>;
   onInternalTransfer:(d:{userId:string;fromAccountId:string;toAccountId:string;amount:number;date:string;memo:string})=>Promise<string|null>;
   onExternalTransfer:(d:{userId:string;accountId:string;amount:number;date:string;bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string})=>Promise<string|null>;
+  onUnfreeze:(userId:string,notes:string)=>Promise<string|null>;
 }){
   const [dates,setDates]=useState<Record<string,string>>({});
   const [busy,setBusy]=useState<string|null>(null);
@@ -1621,6 +1741,9 @@ function TransactionsTab({
   return(
     <div>
       <SectionHead title="Transactions" sub="Approve pending requests and post manual credits or debits"/>
+
+      {/* ── Security review queue ── */}
+      <SecurityReviewQueue users={users} accounts={accounts} pendingTxs={pendingTxs} onUnfreeze={onUnfreeze}/>
 
       {/* ── Pending queue ── */}
       <div style={{...CARD,overflow:"hidden",marginBottom:24}}>
@@ -3054,6 +3177,7 @@ export default function CpanelPage(){
       last4:String(a.account_number_last4||""),
       balance:Number(a.balance||0),
       status:String(a.status||"active"),
+      freezeReason:a.freeze_reason?String(a.freeze_reason):null,
       creditLimit:Number(a.credit_limit??5000),
     }));
 
@@ -3274,6 +3398,12 @@ export default function CpanelPage(){
     return err;
   }
 
+  async function handleUnfreezeUser(userId:string, notes:string):Promise<string|null>{
+    const err=await cAction({action:"unfreezeUser",userId,notes});
+    if(!err) setAccounts(prev=>prev.map(a=>a.userId===userId&&a.freezeReason==="transfer_hold"?{...a,status:"active",freezeReason:null}:a));
+    return err;
+  }
+
   async function handleKYCUpdate(userId:string, kycStatus:string){
     const err=await cAction({action:"kycUpdate",userId,kycStatus});
     if(!err) setUsers(prev=>prev.map(u=>u.id===userId?{...u,kycStatus}:u));
@@ -3458,7 +3588,7 @@ export default function CpanelPage(){
         <main style={{flex:1,padding:"28px 36px",boxSizing:"border-box"}}>
           {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
-          {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction} onInternalTransfer={handleInternalTransfer} onExternalTransfer={handleExternalTransfer}/>}
+          {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction} onInternalTransfer={handleInternalTransfer} onExternalTransfer={handleExternalTransfer} onUnfreeze={handleUnfreezeUser}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
           {tab==="Audit"         && <AuditTab logs={auditLogs}/>}

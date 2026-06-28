@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   credit_limit          NUMERIC(15,2),           -- credit cards only
   interest_rate         NUMERIC(6,4),             -- APY/APR as decimal (e.g. 0.0425 = 4.25%)
   status                account_status NOT NULL DEFAULT 'active',
+  freeze_reason         TEXT,                                     -- 'transfer_hold' for auto-freezes; NULL for manual admin freezes
   opened_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()

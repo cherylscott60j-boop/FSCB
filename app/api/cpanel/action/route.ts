@@ -427,6 +427,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  if (action === "unfreezeUser") {
+    const { userId, notes } = body;
+
+    // Unfreeze all accounts that were frozen by the transfer_hold process
+    const { error } = await admin
+      .from("accounts")
+      .update({ status: "active", freeze_reason: null })
+      .eq("user_id", userId)
+      .eq("freeze_reason", "transfer_hold");
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // Notify the user that their account is restored
+    await admin.from("notifications").insert({
+      user_id: userId,
+      type: "success",
+      title: "Account Restored",
+      message: "Your account and pending transactions have been reviewed and restored by our team. Your funds are now fully available.",
+    });
+
+    logAction({
+      adminId: admin_user.id, adminEmail: admin_user.email ?? "",
+      action: "account.unfreeze", entityType: "account", entityId: userId,
+      details: { userId, notes: notes || null, reason: "transfer_hold_resolved" },
+    });
+    return NextResponse.json({ success: true });
+  }
+
   if (action === "syncCreditAvailableBalances") {
     const { data: cards } = await admin
       .from("accounts")
