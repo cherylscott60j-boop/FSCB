@@ -383,7 +383,46 @@ CREATE INDEX IF NOT EXISTS idx_fraud_alerts_created_at ON fraud_alerts(created_a
 
 
 -- ============================================================
--- 10. BUDGETS
+-- 10. DISPUTES
+--    Customer dispute and chargeback case management.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS disputes (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id        UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  account_id     UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  transaction_id UUID REFERENCES transactions(id) ON DELETE SET NULL,
+  reference_id   TEXT UNIQUE NOT NULL,
+  dispute_type   TEXT NOT NULL,   -- unauthorized | billing_error | not_received | duplicate | other
+  amount         NUMERIC(15,2) NOT NULL,
+  merchant       TEXT NOT NULL,
+  description    TEXT NOT NULL,
+  status         TEXT NOT NULL DEFAULT 'open', -- open | under_review | more_info_needed | approved | denied
+  admin_notes    TEXT,
+  credit_tx_id   UUID REFERENCES transactions(id) ON DELETE SET NULL,
+  opened_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  resolved_at    TIMESTAMPTZ,
+  resolved_by    UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE disputes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "disputes_select_own"
+  ON disputes FOR SELECT USING (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS idx_disputes_user_id    ON disputes(user_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_account_id ON disputes(account_id);
+CREATE INDEX IF NOT EXISTS idx_disputes_status     ON disputes(status);
+CREATE INDEX IF NOT EXISTS idx_disputes_opened_at  ON disputes(opened_at DESC);
+
+CREATE TRIGGER trg_disputes_updated_at
+  BEFORE UPDATE ON disputes
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+
+-- ============================================================
+-- 11. BUDGETS
 --    Monthly spending cap per category, set by the user.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS budgets (

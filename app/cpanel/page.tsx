@@ -65,6 +65,13 @@ type FraudAlert = {
   details:Record<string,unknown>;
   status:string; createdAt:string;
 };
+type DisputeRow = {
+  id:string; userId:string; accountId:string;
+  transactionId:string|null; referenceId:string;
+  disputeType:string; amount:number; merchant:string;
+  description:string; status:string; adminNotes:string;
+  creditTxId:string|null; openedAt:string; resolvedAt:string|null;
+};
 type PendingTx = {
   id:string; userId:string; userName:string;
   accountId:string; accountName:string; accountLast4:string;
@@ -612,6 +619,311 @@ function NotificationsTab({users}:{users:UserRow[]}){
 }
 
 /* ═══════════════════════════════════════════════════════
+   TAB: DISPUTES & CHARGEBACKS
+═══════════════════════════════════════════════════════ */
+const DISPUTE_TYPES=[
+  {v:"unauthorized",   l:"Unauthorized Transaction"},
+  {v:"billing_error",  l:"Billing Error"},
+  {v:"not_received",   l:"Item / Service Not Received"},
+  {v:"duplicate",      l:"Duplicate Charge"},
+  {v:"other",          l:"Other"},
+];
+const DISPUTE_STATUS_META:Record<string,{label:string;bg:string;text:string}>={
+  open:             {label:"Open",           bg:"rgba(37,99,235,.1)",   text:"#2563EB"},
+  under_review:     {label:"Under Review",   bg:"rgba(234,179,8,.12)",  text:"#854D0E"},
+  more_info_needed: {label:"More Info Needed",bg:"rgba(124,58,237,.1)", text:"#7C3AED"},
+  approved:         {label:"Approved",       bg:"rgba(22,163,74,.1)",   text:"#16A34A"},
+  denied:           {label:"Denied",         bg:"rgba(220,38,38,.1)",   text:"#DC2626"},
+};
+
+function DisputeStatusBadge({status}:{status:string}){
+  const m=DISPUTE_STATUS_META[status]??{label:status,bg:"rgba(107,114,128,.1)",text:GRAY};
+  return <span style={{fontSize:11.5,fontWeight:700,padding:"3px 9px",borderRadius:99,background:m.bg,color:m.text,letterSpacing:".04em",whiteSpace:"nowrap"}}>{m.label}</span>;
+}
+
+function DisputesTab({
+  disputes, users, accounts, txs,
+  onOpen, onApprove, onDeny, onRequestInfo, onReview,
+}:{
+  disputes:DisputeRow[]; users:UserRow[]; accounts:AcctRow[]; txs:TxRow[];
+  onOpen:(d:{userId:string;accountId:string;transactionId:string|null;disputeType:string;amount:number;merchant:string;description:string})=>Promise<string|null>;
+  onApprove:(disputeId:string,accountId:string,userId:string,amount:number,merchant:string,notes:string)=>Promise<string|null>;
+  onDeny:(disputeId:string,notes:string)=>Promise<string|null>;
+  onRequestInfo:(disputeId:string,notes:string)=>Promise<string|null>;
+  onReview:(disputeId:string)=>Promise<void>;
+}){
+  const [filter, setFilter] = useState<"all"|"open"|"under_review"|"more_info_needed"|"approved"|"denied">("open");
+  const [showForm, setShowForm] = useState(false);
+  const [expanded, setExpanded] = useState<string|null>(null);
+  const [busy, setBusy] = useState<string|null>(null);
+  const [notes, setNotes] = useState<Record<string,string>>({});
+
+  /* ── New dispute form state ── */
+  const [fUser, setFUser]       = useState(users[0]?.id||"");
+  const [fAcct, setFAcct]       = useState("");
+  const [fTx,   setFTx]         = useState("");
+  const [fType, setFType]       = useState("unauthorized");
+  const [fAmt,  setFAmt]        = useState("");
+  const [fMerch,setFMerch]      = useState("");
+  const [fDesc, setFDesc]       = useState("");
+  const [fErr,  setFErr]        = useState("");
+  const [fBusy, setFBusy]       = useState(false);
+  const [fDone, setFDone]       = useState<string|null>(null);
+
+  const userAccts = accounts.filter(a=>a.userId===fUser);
+  const acctTxs   = txs.filter(t=>t.accountId===fAcct).slice(0,30);
+
+  const FILTERS=["open","under_review","more_info_needed","approved","denied","all"] as const;
+  const shown = filter==="all" ? disputes : disputes.filter(d=>d.status===filter);
+
+  const counts={
+    open:             disputes.filter(d=>d.status==="open").length,
+    under_review:     disputes.filter(d=>d.status==="under_review").length,
+    more_info_needed: disputes.filter(d=>d.status==="more_info_needed").length,
+    approved:         disputes.filter(d=>d.status==="approved").length,
+    denied:           disputes.filter(d=>d.status==="denied").length,
+  };
+
+  async function submitOpen(){
+    if(!fAcct){setFErr("Select an account.");return;}
+    if(!fAmt||parseFloat(fAmt)<=0){setFErr("Enter a valid disputed amount.");return;}
+    if(!fMerch.trim()){setFErr("Enter the merchant name.");return;}
+    if(!fDesc.trim()){setFErr("Describe the dispute.");return;}
+    setFErr(""); setFBusy(true);
+    const ref=await onOpen({userId:fUser,accountId:fAcct,transactionId:fTx||null,disputeType:fType,amount:parseFloat(fAmt),merchant:fMerch.trim(),description:fDesc.trim()});
+    setFBusy(false);
+    if(ref&&ref.startsWith("DSP-")){
+      setFDone(ref);
+      setFAcct(""); setFTx(""); setFAmt(""); setFMerch(""); setFDesc("");
+      setTimeout(()=>{setFDone(null);setShowForm(false);},4000);
+    } else {
+      setFErr(ref||"Failed to open dispute.");
+    }
+  }
+
+  async function act(id:string, fn:()=>Promise<string|null|void>){
+    setBusy(id);
+    await fn();
+    setBusy(null);
+    setExpanded(null);
+  }
+
+  const isResolved=(d:DisputeRow)=>d.status==="approved"||d.status==="denied";
+
+  return(
+    <div>
+      {/* Header */}
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20,gap:12,flexWrap:"wrap"}}>
+        <SectionHead title="Disputes & Chargebacks" sub="Open and manage customer dispute cases"/>
+        <button onClick={()=>{setShowForm(v=>!v);setFDone(null);setFErr("");}} style={{display:"flex",alignItems:"center",gap:7,background:showForm?"rgba(17,24,39,.07)":RED,border:showForm?"1px solid rgba(17,24,39,.15)":"none",borderRadius:9,padding:"9px 18px",fontSize:13,fontWeight:600,color:showForm?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",transition:"all .15s",flexShrink:0}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={showForm?"M18 6 6 18M6 6l12 12":"M12 5v14M5 12h14"}/></svg>
+          {showForm?"Cancel":"Open New Dispute"}
+        </button>
+      </div>
+
+      {/* ── New dispute form ── */}
+      {showForm&&(
+        <div style={{...CARD,overflow:"hidden",marginBottom:24}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>New Dispute Case</div>
+            <div style={{fontSize:12.5,color:GRAY,marginTop:3}}>Opens on behalf of the customer. Reference ID is auto-generated.</div>
+          </div>
+          {fDone?(
+            <div style={{padding:"40px 24px",textAlign:"center"}}>
+              <div style={{width:52,height:52,borderRadius:"50%",background:"rgba(22,163,74,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",color:"#16A34A"}}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:6}}>Dispute opened</div>
+              <div style={{fontSize:13,color:GRAY}}>Reference ID: <strong style={{fontFamily:"monospace",color:DARK}}>{fDone}</strong></div>
+            </div>
+          ):(
+            <div style={{padding:"20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+              <div>
+                <label style={LBL}>Customer</label>
+                <select value={fUser} onChange={e=>{setFUser(e.target.value);setFAcct("");setFTx("");}} style={SEL}>
+                  {users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LBL}>Account</label>
+                <select value={fAcct} onChange={e=>{setFAcct(e.target.value);setFTx("");}} style={SEL}>
+                  <option value="">Select account…</option>
+                  {userAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({usd(a.balance)})</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LBL}>Linked Transaction <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                <select value={fTx} onChange={e=>{setFTx(e.target.value);if(e.target.value){const t=acctTxs.find(t=>t.id===e.target.value);if(t){setFAmt(String(Math.abs(t.amount)));setFMerch(t.merchant);}}}} style={SEL}>
+                  <option value="">No specific transaction</option>
+                  {acctTxs.map(t=><option key={t.id} value={t.id}>{t.date} — {t.merchant} ({t.amount>0?"+":""}{usd(t.amount)})</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LBL}>Dispute Type</label>
+                <select value={fType} onChange={e=>setFType(e.target.value)} style={SEL}>
+                  {DISPUTE_TYPES.map(d=><option key={d.v} value={d.v}>{d.l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LBL}>Disputed Amount</label>
+                <div style={{position:"relative"}}>
+                  <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span>
+                  <input type="number" min="0.01" step="0.01" placeholder="0.00" value={fAmt} onChange={e=>setFAmt(e.target.value)} style={{...INP,paddingLeft:24}}/>
+                </div>
+              </div>
+              <div>
+                <label style={LBL}>Merchant / Payee</label>
+                <input type="text" placeholder="e.g. Amazon, Unknown Charge…" value={fMerch} onChange={e=>setFMerch(e.target.value)} style={INP}/>
+              </div>
+              <div style={{gridColumn:"1/-1"}}>
+                <label style={LBL}>Description</label>
+                <textarea rows={3} placeholder="Describe the dispute — what happened and why the customer is disputing this charge…" value={fDesc} onChange={e=>setFDesc(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/>
+              </div>
+              {fErr&&<div style={{gridColumn:"1/-1",fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{fErr}</div>}
+              <div style={{gridColumn:"1/-1"}}>
+                <button disabled={fBusy} onClick={submitOpen} style={{background:RED,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:fBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:fBusy?.7:1}}>
+                  {fBusy?"Opening…":"Open Dispute"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Stats row */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:10,marginBottom:20}}>
+        {([
+          ["Open",             counts.open,             "#2563EB"],
+          ["Under Review",     counts.under_review,     "#D97706"],
+          ["More Info Needed", counts.more_info_needed, "#7C3AED"],
+          ["Approved",         counts.approved,         "#16A34A"],
+          ["Denied",           counts.denied,           "#DC2626"],
+        ] as const).map(([label,count,color])=>(
+          <div key={label} style={{...CARD,padding:"14px 16px",display:"flex",alignItems:"center",gap:10}}>
+            <div style={{fontFamily:FONT,fontWeight:800,fontSize:22,color,lineHeight:1}}>{count}</div>
+            <div style={{fontSize:11.5,color:GRAY,fontWeight:500,lineHeight:1.3}}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter pills */}
+      <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+        {FILTERS.map(f=>(
+          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:filter===f?RED:GRAY,border:`1px solid ${filter===f?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+            {DISPUTE_STATUS_META[f]?.label??f.charAt(0).toUpperCase()+f.slice(1)} ({f==="all"?disputes.length:(counts[f as keyof typeof counts]??0)})
+          </button>
+        ))}
+      </div>
+
+      {/* Dispute list */}
+      <div style={{...CARD,overflow:"hidden"}}>
+        {shown.length===0
+          ?<Empty msg={`No ${filter==="all"?"":DISPUTE_STATUS_META[filter]?.label.toLowerCase()||filter} disputes.`}/>
+          :shown.map((d,i)=>{
+            const user=users.find(u=>u.id===d.userId);
+            const acct=accounts.find(a=>a.id===d.accountId);
+            const isOpen=expanded===d.id;
+            const isBusy=busy===d.id;
+            const resolved=isResolved(d);
+            const typeLabel=DISPUTE_TYPES.find(t=>t.v===d.disputeType)?.l||d.disputeType;
+
+            return(
+              <div key={d.id} style={{borderBottom:i<shown.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
+                {/* Row */}
+                <button onClick={()=>setExpanded(isOpen?null:d.id)} style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"16px 20px",background:isOpen?"rgba(17,24,39,.02)":"transparent",border:"none",cursor:"pointer",fontFamily:"inherit",textAlign:"left",transition:"background .12s",flexWrap:"wrap"}}>
+                  {/* Icon */}
+                  <div style={{width:38,height:38,borderRadius:10,background:"rgba(37,99,235,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#2563EB"}}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/></svg>
+                  </div>
+                  {/* Info */}
+                  <div style={{flex:1,minWidth:200}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
+                      <span style={{fontWeight:700,fontSize:13,color:DARK,fontFamily:"monospace",letterSpacing:".04em"}}>{d.referenceId}</span>
+                      <DisputeStatusBadge status={d.status}/>
+                    </div>
+                    <div style={{fontWeight:500,fontSize:13.5,color:DARK,marginBottom:2}}>
+                      {user?`${user.firstName} ${user.lastName}`:"Unknown"} — {d.merchant}
+                    </div>
+                    <div style={{fontSize:12,color:GRAY}}>
+                      {typeLabel}
+                      {acct&&<><span style={{margin:"0 5px"}}>·</span><span>••••{acct.last4}</span></>}
+                      <span style={{margin:"0 5px"}}>·</span>
+                      <span>{fmtDate(d.openedAt)}</span>
+                    </div>
+                  </div>
+                  {/* Amount */}
+                  <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:DARK,flexShrink:0}}>{usd(d.amount)}</div>
+                  {/* Chevron */}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2" style={{transform:isOpen?"rotate(90deg)":"none",transition:"transform .2s",flexShrink:0}}><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+
+                {/* Expanded detail + actions */}
+                {isOpen&&(
+                  <div style={{background:"rgba(238,240,244,.5)",padding:"16px 20px",borderTop:"1px solid rgba(17,24,39,.05)"}}>
+                    {/* Description */}
+                    <div style={{...CARD,padding:"12px 16px",marginBottom:14}}>
+                      <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".08em",color:GRAY,textTransform:"uppercase",marginBottom:6}}>Customer Description</div>
+                      <div style={{fontSize:13.5,color:MID,lineHeight:1.55}}>{d.description}</div>
+                      {d.adminNotes&&(
+                        <div style={{marginTop:10,paddingTop:10,borderTop:"1px solid rgba(17,24,39,.06)"}}>
+                          <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".08em",color:GRAY,textTransform:"uppercase",marginBottom:4}}>Admin Notes</div>
+                          <div style={{fontSize:13,color:MID,lineHeight:1.5,fontStyle:"italic"}}>{d.adminNotes}</div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions — only show for unresolved disputes */}
+                    {!resolved&&(
+                      <div style={{display:"flex",gap:10,alignItems:"flex-start",flexWrap:"wrap"}}>
+                        {/* Notes textarea */}
+                        <textarea
+                          rows={2}
+                          placeholder="Admin notes (required for Deny / More Info)…"
+                          value={notes[d.id]||""}
+                          onChange={e=>setNotes(n=>({...n,[d.id]:e.target.value}))}
+                          style={{...INP,resize:"vertical",height:"auto",flex:1,minWidth:200,fontSize:12.5}}
+                        />
+                        <div style={{display:"flex",gap:8,flexShrink:0,flexWrap:"wrap"}}>
+                          {d.status==="open"&&(
+                            <button disabled={isBusy} onClick={()=>act(d.id,()=>onReview(d.id))} style={{background:"rgba(234,179,8,.1)",border:"1px solid rgba(234,179,8,.3)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:"#854D0E",cursor:isBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:isBusy?.5:1}}>
+                              {isBusy?"…":"Mark Under Review"}
+                            </button>
+                          )}
+                          <button disabled={isBusy} onClick={()=>act(d.id,()=>onApprove(d.id,d.accountId,d.userId,d.amount,d.merchant,notes[d.id]||""))} style={{background:"rgba(22,163,74,.09)",border:"1px solid rgba(22,163,74,.25)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:"#16A34A",cursor:isBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:isBusy?.5:1}}>
+                            {isBusy?"…":"✓ Approve & Credit"}
+                          </button>
+                          <button disabled={isBusy||!notes[d.id]?.trim()} onClick={()=>act(d.id,()=>onDeny(d.id,notes[d.id]||""))} style={{background:"rgba(220,38,38,.07)",border:"1px solid rgba(220,38,38,.2)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:"#DC2626",cursor:(isBusy||!notes[d.id]?.trim())?"not-allowed":"pointer",fontFamily:"inherit",opacity:(isBusy||!notes[d.id]?.trim())?.5:1}}>
+                            {isBusy?"…":"✕ Deny"}
+                          </button>
+                          <button disabled={isBusy||!notes[d.id]?.trim()} onClick={()=>act(d.id,()=>onRequestInfo(d.id,notes[d.id]||""))} style={{background:"rgba(124,58,237,.07)",border:"1px solid rgba(124,58,237,.2)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:"#7C3AED",cursor:(isBusy||!notes[d.id]?.trim())?"not-allowed":"pointer",fontFamily:"inherit",opacity:(isBusy||!notes[d.id]?.trim())?.5:1}}>
+                            {isBusy?"…":"? More Info"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Resolution summary for closed disputes */}
+                    {resolved&&(
+                      <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:d.status==="approved"?"rgba(22,163,74,.06)":"rgba(220,38,38,.05)",borderRadius:9,border:`1px solid ${d.status==="approved"?"rgba(22,163,74,.2)":"rgba(220,38,38,.15)"}`}}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={d.status==="approved"?"#16A34A":"#DC2626"} strokeWidth="2"><path d={d.status==="approved"?"M20 6 9 17l-5-5":"M18 6 6 18M6 6l12 12"}/></svg>
+                        <span style={{fontSize:13,fontWeight:600,color:d.status==="approved"?"#16A34A":"#DC2626"}}>
+                          {d.status==="approved"?`Approved — ${usd(d.amount)} credited to account`:"Denied — no credit issued"}
+                        </span>
+                        {d.resolvedAt&&<span style={{fontSize:12,color:GRAY,marginLeft:"auto"}}>{fmtDate(d.resolvedAt)}</span>}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    TAB: FRAUD & RISK
 ═══════════════════════════════════════════════════════ */
 const RULE_META:Record<string,{label:string;color:string;desc:string;severity:string}>={
@@ -823,6 +1135,7 @@ const CP_NAV=[
   {id:"Transactions",  label:"Transactions",   icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
   {id:"KYC",           label:"KYC",            icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"},
   {id:"Fraud",         label:"Fraud & Risk",   icon:"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"},
+  {id:"Disputes",      label:"Disputes",       icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
 ];
@@ -1072,7 +1385,7 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
 /* ═══════════════════════════════════════════════════════
    SIDEBAR
 ═══════════════════════════════════════════════════════ */
-function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount}:{active:string;set:(t:string)=>void;adminName:string;adminEmail:string;onSignOut:()=>void;fraudOpenCount:number}){
+function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,disputeOpenCount}:{active:string;set:(t:string)=>void;adminName:string;adminEmail:string;onSignOut:()=>void;fraudOpenCount:number;disputeOpenCount:number}){
   const initials=(adminName.split(" ").map(w=>w[0]).join("").slice(0,2)||"A").toUpperCase();
   return(
     <aside style={{display:"flex",flexDirection:"column",flex:1,height:"100%",overflowY:"auto"}}>
@@ -1088,12 +1401,13 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount}
         <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:GRAY,marginBottom:8,paddingLeft:8}}>Navigation</div>
         {CP_NAV.map(item=>{
           const on=active===item.id;
-          const showBadge=item.id==="Fraud"&&fraudOpenCount>0;
+          const showBadge=(item.id==="Fraud"&&fraudOpenCount>0)||(item.id==="Disputes"&&disputeOpenCount>0);
+          const badgeCount=item.id==="Fraud"?fraudOpenCount:disputeOpenCount;
           return(
             <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:9,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13.5,fontWeight:on?600:400,color:on?RED:MID,background:on?"rgba(140,29,37,.07)":"transparent",textAlign:"left",marginBottom:2,transition:"all .15s",borderLeft:on?`3px solid ${RED}`:"3px solid transparent"}}>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.2:1.8} style={{flexShrink:0}}><path d={item.icon}/></svg>
               <span style={{flex:1}}>{item.label}</span>
-              {showBadge&&<span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:99,background:"#DC2626",color:"#fff",letterSpacing:".03em",flexShrink:0}}>{fraudOpenCount}</span>}
+              {showBadge&&<span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:99,background:"#DC2626",color:"#fff",letterSpacing:".03em",flexShrink:0}}>{badgeCount}</span>}
             </button>
           );
         })}
@@ -1144,6 +1458,7 @@ export default function CpanelPage(){
   const [pendingTxs,  setPendingTxs]  = useState<PendingTx[]>([]);
   const [apps,        setApps]        = useState<AppRow[]>([]);
   const [fraudAlerts, setFraudAlerts] = useState<FraudAlert[]>([]);
+  const [disputes,    setDisputes]    = useState<DisputeRow[]>([]);
 
   const load = useCallback(async()=>{
     const sb=createClient();
@@ -1167,6 +1482,7 @@ export default function CpanelPage(){
     const pendingTransactions = json.pendingTransactions ?? [];
     const applications        = json.applications        ?? [];
     const fraudAlertsRaw      = (json.fraudAlerts        ?? []) as Record<string,unknown>[];
+    const disputesRaw         = (json.disputes           ?? []) as Record<string,unknown>[];
 
     /* Map users + aggregate balances */
     const acctList=(accts??[]) as Record<string,unknown>[];
@@ -1263,12 +1579,30 @@ export default function CpanelPage(){
       createdAt:String(a.created_at),
     }));
 
+    const mappedDisputes:DisputeRow[]=disputesRaw.map(d=>({
+      id:String(d.id),
+      userId:String(d.user_id),
+      accountId:String(d.account_id),
+      transactionId:d.transaction_id?String(d.transaction_id):null,
+      referenceId:String(d.reference_id||""),
+      disputeType:String(d.dispute_type||"other"),
+      amount:Number(d.amount||0),
+      merchant:String(d.merchant||""),
+      description:String(d.description||""),
+      status:String(d.status||"open"),
+      adminNotes:String(d.admin_notes||""),
+      creditTxId:d.credit_tx_id?String(d.credit_tx_id):null,
+      openedAt:String(d.opened_at||d.created_at||""),
+      resolvedAt:d.resolved_at?String(d.resolved_at):null,
+    }));
+
     setUsers(mappedUsers);
     setAccounts(mappedAccts);
     setTxs(mappedTxs);
     setPendingTxs(mappedPending);
     setApps(mappedApps);
     setFraudAlerts(mappedFraud);
+    setDisputes(mappedDisputes);
     setLoading(false);
 
     fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"syncCreditAvailableBalances"})});
@@ -1344,6 +1678,47 @@ export default function CpanelPage(){
     }
   }
 
+  async function handleOpenDispute(d:{userId:string;accountId:string;transactionId:string|null;disputeType:string;amount:number;merchant:string;description:string}):Promise<string|null>{
+    const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"openDispute",...d})});
+    const json=await res.json() as Record<string,string>;
+    if(!res.ok) return json.error||"Failed";
+    const newDispute:DisputeRow={
+      id:crypto.randomUUID(),userId:d.userId,accountId:d.accountId,
+      transactionId:d.transactionId,referenceId:json.refId,
+      disputeType:d.disputeType,amount:d.amount,merchant:d.merchant,
+      description:d.description,status:"open",adminNotes:"",
+      creditTxId:null,openedAt:new Date().toISOString(),resolvedAt:null,
+    };
+    setDisputes(prev=>[newDispute,...prev]);
+    return json.refId;
+  }
+
+  async function handleApproveDispute(disputeId:string,accountId:string,userId:string,amount:number,merchant:string,notes:string):Promise<string|null>{
+    const err=await cAction({action:"approveDispute",disputeId,accountId,userId,amount,merchant,adminNotes:notes});
+    if(!err){
+      setDisputes(prev=>prev.map(d=>d.id===disputeId?{...d,status:"approved",resolvedAt:new Date().toISOString()}:d));
+      setAccounts(prev=>prev.map(a=>a.id===accountId?{...a,balance:a.balance+Math.abs(amount)}:a));
+    }
+    return err;
+  }
+
+  async function handleDenyDispute(disputeId:string,notes:string):Promise<string|null>{
+    const err=await cAction({action:"denyDispute",disputeId,adminNotes:notes});
+    if(!err) setDisputes(prev=>prev.map(d=>d.id===disputeId?{...d,status:"denied",adminNotes:notes,resolvedAt:new Date().toISOString()}:d));
+    return err;
+  }
+
+  async function handleRequestDisputeInfo(disputeId:string,notes:string):Promise<string|null>{
+    const err=await cAction({action:"requestDisputeInfo",disputeId,adminNotes:notes});
+    if(!err) setDisputes(prev=>prev.map(d=>d.id===disputeId?{...d,status:"more_info_needed",adminNotes:notes}:d));
+    return err;
+  }
+
+  async function handleReviewDispute(disputeId:string):Promise<void>{
+    const err=await cAction({action:"reviewDispute",disputeId});
+    if(!err) setDisputes(prev=>prev.map(d=>d.id===disputeId?{...d,status:"under_review"}:d));
+  }
+
   async function handleCreditLimitUpdate(acctId:string, limit:number):Promise<string|null>{
     const err=await cAction({action:"setCreditLimit",acctId,limit});
     if(!err) setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,creditLimit:limit}:a));
@@ -1405,6 +1780,7 @@ export default function CpanelPage(){
             adminEmail={adminInfo.email}
             onSignOut={signOut}
             fraudOpenCount={fraudAlerts.filter(a=>a.status==="open").length}
+            disputeOpenCount={disputes.filter(d=>d.status==="open"||d.status==="more_info_needed").length}
           />
         </div>
 
@@ -1415,6 +1791,7 @@ export default function CpanelPage(){
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
+          {tab==="Disputes"      && <DisputesTab disputes={disputes} users={users} accounts={accounts} txs={txs} onOpen={handleOpenDispute} onApprove={handleApproveDispute} onDeny={handleDenyDispute} onRequestInfo={handleRequestDisputeInfo} onReview={handleReviewDispute}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}
           {tab==="Notifications" && <NotificationsTab users={users}/>}
         </main>

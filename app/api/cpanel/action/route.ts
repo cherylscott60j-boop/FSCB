@@ -175,6 +175,94 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  /* ── Disputes ── */
+  if (action === "openDispute") {
+    const { userId, accountId, transactionId, disputeType, amount, merchant, description } = body;
+    const refId = "DSP-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    const { error } = await admin.from("disputes").insert({
+      user_id:        userId,
+      account_id:     accountId,
+      transaction_id: transactionId || null,
+      reference_id:   refId,
+      dispute_type:   disputeType,
+      amount:         Number(amount),
+      merchant:       String(merchant),
+      description:    String(description),
+      status:         "open",
+    });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true, refId });
+  }
+
+  if (action === "approveDispute") {
+    const { disputeId, accountId, userId, amount, merchant } = body;
+    const now = new Date().toISOString();
+
+    // Post credit transaction
+    const { data: txData, error: txErr } = await admin.from("transactions").insert({
+      account_id:       accountId,
+      user_id:          userId,
+      merchant:         `Dispute Credit — ${merchant}`,
+      category:         "Refund",
+      amount:           Math.abs(Number(amount)),
+      transaction_type: "credit",
+      status:           "posted",
+      posted_at:        now,
+    }).select("id").single();
+    if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
+
+    // Update account balance
+    const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", accountId).single();
+    if (acct) {
+      const a = acct as Record<string, unknown>;
+      const newBal = Number(a.balance) + Math.abs(Number(amount));
+      const updates: Record<string, unknown> = { balance: newBal };
+      if (a.account_type === "credit_card") updates.available_balance = Number(a.credit_limit) + newBal;
+      await admin.from("accounts").update(updates).eq("id", accountId);
+    }
+
+    // Resolve dispute
+    const creditTxId = (txData as Record<string, string>).id;
+    const { error: dErr } = await admin.from("disputes").update({
+      status:       "approved",
+      credit_tx_id: creditTxId,
+      resolved_at:  now,
+      resolved_by:  admin_user.id,
+    }).eq("id", disputeId);
+    if (dErr) return NextResponse.json({ error: dErr.message }, { status: 500 });
+
+    return NextResponse.json({ success: true, creditTxId, newBalance: acct ? Number((acct as Record<string,number>).balance) + Math.abs(Number(amount)) : null });
+  }
+
+  if (action === "denyDispute") {
+    const { disputeId, adminNotes } = body;
+    const { error } = await admin.from("disputes").update({
+      status:      "denied",
+      admin_notes: adminNotes || null,
+      resolved_at: new Date().toISOString(),
+      resolved_by: admin_user.id,
+    }).eq("id", disputeId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "requestDisputeInfo") {
+    const { disputeId, adminNotes } = body;
+    const { error } = await admin.from("disputes").update({
+      status:      "more_info_needed",
+      admin_notes: adminNotes || null,
+    }).eq("id", disputeId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "reviewDispute") {
+    const { disputeId } = body;
+    const { error } = await admin.from("disputes").update({ status: "under_review" }).eq("id", disputeId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
   if (action === "dismissFraudAlert") {
     const { alertId } = body;
     const { error } = await admin
