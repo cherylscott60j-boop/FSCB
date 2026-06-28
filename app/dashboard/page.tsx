@@ -111,7 +111,7 @@ function calcSpend(txs:Record<string,unknown>[]):Spend[]{
 function AccountCard({a}:{a:Acct}){
   const isCC=a.type==="Credit Card";
   return(
-    <div style={{background:a.grad,borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18)",padding:"22px 24px 20px",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",minHeight:164}}>
+    <div className="db-account-card" style={{background:a.grad,borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18)",padding:"22px 24px 20px",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",minHeight:164}}>
       <div style={{position:"absolute",top:-48,right:-48,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,.06)",pointerEvents:"none"}}/>
       <div style={{position:"absolute",top:-20,right:-20,width:100,height:100,borderRadius:"50%",background:"rgba(255,255,255,.04)",pointerEvents:"none"}}/>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4,position:"relative"}}>
@@ -127,7 +127,7 @@ function AccountCard({a}:{a:Acct}){
       </div>
       <div style={{marginTop:20,position:"relative"}}>
         <div style={{fontSize:10.5,fontWeight:600,color:"rgba(255,255,255,.45)",letterSpacing:".1em",textTransform:"uppercase",marginBottom:4}}>{isCC?"Current Balance":"Account Balance"}</div>
-        <div style={{fontFamily:FONT,fontWeight:800,fontSize:30,color:"#fff",letterSpacing:"-.025em",lineHeight:1}}>{isCC?usd(Math.abs(Math.min(a.balance,0))):<>{a.balance<0?"–":""}{usd(a.balance)}</>}</div>
+        <div className="db-card-balance" style={{fontFamily:FONT,fontWeight:800,fontSize:30,color:"#fff",letterSpacing:"-.025em",lineHeight:1}}>{isCC?usd(Math.abs(Math.min(a.balance,0))):<>{a.balance<0?"–":""}{usd(a.balance)}</>}</div>
       </div>
       <div style={{height:1,background:"rgba(255,255,255,.12)",margin:"14px 0 10px"}}/>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative"}}>
@@ -1858,17 +1858,17 @@ export default function DashboardPage(){
                 </div>
               )}
               {/* Greeting row */}
-              <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:20}}>
+              <div className="db-hero-row" style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:20}}>
                 <div>
-                  <h1 style={{fontFamily:FONT,fontWeight:800,fontSize:22,color:DARK,margin:"0 0 4px",letterSpacing:"-.015em"}}>{greet()}, {profile.firstName}.</h1>
+                  <h1 style={{fontFamily:FONT,fontWeight:800,fontSize:22,color:RED,margin:"0 0 4px",letterSpacing:"-.015em"}}>{greet()}, {profile.firstName}.</h1>
                   <p style={{margin:0,fontSize:12.5,color:GRAY}}>{profile.lastLogin&&<>{profile.lastLogin} · </>}<span style={{color:"#16A34A",fontWeight:500}}>All accounts secure</span></p>
                 </div>
                 <div className="db-net-pill" style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:10,padding:"10px 18px",boxShadow:"0 1px 3px rgba(17,24,39,.05)"}}>
-                  <div style={{textAlign:"right"}}><div style={{fontSize:11,color:GRAY,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Net Worth</div><div style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:DARK,letterSpacing:"-.015em"}}>{usd(netWorth)}</div></div>
+                  <div style={{textAlign:"right"}}><div style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Net Worth</div><div style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:RED,letterSpacing:"-.015em"}}>{usd(netWorth)}</div></div>
                   <div className="db-net-sep" style={{width:1,...DIVIDER,height:32,margin:"0 4px"}}/>
-                  <div><div style={{fontSize:11,color:GRAY,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Liquid</div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:"#16A34A"}}>{usd(liquid)}</div></div>
+                  <div><div style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Liquid</div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:"#16A34A"}}>{usd(liquid)}</div></div>
                   <div className="db-net-sep" style={{width:1,...DIVIDER,height:32,margin:"0 4px"}}/>
-                  <div><div style={{fontSize:11,color:GRAY,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Credit</div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:utilPct>75?"#DC2626":DARK}}>{utilPct}% used</div></div>
+                  <div><div style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Credit</div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:utilPct>75?"#DC2626":DARK}}>{utilPct}% used</div></div>
                 </div>
               </div>
 
@@ -1915,7 +1915,7 @@ export default function DashboardPage(){
                 {/* Transactions */}
                 <div style={{...CARD,overflow:"hidden"}}>
                   <div style={{padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
-                    <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
+                    <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
                     <button onClick={()=>setTab("History")} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
                   </div>
                   <div style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
@@ -1943,7 +1943,7 @@ export default function DashboardPage(){
                   {/* Spending */}
                   <div style={{...CARD,overflow:"hidden"}}>
                     <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                      <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Monthly Spending</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
+                      <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Monthly Spending</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
                     </div>
                     <div style={{padding:"4px 20px 0"}}>
                       {spend.length===0
@@ -1960,7 +1960,7 @@ export default function DashboardPage(){
                   {/* Alerts */}
                   <div style={{...CARD,overflow:"hidden"}}>
                     <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Alerts</div>
+                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Alerts</div>
                       {notifs.length>0&&<span style={{fontSize:11,fontWeight:700,padding:"2px 8px",borderRadius:99,background:"rgba(140,29,37,.1)",color:RED}}>{notifs.length}</span>}
                     </div>
                     {notifs.length===0

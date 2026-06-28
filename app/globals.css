@@ -304,17 +304,20 @@ img, video, svg, iframe {
   .mob-table-wrap > * { min-width: 520px; }
   /* Login: hide left panel, let right fill full width */
   .mob-login-left  { display: none !important; }
-  .mob-login-right { width: 100% !important; max-width: 100% !important; min-width: unset !important; padding: 0 !important; }
-  .mob-login-wrap  { display: flex !important; flex-direction: column !important; min-height: 100dvh !important; padding: 12px !important; grid-template-columns: unset !important; justify-content: center !important; }
-  .login-card      { border-radius: 14px !important; }
-  .login-card-header { padding: 10px 16px !important; }
-  .login-card-body { padding: 18px 16px 14px !important; }
-  .login-card-body > div:first-child { margin-bottom: 14px !important; }
-  .login-card-body h1 { font-size: 22px !important; margin-bottom: 3px !important; }
-  .login-card-body form { gap: 12px !important; }
-  .login-card-body > div:nth-child(3) { margin: 14px 0 !important; }
-  .login-card-body > div:last-child a { padding: 10px 14px !important; }
-  .login-card-footer { padding: 10px 16px !important; }
+  .mob-login-right { width: 100% !important; max-width: 360px !important; min-width: unset !important; padding: 0 !important; margin: 0 auto !important; }
+  .mob-login-wrap  { display: flex !important; flex-direction: column !important; min-height: 100dvh !important; padding: 16px !important; grid-template-columns: unset !important; justify-content: center !important; align-items: center !important; }
+  .login-card      { border-radius: 12px !important; }
+  .login-card-header { padding: 8px 14px !important; }
+  .login-card-body { padding: 14px 14px 12px !important; }
+  .login-card-body > div:first-child { margin-bottom: 10px !important; }
+  .login-card-body h1 { font-size: 20px !important; margin-bottom: 2px !important; }
+  .login-card-body p { font-size: 12.5px !important; }
+  .login-card-body form { gap: 10px !important; }
+  .login-card-body input { padding: 9px 12px !important; font-size: 13.5px !important; }
+  .login-card-body button[type="submit"] { padding: 11px !important; font-size: 14px !important; }
+  .login-card-body > div:nth-child(3) { margin: 10px 0 !important; }
+  .login-card-body > div:last-child a { padding: 8px 12px !important; }
+  .login-card-footer { padding: 8px 14px !important; font-size: 11px !important; }
   /* Alternating timeline: reflow to [circle][card] for every item */
   .mob-tl-wrap { padding-left: 0 !important; }
   .mob-tl-wrap .mob-tl-line { display: none !important; }
@@ -517,12 +520,29 @@ img, video, svg, iframe {
   .db-bottom-nav { display: flex; }
   .db-net-pill   { width: 100%; justify-content: space-between; gap: 0; }
   .db-net-sep    { display: none !important; }
+  /* Hero row: sticky within db-body scroll container; header is flex-fixed above */
+  .db-hero-row { top: 0; padding-top: 12px; }
+  /* Account cards compact on mobile */
+  .db-account-card { min-height: 130px !important; padding: 14px 16px 12px !important; }
+  .db-card-balance { font-size: 22px !important; }
 }
 @media (min-width: 540px) and (max-width: 760px) {
   .db-cards { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 480px) {
   .db-user-name { display: none !important; }
+  /* Even more compact on small phones */
+  .db-account-card { min-height: 116px !important; padding: 12px 14px 10px !important; }
+  .db-card-balance { font-size: 20px !important; }
+}
+
+/* Hero greeting row — sticky so it stays visible while cards/transactions scroll */
+.db-hero-row {
+  position: sticky;
+  top: 60px; /* below the 60px sticky header */
+  z-index: 10;
+  background: #F5F7FA;
+  padding-bottom: 8px;
 }
 
 /* Transfers / Pay Bills tab — 2-col form + sidebar */
