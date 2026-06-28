@@ -304,20 +304,28 @@ img, video, svg, iframe {
   .mob-table-wrap > * { min-width: 520px; }
   /* Login: hide left panel, let right fill full width */
   .mob-login-left  { display: none !important; }
-  .mob-login-right { width: 100% !important; max-width: 360px !important; min-width: unset !important; padding: 0 !important; margin: 0 auto !important; }
-  .mob-login-wrap  { display: flex !important; flex-direction: column !important; min-height: 100dvh !important; padding: 16px !important; grid-template-columns: unset !important; justify-content: center !important; align-items: center !important; }
+  .mob-login-right { width: 100% !important; max-width: 320px !important; min-width: unset !important; padding: 0 !important; margin: 0 auto !important; }
+  /* Use flex-start + padding instead of center so footer never goes off-screen */
+  .mob-login-wrap  { display: flex !important; flex-direction: column !important; min-height: 100dvh !important; padding: 20px 16px !important; grid-template-columns: unset !important; justify-content: flex-start !important; align-items: center !important; }
   .login-card      { border-radius: 12px !important; }
-  .login-card-header { padding: 8px 14px !important; }
-  .login-card-body { padding: 14px 14px 12px !important; }
-  .login-card-body > div:first-child { margin-bottom: 10px !important; }
-  .login-card-body h1 { font-size: 20px !important; margin-bottom: 2px !important; }
-  .login-card-body p { font-size: 12.5px !important; }
-  .login-card-body form { gap: 10px !important; }
-  .login-card-body input { padding: 9px 12px !important; font-size: 13.5px !important; }
-  .login-card-body button[type="submit"] { padding: 11px !important; font-size: 14px !important; }
-  .login-card-body > div:nth-child(3) { margin: 10px 0 !important; }
-  .login-card-body > div:last-child a { padding: 8px 12px !important; }
-  .login-card-footer { padding: 8px 14px !important; font-size: 11px !important; }
+  .login-card-header { padding: 7px 14px !important; }
+  .login-card-body { padding: 12px 14px 10px !important; }
+  .login-card-body > div:first-child { margin-bottom: 8px !important; }
+  .login-card-body h1 { font-size: 19px !important; margin-bottom: 1px !important; }
+  .login-card-body p { font-size: 12px !important; }
+  .login-card-body form { gap: 9px !important; }
+  .login-card-body label { font-size: 12.5px !important; margin-bottom: 4px !important; }
+  .login-card-body input { padding: 8px 11px !important; font-size: 13px !important; border-radius: 8px !important; }
+  .login-card-body button[type="submit"] { padding: 10px !important; font-size: 13.5px !important; border-radius: 9px !important; }
+  /* "or" divider — keep but tight */
+  .login-card-body > div:nth-child(3) { margin: 7px 0 !important; }
+  /* Open-account link boxes — compact: hide subtitle, tighten padding */
+  .login-card-body > div:last-child { gap: 5px !important; }
+  .login-card-body > div:last-child a { padding: 7px 10px !important; border-radius: 9px !important; }
+  .login-card-body > div:last-child a > div > div:last-child { display: none !important; }
+  .login-card-body > div:last-child a > div > div:first-child { font-size: 12px !important; margin-bottom: 0 !important; }
+  /* FDIC footer */
+  .login-card-footer { padding: 7px 14px !important; font-size: 10.5px !important; gap: 10px !important; }
   /* Alternating timeline: reflow to [circle][card] for every item */
   .mob-tl-wrap { padding-left: 0 !important; }
   .mob-tl-wrap .mob-tl-line { display: none !important; }
