@@ -299,8 +299,17 @@ img, video, svg, iframe {
   .mob-table-wrap > * { min-width: 520px; }
   /* Login: hide left panel, let right fill full width */
   .mob-login-left  { display: none !important; }
-  .mob-login-right { width: 100% !important; max-width: 100% !important; min-width: unset !important; }
-  .mob-login-wrap  { display: flex !important; flex-direction: column !important; min-height: unset !important; padding: 20px !important; grid-template-columns: unset !important; }
+  .mob-login-right { width: 100% !important; max-width: 100% !important; min-width: unset !important; padding: 0 !important; }
+  .mob-login-wrap  { display: flex !important; flex-direction: column !important; min-height: 100dvh !important; padding: 12px !important; grid-template-columns: unset !important; justify-content: center !important; }
+  .login-card      { border-radius: 14px !important; }
+  .login-card-header { padding: 10px 16px !important; }
+  .login-card-body { padding: 18px 16px 14px !important; }
+  .login-card-body > div:first-child { margin-bottom: 14px !important; }
+  .login-card-body h1 { font-size: 22px !important; margin-bottom: 3px !important; }
+  .login-card-body form { gap: 12px !important; }
+  .login-card-body > div:nth-child(3) { margin: 14px 0 !important; }
+  .login-card-body > div:last-child a { padding: 10px 14px !important; }
+  .login-card-footer { padding: 10px 16px !important; }
   /* Alternating timeline: reflow to [circle][card] for every item */
   .mob-tl-wrap { padding-left: 0 !important; }
   .mob-tl-wrap .mob-tl-line { display: none !important; }

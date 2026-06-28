@@ -126,17 +126,17 @@ export default function LoginPage() {
 
           {/* ── Right: form card ── */}
           <div className="mob-login-right" style={{ padding: "40px 0" }}>
-            <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 24px 64px rgba(0,0,0,.35)", overflow: "hidden" }}>
+            <div className="login-card" style={{ background: "#fff", borderRadius: 20, boxShadow: "0 24px 64px rgba(0,0,0,.35)", overflow: "hidden" }}>
 
               {/* Top bar */}
-              <div style={{ padding: "16px 32px", display: "flex", justifyContent: "flex-end", borderBottom: "1px solid rgba(17,24,39,.06)" }}>
+              <div className="login-card-header" style={{ padding: "16px 32px", display: "flex", justifyContent: "flex-end", borderBottom: "1px solid rgba(17,24,39,.06)" }}>
                 <Link href="/" style={{ fontSize: 13, color: GRAY, textDecoration: "none", display: "flex", alignItems: "center", gap: 6, fontWeight: 500 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
                   Back to fscb.com
                 </Link>
               </div>
 
-              <div style={{ padding: "36px 32px 32px" }}>
+              <div className="login-card-body" style={{ padding: "36px 32px 32px" }}>
                 {/* Heading */}
                 <div style={{ marginBottom: 32 }}>
                   <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 30, color: DARK, margin: "0 0 6px", letterSpacing: "-.03em" }}>Welcome back</h1>
@@ -235,7 +235,7 @@ export default function LoginPage() {
               </div>
 
               {/* Bottom strip */}
-              <div style={{ padding: "14px 32px", borderTop: "1px solid rgba(17,24,39,.06)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "#FAFAFA" }}>
+              <div className="login-card-footer" style={{ padding: "14px 32px", borderTop: "1px solid rgba(17,24,39,.06)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "#FAFAFA" }}>
                 {[
                   { icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", label: "256-bit SSL" },
                   { icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z", label: "Member FDIC" },
