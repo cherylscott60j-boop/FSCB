@@ -125,11 +125,11 @@ function AccountCard({a}:{a:Acct}){
         <span style={{fontSize:10,fontWeight:700,padding:"2px 7px",borderRadius:4,background:"rgba(255,255,255,.12)",color:"rgba(255,255,255,.7)",letterSpacing:".08em",textTransform:"uppercase"}}>{a.type}</span>
         <span style={{fontSize:12,color:"rgba(255,255,255,.45)",fontFamily:"'Courier New',monospace",letterSpacing:".12em"}}>{a.number}</span>
       </div>
-      <div style={{marginTop:20,position:"relative"}}>
+      <div className="db-card-body" style={{marginTop:20,position:"relative"}}>
         <div style={{fontSize:10.5,fontWeight:600,color:"rgba(255,255,255,.45)",letterSpacing:".1em",textTransform:"uppercase",marginBottom:4}}>{isCC?"Current Balance":"Account Balance"}</div>
         <div className="db-card-balance" style={{fontFamily:FONT,fontWeight:800,fontSize:30,color:"#fff",letterSpacing:"-.025em",lineHeight:1}}>{isCC?usd(Math.abs(Math.min(a.balance,0))):<>{a.balance<0?"–":""}{usd(a.balance)}</>}</div>
       </div>
-      <div style={{height:1,background:"rgba(255,255,255,.12)",margin:"14px 0 10px"}}/>
+      <div className="db-card-divider" style={{height:1,background:"rgba(255,255,255,.12)",margin:"14px 0 10px"}}/>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative"}}>
         <span style={{fontSize:11.5,color:"rgba(255,255,255,.45)",fontWeight:500}}>{isCC?"Available Credit":"Available Balance"}</span>
         <span style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:"rgba(255,255,255,.85)"}}>{usd(a.available)}</span>
