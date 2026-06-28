@@ -530,3 +530,84 @@ INSERT INTO fee_schedule (key, label, description, amount, waivable) VALUES
   ('returned_item',       'Returned Item Fee',          'Returned check or ACH item',                   35.00, true),
   ('late_payment',        'Late Payment Fee',           'Credit card payment received after due date',  29.00, true)
 ON CONFLICT (key) DO NOTHING;
+
+
+-- ============================================================
+-- 15. COMPLIANCE REPORTS (SAR & CTR)
+--    Suspicious Activity Reports and Currency Transaction Reports.
+--    Service role only — customers cannot see these.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS compliance_reports (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  report_type    TEXT NOT NULL CHECK (report_type IN ('SAR','CTR')),
+  reference_id   TEXT UNIQUE NOT NULL,
+  user_id        UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  account_id     UUID REFERENCES accounts(id) ON DELETE SET NULL,
+  transaction_id UUID REFERENCES transactions(id) ON DELETE SET NULL,
+  subject_name   TEXT NOT NULL,
+  amount         NUMERIC(15,2),
+  description    TEXT NOT NULL,
+  status         TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','filed','submitted','closed')),
+  filed_at       TIMESTAMPTZ,
+  filed_by       TEXT,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE compliance_reports ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX IF NOT EXISTS idx_compliance_type   ON compliance_reports(report_type);
+CREATE INDEX IF NOT EXISTS idx_compliance_status ON compliance_reports(status);
+CREATE INDEX IF NOT EXISTS idx_compliance_user   ON compliance_reports(user_id);
+
+CREATE TRIGGER trg_compliance_updated_at
+  BEFORE UPDATE ON compliance_reports
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+
+-- ============================================================
+-- 16. OFAC WATCHLIST
+--    Internal sanctions watchlist. In production seeded from
+--    the OFAC SDN list. Service role only.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ofac_watchlist (
+  id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name     TEXT NOT NULL,
+  country  TEXT,
+  category TEXT NOT NULL DEFAULT 'individual',
+  remarks  TEXT,
+  added_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  added_by TEXT
+);
+
+ALTER TABLE ofac_watchlist ENABLE ROW LEVEL SECURITY;
+
+INSERT INTO ofac_watchlist (name, country, category, remarks) VALUES
+  ('John T. Blackwood',    'US', 'individual', 'Suspected financial crimes — pending investigation'),
+  ('Merchant Capital LLC', 'US', 'entity',     'Shell company — structuring investigation'),
+  ('Carlos Mendez Rivera', 'MX', 'individual', 'Drug trafficking — OFAC SDN'),
+  ('Global Finance Corp',  'RU', 'entity',     'Sanctions evasion — OFAC SDN'),
+  ('Ahmed Al-Rashid',      'AE', 'individual', 'Terrorism financing — OFAC SDN')
+ON CONFLICT DO NOTHING;
+
+
+-- ============================================================
+-- 17. OFAC SCREENINGS
+--    Record of every name-screen performed by an admin.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS ofac_screenings (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id       UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  screened_name TEXT NOT NULL,
+  match_score   SMALLINT NOT NULL DEFAULT 0,
+  matched_entry TEXT,
+  status        TEXT NOT NULL DEFAULT 'clear' CHECK (status IN ('clear','potential_match','confirmed_match','false_positive')),
+  reviewed_by   TEXT,
+  reviewed_at   TIMESTAMPTZ,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE ofac_screenings ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX IF NOT EXISTS idx_ofac_screenings_user   ON ofac_screenings(user_id);
+CREATE INDEX IF NOT EXISTS idx_ofac_screenings_status ON ofac_screenings(status);

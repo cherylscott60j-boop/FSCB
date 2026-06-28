@@ -77,6 +77,17 @@ type DisputeRow = {
   description:string; status:string; adminNotes:string;
   creditTxId:string|null; openedAt:string; resolvedAt:string|null;
 };
+type ComplianceReport = {
+  id:string; reportType:string; referenceId:string;
+  userId:string|null; accountId:string|null; transactionId:string|null;
+  subjectName:string; amount:number|null; description:string;
+  status:string; filedAt:string|null; filedBy:string|null; createdAt:string;
+};
+type OfacScreening = {
+  id:string; userId:string|null; screenedName:string;
+  matchScore:number; matchedEntry:string|null; status:string;
+  reviewedBy:string|null; reviewedAt:string|null; createdAt:string;
+};
 type RateConfig = {
   key:string; label:string; productType:string; rateType:string;
   value:number; updatedAt:string; updatedBy:string|null;
@@ -655,9 +666,13 @@ const ACTION_META:Record<string,{label:string;color:string;bg:string;category:st
   "fee.update":               {label:"Fee Updated",        color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Rates"},
   "fee.apply":                {label:"Fee Applied",        color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Rates"},
   "interest.apply":           {label:"Interest Applied",   color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Rates"},
+  "compliance.sar_file":      {label:"SAR Filed",           color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Compliance"},
+  "compliance.ctr_file":      {label:"CTR Filed",           color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Compliance"},
+  "compliance.status_update": {label:"Report Updated",      color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Compliance"},
+  "compliance.ofac_review":   {label:"OFAC Reviewed",       color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Compliance"},
 };
 
-const AUDIT_CATEGORIES=["All","Account","Transaction","Application","KYC","Fraud","Dispute","Rates"] as const;
+const AUDIT_CATEGORIES=["All","Account","Transaction","Application","KYC","Fraud","Dispute","Rates","Compliance"] as const;
 
 function AuditTab({logs}:{logs:AuditLog[]}){
   const [search,  setSearch]  = useState("");
@@ -1435,6 +1450,7 @@ const CP_NAV=[
   {id:"Audit",         label:"Audit Log",      icon:"M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2M12 12h.01M12 16h.01"},
   {id:"Reports",       label:"Reports",        icon:"M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v14a2 2 0 0 0-2 2h-2a2 2 0 0 0-2-2z"},
   {id:"Rates",         label:"Rates & Fees",   icon:"M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM12 6v6l4 2"},
+  {id:"Compliance",    label:"Compliance",     icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"},
   {id:"Disputes",      label:"Disputes",       icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
@@ -1678,6 +1694,404 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB: COMPLIANCE (SAR / CTR / OFAC)
+═══════════════════════════════════════════════════════ */
+const COMPLIANCE_STATUS:Record<string,{label:string;bg:string;text:string}>={
+  draft:     {label:"Draft",         bg:"rgba(107,114,128,.1)",  text:GRAY},
+  filed:     {label:"Filed",         bg:"rgba(37,99,235,.1)",    text:"#2563EB"},
+  submitted: {label:"Submitted",     bg:"rgba(22,163,74,.1)",    text:"#16A34A"},
+  closed:    {label:"Closed",        bg:"rgba(17,24,39,.06)",    text:MID},
+};
+const OFAC_STATUS:Record<string,{label:string;bg:string;text:string}>={
+  clear:            {label:"Clear",            bg:"rgba(22,163,74,.1)",    text:"#16A34A"},
+  potential_match:  {label:"Potential Match",  bg:"rgba(217,119,6,.12)",   text:"#854D0E"},
+  confirmed_match:  {label:"Confirmed Match",  bg:"rgba(220,38,38,.1)",    text:"#DC2626"},
+  false_positive:   {label:"False Positive",   bg:"rgba(107,114,128,.1)",  text:GRAY},
+};
+
+function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCTR,onUpdateStatus,onOfacScreen,onUpdateScreening}:{
+  reports:ComplianceReport[]; screenings:OfacScreening[];
+  users:UserRow[]; accounts:AcctRow[]; txs:TxRow[];
+  onFileSAR:(d:{userId:string;accountId:string;transactionId:string;subjectName:string;amount:string;description:string})=>Promise<string|null>;
+  onFileCTR:(d:{userId:string;accountId:string;transactionId:string;subjectName:string;amount:string;description:string})=>Promise<string|null>;
+  onUpdateStatus:(reportId:string,status:string)=>Promise<string|null>;
+  onOfacScreen:(userId:string,name:string)=>Promise<OfacScreening|null>;
+  onUpdateScreening:(screeningId:string,status:string)=>Promise<string|null>;
+}){
+  const [subTab, setSubTab] = useState<"SAR"|"CTR"|"OFAC">("SAR");
+
+  /* CTR scan */
+  const [ctrEligible, setCtrEligible] = useState<Record<string,unknown>[]>([]);
+  const [scanning,    setScanning]    = useState(false);
+  const [scanMsg,     setScanMsg]     = useState<{text:string;ok:boolean}|null>(null);
+
+  /* SAR form */
+  const [sarOpen,    setSarOpen]    = useState(false);
+  const [sarUser,    setSarUser]    = useState(users[0]?.id||"");
+  const [sarAcct,    setSarAcct]    = useState("");
+  const [sarTx,      setSarTx]      = useState("");
+  const [sarName,    setSarName]    = useState("");
+  const [sarAmt,     setSarAmt]     = useState("");
+  const [sarDesc,    setSarDesc]    = useState("");
+  const [sarBusy,    setSarBusy]    = useState(false);
+  const [sarErr,     setSarErr]     = useState("");
+  const [sarDone,    setSarDone]    = useState<string|null>(null);
+
+  /* CTR form */
+  const [ctrTxId,    setCtrTxId]    = useState<string|null>(null); // which eligible tx to file
+  const [ctrName,    setCtrName]    = useState("");
+  const [ctrDesc,    setCtrDesc]    = useState("");
+  const [ctrBusy,    setCtrBusy]    = useState(false);
+  const [ctrErr,     setCtrErr]     = useState("");
+  const [ctrDone,    setCtrDone]    = useState<string|null>(null);
+
+  /* OFAC screen form */
+  const [ofacUser,   setOfacUser]   = useState(users[0]?.id||"");
+  const [ofacName,   setOfacName]   = useState("");
+  const [ofacBusy,   setOfacBusy]   = useState(false);
+  const [ofacErr,    setOfacErr]    = useState("");
+  const [ofacResult, setOfacResult] = useState<OfacScreening|null>(null);
+  const [statusBusy, setStatusBusy] = useState<string|null>(null);
+
+  const sars = reports.filter(r=>r.reportType==="SAR");
+  const ctrs = reports.filter(r=>r.reportType==="CTR");
+  const pendingOfac = screenings.filter(s=>s.status==="potential_match").length;
+
+  const sarUserAccts = accounts.filter(a=>a.userId===sarUser);
+  const sarAcctTxs   = txs.filter(t=>t.accountId===sarAcct).slice(0,30);
+
+  async function runCtrScan(){
+    setScanning(true); setScanMsg(null);
+    try{
+      const res=await fetch("/api/cpanel/compliance/ctr-scan");
+      const json=await res.json() as {eligible:Record<string,unknown>[];count:number};
+      setCtrEligible(json.eligible??[]);
+      setScanMsg({text:`Found ${json.count} transaction${json.count!==1?"s":""} ≥ $10,000 without a CTR.`, ok:true});
+    }catch{setScanMsg({text:"Scan failed — try again.",ok:false});}
+    finally{setScanning(false);}
+  }
+
+  async function submitSAR(){
+    if(!sarName.trim()){setSarErr("Subject name is required.");return;}
+    if(!sarDesc.trim()){setSarErr("Description is required.");return;}
+    setSarErr(""); setSarBusy(true);
+    const ref=await onFileSAR({userId:sarUser,accountId:sarAcct,transactionId:sarTx,subjectName:sarName,amount:sarAmt,description:sarDesc});
+    setSarBusy(false);
+    if(ref&&ref.startsWith("SAR-")){
+      setSarDone(ref);
+      setSarName(""); setSarAmt(""); setSarDesc(""); setSarAcct(""); setSarTx("");
+      setTimeout(()=>{setSarDone(null);setSarOpen(false);},4000);
+    } else setSarErr(ref||"Failed to file SAR.");
+  }
+
+  async function submitCTR(eligTx:Record<string,unknown>){
+    if(!ctrName.trim()){setCtrErr("Subject name is required.");return;}
+    if(!ctrDesc.trim()){setCtrDesc(""); setCtrErr("Description is required.");return;}
+    setCtrErr(""); setCtrBusy(true);
+    const user=users.find(u=>u.id===eligTx.user_id);
+    const ref=await onFileCTR({userId:String(eligTx.user_id||""),accountId:String(eligTx.account_id||""),transactionId:String(eligTx.id||""),subjectName:ctrName||`${user?.firstName||""} ${user?.lastName||""}`.trim(),amount:String(Math.abs(Number(eligTx.amount))),description:ctrDesc||`Cash transaction of ${usd(Math.abs(Number(eligTx.amount)))}`});
+    setCtrBusy(false);
+    if(ref&&ref.startsWith("CTR-")){
+      setCtrDone(ref);
+      setCtrEligible(prev=>prev.filter(t=>t.id!==eligTx.id));
+      setCtrTxId(null); setCtrName(""); setCtrDesc("");
+      setTimeout(()=>setCtrDone(null),4000);
+    } else setCtrErr(ref||"Failed to file CTR.");
+  }
+
+  async function runOfacScreen(){
+    const name=ofacName.trim()||(()=>{const u=users.find(u=>u.id===ofacUser);return u?`${u.firstName} ${u.lastName}`.trim():"";})();
+    if(!name){setOfacErr("Enter a name or select a customer.");return;}
+    setOfacErr(""); setOfacBusy(true); setOfacResult(null);
+    const result=await onOfacScreen(ofacUser,name);
+    setOfacBusy(false);
+    if(result) setOfacResult(result);
+    else setOfacErr("Screening failed — try again.");
+  }
+
+  async function reviewScreening(id:string, status:string){
+    setStatusBusy(id);
+    await onUpdateScreening(id,status);
+    setStatusBusy(null);
+  }
+
+  async function updateReportStatus(id:string, status:string){
+    setStatusBusy(id);
+    await onUpdateStatus(id,status);
+    setStatusBusy(null);
+  }
+
+  function ComplianceBadge({status,type}:{status:string;type:"report"|"ofac"}){
+    const meta=(type==="report"?COMPLIANCE_STATUS:OFAC_STATUS)[status]??{label:status,bg:"rgba(107,114,128,.1)",text:GRAY};
+    return <span style={{fontSize:11.5,fontWeight:700,padding:"2px 8px",borderRadius:99,background:meta.bg,color:meta.text,letterSpacing:".04em",whiteSpace:"nowrap"}}>{meta.label}</span>;
+  }
+
+  const STATUS_FLOW:Record<string,string[]>={
+    draft:["filed","closed"], filed:["submitted","closed"], submitted:["closed"],
+  };
+
+  return(
+    <div>
+      <SectionHead title="Compliance" sub="SAR, CTR filings and OFAC/sanctions screening"/>
+
+      {/* Stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:14,marginBottom:24}}>
+        <StatCard label="Total SARs"        value={String(sars.length)}    sub={`${sars.filter(r=>r.status==="draft").length} draft`}          color="#DC2626" icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
+        <StatCard label="Total CTRs"        value={String(ctrs.length)}    sub={`${ctrs.filter(r=>r.status==="submitted").length} submitted`}   color="#D97706" icon="M21 12a9 9 0 1 1-6.219-8.56"/>
+        <StatCard label="OFAC Screenings"   value={String(screenings.length)} sub={`${pendingOfac} potential match${pendingOfac!==1?"es":""}`} color={pendingOfac>0?"#DC2626":"#7C3AED"} icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <StatCard label="Unfiled Large Txs" value={String(ctrEligible.length)} sub="scan to detect ≥ $10,000"                                  color={ctrEligible.length>0?"#D97706":GRAY} icon="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
+      </div>
+
+      {/* Sub-tabs */}
+      <div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
+        {(["SAR","CTR","OFAC"] as const).map(t=>(
+          <button key={t} onClick={()=>setSubTab(t)} style={{background:subTab===t?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:subTab===t?RED:GRAY,border:`1px solid ${subTab===t?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"6px 20px",fontSize:13,fontWeight:subTab===t?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+            {t==="SAR"?"Suspicious Activity (SAR)":t==="CTR"?"Currency Transactions (CTR)":"OFAC / Sanctions Screening"}
+          </button>
+        ))}
+      </div>
+
+      {/* ── SAR ── */}
+      {subTab==="SAR"&&(
+        <div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
+            <div style={{fontSize:13,color:GRAY}}>{sars.length} SAR{sars.length!==1?"s":""} filed</div>
+            <button onClick={()=>{setSarOpen(v=>!v);setSarDone(null);setSarErr("");}} style={{display:"flex",alignItems:"center",gap:7,background:sarOpen?"rgba(17,24,39,.07)":RED,border:sarOpen?"1px solid rgba(17,24,39,.15)":"none",borderRadius:9,padding:"8px 18px",fontSize:13,fontWeight:600,color:sarOpen?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={sarOpen?"M18 6 6 18M6 6l12 12":"M12 5v14M5 12h14"}/></svg>
+              {sarOpen?"Cancel":"File New SAR"}
+            </button>
+          </div>
+
+          {sarOpen&&(
+            <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
+              <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+                <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Suspicious Activity Report</div>
+                <div style={{fontSize:12,color:GRAY,marginTop:2}}>Filed internally — submit to FinCEN via BSA E-Filing System</div>
+              </div>
+              {sarDone?(
+                <div style={{padding:"36px 24px",textAlign:"center"}}>
+                  <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(22,163,74,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 12px",color:"#16A34A"}}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                  </div>
+                  <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>SAR Filed</div>
+                  <div style={{fontSize:13,color:GRAY,marginTop:6}}>Reference: <strong style={{fontFamily:"monospace"}}>{sarDone}</strong> — status: Draft</div>
+                </div>
+              ):(
+                <div style={{padding:"20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                  <div><label style={LBL}>Customer (Subject)</label><select value={sarUser} onChange={e=>{setSarUser(e.target.value);setSarAcct("");setSarTx("");setSarName(()=>{const u=users.find(u=>u.id===e.target.value);return u?`${u.firstName} ${u.lastName}`.trim():"";});}} style={SEL}>{users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>)}</select></div>
+                  <div><label style={LBL}>Account <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><select value={sarAcct} onChange={e=>{setSarAcct(e.target.value);setSarTx("");}} style={SEL}><option value="">No specific account</option>{sarUserAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4}</option>)}</select></div>
+                  <div><label style={LBL}>Linked Transaction <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><select value={sarTx} onChange={e=>{setSarTx(e.target.value);if(e.target.value){const t=sarAcctTxs.find(t=>t.id===e.target.value);if(t)setSarAmt(String(Math.abs(t.amount)));} }} style={SEL}><option value="">No specific transaction</option>{sarAcctTxs.map(t=><option key={t.id} value={t.id}>{t.date} — {t.merchant} ({t.amount>0?"+":""}{usd(t.amount)})</option>)}</select></div>
+                  <div><label style={LBL}>Subject Full Name</label><input type="text" placeholder="Full legal name" value={sarName} onChange={e=>setSarName(e.target.value)} style={INP}/></div>
+                  <div><label style={LBL}>Amount Involved <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,pointerEvents:"none"}}>$</span><input type="number" min="0" step="0.01" placeholder="0.00" value={sarAmt} onChange={e=>setSarAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div></div>
+                  <div style={{gridColumn:"1/-1"}}><label style={LBL}>Description of Suspicious Activity</label><textarea rows={4} placeholder="Describe the suspicious activity, pattern observed, and reason for filing…" value={sarDesc} onChange={e=>setSarDesc(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/></div>
+                  {sarErr&&<div style={{gridColumn:"1/-1",fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{sarErr}</div>}
+                  <div style={{gridColumn:"1/-1"}}><button disabled={sarBusy} onClick={submitSAR} style={{background:RED,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:sarBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:sarBusy?.7:1}}>{sarBusy?"Filing…":"File SAR (Draft)"}</button></div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div style={{...CARD,overflow:"hidden"}}>
+            {sars.length===0
+              ?<Empty msg="No SARs filed. Use the form above to file a Suspicious Activity Report."/>
+              :sars.map((r,i)=>{
+                const user=users.find(u=>u.id===r.userId);
+                const nextStatuses=STATUS_FLOW[r.status]??[];
+                return(
+                  <div key={r.id} style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:12,padding:"14px 20px",borderBottom:i<sars.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
+                    <div style={{width:38,height:38,borderRadius:9,background:"rgba(220,38,38,.08)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#DC2626"}}>
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
+                    </div>
+                    <div style={{flex:1,minWidth:200}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
+                        <span style={{fontWeight:700,fontSize:12.5,fontFamily:"monospace",color:DARK}}>{r.referenceId}</span>
+                        <ComplianceBadge status={r.status} type="report"/>
+                      </div>
+                      <div style={{fontSize:13.5,fontWeight:600,color:DARK,marginBottom:2}}>{r.subjectName}</div>
+                      <div style={{fontSize:12,color:GRAY}}>{user?user.email:"—"}{r.amount!=null&&<> · {usd(r.amount)}</>} · {fmtDate(r.createdAt)}</div>
+                      {r.description&&<div style={{fontSize:12,color:MID,marginTop:3,fontStyle:"italic",maxWidth:400,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.description}</div>}
+                    </div>
+                    {nextStatuses.length>0&&(
+                      <div style={{display:"flex",gap:6,flexShrink:0}}>
+                        {nextStatuses.map(s=>(
+                          <button key={s} disabled={statusBusy===r.id} onClick={()=>updateReportStatus(r.id,s)} style={{background:s==="closed"?"rgba(17,24,39,.05)":s==="submitted"?"rgba(22,163,74,.09)":"rgba(37,99,235,.08)",border:`1px solid ${s==="closed"?"rgba(17,24,39,.12)":s==="submitted"?"rgba(22,163,74,.25)":"rgba(37,99,235,.2)"}`,borderRadius:8,padding:"5px 14px",fontSize:12.5,fontWeight:600,color:s==="closed"?GRAY:s==="submitted"?"#16A34A":"#2563EB",cursor:statusBusy===r.id?"not-allowed":"pointer",fontFamily:"inherit",textTransform:"capitalize",opacity:statusBusy===r.id?.5:1}}>
+                            {statusBusy===r.id?"…":s.charAt(0).toUpperCase()+s.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      )}
+
+      {/* ── CTR ── */}
+      {subTab==="CTR"&&(
+        <div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
+            <div style={{fontSize:13,color:GRAY}}>{ctrs.length} CTR{ctrs.length!==1?"s":""} filed{ctrDone&&<span style={{marginLeft:8,color:"#16A34A",fontWeight:600}}>✓ {ctrDone} filed</span>}</div>
+            <button disabled={scanning} onClick={runCtrScan} style={{display:"flex",alignItems:"center",gap:7,background:scanning?"rgba(140,29,37,.5)":RED,border:"none",borderRadius:9,padding:"8px 18px",fontSize:13,fontWeight:600,color:"#fff",cursor:scanning?"not-allowed":"pointer",fontFamily:"inherit",flexShrink:0}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={scanning?{animation:"spin .75s linear infinite"}:{}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              {scanning?"Scanning…":"Scan for Eligible Transactions"}
+            </button>
+          </div>
+
+          {scanMsg&&<div style={{...CARD,padding:"10px 16px",marginBottom:16,fontSize:13,color:scanMsg.ok?"#16A34A":"#DC2626",display:"flex",alignItems:"center",gap:8}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={scanMsg.ok?"M20 6 9 17l-5-5":"M18 6 6 18M6 6l12 12"}/></svg>{scanMsg.text}</div>}
+
+          {ctrEligible.length>0&&(
+            <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
+              <div style={{padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK}}>
+                Transactions Requiring CTR ({ctrEligible.length})
+              </div>
+              {ctrEligible.map((tx,i)=>{
+                const user=users.find(u=>u.id===tx.user_id);
+                const acct=accounts.find(a=>a.id===tx.account_id);
+                const isFilingThis=ctrTxId===String(tx.id);
+                return(
+                  <div key={String(tx.id)} style={{padding:"14px 20px",borderBottom:i<ctrEligible.length-1?"1px solid rgba(17,24,39,.05)":"none"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
+                      <div style={{flex:1,minWidth:200}}>
+                        <div style={{fontWeight:600,fontSize:13.5,color:DARK,marginBottom:2}}>{user?`${user.firstName} ${user.lastName}`:String(tx.user_id||"")}</div>
+                        <div style={{fontSize:12,color:GRAY}}>{String(tx.merchant||"")} · {acct?`${acct.accountName} ••••${acct.last4}`:""} · {fmtDate(String(tx.posted_at||""))}</div>
+                      </div>
+                      <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:Number(tx.amount)>0?"#16A34A":"#DC2626",flexShrink:0}}>{Number(tx.amount)>0?"+":"-"}{usd(Number(tx.amount))}</div>
+                      <button onClick={()=>{setCtrTxId(isFilingThis?null:String(tx.id));if(!isFilingThis){const u=users.find(u=>u.id===tx.user_id);setCtrName(u?`${u.firstName} ${u.lastName}`.trim():"");setCtrDesc(`Cash transaction of ${usd(Math.abs(Number(tx.amount)))} on ${fmtDate(String(tx.posted_at||""))}`);setCtrErr("");}}} style={{background:isFilingThis?"rgba(17,24,39,.07)":RED,border:isFilingThis?"1px solid rgba(17,24,39,.15)":"none",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:isFilingThis?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all .15s"}}>
+                        {isFilingThis?"Cancel":"File CTR"}
+                      </button>
+                    </div>
+                    {isFilingThis&&(
+                      <div style={{marginTop:12,padding:"14px 16px",background:"rgba(17,24,39,.02)",borderRadius:9,border:"1px solid rgba(17,24,39,.08)",display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                        <div><label style={LBL}>Subject Full Name</label><input type="text" value={ctrName} onChange={e=>setCtrName(e.target.value)} style={INP}/></div>
+                        <div style={{gridColumn:"1/-1"}}><label style={LBL}>Description</label><textarea rows={2} value={ctrDesc} onChange={e=>setCtrDesc(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/></div>
+                        {ctrErr&&<div style={{gridColumn:"1/-1",fontSize:12.5,color:"#DC2626"}}>{ctrErr}</div>}
+                        <div style={{gridColumn:"1/-1"}}><button disabled={ctrBusy} onClick={()=>submitCTR(tx)} style={{background:RED,border:"none",borderRadius:9,padding:"9px 24px",fontSize:13.5,fontWeight:700,color:"#fff",cursor:ctrBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:ctrBusy?.7:1}}>{ctrBusy?"Filing…":"Confirm & File CTR"}</button></div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div style={{...CARD,overflow:"hidden"}}>
+            <div style={{padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK}}>Filed CTRs</div>
+            {ctrs.length===0
+              ?<Empty msg="No CTRs filed. Scan for eligible transactions above."/>
+              :ctrs.map((r,i)=>{
+                const user=users.find(u=>u.id===r.userId);
+                return(
+                  <div key={r.id} style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:12,padding:"13px 20px",borderBottom:i<ctrs.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
+                    <div style={{width:36,height:36,borderRadius:9,background:"rgba(217,119,6,.08)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#D97706"}}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    </div>
+                    <div style={{flex:1,minWidth:200}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
+                        <span style={{fontWeight:700,fontSize:12.5,fontFamily:"monospace",color:DARK}}>{r.referenceId}</span>
+                        <ComplianceBadge status={r.status} type="report"/>
+                      </div>
+                      <div style={{fontSize:13,fontWeight:600,color:DARK}}>{r.subjectName}</div>
+                      <div style={{fontSize:12,color:GRAY}}>{user?user.email:"—"}{r.amount!=null&&<> · {usd(r.amount)}</>} · {fmtDate(r.createdAt)}</div>
+                    </div>
+                    {(STATUS_FLOW[r.status]??[]).map(s=>(
+                      <button key={s} disabled={statusBusy===r.id} onClick={()=>updateReportStatus(r.id,s)} style={{background:s==="closed"?"rgba(17,24,39,.05)":"rgba(22,163,74,.09)",border:`1px solid ${s==="closed"?"rgba(17,24,39,.12)":"rgba(22,163,74,.25)"}`,borderRadius:8,padding:"5px 14px",fontSize:12.5,fontWeight:600,color:s==="closed"?GRAY:"#16A34A",cursor:statusBusy===r.id?"not-allowed":"pointer",fontFamily:"inherit",textTransform:"capitalize",opacity:statusBusy===r.id?.5:1}}>
+                        {statusBusy===r.id?"…":s.charAt(0).toUpperCase()+s.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      )}
+
+      {/* ── OFAC ── */}
+      {subTab==="OFAC"&&(
+        <div>
+          {/* Screen form */}
+          <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
+            <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+              <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>OFAC / Sanctions Name Screen</div>
+              <div style={{fontSize:12,color:GRAY,marginTop:2}}>Screen a customer against the internal watchlist — result is logged automatically</div>
+            </div>
+            <div style={{padding:"20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,alignItems:"end"}}>
+              <div>
+                <label style={LBL}>Customer (auto-fills name)</label>
+                <select value={ofacUser} onChange={e=>{setOfacUser(e.target.value);const u=users.find(u=>u.id===e.target.value);if(u)setOfacName(`${u.firstName} ${u.lastName}`.trim());}} style={SEL}>
+                  {users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={LBL}>Name to Screen</label>
+                <input type="text" placeholder="Override or enter manually…" value={ofacName} onChange={e=>setOfacName(e.target.value)} style={INP}/>
+              </div>
+              <div style={{gridColumn:"1/-1",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+                <button disabled={ofacBusy} onClick={runOfacScreen} style={{background:RED,border:"none",borderRadius:9,padding:"10px 24px",fontSize:13.5,fontWeight:700,color:"#fff",cursor:ofacBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:ofacBusy?.7:1,display:"flex",alignItems:"center",gap:7}}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={ofacBusy?{animation:"spin .75s linear infinite"}:{}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  {ofacBusy?"Screening…":"Run OFAC Screen"}
+                </button>
+                {ofacErr&&<span style={{fontSize:13,color:"#DC2626"}}>{ofacErr}</span>}
+                {ofacResult&&(
+                  <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:8,padding:"8px 16px",background:ofacResult.status==="clear"?"rgba(22,163,74,.07)":"rgba(217,119,6,.1)",border:`1px solid ${ofacResult.status==="clear"?"rgba(22,163,74,.2)":"rgba(217,119,6,.3)"}`,borderRadius:9}}>
+                    <ComplianceBadge status={ofacResult.status} type="ofac"/>
+                    <span style={{fontSize:13,color:MID}}>Score: <strong>{ofacResult.matchScore}</strong>/100</span>
+                    {ofacResult.matchedEntry&&<span style={{fontSize:12.5,color:DARK}}>Matched: <em>{ofacResult.matchedEntry}</em></span>}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Screening history */}
+          <div style={{...CARD,overflow:"hidden"}}>
+            <div style={{padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK}}>Screening History ({screenings.length})</div>
+            {screenings.length===0
+              ?<Empty msg="No screenings performed yet. Use the form above."/>
+              :screenings.map((s,i)=>{
+                const user=users.find(u=>u.id===s.userId);
+                const isPending=s.status==="potential_match";
+                return(
+                  <div key={s.id} style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:12,padding:"13px 20px",borderBottom:i<screenings.length-1?"1px solid rgba(17,24,39,.06)":"none",background:isPending?"rgba(217,119,6,.03)":"#fff"}}>
+                    <div style={{width:36,height:36,borderRadius:9,background:s.status==="clear"?"rgba(22,163,74,.08)":s.status==="potential_match"?"rgba(217,119,6,.1)":"rgba(220,38,38,.08)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:s.status==="clear"?"#16A34A":s.status==="potential_match"?"#D97706":"#DC2626"}}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div style={{flex:1,minWidth:200}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3,flexWrap:"wrap"}}>
+                        <span style={{fontWeight:600,fontSize:13.5,color:DARK}}>{s.screenedName}</span>
+                        <ComplianceBadge status={s.status} type="ofac"/>
+                        <span style={{fontSize:11.5,fontWeight:700,padding:"1px 7px",borderRadius:5,background:"rgba(17,24,39,.06)",color:s.matchScore>=50?"#D97706":GRAY}}>Score: {s.matchScore}</span>
+                      </div>
+                      <div style={{fontSize:12,color:GRAY}}>
+                        {user?user.email:"manual entry"}
+                        {s.matchedEntry&&<> · Matched: <em>{s.matchedEntry}</em></>}
+                        {" · "}{fmtDate(s.createdAt)}
+                        {s.reviewedBy&&<> · Reviewed by {s.reviewedBy}</>}
+                      </div>
+                    </div>
+                    {isPending&&(
+                      <div style={{display:"flex",gap:6,flexShrink:0}}>
+                        <button disabled={statusBusy===s.id} onClick={()=>reviewScreening(s.id,"confirmed_match")} style={{background:"rgba(220,38,38,.07)",border:"1px solid rgba(220,38,38,.2)",borderRadius:8,padding:"5px 12px",fontSize:12.5,fontWeight:600,color:"#DC2626",cursor:statusBusy===s.id?"not-allowed":"pointer",fontFamily:"inherit",opacity:statusBusy===s.id?.5:1}}>Confirm</button>
+                        <button disabled={statusBusy===s.id} onClick={()=>reviewScreening(s.id,"false_positive")} style={{background:"rgba(107,114,128,.07)",border:"1px solid rgba(107,114,128,.2)",borderRadius:8,padding:"5px 12px",fontSize:12.5,fontWeight:600,color:GRAY,cursor:statusBusy===s.id?"not-allowed":"pointer",fontFamily:"inherit",opacity:statusBusy===s.id?.5:1}}>False Positive</button>
+                      </div>
+                    )}
+                    {s.status==="confirmed_match"&&(
+                      <span style={{fontSize:11.5,fontWeight:700,padding:"4px 10px",borderRadius:8,background:"rgba(220,38,38,.07)",color:"#DC2626",flexShrink:0}}>⚠ Action Required</span>
+                    )}
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2304,6 +2718,8 @@ export default function CpanelPage(){
   const [auditLogs,   setAuditLogs]   = useState<AuditLog[]>([]);
   const [rateConfigs, setRateConfigs] = useState<RateConfig[]>([]);
   const [feeSchedules,setFeeSchedules]= useState<FeeSchedule[]>([]);
+  const [complianceReports, setComplianceReports] = useState<ComplianceReport[]>([]);
+  const [ofacScreenings,    setOfacScreenings]    = useState<OfacScreening[]>([]);
 
   const load = useCallback(async()=>{
     const sb=createClient();
@@ -2331,6 +2747,8 @@ export default function CpanelPage(){
     const auditLogsRaw        = (json.auditLogs          ?? []) as Record<string,unknown>[];
     const rateConfigRaw       = (json.rateConfig         ?? []) as Record<string,unknown>[];
     const feeScheduleRaw      = (json.feeSchedule        ?? []) as Record<string,unknown>[];
+    const complianceRaw       = (json.complianceReports  ?? []) as Record<string,unknown>[];
+    const ofacRaw             = (json.ofacScreenings     ?? []) as Record<string,unknown>[];
 
     /* Map users + aggregate balances */
     const acctList=(accts??[]) as Record<string,unknown>[];
@@ -2477,6 +2895,33 @@ export default function CpanelPage(){
     setRateConfigs(mappedRates);
     setFeeSchedules(mappedFees);
 
+    const mappedCompliance:ComplianceReport[]=complianceRaw.map(r=>({
+      id:String(r.id), reportType:String(r.report_type||""),
+      referenceId:String(r.reference_id||""),
+      userId:r.user_id?String(r.user_id):null,
+      accountId:r.account_id?String(r.account_id):null,
+      transactionId:r.transaction_id?String(r.transaction_id):null,
+      subjectName:String(r.subject_name||""),
+      amount:r.amount!=null?Number(r.amount):null,
+      description:String(r.description||""),
+      status:String(r.status||"draft"),
+      filedAt:r.filed_at?String(r.filed_at):null,
+      filedBy:r.filed_by?String(r.filed_by):null,
+      createdAt:String(r.created_at||""),
+    }));
+    const mappedOfac:OfacScreening[]=ofacRaw.map(s=>({
+      id:String(s.id), userId:s.user_id?String(s.user_id):null,
+      screenedName:String(s.screened_name||""),
+      matchScore:Number(s.match_score||0),
+      matchedEntry:s.matched_entry?String(s.matched_entry):null,
+      status:String(s.status||"clear"),
+      reviewedBy:s.reviewed_by?String(s.reviewed_by):null,
+      reviewedAt:s.reviewed_at?String(s.reviewed_at):null,
+      createdAt:String(s.created_at||""),
+    }));
+    setComplianceReports(mappedCompliance);
+    setOfacScreenings(mappedOfac);
+
     setLoading(false);
 
     fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"syncCreditAvailableBalances"})});
@@ -2599,6 +3044,46 @@ export default function CpanelPage(){
     return err;
   }
 
+  async function handleFileSAR(d:{userId:string;accountId:string;transactionId:string;subjectName:string;amount:string;description:string}):Promise<string|null>{
+    const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"fileSAR",...d})});
+    const json=await res.json() as Record<string,string>;
+    if(!res.ok) return json.error||"Failed";
+    const newReport:ComplianceReport={id:crypto.randomUUID(),reportType:"SAR",referenceId:json.refId,userId:d.userId||null,accountId:d.accountId||null,transactionId:d.transactionId||null,subjectName:d.subjectName,amount:d.amount?Number(d.amount):null,description:d.description,status:"draft",filedAt:null,filedBy:null,createdAt:new Date().toISOString()};
+    setComplianceReports(prev=>[newReport,...prev]);
+    return json.refId;
+  }
+
+  async function handleFileCTR(d:{userId:string;accountId:string;transactionId:string;subjectName:string;amount:string;description:string}):Promise<string|null>{
+    const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"fileCTR",...d})});
+    const json=await res.json() as Record<string,string>;
+    if(!res.ok) return json.error||"Failed";
+    const newReport:ComplianceReport={id:crypto.randomUUID(),reportType:"CTR",referenceId:json.refId,userId:d.userId||null,accountId:d.accountId||null,transactionId:d.transactionId||null,subjectName:d.subjectName,amount:d.amount?Number(d.amount):null,description:d.description,status:"filed",filedAt:new Date().toISOString(),filedBy:"admin",createdAt:new Date().toISOString()};
+    setComplianceReports(prev=>[newReport,...prev]);
+    return json.refId;
+  }
+
+  async function handleUpdateComplianceStatus(reportId:string, status:string):Promise<string|null>{
+    const err=await cAction({action:"updateComplianceStatus",reportId,status});
+    if(!err) setComplianceReports(prev=>prev.map(r=>r.id===reportId?{...r,status}:r));
+    return err;
+  }
+
+  async function handleOfacScreen(userId:string, name:string):Promise<OfacScreening|null>{
+    const res=await fetch("/api/cpanel/compliance/ofac-screen",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,name})});
+    const json=await res.json() as {screening:Record<string,unknown>;error?:string};
+    if(!res.ok) return null;
+    const s=json.screening;
+    const mapped:OfacScreening={id:String(s.id),userId:s.user_id?String(s.user_id):null,screenedName:String(s.screened_name||""),matchScore:Number(s.match_score||0),matchedEntry:s.matched_entry?String(s.matched_entry):null,status:String(s.status||"clear"),reviewedBy:null,reviewedAt:null,createdAt:String(s.created_at||"")};
+    setOfacScreenings(prev=>[mapped,...prev]);
+    return mapped;
+  }
+
+  async function handleUpdateOfacScreening(screeningId:string, status:string):Promise<string|null>{
+    const err=await cAction({action:"updateOfacScreening",screeningId,status});
+    if(!err) setOfacScreenings(prev=>prev.map(s=>s.id===screeningId?{...s,status}:s));
+    return err;
+  }
+
   async function handleUpdateRate(key:string, value:number):Promise<string|null>{
     const err=await cAction({action:"updateRate",key,value});
     if(!err) setRateConfigs(prev=>prev.map(r=>r.key===key?{...r,value}:r));
@@ -2692,6 +3177,7 @@ export default function CpanelPage(){
           {tab==="Audit"         && <AuditTab logs={auditLogs}/>}
           {tab==="Reports"       && <ReportsTab users={users} accounts={accounts} txs={txs} apps={apps} disputes={disputes} fraudAlerts={fraudAlerts}/>}
           {tab==="Rates"         && <RatesTab rates={rateConfigs} fees={feeSchedules} users={users} accounts={accounts} onUpdateRate={handleUpdateRate} onUpdateFee={handleUpdateFee} onApplyFee={handleApplyFee} onApplyInterest={handleApplyInterest}/>}
+          {tab==="Compliance"    && <ComplianceTab reports={complianceReports} screenings={ofacScreenings} users={users} accounts={accounts} txs={txs} onFileSAR={handleFileSAR} onFileCTR={handleFileCTR} onUpdateStatus={handleUpdateComplianceStatus} onOfacScreen={handleOfacScreen} onUpdateScreening={handleUpdateOfacScreening}/>}
           {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
           {tab==="Disputes"      && <DisputesTab disputes={disputes} users={users} accounts={accounts} txs={txs} onOpen={handleOpenDispute} onApprove={handleApproveDispute} onDeny={handleDenyDispute} onRequestInfo={handleRequestDisputeInfo} onReview={handleReviewDispute}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}

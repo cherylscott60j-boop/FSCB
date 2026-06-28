@@ -374,6 +374,59 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  /* ── Compliance ── */
+  if (action === "fileSAR") {
+    const { userId, accountId, transactionId, subjectName, amount, description } = body;
+    if (!subjectName?.trim() || !description?.trim())
+      return NextResponse.json({ error: "Subject name and description are required." }, { status: 400 });
+    const refId = "SAR-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    const { error } = await admin.from("compliance_reports").insert({
+      report_type: "SAR", reference_id: refId,
+      user_id: userId || null, account_id: accountId || null, transaction_id: transactionId || null,
+      subject_name: String(subjectName).trim(), amount: amount ? Number(amount) : null,
+      description: String(description).trim(), status: "draft",
+    });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "compliance.sar_file", entityType: "compliance", entityId: refId, details: { subjectName, amount: amount || null } });
+    return NextResponse.json({ success: true, refId });
+  }
+
+  if (action === "fileCTR") {
+    const { userId, accountId, transactionId, subjectName, amount, description } = body;
+    if (!subjectName?.trim() || !description?.trim())
+      return NextResponse.json({ error: "Subject name and description are required." }, { status: 400 });
+    const refId = "CTR-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    const now = new Date().toISOString();
+    const { error } = await admin.from("compliance_reports").insert({
+      report_type: "CTR", reference_id: refId,
+      user_id: userId || null, account_id: accountId || null, transaction_id: transactionId || null,
+      subject_name: String(subjectName).trim(), amount: amount ? Number(amount) : null,
+      description: String(description).trim(), status: "filed",
+      filed_at: now, filed_by: admin_user.email,
+    });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "compliance.ctr_file", entityType: "compliance", entityId: refId, details: { subjectName, amount: amount || null, transactionId: transactionId || null } });
+    return NextResponse.json({ success: true, refId });
+  }
+
+  if (action === "updateComplianceStatus") {
+    const { reportId, status } = body;
+    const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() };
+    if (status === "filed" || status === "submitted") { updates.filed_at = new Date().toISOString(); updates.filed_by = admin_user.email; }
+    const { error } = await admin.from("compliance_reports").update(updates).eq("id", reportId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "compliance.status_update", entityType: "compliance", entityId: reportId, details: { status } });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "updateOfacScreening") {
+    const { screeningId, status } = body;
+    const { error } = await admin.from("ofac_screenings").update({ status, reviewed_by: admin_user.email, reviewed_at: new Date().toISOString() }).eq("id", screeningId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "compliance.ofac_review", entityType: "compliance", entityId: screeningId, details: { status } });
+    return NextResponse.json({ success: true });
+  }
+
   if (action === "syncCreditAvailableBalances") {
     const { data: cards } = await admin
       .from("accounts")

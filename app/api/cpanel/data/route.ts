@@ -26,6 +26,8 @@ export async function GET() {
     { data: auditLogs },
     { data: rateConfig },
     { data: feeSchedule },
+    { data: complianceReports },
+    { data: ofacScreenings },
   ] = await Promise.all([
     admin.from("profiles").select("id,email,first_name,last_name,phone,member_since,role,kyc_status"),
     admin.from("accounts").select("id,user_id,account_type,account_name,account_number_last4,balance,status,credit_limit"),
@@ -37,7 +39,9 @@ export async function GET() {
     admin.from("audit_logs").select("id,admin_id,admin_email,action,entity_type,entity_id,details,created_at").order("created_at", { ascending: false }).limit(200),
     admin.from("rate_config").select("key,label,product_type,rate_type,value,updated_at,updated_by").order("rate_type").order("product_type"),
     admin.from("fee_schedule").select("key,label,description,amount,waivable,active,updated_at,updated_by").order("label"),
+    admin.from("compliance_reports").select("id,report_type,reference_id,user_id,account_id,transaction_id,subject_name,amount,description,status,filed_at,filed_by,created_at").order("created_at", { ascending: false }).limit(200),
+    admin.from("ofac_screenings").select("id,user_id,screened_name,match_score,matched_entry,status,reviewed_by,reviewed_at,created_at").order("created_at", { ascending: false }).limit(150),
   ]);
 
-  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications, fraudAlerts: fraudAlerts ?? [], disputes: disputes ?? [], auditLogs: auditLogs ?? [], rateConfig: rateConfig ?? [], feeSchedule: feeSchedule ?? [] });
+  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications, fraudAlerts: fraudAlerts ?? [], disputes: disputes ?? [], auditLogs: auditLogs ?? [], rateConfig: rateConfig ?? [], feeSchedule: feeSchedule ?? [], complianceReports: (complianceReports as Record<string,unknown>[]) ?? [], ofacScreenings: (ofacScreenings as Record<string,unknown>[]) ?? [] });
 }
