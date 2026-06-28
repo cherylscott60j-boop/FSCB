@@ -58,7 +58,7 @@ type TxRow = {
   date:string; userId:string; accountId:string;
 };
 type ExtDetails = {bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string;};
-type ExtAcctRow = {id:string;nickname:string|null;bank_name:string|null;routing_number:string;account_number:string;account_type:string;holder_name:string;};
+type ExtAcctRow = {id:string;nickname:string|null;bank_name:string|null;routing_number:string;account_number:string;account_type:string;holder_name:string;source:"saved"|"transaction";posted_at?:string;amount?:number;};
 type FraudAlert = {
   id:string; accountId:string; userId:string;
   transactionId:string|null;
@@ -1830,25 +1830,31 @@ function TransactionsTab({
                     <span style={{fontSize:12.5,fontWeight:700,color:MID}}>Destination Bank Account</span>
                     {trExtAccts.length>0&&(
                       <button type="button" onClick={()=>setTrExtPickMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>
-                        {trExtPickMode==="pick"?"+ Enter New Details":"← Saved Accounts"}
+                        {trExtPickMode==="pick"?"+ Enter New Details":"← Transaction History"}
                       </button>
                     )}
                   </div>
 
-                  {/* Pick from saved accounts */}
+                  {/* Pick from transaction history / saved accounts */}
                   {trExtPickMode==="pick"&&trExtAccts.length>0?(
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
                       {trExtAccts.map(a=>(
                         <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${trSelExtId===a.id?RED:"rgba(17,24,39,.1)"}`,borderRadius:9,background:trSelExtId===a.id?"rgba(140,29,37,.04)":"#fff",transition:"all .15s"}}>
                           <input type="radio" name="trExtAcct" checked={trSelExtId===a.id} onChange={()=>setTrSelExtId(a.id)} style={{accentColor:RED,marginTop:2,flexShrink:0}}/>
-                          <div style={{minWidth:0}}>
-                            <div style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bank_name||"External Account"}</div>
+                          <div style={{minWidth:0,flex:1}}>
+                            <div style={{display:"flex",alignItems:"center",gap:7,flexWrap:"wrap"}}>
+                              <span style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bank_name||"External Account"}</span>
+                              <span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:4,background:a.source==="saved"?"rgba(22,163,74,.1)":"rgba(37,99,235,.1)",color:a.source==="saved"?"#16A34A":"#1D4ED8",letterSpacing:".03em"}}>{a.source==="saved"?"Saved":"From Transaction"}</span>
+                            </div>
                             <div style={{fontSize:12,color:GRAY,marginTop:2}}>
                               {a.bank_name&&<span style={{marginRight:4}}>{a.bank_name} ·</span>}
                               <span style={{textTransform:"capitalize"}}>{a.account_type}</span>
                               {" · "}••••{(a.account_number||"").slice(-4)}
                             </div>
-                            <div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{a.holder_name} · Routing ••••{(a.routing_number||"").slice(-4)}</div>
+                            <div style={{fontSize:11.5,color:GRAY,marginTop:1}}>
+                              {a.holder_name} · Routing ••••{(a.routing_number||"").slice(-4)}
+                              {a.source==="transaction"&&a.posted_at&&<span style={{marginLeft:8,color:GRAY}}>· Last used {new Date(a.posted_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}{a.amount!=null?" · "+usd(Math.abs(a.amount)):""}</span>}
+                            </div>
                           </div>
                         </label>
                       ))}

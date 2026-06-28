@@ -445,13 +445,46 @@ export async function POST(request: Request) {
 
   if (action === "fetchExternalAccounts") {
     const { userId } = body;
-    const { data, error } = await admin
+
+    // Saved external accounts (user stored them)
+    const { data: saved } = await admin
       .from("external_accounts")
       .select("id, nickname, bank_name, routing_number, account_number, account_type, holder_name")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ accounts: data || [] });
+
+    // External transfer transactions — bank details live in memo JSON
+    const { data: txs } = await admin
+      .from("transactions")
+      .select("id, memo, posted_at, amount")
+      .eq("user_id", userId)
+      .not("memo", "is", null)
+      .order("posted_at", { ascending: false })
+      .limit(200);
+
+    type ExtOption = { id:string; nickname:string|null; bank_name:string|null; routing_number:string; account_number:string; account_type:string; holder_name:string; source:"saved"|"transaction"; posted_at?:string; amount?:number; };
+    const seen = new Set<string>();
+    const result: ExtOption[] = [];
+
+    for (const a of (saved || []) as Array<{id:string;nickname:string|null;bank_name:string|null;routing_number:string;account_number:string;account_type:string;holder_name:string}>) {
+      const key = `${a.routing_number}-${a.account_number}`;
+      if (!seen.has(key)) { seen.add(key); result.push({ ...a, source: "saved" }); }
+    }
+
+    for (const tx of (txs || []) as Array<{id:string;memo:string;posted_at:string;amount:number}>) {
+      try {
+        const memo = JSON.parse(tx.memo);
+        if (memo.type === "external_transfer" && memo.routingNumber && memo.accountNumber) {
+          const key = `${memo.routingNumber}-${memo.accountNumber}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            result.push({ id:`tx-${tx.id}`, nickname:null, bank_name:memo.bankName||null, routing_number:memo.routingNumber, account_number:memo.accountNumber, account_type:memo.accountType||"checking", holder_name:memo.holderName||"", source:"transaction", posted_at:tx.posted_at, amount:tx.amount });
+          }
+        }
+      } catch { /* skip malformed */ }
+    }
+
+    return NextResponse.json({ accounts: result });
   }
 
   if (action === "manualInternalTransfer") {
