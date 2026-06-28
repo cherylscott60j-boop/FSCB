@@ -611,3 +611,34 @@ ALTER TABLE ofac_screenings ENABLE ROW LEVEL SECURITY;
 
 CREATE INDEX IF NOT EXISTS idx_ofac_screenings_user   ON ofac_screenings(user_id);
 CREATE INDEX IF NOT EXISTS idx_ofac_screenings_status ON ofac_screenings(status);
+
+
+-- ============================================================
+-- 18. STATEMENTS
+--    Admin-generated account statements. Customers can read
+--    their own via RLS; service role has full access.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS statements (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id        UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  user_id           UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  reference_id      TEXT UNIQUE NOT NULL,
+  period_start      DATE NOT NULL,
+  period_end        DATE NOT NULL,
+  generated_by      TEXT NOT NULL,
+  generated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  opening_balance   NUMERIC(15,2) NOT NULL DEFAULT 0,
+  closing_balance   NUMERIC(15,2) NOT NULL DEFAULT 0,
+  total_credits     NUMERIC(15,2) NOT NULL DEFAULT 0,
+  total_debits      NUMERIC(15,2) NOT NULL DEFAULT 0,
+  transaction_count INT          NOT NULL DEFAULT 0
+);
+
+ALTER TABLE statements ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own statements" ON statements
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS idx_statements_user    ON statements(user_id);
+CREATE INDEX IF NOT EXISTS idx_statements_account ON statements(account_id);
+CREATE INDEX IF NOT EXISTS idx_statements_period  ON statements(period_start DESC, period_end DESC);

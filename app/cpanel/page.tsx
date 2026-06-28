@@ -777,19 +777,34 @@ function AuditTab({logs}:{logs:AuditLog[]}){
 /* ═══════════════════════════════════════════════════════
    TAB: STATEMENTS & DOCUMENTS
 ═══════════════════════════════════════════════════════ */
+type DbStmt={id:string;account_id:string;user_id:string;reference_id:string;period_start:string;period_end:string;generated_by:string;generated_at:string;opening_balance:number;closing_balance:number;total_credits:number;total_debits:number;transaction_count:number};
+
 function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[] }){
   const today     = new Date();
   const thisMonth = today.toISOString().slice(0,7);
 
-  const [selUser,  setSelUser]  = useState(users[0]?.id||"");
-  const [selAcct,  setSelAcct]  = useState("");
-  const [preset,   setPreset]   = useState("this_month");
-  const [custStart,setCustStart]= useState(thisMonth+"-01");
-  const [custEnd,  setCustEnd]  = useState(today.toISOString().slice(0,10));
-  const [history,  setHistory]  = useState<{refId:string;acctName:string;period:string;url:string;at:string}[]>([]);
-  const [err,      setErr]      = useState("");
+  const [selUser,    setSelUser]    = useState(users[0]?.id||"");
+  const [selAcct,    setSelAcct]    = useState("");
+  const [preset,     setPreset]     = useState("last_month");
+  const [custStart,  setCustStart]  = useState(thisMonth+"-01");
+  const [custEnd,    setCustEnd]    = useState(today.toISOString().slice(0,10));
+  const [saving,     setSaving]     = useState(false);
+  const [err,        setErr]        = useState("");
+  const [savedStmts, setSavedStmts] = useState<DbStmt[]>([]);
+  const [stmtLoading,setStmtLoading]= useState(false);
 
   const userAccts = accounts.filter(a=>a.userId===selUser);
+
+  // Load saved statements whenever the selected account changes
+  useEffect(()=>{
+    if(!selAcct){setSavedStmts([]);return;}
+    setStmtLoading(true);
+    fetch(`/api/cpanel/statements/list?accountId=${selAcct}`)
+      .then(r=>r.json())
+      .then((j:{statements:DbStmt[]})=>setSavedStmts(j.statements??[]))
+      .catch(()=>{})
+      .finally(()=>setStmtLoading(false));
+  },[selAcct]);
 
   function calcRange(p:string):{start:string;end:string}{
     const d  = new Date();
@@ -814,28 +829,41 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
     return {start:custStart, end:custEnd};
   }
 
-  function generate(){
+  async function generate(){
     setErr("");
     if(!selAcct){setErr("Select an account.");return;}
     const {start,end}=calcRange(preset);
     if(new Date(start)>new Date(end)){setErr("Start date must be before end date.");return;}
-    const acct=accounts.find(a=>a.id===selAcct);
-    const url=`/statement?accountId=${selAcct}&start=${start}&end=${end}`;
-    window.open(url,"_blank");
-    const periodLabel=preset==="custom"?`${start} – ${end}`:STMT_PRESETS.find(p=>p.v===preset)?.l||preset;
-    setHistory(h=>[{refId:`STMT-${Date.now().toString(36).slice(-6).toUpperCase()}`,acctName:acct?.accountName||"Account",period:periodLabel,url,at:new Date().toLocaleTimeString()},...h].slice(0,20));
+    setSaving(true);
+    try{
+      const res=await fetch("/api/cpanel/statements",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:selAcct,start,end})});
+      const json=await res.json() as {statement?:DbStmt;error?:string};
+      if(!res.ok){setErr(json.error||"Failed to save statement.");return;}
+      if(json.statement) setSavedStmts(s=>[json.statement as DbStmt,...s]);
+      window.open(`/statement?accountId=${selAcct}&start=${start}&end=${end}&print=1`,"_blank");
+    }catch{
+      setErr("Network error. Please try again.");
+    }finally{
+      setSaving(false);
+    }
   }
+
+  const fmtPeriod=(s:string,e:string)=>{
+    const fmt=(d:string)=>new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+    return `${fmt(s)} – ${fmt(e)}`;
+  };
 
   return(
     <div>
-      <SectionHead title="Statements & Documents" sub="Generate and download account statements as PDF for any customer"/>
+      <SectionHead title="Statements & Documents" sub="Generate and post official bank statements to customer accounts — supports any date range including backdating"/>
 
-      <div style={{display:"grid",gridTemplateColumns:"380px 1fr",gap:20,alignItems:"flex-start"}}>
+      <div style={{display:"grid",gridTemplateColumns:"400px 1fr",gap:20,alignItems:"flex-start"}}>
 
         {/* Generator form */}
         <div style={{...CARD,overflow:"hidden"}}>
           <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
-            <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Generate Statement</div>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Generate & Post Statement</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:3}}>Statement is saved to the account and visible to the customer</div>
           </div>
           <div style={{padding:"20px",display:"flex",flexDirection:"column",gap:14}}>
             <div>
@@ -853,31 +881,37 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
             </div>
             <div>
               <label style={LBL}>Statement Period</label>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
                 {STMT_PRESETS.map(p=>(
                   <button key={p.v} onClick={()=>setPreset(p.v)} style={{padding:"8px 10px",borderRadius:8,border:`1px solid ${preset===p.v?"rgba(140,29,37,.3)":"rgba(17,24,39,.12)"}`,background:preset===p.v?"rgba(140,29,37,.07)":"transparent",fontSize:12.5,fontWeight:preset===p.v?700:400,color:preset===p.v?RED:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
                     {p.l}
                   </button>
                 ))}
               </div>
+              <div style={{fontSize:11.5,color:GRAY,padding:"6px 10px",background:"rgba(212,175,55,.07)",border:"1px solid rgba(212,175,55,.25)",borderRadius:7,display:"flex",alignItems:"center",gap:6}}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
+                Use <strong style={{margin:"0 3px"}}>Custom Range</strong> to backdate any period — month, quarter, or year
+              </div>
             </div>
             {preset==="custom"&&(
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                <div><label style={LBL}>From</label><input type="date" value={custStart} onChange={e=>setCustStart(e.target.value)} style={INP}/></div>
+                <div><label style={LBL}>From (backdate allowed)</label><input type="date" value={custStart} onChange={e=>setCustStart(e.target.value)} style={INP}/></div>
                 <div><label style={LBL}>To</label><input type="date" value={custEnd} onChange={e=>setCustEnd(e.target.value)} style={INP}/></div>
               </div>
             )}
             {err&&<div style={{fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{err}</div>}
-            <button onClick={generate} style={{background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:"pointer",fontFamily:FONT,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-              Generate & Open PDF
+            <button onClick={generate} disabled={saving} style={{background:saving?"rgba(140,29,37,.55)":RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:saving?"not-allowed":"pointer",fontFamily:FONT,display:"flex",alignItems:"center",justifyContent:"center",gap:8,transition:"background .15s"}}>
+              {saving
+                ?<><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{animation:"spin 1s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Saving…</>
+                :<><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>Generate &amp; Post Statement</>
+              }
             </button>
           </div>
           <div style={{padding:"14px 20px",borderTop:"1px solid rgba(17,24,39,.07)",background:"rgba(17,24,39,.01)"}}>
             {[
-              ["Opens in new tab","Statement renders as a formatted bank document."],
-              ["Print / Save as PDF","Use the Print button or Ctrl+P → Save as PDF."],
-              ["Accurate balances","Opening and closing balances are calculated to the exact period."],
+              ["Saved to account","Posted to the customer's dashboard — they can view it anytime."],
+              ["Backdating supported","Custom Range lets you generate any historical period."],
+              ["Opens PDF preview","The formatted statement opens in a new tab for review / print."],
             ].map(([title,desc])=>(
               <div key={title} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" style={{flexShrink:0,marginTop:1}}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
@@ -890,26 +924,44 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
           </div>
         </div>
 
-        {/* Recent statements */}
+        {/* Saved statements for selected account */}
         <div>
-          <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:12}}>Generated This Session</div>
-          {history.length===0
-            ?<div style={{...CARD,padding:"40px 24px",textAlign:"center",color:GRAY,fontSize:13.5}}>No statements generated yet.</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>
+              {selAcct ? `Posted Statements — ${accounts.find(a=>a.id===selAcct)?.accountName||"Account"}` : "Select an account to see statements"}
+            </div>
+            {savedStmts.length>0&&<span style={{fontSize:12,color:GRAY}}>{savedStmts.length} statement{savedStmts.length!==1?"s":""}</span>}
+          </div>
+
+          {!selAcct
+            ?<div style={{...CARD,padding:"40px 24px",textAlign:"center",color:GRAY,fontSize:13.5}}>Choose a customer and account to load their statement history.</div>
+            :stmtLoading
+            ?<div style={{...CARD,padding:"32px 24px",textAlign:"center",color:GRAY,fontSize:13.5}}>Loading…</div>
+            :savedStmts.length===0
+            ?<div style={{...CARD,padding:"40px 24px",textAlign:"center"}}>
+              <div style={{color:DARK,fontWeight:600,fontSize:14,marginBottom:6}}>No statements posted yet</div>
+              <div style={{color:GRAY,fontSize:13}}>Generate one using the form — it will appear here and in the customer&apos;s dashboard.</div>
+            </div>
             :<div style={{...CARD,overflow:"hidden"}}>
-              {history.map((h,i)=>(
-                <div key={h.refId} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderBottom:i<history.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
-                  <div style={{width:36,height:36,borderRadius:9,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
+              {savedStmts.map((s,i)=>(
+                <div key={s.id} style={{display:"flex",alignItems:"flex-start",gap:14,padding:"16px 20px",borderBottom:i<savedStmts.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
+                  <div style={{width:38,height:38,borderRadius:9,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
                   </div>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontWeight:600,fontSize:13.5,color:DARK}}>{h.acctName}</div>
-                    <div style={{fontSize:12,color:GRAY,marginTop:2}}>{h.period} · {h.at}</div>
+                    <div style={{fontWeight:600,fontSize:13.5,color:DARK,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fmtPeriod(s.period_start,s.period_end)}</div>
+                    <div style={{fontSize:12,color:GRAY,marginTop:2}}>{s.transaction_count} txn · Opening {usd(s.opening_balance)} → Closing {usd(s.closing_balance)}</div>
+                    <div style={{fontSize:11,color:GRAY,marginTop:2}}>
+                      Posted by {s.generated_by} · {new Date(s.generated_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
+                    </div>
                   </div>
-                  <span style={{fontSize:11,color:GRAY,fontFamily:"monospace"}}>{h.refId}</span>
-                  <a href={h.url} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:5,background:"rgba(140,29,37,.07)",border:"1px solid rgba(140,29,37,.2)",borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:RED,textDecoration:"none",flexShrink:0}}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-                    Reopen
-                  </a>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6,flexShrink:0}}>
+                    <span style={{fontSize:10.5,color:GRAY,fontFamily:"monospace"}}>{s.reference_id}</span>
+                    <a href={`/statement?accountId=${s.account_id}&start=${s.period_start}&end=${s.period_end}&print=1`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:5,background:"rgba(140,29,37,.07)",border:"1px solid rgba(140,29,37,.2)",borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:RED,textDecoration:"none"}}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                      View PDF
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>

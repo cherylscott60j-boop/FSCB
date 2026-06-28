@@ -1099,72 +1099,74 @@ function CardsTab({accounts}:{accounts:Acct[]}){
 }
 
 /* ── Statements Tab ─────────────────────────────── */
-function StatementsTab({onClose,accounts}:{onClose:()=>void;accounts:Acct[]}){
-  const sizes=[142,198,167,211,134,188,156,203,179,145,162,191];
+type DashStmt={id:string;account_id:string;reference_id:string;period_start:string;period_end:string;generated_at:string;opening_balance:number;closing_balance:number;total_credits:number;total_debits:number;transaction_count:number};
 
-  function downloadStatement(label:string,filename:string){
-    const sep="─".repeat(56);
-    const lines=[
-      "FIRST STATE COMMUNITY BANK",
-      "Monthly Account Statement",
-      "",
-      `Statement Period: ${label}`,
-      `Generated:        ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}`,
-      "",
-      sep,
-      "ACCOUNT SUMMARY",
-      sep,
-      ...accounts.map(a=>`${a.label.padEnd(32)}${a.number.padEnd(18)}Balance: ${usd(a.balance)}`),
-      "",
-      sep,
-      "IMPORTANT DISCLOSURES",
-      sep,
-      "Deposits are FDIC insured up to $250,000 per depositor.",
-      "Interest rates are variable and subject to change.",
-      "",
-      "Questions? Call 1-800-555-FSCB (Mon–Fri 9am–5pm, Sat 9am–12pm)",
-      "or visit fscb.com/help",
-      "",
-      "─── End of Statement ───",
-    ];
-    const blob=new Blob([lines.join("\n")],{type:"text/plain"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url; a.download=filename;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a); URL.revokeObjectURL(url);
-  }
+function StatementsTab({onClose,accounts}:{onClose:()=>void;accounts:Acct[]}){
+  const [stmts,   setStmts]   = useState<DashStmt[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+    createClient()
+      .from("statements")
+      .select("id,account_id,reference_id,period_start,period_end,generated_at,opening_balance,closing_balance,total_credits,total_debits,transaction_count")
+      .order("generated_at",{ascending:false})
+      .limit(50)
+      .then(({data})=>{setStmts((data??[]) as DashStmt[]);setLoading(false);});
+  },[]);
+
+  const acctName=(id:string)=>{
+    const a=accounts.find(a=>a.id===id);
+    return a?`${a.label} ••••${a.number.slice(-4)}`:"Account";
+  };
+
+  const fmtPeriod=(s:string,e:string)=>{
+    const f=(d:string)=>new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+    return `${f(s)} – ${f(e)}`;
+  };
 
   return(
     <div>
       <div style={{marginBottom:20}}>
         <h2 style={{margin:"0 0 4px",fontFamily:FONT,fontWeight:800,fontSize:20,color:DARK}}>Statements</h2>
-        <p style={{margin:0,fontSize:13,color:GRAY}}>Download your monthly account statements.</p>
+        <p style={{margin:0,fontSize:13,color:GRAY}}>Official account statements posted by the bank.</p>
       </div>
-      <div style={{...CARD,overflow:"hidden"}}>
-        {Array.from({length:12},(_,i)=>{
-          const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()-i);
-          const label=d.toLocaleDateString("en-US",{month:"long",year:"numeric"});
-          const filename=`FSCB_Statement_${d.getFullYear()}_${String(d.getMonth()+1).padStart(2,"0")}.txt`;
-          return(
-            <div key={i} style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:12,padding:"14px 24px",borderBottom:i<11?"1px solid rgba(17,24,39,.05)":"none"}}>
-              <div style={{width:38,height:38,borderRadius:9,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
+
+      {loading?(
+        <div style={{...CARD,padding:"40px 24px",textAlign:"center",color:GRAY,fontSize:13.5}}>Loading statements…</div>
+      ):stmts.length===0?(
+        <div style={{...CARD,padding:"48px 24px",textAlign:"center"}}>
+          <div style={{width:48,height:48,borderRadius:12,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",color:RED}}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
+          </div>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK,marginBottom:6}}>No statements yet</div>
+          <div style={{fontSize:13,color:GRAY,maxWidth:300,margin:"0 auto"}}>Your bank will post statements to your account. They&apos;ll appear here when available.</div>
+        </div>
+      ):(
+        <div style={{...CARD,overflow:"hidden"}}>
+          {stmts.map((s,i)=>(
+            <div key={s.id} style={{display:"flex",alignItems:"center",gap:14,padding:"16px 22px",borderBottom:i<stmts.length-1?"1px solid rgba(17,24,39,.05)":"none"}}>
+              <div style={{width:40,height:40,borderRadius:10,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
               </div>
-              <div style={{flex:1,minWidth:120}}>
-                <div style={{fontSize:14,fontWeight:500,color:DARK}}>{label} Statement</div>
-                <div style={{fontSize:12,color:GRAY,marginTop:2}}>TXT · {sizes[i%sizes.length]} KB</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:14,fontWeight:600,color:DARK,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{acctName(s.account_id)}</div>
+                <div style={{fontSize:12.5,color:MID,marginTop:2}}>{fmtPeriod(s.period_start,s.period_end)}</div>
+                <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>
+                  {s.transaction_count} transaction{s.transaction_count!==1?"s":""} · Closing balance {usd(s.closing_balance)}
+                </div>
               </div>
-              <button onClick={()=>downloadStatement(label,filename)} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"1px solid rgba(17,24,39,.12)",borderRadius:8,padding:"7px 14px",fontSize:13,color:MID,cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all .15s"}}
-                onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=RED;b.style.borderColor="rgba(140,29,37,.3)";}}
-                onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=MID;b.style.borderColor="rgba(17,24,39,.12)";}}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                Download
-              </button>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:5,flexShrink:0}}>
+                <span style={{fontSize:10,color:GRAY,fontFamily:"monospace"}}>{s.reference_id}</span>
+                <a href={`/statement?accountId=${s.account_id}&start=${s.period_start}&end=${s.period_end}`} target="_blank" rel="noopener noreferrer"
+                  style={{display:"flex",alignItems:"center",gap:5,background:"none",border:`1px solid rgba(140,29,37,.25)`,borderRadius:8,padding:"6px 13px",fontSize:12.5,fontWeight:600,color:RED,textDecoration:"none",transition:"all .15s"}}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                  View PDF
+                </a>
+              </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

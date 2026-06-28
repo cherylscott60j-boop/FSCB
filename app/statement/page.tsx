@@ -63,9 +63,9 @@ function StatementInner() {
   useEffect(() => {
     if (data && !printed.current) {
       printed.current = true;
-      setTimeout(() => window.print(), 600);
+      if (params.get("print") === "1") setTimeout(() => window.print(), 600);
     }
-  }, [data]);
+  }, [data, params]);
 
   if (error) return (
     <div style={{ fontFamily: "sans-serif", padding: 40, color: "#DC2626" }}>
