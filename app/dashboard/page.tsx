@@ -47,6 +47,15 @@ type Notif = {id:string;type:string;title:string;message:string;created_at:strin
 type ModalKey = "transfer"|"paybill"|"deposit"|"zelle"|"lockcard";
 type ExtAcct = {id:string;nickname:string;bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;};
 
+/* ── External bank logos ─────────────────────────── */
+const EXT_BANKS=[
+  {key:"chase",    name:"Chase",            logo:"/CHASE.png"},
+  {key:"bofa",     name:"Bank of America",  logo:"/boa.png"},
+  {key:"wells",    name:"Wells Fargo",      logo:"/Wellsfargo.png"},
+  {key:"td",       name:"TD Bank",          logo:"/TD.png"},
+  {key:"regions",  name:"Regions Bank",     logo:"/REGION.png"},
+];
+
 /* ── Helpers ─────────────────────────────────────── */
 const usd  = (n:number) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Math.abs(n));
 const pct  = (n:number) => `${(n*100).toFixed(2)}% APY`;
@@ -341,6 +350,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
   const [selExtId,setSelExtId]   = useState<string|null>(null);
   const [saveAcct,setSaveAcct]   = useState(true);
   const [extForm,setExtForm]     = useState({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});
+  const [selBank,setSelBank]     = useState<string>("");
   const upExt=(k:keyof typeof extForm,v:string)=>setExtForm(f=>({...f,[k]:v}));
 
   const isExt = to==="external";
@@ -464,40 +474,81 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                 ))}
               </div>
             ):(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                <div style={{gridColumn:"1/-1"}}>
-                  <label style={LBL}>Bank Name <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
-                  <input type="text" placeholder="e.g. Chase, Wells Fargo…" value={extForm.bankName} onChange={e=>upExt("bankName",e.target.value)} style={INP}/>
-                </div>
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {/* Bank logo picker */}
                 <div>
-                  <label style={LBL}>Routing Number</label>
-                  <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={extForm.routingNumber} onChange={e=>upExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                  <label style={LBL}>Select Your Bank</label>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7}}>
+                    {EXT_BANKS.map(b=>(
+                      <button key={b.key} type="button"
+                        onClick={()=>{setSelBank(b.key);upExt("bankName",b.name);}}
+                        style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={b.logo} alt={b.name} style={{height:28,width:"auto",maxWidth:64,objectFit:"contain"}}/>
+                        <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?RED:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
+                      </button>
+                    ))}
+                    <button type="button"
+                      onClick={()=>{setSelBank("other");upExt("bankName","");}}
+                      style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank==="other"?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank==="other"?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                      <div style={{height:28,width:28,borderRadius:"50%",background:"rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={selBank==="other"?RED:GRAY} strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                      </div>
+                      <span style={{fontSize:10,fontWeight:600,color:selBank==="other"?RED:MID,textAlign:"center",lineHeight:1.3}}>Other</span>
+                    </button>
+                  </div>
+                  {selBank==="other"&&(
+                    <div style={{marginTop:8}}>
+                      <input type="text" placeholder="Enter your bank name" value={extForm.bankName} onChange={e=>upExt("bankName",e.target.value)} style={INP}/>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label style={LBL}>Account Number</label>
-                  <input type="text" inputMode="numeric" placeholder="Account number" value={extForm.accountNumber} onChange={e=>upExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
-                </div>
-                <div>
-                  <label style={LBL}>Account Type</label>
-                  <select value={extForm.accountType} onChange={e=>upExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
-                    <option value="checking">Checking</option>
-                    <option value="savings">Savings</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={LBL}>Account Holder Name</label>
-                  <input type="text" placeholder="Full name on account" value={extForm.holderName} onChange={e=>upExt("holderName",e.target.value)} style={INP}/>
-                </div>
-                <div style={{gridColumn:"1/-1"}}>
-                  <label style={LBL}>Nickname <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
-                  <input type="text" placeholder="e.g. My Chase Savings" value={extForm.nickname} onChange={e=>upExt("nickname",e.target.value)} style={INP}/>
-                </div>
-                <div style={{gridColumn:"1/-1"}}>
-                  <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
-                    <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
-                    Save this account for future transfers
-                  </label>
-                </div>
+
+                {/* Account fields — shown once a bank is chosen */}
+                {selBank&&(
+                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {/* Selected bank banner */}
+                    <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(140,29,37,.04)",border:"1px solid rgba(140,29,37,.16)",borderRadius:8}}>
+                      {selBank!=="other"&&EXT_BANKS.find(b=>b.key===selBank)&&(
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={EXT_BANKS.find(b=>b.key===selBank)!.logo} alt="" style={{height:20,width:"auto",maxWidth:52,objectFit:"contain"}}/>
+                      )}
+                      <span style={{fontSize:13,fontWeight:700,color:RED}}>{extForm.bankName||"Other Bank"}</span>
+                      <button type="button" onClick={()=>{setSelBank("");upExt("bankName","");}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:"2px 6px",color:GRAY,fontSize:11.5,fontWeight:500,fontFamily:"inherit",borderRadius:5}}>Change</button>
+                    </div>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                      <div>
+                        <label style={LBL}>Routing Number</label>
+                        <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={extForm.routingNumber} onChange={e=>upExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                      </div>
+                      <div>
+                        <label style={LBL}>Account Number</label>
+                        <input type="text" inputMode="numeric" placeholder="Account number" value={extForm.accountNumber} onChange={e=>upExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                      </div>
+                      <div>
+                        <label style={LBL}>Account Type</label>
+                        <select value={extForm.accountType} onChange={e=>upExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
+                          <option value="checking">Checking</option>
+                          <option value="savings">Savings</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style={LBL}>Account Holder Name</label>
+                        <input type="text" placeholder="Full name on account" value={extForm.holderName} onChange={e=>upExt("holderName",e.target.value)} style={INP}/>
+                      </div>
+                      <div style={{gridColumn:"1/-1"}}>
+                        <label style={LBL}>Nickname <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                        <input type="text" placeholder="e.g. My Chase Savings" value={extForm.nickname} onChange={e=>upExt("nickname",e.target.value)} style={INP}/>
+                      </div>
+                      <div style={{gridColumn:"1/-1"}}>
+                        <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
+                          <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
+                          Save this account for future transfers
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -795,6 +846,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
   const [selExtId,setSelExtId]=useState<string|null>(null);
   const [saveAcct,setSaveAcct]=useState(true);
   const [extForm,setExtForm]=useState({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});
+  const [selBank,setSelBank]=useState<string>("");
   const upExt=(k:keyof typeof extForm,v:string)=>setExtForm(f=>({...f,[k]:v}));
 
   const isExt=to==="external";
@@ -885,7 +937,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
             </div>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Submitted for Review</div>
             <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55}}>Your transfer request is pending admin approval.</div>
-            <button onClick={()=>{setDone(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
+            <button onClick={()=>{setDone(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});setSelBank("");}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
           </div>
         ):(
           <div style={{padding:"24px"}}>
@@ -927,40 +979,81 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                     ))}
                   </div>
                 ):(
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                    <div style={{gridColumn:"1/-1"}}>
-                      <label style={LBL}>Bank Name <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
-                      <input type="text" placeholder="e.g. Chase, Wells Fargo…" value={extForm.bankName} onChange={e=>upExt("bankName",e.target.value)} style={INP}/>
-                    </div>
+                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {/* Bank logo picker */}
                     <div>
-                      <label style={LBL}>Routing Number</label>
-                      <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={extForm.routingNumber} onChange={e=>upExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                      <label style={LBL}>Select Your Bank</label>
+                      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7}}>
+                        {EXT_BANKS.map(b=>(
+                          <button key={b.key} type="button"
+                            onClick={()=>{setSelBank(b.key);upExt("bankName",b.name);}}
+                            style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={b.logo} alt={b.name} style={{height:28,width:"auto",maxWidth:64,objectFit:"contain"}}/>
+                            <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?RED:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
+                          </button>
+                        ))}
+                        <button type="button"
+                          onClick={()=>{setSelBank("other");upExt("bankName","");}}
+                          style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank==="other"?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank==="other"?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                          <div style={{height:28,width:28,borderRadius:"50%",background:"rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={selBank==="other"?RED:GRAY} strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                          </div>
+                          <span style={{fontSize:10,fontWeight:600,color:selBank==="other"?RED:MID,textAlign:"center",lineHeight:1.3}}>Other</span>
+                        </button>
+                      </div>
+                      {selBank==="other"&&(
+                        <div style={{marginTop:8}}>
+                          <input type="text" placeholder="Enter your bank name" value={extForm.bankName} onChange={e=>upExt("bankName",e.target.value)} style={INP}/>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <label style={LBL}>Account Number</label>
-                      <input type="text" inputMode="numeric" placeholder="Account number" value={extForm.accountNumber} onChange={e=>upExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
-                    </div>
-                    <div>
-                      <label style={LBL}>Account Type</label>
-                      <select value={extForm.accountType} onChange={e=>upExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
-                        <option value="checking">Checking</option>
-                        <option value="savings">Savings</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label style={LBL}>Account Holder Name</label>
-                      <input type="text" placeholder="Full name on account" value={extForm.holderName} onChange={e=>upExt("holderName",e.target.value)} style={INP}/>
-                    </div>
-                    <div style={{gridColumn:"1/-1"}}>
-                      <label style={LBL}>Nickname <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
-                      <input type="text" placeholder="e.g. My Chase Savings" value={extForm.nickname} onChange={e=>upExt("nickname",e.target.value)} style={INP}/>
-                    </div>
-                    <div style={{gridColumn:"1/-1"}}>
-                      <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
-                        <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
-                        Save this account for future transfers
-                      </label>
-                    </div>
+
+                    {/* Account fields — shown once a bank is chosen */}
+                    {selBank&&(
+                      <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                        {/* Selected bank banner */}
+                        <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(140,29,37,.04)",border:"1px solid rgba(140,29,37,.16)",borderRadius:8}}>
+                          {selBank!=="other"&&EXT_BANKS.find(b=>b.key===selBank)&&(
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src={EXT_BANKS.find(b=>b.key===selBank)!.logo} alt="" style={{height:20,width:"auto",maxWidth:52,objectFit:"contain"}}/>
+                          )}
+                          <span style={{fontSize:13,fontWeight:700,color:RED}}>{extForm.bankName||"Other Bank"}</span>
+                          <button type="button" onClick={()=>{setSelBank("");upExt("bankName","");}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:"2px 6px",color:GRAY,fontSize:11.5,fontWeight:500,fontFamily:"inherit",borderRadius:5}}>Change</button>
+                        </div>
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                          <div>
+                            <label style={LBL}>Routing Number</label>
+                            <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={extForm.routingNumber} onChange={e=>upExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                          </div>
+                          <div>
+                            <label style={LBL}>Account Number</label>
+                            <input type="text" inputMode="numeric" placeholder="Account number" value={extForm.accountNumber} onChange={e=>upExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                          </div>
+                          <div>
+                            <label style={LBL}>Account Type</label>
+                            <select value={extForm.accountType} onChange={e=>upExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
+                              <option value="checking">Checking</option>
+                              <option value="savings">Savings</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label style={LBL}>Account Holder Name</label>
+                            <input type="text" placeholder="Full name on account" value={extForm.holderName} onChange={e=>upExt("holderName",e.target.value)} style={INP}/>
+                          </div>
+                          <div style={{gridColumn:"1/-1"}}>
+                            <label style={LBL}>Nickname <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                            <input type="text" placeholder="e.g. My Chase Savings" value={extForm.nickname} onChange={e=>upExt("nickname",e.target.value)} style={INP}/>
+                          </div>
+                          <div style={{gridColumn:"1/-1"}}>
+                            <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
+                              <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
+                              Save this account for future transfers
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
