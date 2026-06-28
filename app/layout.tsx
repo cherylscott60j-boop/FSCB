@@ -34,7 +34,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <body>
         <NextTopLoader color="#8C1D25" shadow="0 0 10px #8C1D25,0 0 5px #D4AF37" height={3} showSpinner={false}/>
-        {children}
+        <div className="page-clip">
+          {children}
+        </div>
       </body>
     </html>
   );
