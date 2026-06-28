@@ -1579,10 +1579,10 @@ export default function DashboardPage(){
   }
 
   return(
-    <div onClick={()=>{setBellOpen(false);setSidebarOpen(false);}} style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
+    <div onClick={()=>{setBellOpen(false);setSidebarOpen(false);}} className="db-shell" style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
 
       {/* ═══ HEADER ═══════════════════════════════════════════ */}
-      <header style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)",boxShadow:"0 1px 4px rgba(17,24,39,.06)"}}>
+      <header className="db-header" style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)",boxShadow:"0 1px 4px rgba(17,24,39,.06)"}}>
         <div className="db-header-inner" style={{maxWidth:"100%",padding:"0 24px",height:60,display:"flex",alignItems:"center",gap:16}}>
 
           <Link href="/" style={{display:"flex",alignItems:"center",gap:9,textDecoration:"none",flexShrink:0}}>
@@ -1668,7 +1668,7 @@ export default function DashboardPage(){
       </header>
 
       {/* ═══ LAYOUT ═══════════════════════════════════════════ */}
-      <div className="db-layout">
+      <div className="db-body"><div className="db-layout">
 
         {/* Mobile overlay */}
         <div onClick={()=>setSidebarOpen(false)} className={`db-overlay${sidebarOpen?" db-overlay--open":""}`}/>
@@ -1869,7 +1869,7 @@ export default function DashboardPage(){
           {tab==="Profile"&&<ProfileTab profile={profile} accounts={accounts} initials={initials}/>}
 
         </main>
-      </div>{/* /db-layout */}
+      </div>{/* /db-layout */}</div>{/* /db-body */}
 
       <BottomNav active={tab} set={setTabAndClose}/>
 
