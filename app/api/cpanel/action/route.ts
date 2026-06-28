@@ -175,6 +175,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  if (action === "dismissFraudAlert") {
+    const { alertId } = body;
+    const { error } = await admin
+      .from("fraud_alerts")
+      .update({ status: "dismissed", reviewed_at: new Date().toISOString(), reviewed_by: admin_user.id })
+      .eq("id", alertId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "freezeFromFraud") {
+    const { alertId, acctId } = body;
+    const [{ error: freezeErr }, { error: alertErr }] = await Promise.all([
+      admin.from("accounts").update({ status: "frozen" }).eq("id", acctId),
+      admin.from("fraud_alerts").update({ status: "actioned", reviewed_at: new Date().toISOString(), reviewed_by: admin_user.id }).eq("id", alertId),
+    ]);
+    if (freezeErr) return NextResponse.json({ error: freezeErr.message }, { status: 500 });
+    if (alertErr)  return NextResponse.json({ error: alertErr.message  }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
   if (action === "syncCreditAvailableBalances") {
     const { data: cards } = await admin
       .from("accounts")

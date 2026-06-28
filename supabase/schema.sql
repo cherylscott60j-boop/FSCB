@@ -356,7 +356,34 @@ CREATE INDEX IF NOT EXISTS idx_notifications_unread    ON notifications(user_id,
 
 
 -- ============================================================
--- 9. BUDGETS
+-- 9. FRAUD ALERTS
+--    Rule-based fraud detection results. Admin-only via service
+--    role — no user-facing RLS policies needed.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS fraud_alerts (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id     UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  user_id        UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  transaction_id UUID REFERENCES transactions(id) ON DELETE SET NULL,
+  rule           TEXT NOT NULL,
+  severity       TEXT NOT NULL DEFAULT 'medium',  -- low | medium | high
+  details        JSONB NOT NULL DEFAULT '{}',
+  status         TEXT NOT NULL DEFAULT 'open',    -- open | dismissed | actioned
+  reviewed_at    TIMESTAMPTZ,
+  reviewed_by    UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE fraud_alerts ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX IF NOT EXISTS idx_fraud_alerts_account_id ON fraud_alerts(account_id);
+CREATE INDEX IF NOT EXISTS idx_fraud_alerts_user_id    ON fraud_alerts(user_id);
+CREATE INDEX IF NOT EXISTS idx_fraud_alerts_status     ON fraud_alerts(status);
+CREATE INDEX IF NOT EXISTS idx_fraud_alerts_created_at ON fraud_alerts(created_at DESC);
+
+
+-- ============================================================
+-- 10. BUDGETS
 --    Monthly spending cap per category, set by the user.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS budgets (

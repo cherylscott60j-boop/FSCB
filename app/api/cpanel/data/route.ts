@@ -21,13 +21,15 @@ export async function GET() {
     { data: transactions },
     { data: pendingTransactions },
     { data: applications },
+    { data: fraudAlerts },
   ] = await Promise.all([
     admin.from("profiles").select("id,email,first_name,last_name,phone,member_since,role,kyc_status"),
     admin.from("accounts").select("id,user_id,account_type,account_name,account_number_last4,balance,status,credit_limit"),
     admin.from("transactions").select("id,user_id,account_id,merchant,category,amount,posted_at").eq("status", "posted").order("posted_at", { ascending: false }).limit(50),
     admin.from("transactions").select("id,user_id,account_id,merchant,category,amount,transaction_type,memo,submitted_at,posted_at").eq("status", "pending").order("submitted_at", { ascending: false }),
     admin.from("applications").select("*").order("submitted_at", { ascending: false }),
+    admin.from("fraud_alerts").select("id,account_id,user_id,transaction_id,rule,severity,details,status,created_at").order("created_at", { ascending: false }).limit(300),
   ]);
 
-  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications });
+  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications, fraudAlerts: fraudAlerts ?? [] });
 }

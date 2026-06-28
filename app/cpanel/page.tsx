@@ -58,6 +58,13 @@ type TxRow = {
   date:string; userId:string; accountId:string;
 };
 type ExtDetails = {bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string;};
+type FraudAlert = {
+  id:string; accountId:string; userId:string;
+  transactionId:string|null;
+  rule:string; severity:string;
+  details:Record<string,unknown>;
+  status:string; createdAt:string;
+};
 type PendingTx = {
   id:string; userId:string; userName:string;
   accountId:string; accountName:string; accountLast4:string;
@@ -605,6 +612,209 @@ function NotificationsTab({users}:{users:UserRow[]}){
 }
 
 /* ═══════════════════════════════════════════════════════
+   TAB: FRAUD & RISK
+═══════════════════════════════════════════════════════ */
+const RULE_META:Record<string,{label:string;color:string;desc:string;severity:string}>={
+  large_transaction: {label:"Large Transaction", color:"#DC2626", desc:"Single transaction ≥ $5,000",          severity:"HIGH"},
+  round_amount:      {label:"Round Amount",       color:"#2563EB", desc:"Exact round amount — possible structuring", severity:"MEDIUM"},
+  velocity_24h:      {label:"Velocity (24h)",     color:"#7C3AED", desc:"5+ transactions in 24 hours",          severity:"MEDIUM"},
+  velocity_1h:       {label:"Velocity (1h)",      color:"#D97706", desc:"3+ transactions in 1 hour",            severity:"HIGH"},
+};
+
+function FraudTab({
+  alerts, accounts, users, onDismiss, onFreeze, onScanComplete,
+}:{
+  alerts:FraudAlert[]; accounts:AcctRow[]; users:UserRow[];
+  onDismiss:(alertId:string)=>Promise<void>;
+  onFreeze:(alertId:string, acctId:string)=>Promise<void>;
+  onScanComplete:(newAlerts:FraudAlert[])=>void;
+}){
+  const [filter, setFilter] = useState<"open"|"dismissed"|"actioned"|"all">("open");
+  const [busy,   setBusy]   = useState<string|null>(null);
+  const [scanning, setScanning] = useState(false);
+  const [scanMsg,  setScanMsg]  = useState<{text:string;ok:boolean}|null>(null);
+
+  const counts={
+    open:      alerts.filter(a=>a.status==="open").length,
+    dismissed: alerts.filter(a=>a.status==="dismissed").length,
+    actioned:  alerts.filter(a=>a.status==="actioned").length,
+  };
+  const shown = filter==="all" ? alerts : alerts.filter(a=>a.status===filter);
+
+  async function scan(){
+    setScanning(true); setScanMsg(null);
+    try{
+      const res=await fetch("/api/cpanel/fraud/scan",{method:"POST"});
+      if(!res.ok) throw new Error("Scan failed");
+      const json=await res.json() as {created:number; alerts:Record<string,unknown>[]};
+      const mapped:FraudAlert[]=json.alerts.map(a=>({
+        id:String(a.id), accountId:String(a.account_id), userId:String(a.user_id),
+        transactionId:a.transaction_id?String(a.transaction_id):null,
+        rule:String(a.rule), severity:String(a.severity||"medium"),
+        details:(a.details as Record<string,unknown>)??{},
+        status:String(a.status), createdAt:String(a.created_at),
+      }));
+      onScanComplete(mapped);
+      setScanMsg({text:`Scan complete — ${json.created} new alert${json.created!==1?"s":""} found.`, ok:true});
+    }catch{
+      setScanMsg({text:"Scan failed — try again.", ok:false});
+    }finally{
+      setScanning(false);
+    }
+  }
+
+  async function dismiss(alertId:string){
+    setBusy(alertId+"d");
+    await onDismiss(alertId);
+    setBusy(null);
+  }
+  async function freeze(alertId:string, acctId:string){
+    setBusy(alertId+"f");
+    await onFreeze(alertId, acctId);
+    setBusy(null);
+  }
+
+  const SEV_COLOR:Record<string,string>={HIGH:"#DC2626",MEDIUM:"#D97706",LOW:GRAY};
+
+  return(
+    <div>
+      {/* Header + scan button */}
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20,gap:12,flexWrap:"wrap"}}>
+        <SectionHead title="Fraud & Risk" sub="Automated rule-based detection — run a scan to check for new alerts"/>
+        <button disabled={scanning} onClick={scan} style={{display:"flex",alignItems:"center",gap:7,background:scanning?"rgba(140,29,37,.5)":RED,border:"none",borderRadius:9,padding:"9px 18px",fontSize:13,fontWeight:600,color:"#fff",cursor:scanning?"not-allowed":"pointer",fontFamily:"inherit",transition:"all .15s",flexShrink:0}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={scanning?{animation:"spin .75s linear infinite"}:{}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          {scanning?"Scanning…":"Scan for Alerts"}
+        </button>
+      </div>
+
+      {/* Scan result toast */}
+      {scanMsg&&(
+        <div style={{...CARD,padding:"10px 16px",marginBottom:16,fontSize:13,color:scanMsg.ok?"#16A34A":"#DC2626",display:"flex",alignItems:"center",gap:8}}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={scanMsg.ok?"M20 6 9 17l-5-5":"M18 6 6 18M6 6l12 12"}/></svg>
+          {scanMsg.text}
+        </div>
+      )}
+
+      {/* Stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:20}}>
+        {([["Open Alerts",counts.open,"#DC2626"],["Dismissed",counts.dismissed,GRAY],["Actioned (Frozen)",counts.actioned,"#16A34A"]] as const).map(([label,count,color])=>(
+          <div key={label} style={{...CARD,padding:"16px 20px",display:"flex",alignItems:"center",gap:14}}>
+            <div style={{fontFamily:FONT,fontWeight:800,fontSize:28,color,lineHeight:1}}>{count}</div>
+            <div style={{fontSize:12.5,color:GRAY,fontWeight:500,lineHeight:1.3}}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter pills */}
+      <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+        {(["open","dismissed","actioned","all"] as const).map(f=>(
+          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:filter===f?RED:GRAY,border:`1px solid ${filter===f?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>
+            {f} ({f==="all"?alerts.length:counts[f as keyof typeof counts]??0})
+          </button>
+        ))}
+      </div>
+
+      {/* Rules legend */}
+      <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
+        {Object.entries(RULE_META).map(([key,meta])=>(
+          <div key={key} style={{display:"flex",alignItems:"center",gap:5,padding:"3px 10px",borderRadius:99,background:meta.color+"12",border:`1px solid ${meta.color}30`}}>
+            <div style={{width:6,height:6,borderRadius:"50%",background:meta.color,flexShrink:0}}/>
+            <span style={{fontSize:11.5,fontWeight:600,color:meta.color}}>{meta.label}</span>
+            <span style={{fontSize:11,color:GRAY,marginLeft:2}}>— {meta.desc}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Alert list */}
+      <div style={{...CARD,overflow:"hidden"}}>
+        {shown.length===0
+          ?<Empty msg={filter==="open"?"No open alerts — run a scan to check for new activity.":`No ${filter} alerts.`}/>
+          :shown.map((alert,i)=>{
+            const meta=RULE_META[alert.rule]??{label:alert.rule,color:GRAY,desc:"",severity:"LOW"};
+            const acct=accounts.find(a=>a.id===alert.accountId);
+            const user=users.find(u=>u.id===alert.userId);
+            const amt=typeof alert.details.amount==="number"?alert.details.amount:null;
+            const isBusyD=busy===alert.id+"d";
+            const isBusyF=busy===alert.id+"f";
+            const isBusy=isBusyD||isBusyF;
+
+            return(
+              <div key={alert.id} style={{padding:"16px 20px",borderBottom:i<shown.length-1?"1px solid rgba(17,24,39,.05)":"none",background:alert.status==="open"?"#fff":"rgba(17,24,39,.01)"}}>
+                <div style={{display:"flex",alignItems:"flex-start",gap:14,flexWrap:"wrap"}}>
+
+                  {/* Icon */}
+                  <div style={{width:40,height:40,borderRadius:10,background:meta.color+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:meta.color}}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
+                  </div>
+
+                  <div style={{flex:1,minWidth:200}}>
+                    {/* Rule badge + severity */}
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5,flexWrap:"wrap"}}>
+                      <span style={{fontSize:11.5,fontWeight:700,padding:"2px 9px",borderRadius:99,background:meta.color+"15",color:meta.color,letterSpacing:".04em"}}>{meta.label}</span>
+                      <span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:5,background:SEV_COLOR[meta.severity]+"18",color:SEV_COLOR[meta.severity],letterSpacing:".06em"}}>{meta.severity}</span>
+                      <span style={{fontSize:12,color:GRAY}}>{meta.desc}</span>
+                    </div>
+
+                    {/* User + account */}
+                    <div style={{fontWeight:600,fontSize:13.5,color:DARK,marginBottom:3}}>
+                      {user?`${user.firstName} ${user.lastName}`:"Unknown User"}
+                    </div>
+                    <div style={{fontSize:12,color:GRAY,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                      {acct&&<span style={{fontFamily:"monospace",letterSpacing:".06em"}}>••••{acct.last4}</span>}
+                      {acct&&<span style={{color:"rgba(17,24,39,.2)"}}>·</span>}
+                      {acct&&<span>{acct.accountName}</span>}
+                      {amt!==null&&<><span style={{color:"rgba(17,24,39,.2)"}}>·</span><span style={{fontWeight:700,fontFamily:FONT,color:amt<0?"#DC2626":"#16A34A"}}>{amt>0?"+":"-"}{usd(amt)}</span></>}
+                      <span style={{color:"rgba(17,24,39,.2)"}}>·</span>
+                      <span>{relTime(alert.createdAt)}</span>
+                    </div>
+
+                    {/* Velocity details */}
+                    {(alert.rule==="velocity_1h"||alert.rule==="velocity_24h")&&(
+                      <div style={{marginTop:6,fontSize:12,color:MID,padding:"4px 10px",background:"rgba(17,24,39,.04)",borderRadius:6,display:"inline-block"}}>
+                        {alert.details.count as number} transactions in the last {alert.details.window as string}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0,flexWrap:"wrap"}}>
+                    {alert.status==="open"&&(
+                      <>
+                        <button disabled={isBusy} onClick={()=>dismiss(alert.id)} style={{background:"rgba(17,24,39,.05)",border:"1px solid rgba(17,24,39,.12)",borderRadius:8,padding:"6px 14px",fontSize:12.5,fontWeight:600,color:GRAY,cursor:isBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:isBusy?.5:1,transition:"all .15s"}}>
+                          {isBusyD?"…":"Dismiss"}
+                        </button>
+                        {acct&&acct.status!=="frozen"&&(
+                          <button disabled={isBusy} onClick={()=>freeze(alert.id,alert.accountId)} style={{display:"flex",alignItems:"center",gap:6,background:"rgba(220,38,38,.07)",border:"1px solid rgba(220,38,38,.2)",borderRadius:8,padding:"6px 14px",fontSize:12.5,fontWeight:600,color:"#DC2626",cursor:isBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:isBusy?.5:1,transition:"all .15s"}}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            {isBusyF?"…":"Freeze Account"}
+                          </button>
+                        )}
+                        {acct&&acct.status==="frozen"&&(
+                          <span style={{fontSize:12,color:"#DC2626",fontWeight:600,padding:"6px 10px",background:"rgba(220,38,38,.07)",borderRadius:8}}>Already frozen</span>
+                        )}
+                      </>
+                    )}
+                    {alert.status==="dismissed"&&(
+                      <span style={{fontSize:11.5,color:GRAY,fontWeight:600,padding:"4px 10px",background:"rgba(107,114,128,.08)",borderRadius:8}}>Dismissed</span>
+                    )}
+                    {alert.status==="actioned"&&(
+                      <span style={{fontSize:11.5,color:"#DC2626",fontWeight:600,padding:"4px 10px",background:"rgba(220,38,38,.07)",borderRadius:8,display:"flex",alignItems:"center",gap:5}}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Account Frozen
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    SIDEBAR
 ═══════════════════════════════════════════════════════ */
 const CP_NAV=[
@@ -612,6 +822,7 @@ const CP_NAV=[
   {id:"Users",         label:"Users",          icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"},
   {id:"Transactions",  label:"Transactions",   icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
   {id:"KYC",           label:"KYC",            icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"},
+  {id:"Fraud",         label:"Fraud & Risk",   icon:"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
 ];
@@ -861,7 +1072,7 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
 /* ═══════════════════════════════════════════════════════
    SIDEBAR
 ═══════════════════════════════════════════════════════ */
-function AdminSidebar({active,set,adminName,adminEmail,onSignOut}:{active:string;set:(t:string)=>void;adminName:string;adminEmail:string;onSignOut:()=>void}){
+function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount}:{active:string;set:(t:string)=>void;adminName:string;adminEmail:string;onSignOut:()=>void;fraudOpenCount:number}){
   const initials=(adminName.split(" ").map(w=>w[0]).join("").slice(0,2)||"A").toUpperCase();
   return(
     <aside style={{display:"flex",flexDirection:"column",flex:1,height:"100%",overflowY:"auto"}}>
@@ -877,10 +1088,12 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut}:{active:string
         <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:GRAY,marginBottom:8,paddingLeft:8}}>Navigation</div>
         {CP_NAV.map(item=>{
           const on=active===item.id;
+          const showBadge=item.id==="Fraud"&&fraudOpenCount>0;
           return(
             <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:9,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13.5,fontWeight:on?600:400,color:on?RED:MID,background:on?"rgba(140,29,37,.07)":"transparent",textAlign:"left",marginBottom:2,transition:"all .15s",borderLeft:on?`3px solid ${RED}`:"3px solid transparent"}}>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.2:1.8} style={{flexShrink:0}}><path d={item.icon}/></svg>
-              {item.label}
+              <span style={{flex:1}}>{item.label}</span>
+              {showBadge&&<span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:99,background:"#DC2626",color:"#fff",letterSpacing:".03em",flexShrink:0}}>{fraudOpenCount}</span>}
             </button>
           );
         })}
@@ -925,11 +1138,12 @@ export default function CpanelPage(){
   const [tab,      setTab]      = useState("Overview");
   const [adminInfo,setAdminInfo]= useState({name:"",email:""});
 
-  const [users,    setUsers]    = useState<UserRow[]>([]);
-  const [accounts, setAccounts] = useState<AcctRow[]>([]);
-  const [txs,      setTxs]      = useState<TxRow[]>([]);
-  const [pendingTxs,setPendingTxs]=useState<PendingTx[]>([]);
-  const [apps,     setApps]     = useState<AppRow[]>([]);
+  const [users,       setUsers]       = useState<UserRow[]>([]);
+  const [accounts,    setAccounts]    = useState<AcctRow[]>([]);
+  const [txs,         setTxs]         = useState<TxRow[]>([]);
+  const [pendingTxs,  setPendingTxs]  = useState<PendingTx[]>([]);
+  const [apps,        setApps]        = useState<AppRow[]>([]);
+  const [fraudAlerts, setFraudAlerts] = useState<FraudAlert[]>([]);
 
   const load = useCallback(async()=>{
     const sb=createClient();
@@ -947,11 +1161,12 @@ export default function CpanelPage(){
     /* Fetch all data via server-side route (bypasses RLS) */
     const res = await fetch("/api/cpanel/data");
     const json = await res.json();
-    const profiles     = json.profiles            ?? [];
-    const accts        = json.accounts            ?? [];
-    const transactions = json.transactions        ?? [];
+    const profiles            = json.profiles            ?? [];
+    const accts               = json.accounts            ?? [];
+    const transactions        = json.transactions        ?? [];
     const pendingTransactions = json.pendingTransactions ?? [];
-    const applications = json.applications        ?? [];
+    const applications        = json.applications        ?? [];
+    const fraudAlertsRaw      = (json.fraudAlerts        ?? []) as Record<string,unknown>[];
 
     /* Map users + aggregate balances */
     const acctList=(accts??[]) as Record<string,unknown>[];
@@ -1036,11 +1251,24 @@ export default function CpanelPage(){
       userId:String(a.user_id||""),
     }));
 
+    const mappedFraud:FraudAlert[]=fraudAlertsRaw.map(a=>({
+      id:String(a.id),
+      accountId:String(a.account_id),
+      userId:String(a.user_id),
+      transactionId:a.transaction_id?String(a.transaction_id):null,
+      rule:String(a.rule),
+      severity:String(a.severity||"medium"),
+      details:(a.details as Record<string,unknown>)??{},
+      status:String(a.status),
+      createdAt:String(a.created_at),
+    }));
+
     setUsers(mappedUsers);
     setAccounts(mappedAccts);
     setTxs(mappedTxs);
     setPendingTxs(mappedPending);
     setApps(mappedApps);
+    setFraudAlerts(mappedFraud);
     setLoading(false);
 
     fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"syncCreditAvailableBalances"})});
@@ -1103,6 +1331,19 @@ export default function CpanelPage(){
     if(!err) setUsers(prev=>prev.map(u=>u.id===userId?{...u,kycStatus}:u));
   }
 
+  async function handleDismissFraudAlert(alertId:string){
+    const err=await cAction({action:"dismissFraudAlert",alertId});
+    if(!err) setFraudAlerts(prev=>prev.map(a=>a.id===alertId?{...a,status:"dismissed"}:a));
+  }
+
+  async function handleFreezeFromFraud(alertId:string, acctId:string){
+    const err=await cAction({action:"freezeFromFraud",alertId,acctId});
+    if(!err){
+      setFraudAlerts(prev=>prev.map(a=>a.id===alertId?{...a,status:"actioned"}:a));
+      setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,status:"frozen"}:a));
+    }
+  }
+
   async function handleCreditLimitUpdate(acctId:string, limit:number):Promise<string|null>{
     const err=await cAction({action:"setCreditLimit",acctId,limit});
     if(!err) setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,creditLimit:limit}:a));
@@ -1163,6 +1404,7 @@ export default function CpanelPage(){
             adminName={adminInfo.name}
             adminEmail={adminInfo.email}
             onSignOut={signOut}
+            fraudOpenCount={fraudAlerts.filter(a=>a.status==="open").length}
           />
         </div>
 
@@ -1172,6 +1414,7 @@ export default function CpanelPage(){
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
+          {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}
           {tab==="Notifications" && <NotificationsTab users={users}/>}
         </main>
