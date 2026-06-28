@@ -506,6 +506,8 @@ img, video, svg, iframe {
   .db-body  { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; min-height: 0; }
   .db-bottom-nav { position: relative !important; bottom: auto !important; left: auto !important; right: auto !important; width: 100% !important; flex-shrink: 0; }
   .db-content { padding-bottom: 16px !important; }
+  /* Stop sidebar drawer from sliding behind the bottom nav */
+  .db-sidebar { bottom: calc(60px + env(safe-area-inset-bottom)) !important; }
   .db-cards      { grid-template-columns: 1fr; }
   .db-bottom-nav { display: flex; }
   .db-net-pill   { width: 100%; justify-content: space-between; gap: 0; }
