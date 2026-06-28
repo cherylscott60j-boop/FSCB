@@ -441,28 +441,9 @@ export default function Nav() {
           }}
         >
           {/* Logo */}
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 11, textDecoration: "none" }}>
-            <div
-              style={{
-                width: 40, height: 40, borderRadius: 11,
-                background: "linear-gradient(145deg,#8C1D25,#6B151C)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 14px rgba(140,29,37,.32)",
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V8.5L12 4l8 4.5V19" stroke="#D4AF37" strokeWidth="2" strokeLinejoin="round" />
-                <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-              <span style={{ fontFamily: "var(--font-montserrat),'Libre Franklin',sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-.01em", color: "#8C1D25" }}>
-                FSCB
-              </span>
-              <span style={{ fontSize: 9.5, letterSpacing: ".34em", color: "#6B7280", fontWeight: 600, marginTop: 3 }}>
-                COMMUNITY BANK
-              </span>
-            </div>
+          <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 38, width: "auto" }} />
           </Link>
 
           {/* Desktop nav */}
@@ -596,14 +577,9 @@ export default function Nav() {
       <div className={`mobile-nav-overlay${menuOpen ? " open" : ""}`}>
         {/* Top row */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 74, borderBottom: "1px solid rgba(17,24,39,.06)" }}>
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }} onClick={() => setMenuOpen(false)}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(145deg,#8C1D25,#6B151C)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V8.5L12 4l8 4.5V19" stroke="#D4AF37" strokeWidth="2" strokeLinejoin="round" />
-                <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <span style={{ fontFamily: "var(--font-montserrat),'Libre Franklin',sans-serif", fontWeight: 800, fontSize: 17, color: "#8C1D25" }}>FSCB</span>
+          <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }} onClick={() => setMenuOpen(false)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 34, width: "auto" }} />
           </Link>
           <button style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#111827" }} onClick={() => setMenuOpen(false)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 6L6 18M6 6l12 12" /></svg>

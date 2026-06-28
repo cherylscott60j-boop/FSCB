@@ -83,17 +83,9 @@ export default function LoginPage() {
           {/* ── Left: hero content overlaid on image ── */}
           <div className="mob-login-left" style={{ padding: "60px 60px 60px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
 
-            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 12, textDecoration: "none", marginBottom: 64 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(212,175,55,.18)", border: "1px solid rgba(212,175,55,.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2" strokeLinejoin="round" />
-                  <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div>
-                <span style={{ fontFamily: FONT, fontWeight: 800, fontSize: 19, color: "#fff", display: "block", lineHeight: 1 }}>FSCB</span>
-                <span style={{ fontSize: 9, letterSpacing: ".35em", color: "rgba(255,255,255,.45)", display: "block", marginTop: 3 }}>COMMUNITY BANK</span>
-              </div>
+            <Link href="/" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none", marginBottom: 64 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 40, width: "auto", filter: "brightness(0) invert(1)" }} />
             </Link>
 
             <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 42, color: "#fff", margin: "0 0 18px", lineHeight: 1.08, letterSpacing: "-.03em" }}>

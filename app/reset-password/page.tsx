@@ -71,17 +71,9 @@ export default function ResetPasswordPage() {
       <div style={{ background: "#fff", borderRadius: 16, padding: "40px 36px", width: "100%", maxWidth: 420, boxShadow: "0 4px 32px rgba(17,24,39,.1)", border: "1px solid rgba(17,24,39,.06)" }}>
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: RED, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/>
-              <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <div>
-            <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 16, color: RED }}>FSCB</div>
-            <div style={{ fontSize: 9, letterSpacing: ".3em", color: GRAY, textTransform: "uppercase" }}>Community Bank</div>
-          </div>
+        <div style={{ marginBottom: 28 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 36, width: "auto" }} />
         </div>
 
         {/* ── Success ── */}

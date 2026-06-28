@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   title: "FSCB — First State Community Bank",
   description:
     "Decades of community trust. Banking built for your family, your business, and your future.",
+  icons: {
+    icon: "/fscb-horizontal-logo.webp",
+    apple: "/fscb-horizontal-logo.webp",
+  },
 };
 
 export default function RootLayout({

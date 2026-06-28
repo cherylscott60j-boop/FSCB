@@ -107,24 +107,9 @@ export default function Footer() {
         >
           {/* Brand column */}
           <div>
-            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 11, marginBottom: 18, textDecoration: "none" }}>
-              <div
-                style={{
-                  width: 38, height: 38, borderRadius: 10,
-                  background: "linear-gradient(145deg,#8C1D25,#6B151C)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 19V8.5L12 4l8 4.5V19" stroke="#D4AF37" strokeWidth="2" strokeLinejoin="round" />
-                  <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div style={{ lineHeight: 1 }}>
-                <span style={{ fontFamily: FONT, fontWeight: 800, fontSize: 17, color: "#fff", display: "block" }}>FSCB</span>
-                <span style={{ fontSize: 9, letterSpacing: ".34em", color: "rgba(255,255,255,.55)", display: "block", marginTop: 3 }}>COMMUNITY BANK</span>
-              </div>
+            <Link href="/" style={{ display: "inline-flex", alignItems: "center", marginBottom: 18, textDecoration: "none" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 36, width: "auto", filter: "brightness(0) invert(1)" }} />
             </Link>
 
             <p style={{ fontSize: 13.5, lineHeight: 1.68, margin: "0 0 8px", maxWidth: 270, color: "rgba(255,255,255,.65)" }}>

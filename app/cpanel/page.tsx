@@ -125,8 +125,9 @@ function LoadingSpinner(){
   return(
     <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center",fontFamily:FONT}}>
-        <div style={{width:48,height:48,borderRadius:12,background:`linear-gradient(145deg,${RED},#5a1018)`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/><path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/></svg>
+        <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:40,width:"auto"}} />
         </div>
         <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading control panel…</div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -2699,17 +2700,9 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,
     <aside style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden"}}>
 
       {/* Logo */}
-      <Link href="/" style={{display:"flex",alignItems:"center",gap:11,textDecoration:"none",padding:"20px 18px 18px",borderBottom:"1px solid rgba(255,255,255,.1)",flexShrink:0}}>
-        <div style={{width:40,height:40,borderRadius:10,background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
-            <path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2.2" strokeLinejoin="round"/>
-            <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2.2" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <div>
-          <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:"#fff",letterSpacing:".01em",lineHeight:1.1}}>FSCB</div>
-          <div style={{fontSize:8.5,letterSpacing:".28em",color:"rgba(255,255,255,.5)",textTransform:"uppercase",marginTop:2}}>Control Panel</div>
-        </div>
+      <Link href="/" style={{display:"flex",alignItems:"center",textDecoration:"none",padding:"20px 18px 18px",borderBottom:"1px solid rgba(255,255,255,.1)",flexShrink:0}}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:34,width:"auto",filter:"brightness(0) invert(1)"}} />
       </Link>
 
       {/* Nav scroll area */}

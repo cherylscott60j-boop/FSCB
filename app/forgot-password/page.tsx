@@ -59,17 +59,9 @@ export default function ForgotPasswordPage() {
         <div style={{ position: "absolute", bottom: -100, right: -100, width: 340, height: 340, borderRadius: "50%", background: "rgba(255,255,255,.035)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", top: -60, right: -70, width: 220, height: 220, borderRadius: "50%", background: "rgba(255,255,255,.025)", pointerEvents: "none" }} />
 
-        <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none", marginBottom: 52 }}>
-          <div style={{ width: 42, height: 42, borderRadius: 11, background: "rgba(255,255,255,.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M4 19V8.5L12 4l8 4.5V19" stroke="#D4AF37" strokeWidth="2" strokeLinejoin="round" />
-              <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div>
-            <span style={{ fontFamily: FONT, fontWeight: 800, fontSize: 18, color: "#fff", display: "block", lineHeight: 1 }}>FSCB</span>
-            <span style={{ fontSize: 9, letterSpacing: ".3em", color: "rgba(255,255,255,.45)", display: "block", marginTop: 3 }}>COMMUNITY BANK</span>
-          </div>
+        <Link href="/" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none", marginBottom: 52 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 38, width: "auto", filter: "brightness(0) invert(1)" }} />
         </Link>
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
