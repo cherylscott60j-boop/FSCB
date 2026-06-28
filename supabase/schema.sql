@@ -88,8 +88,10 @@ CREATE TYPE account_type AS ENUM (
   'money_market',
   'cd',
   'business_checking',
-  'business_savings'
+  'business_savings',
+  'business_credit_card'
 );
+-- Live DB migration: ALTER TYPE account_type ADD VALUE 'business_credit_card';
 
 CREATE TYPE account_status AS ENUM ('active', 'frozen', 'closed');
 

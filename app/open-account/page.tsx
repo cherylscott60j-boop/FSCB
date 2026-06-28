@@ -39,6 +39,7 @@ const BUSINESS_ACCOUNTS: Account[] = [
   { id:"biz-premium-checking", name:"Business Premium Checking", tag:"Most Popular", fee:"$0 / month*", min:"$500 avg. balance", bestFor:"Growing businesses with high volume",       highlights:["Unlimited transactions","Same-day ACH payments","Multi-user roles & permissions","ACH and wire fee discounts"], type:"deposit", minDeposit:100 },
   { id:"biz-savings",          name:"Business Savings",          tag:null,          fee:"$0 / month",  min:"$100 to open",     bestFor:"Tax reserves & operating cash buffer",      highlights:["Competitive business APY","Instant transfers to business checking","6 withdrawals/month","FDIC insured to $250,000"], type:"deposit", minDeposit:100 },
   { id:"biz-money-market",     name:"Business Money Market",     tag:"Best Rate",   fee:"$0 / month*", min:"$2,500 minimum",   bestFor:"Larger cash reserves earning higher yield", highlights:["Highest tiered business APY","Unlimited transfers","Treasury sweep available","Same-day link to business checking"], type:"deposit", minDeposit:2500 },
+  { id:"biz-credit-card",      name:"Business Rewards Card",     tag:"New",         fee:"$0 annual fee",min:"Good–Excellent 680+",bestFor:"Business spending with cash back rewards", highlights:["2% back on office supplies, gas & dining","1% back on all other purchases","0% intro APR for 12 months","Up to $50,000 credit limit · free employee cards"], type:"credit" },
 ];
 
 /* ─── Form state ──────────────────────────────────────────────────────────── */
@@ -304,7 +305,7 @@ export default function OpenAccountPage() {
             <div className="mob-stack" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:18,marginBottom:36}}>
               {([
                 {key:"personal" as const,title:"Personal Banking",sub:"Checking, savings, and credit cards for individuals and families.",icon:"M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z",items:["Free & Premium Checking","Regular Savings & Money Market","Community & Rewards Credit Cards"]},
-                {key:"business" as const,title:"Business Banking",sub:"Accounts for LLCs, corporations, sole proprietors, and nonprofits.",icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 0-1 1h-3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h4",items:["Business Basic & Premium Checking","Business Savings & Money Market","In-branch verification required"]},
+                {key:"business" as const,title:"Business Banking",sub:"Accounts for LLCs, corporations, sole proprietors, and nonprofits.",icon:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 0-1 1h-3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h4",items:["Business Basic & Premium Checking","Business Savings & Money Market","Business Rewards Card (2% cash back)"]},
               ] as const).map(cat=>{
                 const sel=category===cat.key;
                 return(

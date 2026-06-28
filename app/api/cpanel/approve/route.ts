@@ -9,6 +9,7 @@ const ACCT_TYPE_MAP: Record<string, string> = {
   "money-market": "money_market", "cd-6": "cd", "cd-12": "cd", "cd-24": "cd",
   "rewards-card": "credit_card", "cash-back-card": "credit_card", "secured-card": "credit_card",
   "community-card": "credit_card",
+  "biz-credit-card": "business_credit_card",
   "business-checking": "business_checking", "business-savings": "business_savings",
   "biz-basic-checking": "business_checking", "biz-premium-checking": "business_checking",
   "biz-savings": "business_savings", "biz-money-market": "money_market",

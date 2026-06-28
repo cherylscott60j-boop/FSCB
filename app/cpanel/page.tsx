@@ -202,7 +202,7 @@ function OverviewTab({
 }:{
   users:UserRow[]; accounts:AcctRow[]; txs:TxRow[]; apps:AppRow[];
 }){
-  const totalDeposits = accounts.filter(a=>a.accountType!=="credit_card").reduce((s,a)=>s+a.balance,0);
+  const totalDeposits = accounts.filter(a=>a.accountType!=="credit_card"&&a.accountType!=="business_credit_card").reduce((s,a)=>s+a.balance,0);
   const pending       = apps.filter(a=>a.status==="pending").length;
   const frozen        = accounts.filter(a=>a.status==="frozen").length;
   const recentTxs     = txs.slice(0,8);
@@ -366,7 +366,7 @@ function UsersTab({
                         ? <div style={{fontSize:13,color:GRAY}}>No accounts linked.</div>
                         : userAccts.map(a=>{
                             const frozen=a.status==="frozen";
-                            const isCreditCard=a.accountType==="credit_card";
+                            const isCreditCard=a.accountType==="credit_card"||a.accountType==="business_credit_card";
                             const isEditingThis=editingLimit===a.id;
                             return(
                               <div key={a.id} style={{...CARD,padding:"12px 16px",marginBottom:8}}>
@@ -1820,7 +1820,7 @@ function TransactionsTab({
             <div style={{padding:"20px"}}>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
                 <div><label style={LBL}>User</label><select value={selUser} onChange={e=>{setSelUser(e.target.value);setSelAcct("");}} style={SEL}>{users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>)}</select></div>
-                <div><label style={LBL}>Account</label><select value={selAcct} onChange={e=>setSelAcct(e.target.value)} style={SEL}><option value="">Select account…</option>{userAccts.map(a=>{const isCC=a.accountType==="credit_card";const info=isCC?`owed: ${usd(a.balance)} · avail: ${usd(a.creditLimit+a.balance)}`:`bal: ${usd(a.balance)}`;return <option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({info})</option>;})}</select></div>
+                <div><label style={LBL}>Account</label><select value={selAcct} onChange={e=>setSelAcct(e.target.value)} style={SEL}><option value="">Select account…</option>{userAccts.map(a=>{const isCC=a.accountType==="credit_card"||a.accountType==="business_credit_card";const info=isCC?`owed: ${usd(a.balance)} · avail: ${usd(a.creditLimit+a.balance)}`:`bal: ${usd(a.balance)}`;return <option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({info})</option>;})}</select></div>
               </div>
               <div style={{marginBottom:14}}>
                 <label style={LBL}>Type</label>
@@ -1920,7 +1920,7 @@ function TransactionsTab({
               <label style={LBL}>From Account</label>
               <select value={trFrom} onChange={e=>{setTrFrom(e.target.value);setTrTo("");}} style={SEL}>
                 <option value="">Select account…</option>
-                {trUserAccts.map(a=>{const isCC=a.accountType==="credit_card";return <option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({isCC?`owed: ${usd(a.balance)}`:`bal: ${usd(a.balance)}`})</option>;})}
+                {trUserAccts.map(a=>{const isCC=a.accountType==="credit_card"||a.accountType==="business_credit_card";return <option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({isCC?`owed: ${usd(a.balance)}`:`bal: ${usd(a.balance)}`})</option>;})}
               </select>
             </div>
 
@@ -2540,8 +2540,8 @@ function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee
   const [iErr,     setIErr]     = useState("");
   const [iDone,    setIDone]    = useState(false);
 
-  const fUserAccts = accounts.filter(a=>a.userId===fSelUser&&a.accountType!=="credit_card");
-  const iUserAccts = accounts.filter(a=>a.userId===iSelUser&&a.accountType!=="credit_card");
+  const fUserAccts = accounts.filter(a=>a.userId===fSelUser&&a.accountType!=="credit_card"&&a.accountType!=="business_credit_card");
+  const iUserAccts = accounts.filter(a=>a.userId===iSelUser&&a.accountType!=="credit_card"&&a.accountType!=="business_credit_card");
 
   const selectedFee  = fees.find(f=>f.key===fSelFee);
   const selectedRate = rates.find(r=>r.key===iSelRate);
@@ -2831,8 +2831,8 @@ function HBar({items,fmt}:{items:{label:string;value:number;color:string}[];fmt:
 }
 
 function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRow[];accounts:AcctRow[];txs:TxRow[];apps:AppRow[];disputes:DisputeRow[];fraudAlerts:FraudAlert[]}){
-  const depositAccts     = accounts.filter(a=>a.accountType!=="credit_card");
-  const creditAccts      = accounts.filter(a=>a.accountType==="credit_card");
+  const depositAccts     = accounts.filter(a=>a.accountType!=="credit_card"&&a.accountType!=="business_credit_card");
+  const creditAccts      = accounts.filter(a=>a.accountType==="credit_card"||a.accountType==="business_credit_card");
   const totalDeposits    = depositAccts.reduce((s,a)=>s+Math.max(a.balance,0),0);
   const totalOwed        = creditAccts.reduce((s,a)=>s+Math.abs(Math.min(a.balance,0)),0);
   const customerUsers    = users.filter(u=>u.role!=="admin");
@@ -2842,18 +2842,20 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
 
   const TYPE_LABELS:Record<string,string>={
     checking:"Checking",savings:"Savings",credit_card:"Credit Card",
-    money_market:"Money Market",cd:"CD",business_checking:"Business Checking",business_savings:"Business Savings",
+    money_market:"Money Market",cd:"CD",business_checking:"Business Checking",
+    business_savings:"Business Savings",business_credit_card:"Business Credit Card",
   };
   const TYPE_COLORS:Record<string,string>={
     checking:"#2563EB",savings:"#16A34A",credit_card:RED,
-    money_market:"#7C3AED",cd:"#D97706",business_checking:"#0891B2",business_savings:"#059669",
+    money_market:"#7C3AED",cd:"#D97706",business_checking:"#0891B2",
+    business_savings:"#059669",business_credit_card:"#4338CA",
   };
 
   const acctByType=accounts.reduce((m,a)=>{
     const k=a.accountType||"other";
     if(!m[k]) m[k]={count:0,balance:0};
     m[k].count++;
-    m[k].balance+=a.accountType==="credit_card"?0:Math.max(a.balance,0);
+    m[k].balance+=(a.accountType==="credit_card"||a.accountType==="business_credit_card")?0:Math.max(a.balance,0);
     return m;
   },{} as Record<string,{count:number;balance:number}>);
 

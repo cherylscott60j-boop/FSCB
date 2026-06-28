@@ -29,8 +29,9 @@ const ACC_META: Record<string,{label:string;color:string;grad:string}> = {
   credit_card:       {label:"Credit Card",       color:"#7C3AED", grad:"linear-gradient(135deg,#5B1D8C 0%,#3B1260 60%,#220A40 100%)"},
   money_market:      {label:"Money Market",      color:"#B45309", grad:"linear-gradient(135deg,#78350F 0%,#4D2106 60%,#2D1203 100%)"},
   cd:                {label:"CD",                color:"#0891B2", grad:"linear-gradient(135deg,#164E63 0%,#0C3448 60%,#071E2D 100%)"},
-  business_checking: {label:"Business Checking", color:RED,       grad:"linear-gradient(135deg,#7B1020 0%,#5A0C18 60%,#36070E 100%)"},
-  business_savings:  {label:"Business Savings",  color:"#047857", grad:"linear-gradient(135deg,#064E3B 0%,#033327 60%,#011F18 100%)"},
+  business_checking:     {label:"Business Checking",     color:RED,       grad:"linear-gradient(135deg,#7B1020 0%,#5A0C18 60%,#36070E 100%)"},
+  business_savings:      {label:"Business Savings",      color:"#047857", grad:"linear-gradient(135deg,#064E3B 0%,#033327 60%,#011F18 100%)"},
+  business_credit_card:  {label:"Business Credit Card",  color:"#4338CA", grad:"linear-gradient(135deg,#1E1B4B 0%,#2D1B69 60%,#140C3E 100%)"},
 };
 
 const CAT_COLOR: Record<string,string> = {
@@ -81,7 +82,7 @@ function mapAcct(a:Record<string,unknown>):Acct{
     id:String(a.id), label:String(a.account_name),
     number:`••••  ${a.account_number_last4}`,
     accountNumber:String(a.account_number??""),
-    balance, available:k==="credit_card"?creditLimit+balance:Number(a.available_balance)||balance,
+    balance, available:(k==="credit_card"||k==="business_credit_card")?creditLimit+balance:Number(a.available_balance)||balance,
     type:m.label, color:m.color, grad:m.grad,
     creditLimit,
     rate:Number(a.interest_rate??0),
@@ -109,7 +110,7 @@ function calcSpend(txs:Record<string,unknown>[]):Spend[]{
 ═════════════════════════════════════════════════════ */
 
 function AccountCard({a}:{a:Acct}){
-  const isCC=a.type==="Credit Card";
+  const isCC=a.type==="Credit Card"||a.type==="Business Credit Card";
   return(
     <div className="db-account-card" style={{background:a.grad,borderRadius:16,boxShadow:"0 8px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.18)",padding:"22px 24px 20px",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",minHeight:164}}>
       <div style={{position:"absolute",top:-48,right:-48,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,.06)",pointerEvents:"none"}}/>
@@ -763,7 +764,7 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
       </div>
 
       {accounts.map(a=>{
-        const isCC=a.type==="Credit Card";
+        const isCC=a.type==="Credit Card"||a.type==="Business Credit Card";
         const util=isCC?Math.round((Math.abs(Math.min(a.balance,0))/a.creditLimit)*100):null;
         const isExpanded=expandedId===a.id;
         return(
@@ -1206,7 +1207,7 @@ function CardsTab({accounts}:{accounts:Acct[]}){
       <div className="db-cards" style={{marginBottom:0}}>
         {accounts.map(a=>{
           const isFrozen=frozen.has(a.id);
-          const isCC=a.type==="Credit Card";
+          const isCC=a.type==="Credit Card"||a.type==="Business Credit Card";
           return(
             <div key={a.id} style={{display:"flex",flexDirection:"column",gap:12}}>
               {/* Premium card */}
@@ -1695,7 +1696,7 @@ export default function DashboardPage(){
 
   const netWorth = accounts.reduce((s,a)=>s+a.balance,0);
   const liquid   = accounts.filter(a=>["Checking","Savings"].includes(a.type)).reduce((s,a)=>s+a.balance,0);
-  const ccs      = accounts.filter(a=>a.type==="Credit Card");
+  const ccs      = accounts.filter(a=>a.type==="Credit Card"||a.type==="Business Credit Card");
   const utilPct  = ccs.length?Math.round((ccs.reduce((s,a)=>s+Math.abs(Math.min(a.balance,0)),0)/ccs.reduce((s,a)=>s+a.creditLimit,0))*100):0;
   const initials = `${profile.firstName[0]??""}${profile.lastName[0]??""}`.toUpperCase()||"U";
   const monthLabel=new Date().toLocaleDateString("en-US",{month:"long",year:"numeric"});
