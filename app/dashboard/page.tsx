@@ -210,7 +210,7 @@ function BottomNav({active,set,onMore}:{active:string;set:(t:string)=>void;onMor
         const isMore=t.tab==="__more__";
         const on=isMore?MORE_TABS.has(active):active===t.tab;
         return(
-          <button key={t.label} onClick={()=>isMore?onMore():set(t.tab)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",padding:"6px 10px",color:on?RED:GRAY,fontFamily:"inherit",flex:1,transition:"color .15s"}}>
+          <button key={t.label} onClick={(e)=>{if(isMore){e.stopPropagation();onMore();}else set(t.tab);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",padding:"6px 10px",color:on?RED:GRAY,fontFamily:"inherit",flex:1,transition:"color .15s"}}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.5:1.8}><path d={t.icon}/></svg>
             <span style={{fontSize:10,fontWeight:on?700:500}}>{t.label}</span>
           </button>
@@ -254,8 +254,9 @@ function PageSkeleton(){
   return(
     <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center",fontFamily:FONT}}>
-        <div style={{width:48,height:48,borderRadius:12,background:`linear-gradient(145deg,${RED},#5a1018)`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/><path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/></svg>
+        <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:40,width:"auto"}} />
         </div>
         <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading your accounts…</div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -1626,17 +1627,9 @@ export default function DashboardPage(){
       <header className="db-header" style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)",boxShadow:"0 1px 4px rgba(17,24,39,.06)"}}>
         <div className="db-header-inner" style={{maxWidth:"100%",padding:"0 24px",height:60,display:"flex",alignItems:"center",gap:16}}>
 
-          <Link href="/" style={{display:"flex",alignItems:"center",gap:9,textDecoration:"none",flexShrink:0}}>
-            <div style={{width:34,height:34,borderRadius:9,background:RED,display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/>
-                <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div style={{lineHeight:1.15}}>
-              <div style={{fontFamily:FONT,fontWeight:800,fontSize:15,color:RED}}>FSCB</div>
-              <div style={{fontSize:8,letterSpacing:".3em",color:GRAY,textTransform:"uppercase"}}>Community Bank</div>
-            </div>
+          <Link href="/" style={{display:"flex",alignItems:"center",textDecoration:"none",flexShrink:0}}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:32,width:"auto"}} />
           </Link>
 
           {/* Active tab label — desktop */}
