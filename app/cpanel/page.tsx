@@ -2644,54 +2644,61 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
 function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,disputeOpenCount}:{active:string;set:(t:string)=>void;adminName:string;adminEmail:string;onSignOut:()=>void;fraudOpenCount:number;disputeOpenCount:number}){
   const initials=(adminName.split(" ").map(w=>w[0]).join("").slice(0,2)||"A").toUpperCase();
   return(
-    <aside style={{display:"flex",flexDirection:"column",flex:1,height:"100%",overflowY:"auto"}}>
-      <div style={{padding:"20px 16px 8px",flex:1,overflowY:"auto"}}>
+    <aside style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden"}}>
 
-        {/* Admin badge */}
-        <div style={{background:"rgba(140,29,37,.07)",border:"1px solid rgba(140,29,37,.15)",borderRadius:9,padding:"8px 12px",marginBottom:18,display:"flex",alignItems:"center",gap:8}}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span style={{fontSize:12,fontWeight:700,color:RED,letterSpacing:".04em"}}>ADMIN CONTROL PANEL</span>
+      {/* Logo */}
+      <Link href="/" style={{display:"flex",alignItems:"center",gap:11,textDecoration:"none",padding:"20px 18px 18px",borderBottom:"1px solid rgba(255,255,255,.1)",flexShrink:0}}>
+        <div style={{width:40,height:40,borderRadius:10,background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+            <path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2.2" strokeLinejoin="round"/>
+            <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2.2" strokeLinejoin="round"/>
+          </svg>
         </div>
+        <div>
+          <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:"#fff",letterSpacing:".01em",lineHeight:1.1}}>FSCB</div>
+          <div style={{fontSize:8.5,letterSpacing:".28em",color:"rgba(255,255,255,.5)",textTransform:"uppercase",marginTop:2}}>Control Panel</div>
+        </div>
+      </Link>
 
-        {/* Nav */}
-        <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:GRAY,marginBottom:8,paddingLeft:8}}>Navigation</div>
+      {/* Nav scroll area */}
+      <div style={{flex:1,overflowY:"auto",padding:"14px 12px 8px"}}>
+        <div style={{fontSize:9.5,fontWeight:700,letterSpacing:".13em",textTransform:"uppercase",color:"rgba(255,255,255,.4)",marginBottom:6,paddingLeft:8}}>Navigation</div>
         {CP_NAV.map(item=>{
           const on=active===item.id;
           const showBadge=(item.id==="Fraud"&&fraudOpenCount>0)||(item.id==="Disputes"&&disputeOpenCount>0);
           const badgeCount=item.id==="Fraud"?fraudOpenCount:disputeOpenCount;
           return(
-            <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:9,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13.5,fontWeight:on?600:400,color:on?RED:MID,background:on?"rgba(140,29,37,.07)":"transparent",textAlign:"left",marginBottom:2,transition:"all .15s",borderLeft:on?`3px solid ${RED}`:"3px solid transparent"}}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.2:1.8} style={{flexShrink:0}}><path d={item.icon}/></svg>
+            <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"8px 10px",borderRadius:8,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13,fontWeight:on?600:400,color:on?"#fff":"rgba(255,255,255,.68)",background:on?"rgba(255,255,255,.14)":"transparent",textAlign:"left",marginBottom:1,transition:"all .12s",borderLeft:on?`3px solid ${GOLD}`:"3px solid transparent"}}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.2:1.7} style={{flexShrink:0}}><path d={item.icon}/></svg>
               <span style={{flex:1}}>{item.label}</span>
-              {showBadge&&<span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:99,background:"#DC2626",color:"#fff",letterSpacing:".03em",flexShrink:0}}>{badgeCount}</span>}
+              {showBadge&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:99,background:GOLD,color:DARK,letterSpacing:".03em",flexShrink:0}}>{badgeCount}</span>}
             </button>
           );
         })}
 
-        {/* Divider + user dashboard link */}
-        <div style={{height:1,background:"rgba(17,24,39,.07)",margin:"14px 0 12px"}}/>
-        <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:GRAY,marginBottom:8,paddingLeft:8}}>Links</div>
-        <Link href="/dashboard" style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:9,fontSize:13,color:MID,textDecoration:"none",borderLeft:"3px solid transparent",transition:"all .15s"}}
-          onMouseEnter={e=>{(e.currentTarget as HTMLAnchorElement).style.color=RED;(e.currentTarget as HTMLAnchorElement).style.borderLeftColor=RED;}}
-          onMouseLeave={e=>{(e.currentTarget as HTMLAnchorElement).style.color=MID;(e.currentTarget as HTMLAnchorElement).style.borderLeftColor="transparent";}}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/></svg>
+        <div style={{height:1,background:"rgba(255,255,255,.1)",margin:"12px 4px"}}/>
+        <div style={{fontSize:9.5,fontWeight:700,letterSpacing:".13em",textTransform:"uppercase",color:"rgba(255,255,255,.4)",marginBottom:6,paddingLeft:8}}>Quick Links</div>
+        <Link href="/dashboard" style={{display:"flex",alignItems:"center",gap:10,padding:"8px 13px",borderRadius:8,fontSize:13,color:"rgba(255,255,255,.65)",textDecoration:"none",transition:"all .12s"}}
+          onMouseEnter={e=>{const a=e.currentTarget as HTMLAnchorElement;a.style.color="#fff";a.style.background="rgba(255,255,255,.1)";}}
+          onMouseLeave={e=>{const a=e.currentTarget as HTMLAnchorElement;a.style.color="rgba(255,255,255,.65)";a.style.background="transparent";}}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/></svg>
           User Dashboard
         </Link>
       </div>
 
-      {/* Bottom */}
-      <div style={{borderTop:"1px solid rgba(17,24,39,.07)",padding:"16px",flexShrink:0}}>
-        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
-          <div style={{width:34,height:34,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:"#fff",flexShrink:0}}>{initials}</div>
+      {/* Admin profile footer */}
+      <div style={{borderTop:"1px solid rgba(255,255,255,.1)",padding:"14px 16px",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+          <div style={{width:34,height:34,borderRadius:"50%",background:GOLD,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:DARK,flexShrink:0}}>{initials}</div>
           <div style={{minWidth:0}}>
-            <div style={{fontSize:13,fontWeight:600,color:DARK,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{adminName}</div>
-            <div style={{fontSize:11,color:GRAY,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{adminEmail}</div>
+            <div style={{fontSize:12.5,fontWeight:600,color:"#fff",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{adminName}</div>
+            <div style={{fontSize:10.5,color:"rgba(255,255,255,.48)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{adminEmail}</div>
           </div>
         </div>
-        <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:8,width:"100%",background:"none",border:"1px solid rgba(17,24,39,.1)",borderRadius:8,padding:"8px 12px",fontSize:13,color:GRAY,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}
-          onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=RED;b.style.borderColor="rgba(140,29,37,.3)";}}
-          onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=GRAY;b.style.borderColor="rgba(17,24,39,.1)";}}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:7,width:"100%",background:"rgba(255,255,255,.09)",border:"1px solid rgba(255,255,255,.16)",borderRadius:7,padding:"7px 12px",fontSize:12.5,color:"rgba(255,255,255,.72)",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}
+          onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(255,255,255,.18)";b.style.color="#fff";}}
+          onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(255,255,255,.09)";b.style.color="rgba(255,255,255,.72)";}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Sign out
         </button>
       </div>
@@ -3119,56 +3126,48 @@ export default function CpanelPage(){
   if(!isAdmin) return <AccessDenied/>;
 
   return(
-    <div style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
+    <div style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif",display:"flex"}}>
 
-      {/* ── Header ── */}
-      <header style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)",boxShadow:"0 1px 4px rgba(17,24,39,.06)"}}>
-        <div style={{maxWidth:"100%",padding:"0 24px",height:60,display:"flex",alignItems:"center",gap:16}}>
+      {/* ── Fixed red sidebar ── */}
+      <div style={{
+        width:262,flexShrink:0,position:"fixed",top:0,left:0,bottom:0,zIndex:40,
+        background:RED,display:"flex",flexDirection:"column",
+        boxShadow:"3px 0 16px rgba(0,0,0,.18)"
+      }}>
+        <AdminSidebar
+          active={tab}
+          set={setTab}
+          adminName={adminInfo.name}
+          adminEmail={adminInfo.email}
+          onSignOut={signOut}
+          fraudOpenCount={fraudAlerts.filter(a=>a.status==="open").length}
+          disputeOpenCount={disputes.filter(d=>d.status==="open"||d.status==="more_info_needed").length}
+        />
+      </div>
 
-          {/* Logo */}
-          <Link href="/" style={{display:"flex",alignItems:"center",gap:9,textDecoration:"none",flexShrink:0}}>
-            <div style={{width:34,height:34,borderRadius:9,background:RED,display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V8.5L12 4l8 4.5V19" stroke={GOLD} strokeWidth="2" strokeLinejoin="round"/>
-                <path d="M9 19v-5h6v5" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div style={{lineHeight:1.15}}>
-              <div style={{fontFamily:FONT,fontWeight:800,fontSize:15,color:RED}}>FSCB</div>
-              <div style={{fontSize:8,letterSpacing:".3em",color:GRAY,textTransform:"uppercase"}}>Control Panel</div>
-            </div>
-          </Link>
+      {/* ── Main column ── */}
+      <div style={{marginLeft:262,flex:1,display:"flex",flexDirection:"column",minHeight:"100vh",minWidth:0}}>
 
-          <div style={{flex:1,display:"flex",alignItems:"center"}}>
-            <span style={{fontSize:14,fontWeight:600,color:DARK}}>{tab}</span>
+        {/* Red topbar */}
+        <header style={{
+          position:"sticky",top:0,zIndex:30,
+          background:RED,
+          boxShadow:"0 2px 10px rgba(140,29,37,.25)",
+          padding:"0 32px",height:58,
+          display:"flex",alignItems:"center",gap:16,flexShrink:0
+        }}>
+          <div style={{flex:1,display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:2,height:18,background:GOLD,borderRadius:2,flexShrink:0}}/>
+            <span style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:"#fff",letterSpacing:".01em"}}>{tab}</span>
           </div>
-
-          {/* Admin chip */}
-          <div style={{display:"flex",alignItems:"center",gap:8,padding:"5px 10px 5px 8px",borderRadius:8,background:"rgba(140,29,37,.07)",border:"1px solid rgba(140,29,37,.18)"}}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span style={{fontSize:12.5,fontWeight:700,color:RED}}>Admin</span>
+          <div style={{display:"flex",alignItems:"center",gap:7,padding:"5px 11px 5px 9px",borderRadius:8,background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.18)"}}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style={{fontSize:12.5,fontWeight:700,color:GOLD,letterSpacing:".04em"}}>ADMIN</span>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* ── Layout ── */}
-      <div className="cpanel-layout" style={{display:"grid",gridTemplateColumns:"240px 1fr",minHeight:"calc(100vh - 60px)"}}>
-
-        {/* Sidebar */}
-        <div className="cpanel-sidebar" style={{borderRight:"1px solid rgba(17,24,39,.08)",background:"#fff",position:"sticky",top:60,height:"calc(100vh - 60px)"}}>
-          <AdminSidebar
-            active={tab}
-            set={setTab}
-            adminName={adminInfo.name}
-            adminEmail={adminInfo.email}
-            onSignOut={signOut}
-            fraudOpenCount={fraudAlerts.filter(a=>a.status==="open").length}
-            disputeOpenCount={disputes.filter(d=>d.status==="open"||d.status==="more_info_needed").length}
-          />
-        </div>
-
-        {/* Main content */}
-        <main style={{padding:"28px 32px",maxWidth:1200,width:"100%"}}>
+        {/* Content — full width, no maxWidth cap */}
+        <main style={{flex:1,padding:"28px 36px",width:"100%",boxSizing:"border-box"}}>
           {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
