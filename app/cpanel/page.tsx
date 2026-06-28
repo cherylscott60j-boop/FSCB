@@ -619,6 +619,161 @@ function NotificationsTab({users}:{users:UserRow[]}){
 }
 
 /* ═══════════════════════════════════════════════════════
+   TAB: STATEMENTS & DOCUMENTS
+═══════════════════════════════════════════════════════ */
+function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[] }){
+  const today     = new Date();
+  const thisMonth = today.toISOString().slice(0,7);
+
+  const [selUser,  setSelUser]  = useState(users[0]?.id||"");
+  const [selAcct,  setSelAcct]  = useState("");
+  const [preset,   setPreset]   = useState("this_month");
+  const [custStart,setCustStart]= useState(thisMonth+"-01");
+  const [custEnd,  setCustEnd]  = useState(today.toISOString().slice(0,10));
+  const [history,  setHistory]  = useState<{refId:string;acctName:string;period:string;url:string;at:string}[]>([]);
+  const [err,      setErr]      = useState("");
+
+  const userAccts = accounts.filter(a=>a.userId===selUser);
+
+  function calcRange(p:string):{start:string;end:string}{
+    const d  = new Date();
+    const yr = d.getFullYear();
+    const mo = d.getMonth();
+    const pad= (n:number)=>String(n).padStart(2,"0");
+    if(p==="this_month")  return {start:`${yr}-${pad(mo+1)}-01`,          end:today.toISOString().slice(0,10)};
+    if(p==="last_month"){
+      const lm=mo===0?{y:yr-1,m:12}:{y:yr,m:mo};
+      const lastDay=new Date(lm.y,lm.m,0).getDate();
+      return {start:`${lm.y}-${pad(lm.m)}-01`, end:`${lm.y}-${pad(lm.m)}-${lastDay}`};
+    }
+    if(p==="last_3m"){
+      const s=new Date(yr,mo-2,1);
+      return {start:`${s.getFullYear()}-${pad(s.getMonth()+1)}-01`, end:today.toISOString().slice(0,10)};
+    }
+    if(p==="last_6m"){
+      const s=new Date(yr,mo-5,1);
+      return {start:`${s.getFullYear()}-${pad(s.getMonth()+1)}-01`, end:today.toISOString().slice(0,10)};
+    }
+    if(p==="ytd") return {start:`${yr}-01-01`, end:today.toISOString().slice(0,10)};
+    return {start:custStart, end:custEnd};
+  }
+
+  function generate(){
+    setErr("");
+    if(!selAcct){setErr("Select an account.");return;}
+    const {start,end}=calcRange(preset);
+    if(new Date(start)>new Date(end)){setErr("Start date must be before end date.");return;}
+    const acct=accounts.find(a=>a.id===selAcct);
+    const url=`/statement?accountId=${selAcct}&start=${start}&end=${end}`;
+    window.open(url,"_blank");
+    const periodLabel=preset==="custom"?`${start} – ${end}`:STMT_PRESETS.find(p=>p.v===preset)?.l||preset;
+    setHistory(h=>[{refId:`STMT-${Date.now().toString(36).slice(-6).toUpperCase()}`,acctName:acct?.accountName||"Account",period:periodLabel,url,at:new Date().toLocaleTimeString()},...h].slice(0,20));
+  }
+
+  return(
+    <div>
+      <SectionHead title="Statements & Documents" sub="Generate and download account statements as PDF for any customer"/>
+
+      <div style={{display:"grid",gridTemplateColumns:"380px 1fr",gap:20,alignItems:"flex-start"}}>
+
+        {/* Generator form */}
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Generate Statement</div>
+          </div>
+          <div style={{padding:"20px",display:"flex",flexDirection:"column",gap:14}}>
+            <div>
+              <label style={LBL}>Customer</label>
+              <select value={selUser} onChange={e=>{setSelUser(e.target.value);setSelAcct("");}} style={SEL}>
+                {users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={LBL}>Account</label>
+              <select value={selAcct} onChange={e=>setSelAcct(e.target.value)} style={SEL}>
+                <option value="">Select account…</option>
+                {userAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({usd(a.balance)})</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={LBL}>Statement Period</label>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+                {STMT_PRESETS.map(p=>(
+                  <button key={p.v} onClick={()=>setPreset(p.v)} style={{padding:"8px 10px",borderRadius:8,border:`1px solid ${preset===p.v?"rgba(140,29,37,.3)":"rgba(17,24,39,.12)"}`,background:preset===p.v?"rgba(140,29,37,.07)":"transparent",fontSize:12.5,fontWeight:preset===p.v?700:400,color:preset===p.v?RED:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                    {p.l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {preset==="custom"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                <div><label style={LBL}>From</label><input type="date" value={custStart} onChange={e=>setCustStart(e.target.value)} style={INP}/></div>
+                <div><label style={LBL}>To</label><input type="date" value={custEnd} onChange={e=>setCustEnd(e.target.value)} style={INP}/></div>
+              </div>
+            )}
+            {err&&<div style={{fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{err}</div>}
+            <button onClick={generate} style={{background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:"pointer",fontFamily:FONT,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Generate & Open PDF
+            </button>
+          </div>
+          <div style={{padding:"14px 20px",borderTop:"1px solid rgba(17,24,39,.07)",background:"rgba(17,24,39,.01)"}}>
+            {[
+              ["Opens in new tab","Statement renders as a formatted bank document."],
+              ["Print / Save as PDF","Use the Print button or Ctrl+P → Save as PDF."],
+              ["Accurate balances","Opening and closing balances are calculated to the exact period."],
+            ].map(([title,desc])=>(
+              <div key={title} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" style={{flexShrink:0,marginTop:1}}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
+                <div>
+                  <div style={{fontSize:12.5,fontWeight:600,color:DARK}}>{title}</div>
+                  <div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent statements */}
+        <div>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:12}}>Generated This Session</div>
+          {history.length===0
+            ?<div style={{...CARD,padding:"40px 24px",textAlign:"center",color:GRAY,fontSize:13.5}}>No statements generated yet.</div>
+            :<div style={{...CARD,overflow:"hidden"}}>
+              {history.map((h,i)=>(
+                <div key={h.refId} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderBottom:i<history.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
+                  <div style={{width:36,height:36,borderRadius:9,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
+                  </div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontWeight:600,fontSize:13.5,color:DARK}}>{h.acctName}</div>
+                    <div style={{fontSize:12,color:GRAY,marginTop:2}}>{h.period} · {h.at}</div>
+                  </div>
+                  <span style={{fontSize:11,color:GRAY,fontFamily:"monospace"}}>{h.refId}</span>
+                  <a href={h.url} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:5,background:"rgba(140,29,37,.07)",border:"1px solid rgba(140,29,37,.2)",borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:RED,textDecoration:"none",flexShrink:0}}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                    Reopen
+                  </a>
+                </div>
+              ))}
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const STMT_PRESETS=[
+  {v:"this_month",l:"This Month"},
+  {v:"last_month",l:"Last Month"},
+  {v:"last_3m",   l:"Last 3 Months"},
+  {v:"last_6m",   l:"Last 6 Months"},
+  {v:"ytd",       l:"Year to Date"},
+  {v:"custom",    l:"Custom Range"},
+];
+
+/* ═══════════════════════════════════════════════════════
    TAB: DISPUTES & CHARGEBACKS
 ═══════════════════════════════════════════════════════ */
 const DISPUTE_TYPES=[
@@ -1135,6 +1290,7 @@ const CP_NAV=[
   {id:"Transactions",  label:"Transactions",   icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
   {id:"KYC",           label:"KYC",            icon:"M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 0 0 1.946-.806 3.42 3.42 0 0 1 4.438 0 3.42 3.42 0 0 0 1.946.806 3.42 3.42 0 0 1 3.138 3.138 3.42 3.42 0 0 0 .806 1.946 3.42 3.42 0 0 1 0 4.438 3.42 3.42 0 0 0-.806 1.946 3.42 3.42 0 0 1-3.138 3.138 3.42 3.42 0 0 0-1.946.806 3.42 3.42 0 0 1-4.438 0 3.42 3.42 0 0 0-1.946-.806 3.42 3.42 0 0 1-3.138-3.138 3.42 3.42 0 0 0-.806-1.946 3.42 3.42 0 0 1 0-4.438 3.42 3.42 0 0 0 .806-1.946 3.42 3.42 0 0 1 3.138-3.138z"},
   {id:"Fraud",         label:"Fraud & Risk",   icon:"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"},
+  {id:"Statements",    label:"Statements",     icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"},
   {id:"Disputes",      label:"Disputes",       icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
@@ -1790,6 +1946,7 @@ export default function CpanelPage(){
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
+          {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
           {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
           {tab==="Disputes"      && <DisputesTab disputes={disputes} users={users} accounts={accounts} txs={txs} onOpen={handleOpenDispute} onApprove={handleApproveDispute} onDeny={handleDenyDispute} onRequestInfo={handleRequestDisputeInfo} onReview={handleReviewDispute}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}
