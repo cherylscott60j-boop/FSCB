@@ -60,6 +60,7 @@ const EXT_BANKS=[
 /* ── Helpers ─────────────────────────────────────── */
 const usd  = (n:number) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Math.abs(n));
 const pct  = (n:number) => `${(n*100).toFixed(2)}% APY`;
+const apr  = (n:number) => `${(n*100).toFixed(2)}% APR`;
 
 function greet(){
   const h=new Date().getHours();
@@ -139,6 +140,12 @@ function AccountCard({a}:{a:Acct}){
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",marginTop:6}}>
           <span style={{fontSize:11.5,color:"rgba(255,255,255,.45)",fontWeight:500}}>Credit Limit</span>
           <span style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:"rgba(255,255,255,.85)"}}>{usd(a.creditLimit)}</span>
+        </div>
+      )}
+      {isCC&&a.rate>0&&(
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",position:"relative",marginTop:6}}>
+          <span style={{fontSize:11.5,color:"rgba(255,255,255,.45)",fontWeight:500}}>APR</span>
+          <span style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:"rgba(255,255,255,.85)"}}>{(a.rate*100).toFixed(2)}%</span>
         </div>
       )}
     </div>
@@ -796,7 +803,7 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
                   <span style={{fontSize:10.5,fontWeight:700,padding:"2px 7px",borderRadius:4,background:a.color+"18",color:a.color,letterSpacing:".04em"}}>{a.type}</span>
                   <span style={{fontSize:12,color:GRAY,fontFamily:"monospace",letterSpacing:".08em"}}>{a.number}</span>
                 </div>
-                {a.rate>0&&<div style={{fontSize:12,color:"#059669",marginTop:3,fontWeight:500}}>{pct(a.rate)}</div>}
+                {a.rate>0&&<div style={{fontSize:12,color:"#059669",marginTop:3,fontWeight:500}}>{(a.accountType==="credit_card"||a.accountType==="business_credit_card")?apr(a.rate):pct(a.rate)}</div>}
               </div>
               {/* Balance */}
               <div style={{textAlign:"right",flexShrink:0}}>
@@ -1655,7 +1662,7 @@ export default function DashboardPage(){
     const ch=sb
       .channel(`dash_${userId}`)
       .on("postgres_changes",{event:"*",schema:"public",table:"transactions",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
-      .on("postgres_changes",{event:"UPDATE",schema:"public",table:"accounts",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
+      .on("postgres_changes",{event:"*",schema:"public",table:"accounts",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .on("postgres_changes",{event:"UPDATE",schema:"public",table:"applications",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:`user_id=eq.${userId}`},()=>{ loadDashboard(); })
       .subscribe();

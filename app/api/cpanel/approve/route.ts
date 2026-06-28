@@ -49,6 +49,9 @@ export async function POST(request: Request) {
     const accountNumber = String(4_000_000_000 + Math.floor(Math.random() * 999_999_999));
     const last4 = accountNumber.slice(-4);
 
+    const isBusinessCC = dbType === "business_credit_card";
+    const isPersonalCC = dbType === "credit_card";
+
     await admin.from("accounts").insert({
       user_id:              appRow.user_id,
       account_type:         dbType,
@@ -57,7 +60,8 @@ export async function POST(request: Request) {
       account_number_last4: last4,
       balance:              0,
       available_balance:    0,
-      interest_rate:        0,
+      credit_limit:         isBusinessCC ? 50000 : isPersonalCC ? 5000 : null,
+      interest_rate:        isBusinessCC ? 0.1999 : isPersonalCC ? 0.2199 : 0,
       status:               "active",
       opened_at:            new Date().toISOString(),
     });
