@@ -521,41 +521,67 @@ img, video, svg, iframe {
   .db-header { flex-shrink: 0; position: relative !important; z-index: 50; }
   .db-body  { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; min-height: 0; }
   .db-bottom-nav { position: relative !important; bottom: auto !important; left: auto !important; right: auto !important; width: 100% !important; flex-shrink: 0; }
-  .db-content { padding-bottom: 16px !important; }
+  .db-content { padding: 16px 14px calc(16px + env(safe-area-inset-bottom)) !important; }
   /* Stop sidebar drawer from sliding behind the bottom nav */
   .db-sidebar { bottom: calc(60px + env(safe-area-inset-bottom)) !important; }
-  .db-cards      { grid-template-columns: 1fr; }
   .db-bottom-nav { display: flex; }
-  .db-net-pill   { width: 100%; justify-content: space-between; gap: 0; }
-  .db-net-sep    { display: none !important; }
-  /* Hero row: sticky within db-body scroll container; header is flex-fixed above */
-  .db-hero-row { top: 0; padding-top: 12px; }
-  /* Account cards — compact on mobile */
-  .db-cards         { gap: 10px !important; }
-  .db-account-card  { min-height: 118px !important; padding: 12px 14px 10px !important; }
-  .db-card-body     { margin-top: 8px !important; }
-  .db-card-divider  { margin: 7px 0 5px !important; }
-  .db-card-balance  { font-size: 20px !important; }
+  .db-net-pill { width: 100%; justify-content: space-between; gap: 0; padding: 10px 14px !important; }
+  .db-net-sep  { display: none !important; }
+  /* Hero row — not sticky on mobile; let it scroll with content to maximize viewport */
+  .db-hero-row { position: static !important; padding-top: 0; background: transparent !important; margin-bottom: 14px !important; }
+  /* Account cards — swipeable horizontal carousel on mobile */
+  .db-cards {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 12px !important;
+    padding-bottom: 8px !important;
+  }
+  .db-cards > * {
+    min-width: min(84vw, 290px) !important;
+    scroll-snap-align: start !important;
+    flex-shrink: 0 !important;
+    min-height: 164px !important;
+  }
 }
-@media (min-width: 480px) and (max-width: 760px) {
-  .db-cards { grid-template-columns: repeat(2, 1fr); }
-}
+.db-cards::-webkit-scrollbar { display: none; }
 @media (max-width: 480px) {
   .db-user-name { display: none !important; }
-  /* Single-column small phones — slightly tighter still */
-  .db-account-card  { min-height: 108px !important; padding: 10px 12px 8px !important; }
-  .db-card-body     { margin-top: 6px !important; }
-  .db-card-divider  { margin: 5px 0 4px !important; }
-  .db-card-balance  { font-size: 18px !important; }
+  .db-cards > * { min-width: calc(100vw - 52px) !important; }
 }
 
-/* Hero greeting row — sticky so it stays visible while cards/transactions scroll */
+/* Hero greeting row — sticky on desktop so balance stays visible while scrolling */
 .db-hero-row {
   position: sticky;
-  top: 60px; /* below the 60px sticky header */
+  top: 60px;
   z-index: 10;
   background: #F5F7FA;
   padding-bottom: 8px;
+}
+
+/* Dashboard — mobile typography & layout tweaks */
+@media (max-width: 760px) {
+  .db-greeting-h1 { font-size: 19px !important; margin-bottom: 2px !important; }
+  .db-greeting-sub { font-size: 11.5px !important; }
+  .db-login-hide { display: none !important; }
+  .db-net-pill-label { font-size: 10px !important; }
+  .db-net-pill-value-lg { font-size: 17px !important; }
+  .db-net-pill-value-sm { font-size: 13px !important; }
+  /* Transaction filter tabs — horizontal scroll on narrow screens */
+  .db-tx-filters {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex-wrap: nowrap !important;
+  }
+  .db-tx-filters::-webkit-scrollbar { display: none; }
+  /* Tighter transaction rows on mobile */
+  .db-tx-row { padding: 10px 14px !important; gap: 10px !important; }
+  /* Quick action buttons — full-width pill feel on very small screens */
+  .db-quick { padding-bottom: 6px !important; }
 }
 
 /* Transfers / Pay Bills tab — 2-col form + sidebar */

@@ -151,7 +151,7 @@ function TxRow({tx}:{tx:Tx}){
   const pending=tx.status==="pending";
   const rejected=tx.status==="rejected";
   return(
-    <div style={{display:"grid",gridTemplateColumns:"1fr auto",alignItems:"center",gap:16,padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.06)",opacity:rejected?.5:1}}>
+    <div className="db-tx-row" style={{display:"grid",gridTemplateColumns:"1fr auto",alignItems:"center",gap:16,padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.06)",opacity:rejected?.5:1}}>
       <div style={{display:"flex",alignItems:"center",gap:12,minWidth:0}}>
         <div style={{width:8,height:8,borderRadius:"50%",background:pending?"#D97706":rejected?GRAY:cc,flexShrink:0}}/>
         <div style={{minWidth:0}}>
@@ -188,13 +188,26 @@ function SpendRow({s}:{s:Spend}){
 }
 
 function QuickBtn({icon,label,onClick}:{icon:string;label:string;onClick?:()=>void}){
-  const [hov,setHov]=useState(false);
+  const [pressed,setPressed]=useState(false);
+  const active=pressed;
   return(
-    <button onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,flexShrink:0,background:hov?"rgba(140,29,37,.06)":"transparent",border:`1px solid ${hov?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:10,padding:"12px 16px",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
-      <div style={{width:34,height:34,borderRadius:8,background:hov?"rgba(140,29,37,.1)":"rgba(17,24,39,.06)",display:"flex",alignItems:"center",justifyContent:"center",color:hov?RED:MID,transition:"all .15s"}}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={icon}/></svg>
+    <button
+      onClick={onClick}
+      onMouseEnter={()=>setPressed(true)} onMouseLeave={()=>setPressed(false)}
+      onTouchStart={()=>setPressed(true)} onTouchEnd={()=>setPressed(false)}
+      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,flexShrink:0,
+        background:active?"rgba(140,29,37,.07)":"#fff",
+        border:`1px solid ${active?"rgba(140,29,37,.28)":"rgba(17,24,39,.09)"}`,
+        borderRadius:12,padding:"12px 16px",cursor:"pointer",fontFamily:"inherit",
+        transition:"all .12s",boxShadow:active?"none":"0 1px 3px rgba(17,24,39,.06)",
+        WebkitTapHighlightColor:"transparent"}}>
+      <div style={{width:36,height:36,borderRadius:10,
+        background:active?"rgba(140,29,37,.12)":"rgba(17,24,39,.05)",
+        display:"flex",alignItems:"center",justifyContent:"center",
+        color:active?RED:MID,transition:"all .12s"}}>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={icon}/></svg>
       </div>
-      <span style={{fontSize:11.5,fontWeight:600,color:hov?RED:MID,whiteSpace:"nowrap"}}>{label}</span>
+      <span style={{fontSize:11.5,fontWeight:600,color:active?RED:MID,whiteSpace:"nowrap"}}>{label}</span>
     </button>
   );
 }
@@ -1861,21 +1874,30 @@ export default function DashboardPage(){
               {/* Greeting row */}
               <div className="db-hero-row" style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:20}}>
                 <div>
-                  <h1 style={{fontFamily:FONT,fontWeight:800,fontSize:22,color:RED,margin:"0 0 4px",letterSpacing:"-.015em"}}>{greet()}, {profile.firstName}.</h1>
-                  <p style={{margin:0,fontSize:12.5,color:GRAY}}>{profile.lastLogin&&<>{profile.lastLogin} · </>}<span style={{color:"#16A34A",fontWeight:500}}>All accounts secure</span></p>
+                  <h1 className="db-greeting-h1" style={{fontFamily:FONT,fontWeight:800,fontSize:22,color:RED,margin:"0 0 4px",letterSpacing:"-.015em"}}>{greet()}, {profile.firstName}.</h1>
+                  <p className="db-greeting-sub" style={{margin:0,fontSize:12.5,color:GRAY}}>{profile.lastLogin&&<><span className="db-login-hide">{profile.lastLogin} · </span></>}<span style={{color:"#16A34A",fontWeight:500}}>All accounts secure</span></p>
                 </div>
                 <div className="db-net-pill" style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:10,padding:"10px 18px",boxShadow:"0 1px 3px rgba(17,24,39,.05)"}}>
-                  <div style={{textAlign:"right"}}><div style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Net Worth</div><div style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:RED,letterSpacing:"-.015em"}}>{usd(netWorth)}</div></div>
+                  <div style={{textAlign:"right"}}>
+                    <div className="db-net-pill-label" style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Net Worth</div>
+                    <div className="db-net-pill-value-lg" style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:RED,letterSpacing:"-.015em"}}>{usd(netWorth)}</div>
+                  </div>
                   <div className="db-net-sep" style={{width:1,...DIVIDER,height:32,margin:"0 4px"}}/>
-                  <div><div style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Liquid</div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:"#16A34A"}}>{usd(liquid)}</div></div>
+                  <div>
+                    <div className="db-net-pill-label" style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Liquid</div>
+                    <div className="db-net-pill-value-sm" style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:"#16A34A"}}>{usd(liquid)}</div>
+                  </div>
                   <div className="db-net-sep" style={{width:1,...DIVIDER,height:32,margin:"0 4px"}}/>
-                  <div><div style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Credit</div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:utilPct>75?"#DC2626":DARK}}>{utilPct}% used</div></div>
+                  <div>
+                    <div className="db-net-pill-label" style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Credit</div>
+                    <div className="db-net-pill-value-sm" style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:utilPct>75?"#DC2626":DARK}}>{utilPct}% used</div>
+                  </div>
                 </div>
               </div>
 
               {/* Account cards / empty state */}
               {accounts.length===0?(
-                <div style={{...CARD,padding:"48px 32px",marginBottom:20,textAlign:"center"}}>
+                <div style={{...CARD,padding:"48px 24px",marginBottom:20,textAlign:"center"}}>
                   {pendingApps.length>0?(
                     <>
                       <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(217,119,6,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
@@ -1911,6 +1933,30 @@ export default function DashboardPage(){
                 </div>
               )}
 
+              {/* Quick Actions strip */}
+              <div className="db-quick" style={{marginBottom:20,paddingBottom:4}}>
+                {([
+                  {id:"transfer",    label:"Transfer",    icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
+                  {id:"paybill",     label:"Pay Bill",    icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
+                  {id:"deposit",     label:"Deposit",     icon:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"},
+                  {id:"zelle",       label:"Zelle",       icon:"M13 10V3L4 14h7v7l9-11h-7z"},
+                  {id:"openaccount", label:"New Account", icon:"M12 5v14M5 12h14"},
+                ] as const).map(item=>(
+                  <QuickBtn
+                    key={item.id}
+                    icon={item.icon}
+                    label={item.label}
+                    onClick={()=>{
+                      if(item.id==="transfer")         setModal("transfer");
+                      else if(item.id==="paybill")     setModal("paybill");
+                      else if(item.id==="deposit")     setModal("deposit");
+                      else if(item.id==="zelle")       setModal("zelle");
+                      else if(item.id==="openaccount") window.location.href="/open-account";
+                    }}
+                  />
+                ))}
+              </div>
+
               {/* Main 2-col */}
               <div className="db-main">
                 {/* Transactions */}
@@ -1919,9 +1965,9 @@ export default function DashboardPage(){
                     <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
                     <button onClick={()=>setTab("History")} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
                   </div>
-                  <div style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+                  <div className="db-tx-filters" style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
                     {(["all","debits","credits"] as const).map(f=>(
-                      <button key={f} onClick={()=>{setTxFilter(f);setTxShown(10);}} style={{background:txFilter===f?"rgba(140,29,37,.08)":"transparent",color:txFilter===f?RED:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:txFilter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize"}}>
+                      <button key={f} onClick={()=>{setTxFilter(f);setTxShown(10);}} style={{background:txFilter===f?"rgba(140,29,37,.08)":"transparent",color:txFilter===f?RED:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:txFilter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize",whiteSpace:"nowrap",flexShrink:0}}>
                         {f==="all"?"All transactions":f==="debits"?"Debits":"Credits"}
                       </button>
                     ))}
