@@ -470,3 +470,63 @@ CREATE INDEX IF NOT EXISTS idx_budgets_user_period ON budgets(user_id, year, mon
 CREATE TRIGGER trg_budgets_updated_at
   BEFORE UPDATE ON budgets
   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+
+-- ============================================================
+-- 13. INTEREST RATE CONFIGURATION
+--    Admin-editable APY / APR table per product type.
+--    Service role only — no customer RLS policy needed.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS rate_config (
+  key          TEXT PRIMARY KEY,
+  label        TEXT NOT NULL,
+  product_type TEXT NOT NULL,
+  rate_type    TEXT NOT NULL CHECK (rate_type IN ('apy','apr')),
+  value        NUMERIC(8,4) NOT NULL DEFAULT 0,
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_by   TEXT
+);
+
+ALTER TABLE rate_config ENABLE ROW LEVEL SECURITY;
+
+INSERT INTO rate_config (key, label, product_type, rate_type, value) VALUES
+  ('checking_apy',      'Checking APY',              'checking',      'apy', 0.01),
+  ('savings_apy',       'Regular Savings APY',        'savings',       'apy', 2.50),
+  ('hys_apy',           'High-Yield Savings APY',     'savings',       'apy', 4.75),
+  ('money_market_apy',  'Money Market APY',           'money_market',  'apy', 3.25),
+  ('cd_6_apy',          '6-Month CD APY',             'cd',            'apy', 4.00),
+  ('cd_12_apy',         '12-Month CD APY',            'cd',            'apy', 4.50),
+  ('cd_24_apy',         '24-Month CD APY',            'cd',            'apy', 4.75),
+  ('rewards_apr',       'Rewards Card APR',           'credit_card',   'apr', 19.99),
+  ('cashback_apr',      'Cash Back Card APR',         'credit_card',   'apr', 21.99),
+  ('secured_apr',       'Secured Card APR',           'credit_card',   'apr', 24.99)
+ON CONFLICT (key) DO NOTHING;
+
+
+-- ============================================================
+-- 14. FEE SCHEDULE
+--    Admin-editable fee amounts. Service role only.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS fee_schedule (
+  key        TEXT PRIMARY KEY,
+  label      TEXT NOT NULL,
+  description TEXT,
+  amount     NUMERIC(10,2) NOT NULL DEFAULT 0,
+  waivable   BOOLEAN NOT NULL DEFAULT TRUE,
+  active     BOOLEAN NOT NULL DEFAULT TRUE,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_by TEXT
+);
+
+ALTER TABLE fee_schedule ENABLE ROW LEVEL SECURITY;
+
+INSERT INTO fee_schedule (key, label, description, amount, waivable) VALUES
+  ('monthly_maintenance', 'Monthly Maintenance Fee',    'Monthly account maintenance charge',           12.00, true),
+  ('overdraft',           'Overdraft Fee',              'Per occurrence when balance goes negative',     35.00, true),
+  ('wire_domestic',       'Domestic Wire Transfer',     'Outgoing domestic wire',                       25.00, false),
+  ('wire_international',  'International Wire Transfer','Outgoing international wire',                  45.00, false),
+  ('atm_out_of_network',  'Out-of-Network ATM Fee',    'Per ATM transaction outside our network',       3.50, true),
+  ('stop_payment',        'Stop Payment Fee',           'Per stop payment order',                       30.00, false),
+  ('returned_item',       'Returned Item Fee',          'Returned check or ACH item',                   35.00, true),
+  ('late_payment',        'Late Payment Fee',           'Credit card payment received after due date',  29.00, true)
+ON CONFLICT (key) DO NOTHING;

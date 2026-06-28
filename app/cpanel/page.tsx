@@ -77,6 +77,14 @@ type DisputeRow = {
   description:string; status:string; adminNotes:string;
   creditTxId:string|null; openedAt:string; resolvedAt:string|null;
 };
+type RateConfig = {
+  key:string; label:string; productType:string; rateType:string;
+  value:number; updatedAt:string; updatedBy:string|null;
+};
+type FeeSchedule = {
+  key:string; label:string; description:string; amount:number;
+  waivable:boolean; active:boolean; updatedAt:string; updatedBy:string|null;
+};
 type PendingTx = {
   id:string; userId:string; userName:string;
   accountId:string; accountName:string; accountLast4:string;
@@ -643,9 +651,13 @@ const ACTION_META:Record<string,{label:string;color:string;bg:string;category:st
   "dispute.deny":             {label:"Dispute Denied",    color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Dispute"},
   "dispute.request_info":     {label:"Info Requested",    color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Dispute"},
   "dispute.mark_review":      {label:"Under Review",      color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Dispute"},
+  "rate.update":              {label:"Rate Updated",       color:"#0891B2", bg:"rgba(8,145,178,.1)",   category:"Rates"},
+  "fee.update":               {label:"Fee Updated",        color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Rates"},
+  "fee.apply":                {label:"Fee Applied",        color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Rates"},
+  "interest.apply":           {label:"Interest Applied",   color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Rates"},
 };
 
-const AUDIT_CATEGORIES=["All","Account","Transaction","Application","KYC","Fraud","Dispute"] as const;
+const AUDIT_CATEGORIES=["All","Account","Transaction","Application","KYC","Fraud","Dispute","Rates"] as const;
 
 function AuditTab({logs}:{logs:AuditLog[]}){
   const [search,  setSearch]  = useState("");
@@ -1422,6 +1434,7 @@ const CP_NAV=[
   {id:"Statements",    label:"Statements",     icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8"},
   {id:"Audit",         label:"Audit Log",      icon:"M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2M12 12h.01M12 16h.01"},
   {id:"Reports",       label:"Reports",        icon:"M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v14a2 2 0 0 0-2 2h-2a2 2 0 0 0-2-2z"},
+  {id:"Rates",         label:"Rates & Fees",   icon:"M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM12 6v6l4 2"},
   {id:"Disputes",      label:"Disputes",       icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   {id:"Applications",  label:"Applications",   icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"},
   {id:"Notifications", label:"Notifications",  icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
@@ -1664,6 +1677,314 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB: INTEREST RATES & FEES
+═══════════════════════════════════════════════════════ */
+const RATE_TYPE_COLOR:Record<string,{bg:string;text:string}>={
+  apy:{bg:"rgba(22,163,74,.1)",text:"#16A34A"},
+  apr:{bg:"rgba(220,38,38,.1)",text:"#DC2626"},
+};
+
+function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee,onApplyInterest}:{
+  rates:RateConfig[]; fees:FeeSchedule[];
+  users:UserRow[]; accounts:AcctRow[];
+  onUpdateRate:(key:string,value:number)=>Promise<string|null>;
+  onUpdateFee:(key:string,amount:number)=>Promise<string|null>;
+  onApplyFee:(accountId:string,userId:string,amount:number,feeLabel:string)=>Promise<string|null>;
+  onApplyInterest:(accountId:string,userId:string,amount:number,rateLabel:string)=>Promise<string|null>;
+}){
+  const [editingRate, setEditingRate] = useState<string|null>(null);
+  const [rateInput,   setRateInput]   = useState("");
+  const [rateBusy,    setRateBusy]    = useState(false);
+  const [rateErr,     setRateErr]     = useState("");
+
+  const [editingFee,  setEditingFee]  = useState<string|null>(null);
+  const [feeInput,    setFeeInput]    = useState("");
+  const [feeBusy,     setFeeBusy]     = useState(false);
+  const [feeErr,      setFeeErr]      = useState("");
+
+  /* Apply fee form */
+  const [fSelUser, setFSelUser] = useState(users[0]?.id||"");
+  const [fSelAcct, setFSelAcct] = useState("");
+  const [fSelFee,  setFSelFee]  = useState(fees[0]?.key||"");
+  const [fWaived,  setFWaived]  = useState(false);
+  const [fBusy,    setFBusy]    = useState(false);
+  const [fErr,     setFErr]     = useState("");
+  const [fDone,    setFDone]    = useState(false);
+
+  /* Apply interest form */
+  const [iSelUser, setISelUser] = useState(users[0]?.id||"");
+  const [iSelAcct, setISelAcct] = useState("");
+  const [iSelRate, setISelRate] = useState(rates[0]?.key||"");
+  const [iBusy,    setIBusy]    = useState(false);
+  const [iErr,     setIErr]     = useState("");
+  const [iDone,    setIDone]    = useState(false);
+
+  const fUserAccts = accounts.filter(a=>a.userId===fSelUser&&a.accountType!=="credit_card");
+  const iUserAccts = accounts.filter(a=>a.userId===iSelUser&&a.accountType!=="credit_card");
+
+  const selectedFee  = fees.find(f=>f.key===fSelFee);
+  const selectedRate = rates.find(r=>r.key===iSelRate);
+  const iAcct        = accounts.find(a=>a.id===iSelAcct);
+  const monthlyInterest = (selectedRate && iAcct && iAcct.balance > 0)
+    ? parseFloat((iAcct.balance * (selectedRate.value / 100) / 12).toFixed(2))
+    : 0;
+
+  async function saveRate(key:string){
+    const v=parseFloat(rateInput);
+    if(isNaN(v)||v<0||v>100){setRateErr("Enter a value between 0 and 100.");return;}
+    setRateBusy(true); setRateErr("");
+    const err=await onUpdateRate(key,v);
+    setRateBusy(false);
+    if(err){setRateErr(err);return;}
+    setEditingRate(null);
+  }
+
+  async function saveFee(key:string){
+    const v=parseFloat(feeInput);
+    if(isNaN(v)||v<0){setFeeErr("Enter a valid amount (0 or greater).");return;}
+    setFeeBusy(true); setFeeErr("");
+    const err=await onUpdateFee(key,v);
+    setFeeBusy(false);
+    if(err){setFeeErr(err);return;}
+    setEditingFee(null);
+  }
+
+  async function submitFee(){
+    if(!fSelAcct){setFErr("Select an account.");return;}
+    if(!fSelFee){setFErr("Select a fee type.");return;}
+    if(fWaived){setFDone(true); setTimeout(()=>{setFDone(false);setFWaived(false);},3000); return;}
+    const fee=fees.find(f=>f.key===fSelFee);
+    if(!fee){setFErr("Fee not found.");return;}
+    setFErr(""); setFBusy(true);
+    const err=await onApplyFee(fSelAcct,fSelUser,fee.amount,fee.label);
+    setFBusy(false);
+    if(err){setFErr(err);return;}
+    setFDone(true); setFWaived(false);
+    setTimeout(()=>{setFDone(false);setFSelAcct("");},3000);
+  }
+
+  async function submitInterest(){
+    if(!iSelAcct){setIErr("Select an account.");return;}
+    if(!iSelRate){setIErr("Select a rate.");return;}
+    if(monthlyInterest<=0){setIErr("Balance must be positive to apply interest.");return;}
+    setIErr(""); setIBusy(true);
+    const err=await onApplyInterest(iSelAcct,iSelUser,monthlyInterest,selectedRate?.label||iSelRate);
+    setIBusy(false);
+    if(err){setIErr(err);return;}
+    setIDone(true);
+    setTimeout(()=>{setIDone(false);setISelAcct("");},3000);
+  }
+
+  const APY_RATES = rates.filter(r=>r.rateType==="apy");
+  const APR_RATES = rates.filter(r=>r.rateType==="apr");
+  const activeFees = fees.filter(f=>f.active);
+
+  return(
+    <div>
+      <SectionHead title="Interest Rates & Fees" sub="Configure product rates and fee schedule — changes take effect immediately"/>
+
+      {/* Rate overview row */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:14,marginBottom:24}}>
+        <StatCard label="APY Products"   value={String(APY_RATES.length)}  sub={`avg ${(APY_RATES.reduce((s,r)=>s+r.value,0)/Math.max(APY_RATES.length,1)).toFixed(2)}% APY`} color="#16A34A" icon="M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"/>
+        <StatCard label="APR Products"   value={String(APR_RATES.length)}  sub={`avg ${(APR_RATES.reduce((s,r)=>s+r.value,0)/Math.max(APR_RATES.length,1)).toFixed(2)}% APR`} color={RED}     icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
+        <StatCard label="Fee Types"      value={String(activeFees.length)} sub={`${fees.filter(f=>f.waivable).length} waivable`}                                               color="#D97706" icon="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/>
+        <StatCard label="Highest Rate"   value={rates.length>0?`${Math.max(...rates.map(r=>r.value)).toFixed(2)}%`:"—"} sub="across all products"                              color="#7C3AED" icon="M5 3l14 9-14 9V3z"/>
+      </div>
+
+      {/* Interest Rates */}
+      <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
+        <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+          <div>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Interest Rate Configuration</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:2}}>Click a rate to edit it inline — changes persist immediately</div>
+          </div>
+        </div>
+
+        {rates.length===0
+          ?<Empty msg="No rates configured. Run the SQL migration in Supabase to seed the rate_config table."/>
+          :<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:0}}>
+            {rates.map((rate,i)=>{
+              const isEditing=editingRate===rate.key;
+              const tc=RATE_TYPE_COLOR[rate.rateType]??RATE_TYPE_COLOR.apy;
+              return(
+                <div key={rate.key} style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.05)",borderRight:i%2===0?"1px solid rgba(17,24,39,.05)":"none",background:isEditing?"rgba(17,24,39,.01)":"#fff"}}>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                    <span style={{fontSize:11.5,fontWeight:700,padding:"2px 7px",borderRadius:99,background:tc.bg,color:tc.text,letterSpacing:".04em",textTransform:"uppercase"}}>{rate.rateType}</span>
+                    {!isEditing&&(
+                      <button onClick={()=>{setEditingRate(rate.key);setRateInput(String(rate.value));setRateErr("");}} style={{background:"none",border:"none",cursor:"pointer",padding:"2px 6px",borderRadius:6,color:GRAY,fontSize:12,fontFamily:"inherit",display:"flex",alignItems:"center",gap:4}}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        Edit
+                      </button>
+                    )}
+                  </div>
+                  <div style={{fontSize:13,fontWeight:600,color:MID,marginBottom:4}}>{rate.label}</div>
+                  {isEditing?(
+                    <div>
+                      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
+                        <div style={{position:"relative",flex:1}}>
+                          <input type="number" min="0" max="100" step="0.01" value={rateInput} onChange={e=>setRateInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")saveRate(rate.key);if(e.key==="Escape")setEditingRate(null);}} autoFocus style={{...INP,fontSize:14,paddingRight:26}}/>
+                          <span style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",fontSize:13,color:GRAY,pointerEvents:"none"}}>%</span>
+                        </div>
+                      </div>
+                      <div style={{display:"flex",gap:6}}>
+                        <button disabled={rateBusy} onClick={()=>saveRate(rate.key)} style={{flex:1,background:RED,border:"none",borderRadius:7,padding:"6px 0",fontSize:12.5,fontWeight:700,color:"#fff",cursor:rateBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:rateBusy?.6:1}}>{rateBusy?"…":"Save"}</button>
+                        <button onClick={()=>{setEditingRate(null);setRateErr("");}} style={{background:"rgba(17,24,39,.06)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                      </div>
+                      {rateErr&&<div style={{fontSize:11.5,color:"#DC2626",marginTop:4}}>{rateErr}</div>}
+                    </div>
+                  ):(
+                    <div style={{fontFamily:FONT,fontWeight:800,fontSize:26,color:rate.rateType==="apy"?"#16A34A":"#DC2626",lineHeight:1.1}}>
+                      {rate.value.toFixed(2)}<span style={{fontSize:14,fontWeight:500,color:GRAY}}>%</span>
+                    </div>
+                  )}
+                  {rate.updatedBy&&!isEditing&&<div style={{fontSize:10.5,color:GRAY,marginTop:4}}>Updated by {rate.updatedBy}</div>}
+                </div>
+              );
+            })}
+          </div>
+        }
+      </div>
+
+      {/* Fee Schedule */}
+      <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
+        <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Fee Schedule</div>
+          <div style={{fontSize:12,color:GRAY,marginTop:2}}>Click the amount to edit — active fees can be applied to any account</div>
+        </div>
+        {fees.length===0
+          ?<Empty msg="No fees configured. Run the SQL migration in Supabase to seed the fee_schedule table."/>
+          :<table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+            <thead>
+              <tr style={{borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+                {["Fee Type","Description","Amount","Waivable",""].map(h=>(
+                  <th key={h} style={{textAlign:"left",padding:"10px 20px",fontWeight:600,fontSize:11.5,color:GRAY,letterSpacing:".04em",whiteSpace:"nowrap"}}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {fees.map((fee,i)=>{
+                const isEditing=editingFee===fee.key;
+                return(
+                  <tr key={fee.key} style={{borderBottom:i<fees.length-1?"1px solid rgba(17,24,39,.05)":"none",background:isEditing?"rgba(17,24,39,.01)":"#fff"}}>
+                    <td style={{padding:"13px 20px",fontWeight:600,color:DARK}}>{fee.label}</td>
+                    <td style={{padding:"13px 20px",color:GRAY,fontSize:12.5,maxWidth:260}}>{fee.description}</td>
+                    <td style={{padding:"13px 20px",fontFamily:FONT,fontWeight:700,color:DARK,whiteSpace:"nowrap"}}>
+                      {isEditing?(
+                        <div style={{display:"flex",alignItems:"center",gap:6}}>
+                          <div style={{position:"relative"}}>
+                            <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:13,pointerEvents:"none"}}>$</span>
+                            <input type="number" min="0" step="0.01" value={feeInput} onChange={e=>setFeeInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")saveFee(fee.key);if(e.key==="Escape")setEditingFee(null);}} autoFocus style={{...INP,width:110,paddingLeft:22,fontSize:13}}/>
+                          </div>
+                          <button disabled={feeBusy} onClick={()=>saveFee(fee.key)} style={{background:RED,border:"none",borderRadius:7,padding:"6px 12px",fontSize:12.5,fontWeight:700,color:"#fff",cursor:feeBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:feeBusy?.6:1}}>{feeBusy?"…":"Save"}</button>
+                          <button onClick={()=>{setEditingFee(null);setFeeErr("");}} style={{background:"rgba(17,24,39,.06)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"6px 10px",fontSize:12.5,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+                          {feeErr&&<span style={{fontSize:11.5,color:"#DC2626"}}>{feeErr}</span>}
+                        </div>
+                      ):(
+                        <button onClick={()=>{setEditingFee(fee.key);setFeeInput(String(fee.amount));setFeeErr("");}} style={{background:"none",border:"none",cursor:"pointer",fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,padding:"2px 4px",borderRadius:5,textDecoration:"underline dotted rgba(17,24,39,.25)"}}>
+                          {usd(fee.amount)}
+                        </button>
+                      )}
+                    </td>
+                    <td style={{padding:"13px 20px"}}>
+                      {fee.waivable
+                        ?<span style={{fontSize:11.5,fontWeight:600,padding:"2px 8px",borderRadius:99,background:"rgba(22,163,74,.1)",color:"#16A34A"}}>Waivable</span>
+                        :<span style={{fontSize:11.5,fontWeight:600,padding:"2px 8px",borderRadius:99,background:"rgba(107,114,128,.1)",color:GRAY}}>Fixed</span>
+                      }
+                    </td>
+                    <td style={{padding:"13px 20px"}}/>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        }
+      </div>
+
+      {/* Apply section */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+
+        {/* Apply Fee */}
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Apply Fee to Account</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:2}}>Post a fee debit — reduces balance immediately</div>
+          </div>
+          {fDone?(
+            <div style={{padding:"36px 24px",textAlign:"center"}}>
+              <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(22,163,74,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 12px",color:"#16A34A"}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>{fWaived?"Fee Waived":"Fee Applied"}</div>
+              <div style={{fontSize:13,color:GRAY,marginTop:6}}>{fWaived?"No charge was posted to the account.":"Balance updated."}</div>
+            </div>
+          ):(
+            <div style={{padding:"20px",display:"flex",flexDirection:"column",gap:12}}>
+              <div><label style={LBL}>Customer</label><select value={fSelUser} onChange={e=>{setFSelUser(e.target.value);setFSelAcct("");}} style={SEL}>{users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>)}</select></div>
+              <div><label style={LBL}>Account</label><select value={fSelAcct} onChange={e=>setFSelAcct(e.target.value)} style={SEL}><option value="">Select account…</option>{fUserAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({usd(a.balance)})</option>)}</select></div>
+              <div><label style={LBL}>Fee Type</label><select value={fSelFee} onChange={e=>setFSelFee(e.target.value)} style={SEL}>{activeFees.map(f=><option key={f.key} value={f.key}>{f.label} — {usd(f.amount)}{f.waivable?" (waivable)":""}</option>)}</select></div>
+              {selectedFee?.waivable&&(
+                <label style={{display:"flex",alignItems:"center",gap:8,fontSize:13,color:MID,cursor:"pointer"}}>
+                  <input type="checkbox" checked={fWaived} onChange={e=>setFWaived(e.target.checked)} style={{width:15,height:15,cursor:"pointer"}}/>
+                  Waive this fee (customer courtesy — no charge posted)
+                </label>
+              )}
+              {selectedFee&&(
+                <div style={{padding:"10px 14px",background:fWaived?"rgba(22,163,74,.06)":"rgba(220,38,38,.05)",border:`1px solid ${fWaived?"rgba(22,163,74,.2)":"rgba(220,38,38,.15)"}`,borderRadius:8,fontSize:13,fontWeight:600,color:fWaived?"#16A34A":"#DC2626"}}>
+                  {fWaived?`Waived — ${usd(selectedFee.amount)} will NOT be charged`:`Charge: ${usd(selectedFee.amount)}`}
+                </div>
+              )}
+              {fErr&&<div style={{fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{fErr}</div>}
+              <button disabled={fBusy} onClick={submitFee} style={{background:fWaived?"#16A34A":RED,border:"none",borderRadius:10,padding:"11px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:fBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:fBusy?.7:1}}>
+                {fBusy?"…":fWaived?"Waive Fee":"Apply Fee"}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Apply Interest */}
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+            <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Apply Monthly Interest</div>
+            <div style={{fontSize:12,color:GRAY,marginTop:2}}>Post one month of interest credit to a deposit account</div>
+          </div>
+          {iDone?(
+            <div style={{padding:"36px 24px",textAlign:"center"}}>
+              <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(22,163,74,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 12px",color:"#16A34A"}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Interest Posted</div>
+              <div style={{fontSize:13,color:GRAY,marginTop:6}}>{usd(monthlyInterest)} credited to account.</div>
+            </div>
+          ):(
+            <div style={{padding:"20px",display:"flex",flexDirection:"column",gap:12}}>
+              <div><label style={LBL}>Customer</label><select value={iSelUser} onChange={e=>{setISelUser(e.target.value);setISelAcct("");}} style={SEL}>{users.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>)}</select></div>
+              <div><label style={LBL}>Account</label><select value={iSelAcct} onChange={e=>setISelAcct(e.target.value)} style={SEL}><option value="">Select deposit account…</option>{iUserAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4} ({usd(a.balance)})</option>)}</select></div>
+              <div><label style={LBL}>Rate</label><select value={iSelRate} onChange={e=>setISelRate(e.target.value)} style={SEL}>{APY_RATES.map(r=><option key={r.key} value={r.key}>{r.label} — {r.value.toFixed(2)}% APY</option>)}</select></div>
+              {iSelAcct&&selectedRate&&(
+                <div style={{padding:"12px 16px",background:"rgba(22,163,74,.06)",border:"1px solid rgba(22,163,74,.2)",borderRadius:9}}>
+                  <div style={{fontSize:11.5,fontWeight:700,color:GRAY,letterSpacing:".07em",textTransform:"uppercase",marginBottom:6}}>Calculation</div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 0",fontSize:13,color:MID}}>
+                    <span>Balance</span><span style={{textAlign:"right",fontWeight:700,color:DARK}}>{iAcct?usd(iAcct.balance):"—"}</span>
+                    <span>APY</span><span style={{textAlign:"right",fontWeight:700,color:DARK}}>{selectedRate.value.toFixed(2)}%</span>
+                    <span>Period</span><span style={{textAlign:"right",color:DARK}}>1 month (÷12)</span>
+                    <div style={{gridColumn:"1/-1",height:1,background:"rgba(17,24,39,.1)",margin:"6px 0"}}/>
+                    <span style={{fontWeight:700,color:DARK}}>Interest</span><span style={{textAlign:"right",fontFamily:FONT,fontWeight:800,fontSize:15,color:"#16A34A"}}>{usd(monthlyInterest)}</span>
+                  </div>
+                </div>
+              )}
+              {iErr&&<div style={{fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{iErr}</div>}
+              <button disabled={iBusy||monthlyInterest<=0} onClick={submitInterest} style={{background:"#16A34A",border:"none",borderRadius:10,padding:"11px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:(iBusy||monthlyInterest<=0)?"not-allowed":"pointer",fontFamily:FONT,opacity:(iBusy||monthlyInterest<=0)?.5:1}}>
+                {iBusy?"Posting…":`Post ${monthlyInterest>0?usd(monthlyInterest)+" ":""}Interest`}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1981,6 +2302,8 @@ export default function CpanelPage(){
   const [fraudAlerts, setFraudAlerts] = useState<FraudAlert[]>([]);
   const [disputes,    setDisputes]    = useState<DisputeRow[]>([]);
   const [auditLogs,   setAuditLogs]   = useState<AuditLog[]>([]);
+  const [rateConfigs, setRateConfigs] = useState<RateConfig[]>([]);
+  const [feeSchedules,setFeeSchedules]= useState<FeeSchedule[]>([]);
 
   const load = useCallback(async()=>{
     const sb=createClient();
@@ -2006,6 +2329,8 @@ export default function CpanelPage(){
     const fraudAlertsRaw      = (json.fraudAlerts        ?? []) as Record<string,unknown>[];
     const disputesRaw         = (json.disputes           ?? []) as Record<string,unknown>[];
     const auditLogsRaw        = (json.auditLogs          ?? []) as Record<string,unknown>[];
+    const rateConfigRaw       = (json.rateConfig         ?? []) as Record<string,unknown>[];
+    const feeScheduleRaw      = (json.feeSchedule        ?? []) as Record<string,unknown>[];
 
     /* Map users + aggregate balances */
     const acctList=(accts??[]) as Record<string,unknown>[];
@@ -2138,6 +2463,20 @@ export default function CpanelPage(){
 
     setDisputes(mappedDisputes);
     setAuditLogs(mappedAudit);
+
+    const mappedRates:RateConfig[]=rateConfigRaw.map(r=>({
+      key:String(r.key),label:String(r.label),productType:String(r.product_type||""),
+      rateType:String(r.rate_type||"apy"),value:Number(r.value||0),
+      updatedAt:String(r.updated_at||""),updatedBy:r.updated_by?String(r.updated_by):null,
+    }));
+    const mappedFees:FeeSchedule[]=feeScheduleRaw.map(f=>({
+      key:String(f.key),label:String(f.label),description:String(f.description||""),
+      amount:Number(f.amount||0),waivable:Boolean(f.waivable),active:Boolean(f.active),
+      updatedAt:String(f.updated_at||""),updatedBy:f.updated_by?String(f.updated_by):null,
+    }));
+    setRateConfigs(mappedRates);
+    setFeeSchedules(mappedFees);
+
     setLoading(false);
 
     fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"syncCreditAvailableBalances"})});
@@ -2260,6 +2599,30 @@ export default function CpanelPage(){
     return err;
   }
 
+  async function handleUpdateRate(key:string, value:number):Promise<string|null>{
+    const err=await cAction({action:"updateRate",key,value});
+    if(!err) setRateConfigs(prev=>prev.map(r=>r.key===key?{...r,value}:r));
+    return err;
+  }
+
+  async function handleUpdateFee(key:string, amount:number):Promise<string|null>{
+    const err=await cAction({action:"updateFee",key,amount});
+    if(!err) setFeeSchedules(prev=>prev.map(f=>f.key===key?{...f,amount}:f));
+    return err;
+  }
+
+  async function handleApplyFee(accountId:string, userId:string, amount:number, feeLabel:string):Promise<string|null>{
+    const err=await cAction({action:"applyFee",accountId,userId,amount,feeLabel});
+    if(!err) setAccounts(prev=>prev.map(a=>a.id===accountId?{...a,balance:a.balance-Math.abs(amount)}:a));
+    return err;
+  }
+
+  async function handleApplyInterest(accountId:string, userId:string, amount:number, rateLabel:string):Promise<string|null>{
+    const err=await cAction({action:"applyInterest",accountId,userId,amount,rateLabel});
+    if(!err) setAccounts(prev=>prev.map(a=>a.id===accountId?{...a,balance:a.balance+Math.abs(amount)}:a));
+    return err;
+  }
+
   async function signOut(){
     const sb=createClient();
     await sb.auth.signOut();
@@ -2328,6 +2691,7 @@ export default function CpanelPage(){
           {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
           {tab==="Audit"         && <AuditTab logs={auditLogs}/>}
           {tab==="Reports"       && <ReportsTab users={users} accounts={accounts} txs={txs} apps={apps} disputes={disputes} fraudAlerts={fraudAlerts}/>}
+          {tab==="Rates"         && <RatesTab rates={rateConfigs} fees={feeSchedules} users={users} accounts={accounts} onUpdateRate={handleUpdateRate} onUpdateFee={handleUpdateFee} onApplyFee={handleApplyFee} onApplyInterest={handleApplyInterest}/>}
           {tab==="Fraud"         && <FraudTab alerts={fraudAlerts} accounts={accounts} users={users} onDismiss={handleDismissFraudAlert} onFreeze={handleFreezeFromFraud} onScanComplete={setFraudAlerts}/>}
           {tab==="Disputes"      && <DisputesTab disputes={disputes} users={users} accounts={accounts} txs={txs} onOpen={handleOpenDispute} onApprove={handleApproveDispute} onDeny={handleDenyDispute} onRequestInfo={handleRequestDisputeInfo} onReview={handleReviewDispute}/>}
           {tab==="Applications"  && <ApplicationsTab apps={apps} onUpdateStatus={handleAppStatus}/>}

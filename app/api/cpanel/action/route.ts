@@ -299,6 +299,81 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  /* ── Rates & Fees ── */
+  if (action === "updateRate") {
+    const { key, value } = body;
+    const v = Number(value);
+    if (!Number.isFinite(v) || v < 0 || v > 100)
+      return NextResponse.json({ error: "Rate must be between 0 and 100." }, { status: 400 });
+    const { error } = await admin.from("rate_config").update({ value: v, updated_at: new Date().toISOString(), updated_by: admin_user.email }).eq("key", key);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "rate.update", entityType: "rate_config", entityId: key, details: { value: v } });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "updateFee") {
+    const { key, amount } = body;
+    const a = Number(amount);
+    if (!Number.isFinite(a) || a < 0)
+      return NextResponse.json({ error: "Fee amount must be 0 or greater." }, { status: 400 });
+    const { error } = await admin.from("fee_schedule").update({ amount: a, updated_at: new Date().toISOString(), updated_by: admin_user.email }).eq("key", key);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "fee.update", entityType: "fee_schedule", entityId: key, details: { amount: a } });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "applyFee") {
+    const { accountId, userId, amount, feeLabel } = body;
+    const feeAmount = -Math.abs(Number(amount));
+    if (!Number.isFinite(feeAmount) || feeAmount === 0)
+      return NextResponse.json({ error: "Invalid fee amount." }, { status: 400 });
+    const { error: txErr } = await admin.from("transactions").insert({
+      account_id:       accountId,
+      user_id:          userId,
+      merchant:         `Fee — ${feeLabel}`,
+      category:         "Fee",
+      amount:           feeAmount,
+      transaction_type: "debit",
+      status:           "posted",
+      posted_at:        new Date().toISOString(),
+    });
+    if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
+    const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", accountId).single();
+    if (acct) {
+      const a = acct as Record<string, unknown>;
+      const newBal = Number(a.balance) + feeAmount;
+      const updates: Record<string, unknown> = { balance: newBal };
+      if (a.account_type === "credit_card") updates.available_balance = Number(a.credit_limit) + newBal;
+      await admin.from("accounts").update(updates).eq("id", accountId);
+    }
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "fee.apply", entityType: "account", entityId: accountId, details: { amount: feeAmount, feeLabel } });
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === "applyInterest") {
+    const { accountId, userId, amount, rateLabel } = body;
+    const intAmount = Math.abs(Number(amount));
+    if (!Number.isFinite(intAmount) || intAmount <= 0)
+      return NextResponse.json({ error: "Invalid interest amount." }, { status: 400 });
+    const { error: txErr } = await admin.from("transactions").insert({
+      account_id:       accountId,
+      user_id:          userId,
+      merchant:         `Interest — ${rateLabel}`,
+      category:         "Interest",
+      amount:           intAmount,
+      transaction_type: "credit",
+      status:           "posted",
+      posted_at:        new Date().toISOString(),
+    });
+    if (txErr) return NextResponse.json({ error: txErr.message }, { status: 500 });
+    const { data: acct } = await admin.from("accounts").select("balance").eq("id", accountId).single();
+    if (acct) {
+      await admin.from("accounts").update({ balance: Number((acct as Record<string, number>).balance) + intAmount }).eq("id", accountId);
+    }
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "interest.apply", entityType: "account", entityId: accountId, details: { amount: intAmount, rateLabel } });
+    return NextResponse.json({ success: true });
+  }
+
   if (action === "syncCreditAvailableBalances") {
     const { data: cards } = await admin
       .from("accounts")
