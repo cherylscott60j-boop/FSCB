@@ -443,6 +443,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  if (action === "fetchExternalAccounts") {
+    const { userId } = body;
+    const { data, error } = await admin
+      .from("external_accounts")
+      .select("id, nickname, bank_name, routing_number, account_number, account_type, holder_name")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ accounts: data || [] });
+  }
+
   if (action === "manualInternalTransfer") {
     const { userId, fromAccountId, toAccountId, amount, date, memo } = body;
     const parsedAmt = Math.abs(Number(amount));

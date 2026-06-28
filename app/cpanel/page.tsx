@@ -58,6 +58,7 @@ type TxRow = {
   date:string; userId:string; accountId:string;
 };
 type ExtDetails = {bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string;};
+type ExtAcctRow = {id:string;nickname:string|null;bank_name:string|null;routing_number:string;account_number:string;account_type:string;holder_name:string;};
 type FraudAlert = {
   id:string; accountId:string; userId:string;
   transactionId:string|null;
@@ -1542,9 +1543,30 @@ function TransactionsTab({
   const [trMemo,setTrMemo]=useState("");
   const [trExt,setTrExt]=useState({bankName:"",routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",note:""});
   const [trErr,setTrErr]=useState(""); const [trDone,setTrDone]=useState(false); const [trBusy,setTrBusy]=useState(false);
+  /* saved external accounts */
+  const [trExtAccts,setTrExtAccts]=useState<ExtAcctRow[]>([]);
+  const [trExtPickMode,setTrExtPickMode]=useState<"pick"|"new">("pick");
+  const [trSelExtId,setTrSelExtId]=useState<string>("");
   const upTrExt=(k:keyof typeof trExt,v:string)=>setTrExt(f=>({...f,[k]:v}));
   const trUserAccts=accounts.filter(a=>a.userId===trUser);
-  function resetTr(){setTrAmt("");setTrMemo("");setTrFrom("");setTrTo("");setTrExt({bankName:"",routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",note:""});}
+  function resetTr(){
+    setTrAmt("");setTrMemo("");setTrFrom("");setTrTo("");
+    setTrExt({bankName:"",routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",note:""});
+    setTrSelExtId("");setTrExtPickMode("pick");
+  }
+
+  /* fetch saved external accounts when user changes */
+  useEffect(()=>{
+    if(!trUser) return;
+    fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"fetchExternalAccounts",userId:trUser})})
+      .then(r=>r.json()).then((j:{accounts?:ExtAcctRow[]})=>{
+        const list=j.accounts||[];
+        setTrExtAccts(list);
+        setTrSelExtId(list[0]?.id||"");
+        setTrExtPickMode(list.length>0?"pick":"new");
+      }).catch(()=>{setTrExtAccts([]);setTrExtPickMode("new");});
+  },[trUser]);
+
   async function submitTransfer(){
     setTrErr(""); setTrBusy(true);
     if(!trFrom){setTrErr("Select a From account.");setTrBusy(false);return;}
@@ -1555,11 +1577,19 @@ function TransactionsTab({
       const err=await onInternalTransfer({userId:trUser,fromAccountId:trFrom,toAccountId:trTo,amount:parseFloat(trAmt),date:trDate,memo:trMemo});
       setTrBusy(false); if(err){setTrErr(err);return;}
     } else {
-      if(!trExt.bankName.trim()){setTrErr("Enter the bank name.");setTrBusy(false);return;}
-      if(trExt.routingNumber.length!==9){setTrErr("Routing number must be 9 digits.");setTrBusy(false);return;}
-      if(!trExt.accountNumber){setTrErr("Enter the account number.");setTrBusy(false);return;}
-      if(!trExt.holderName.trim()){setTrErr("Enter the account holder name.");setTrBusy(false);return;}
-      const err=await onExternalTransfer({userId:trUser,accountId:trFrom,amount:parseFloat(trAmt),date:trDate,...trExt});
+      let extData:{bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;note:string};
+      if(trExtPickMode==="pick"){
+        const sel=trExtAccts.find(a=>a.id===trSelExtId);
+        if(!sel){setTrErr("Select a saved external account.");setTrBusy(false);return;}
+        extData={bankName:sel.bank_name||"",routingNumber:sel.routing_number,accountNumber:sel.account_number,accountType:sel.account_type,holderName:sel.holder_name,note:""};
+      } else {
+        if(!trExt.bankName.trim()){setTrErr("Enter the bank name.");setTrBusy(false);return;}
+        if(trExt.routingNumber.length!==9){setTrErr("Routing number must be 9 digits.");setTrBusy(false);return;}
+        if(!trExt.accountNumber){setTrErr("Enter the account number.");setTrBusy(false);return;}
+        if(!trExt.holderName.trim()){setTrErr("Enter the account holder name.");setTrBusy(false);return;}
+        extData=trExt;
+      }
+      const err=await onExternalTransfer({userId:trUser,accountId:trFrom,amount:parseFloat(trAmt),date:trDate,...extData});
       setTrBusy(false); if(err){setTrErr(err);return;}
     }
     setTrDone(true);
@@ -1792,39 +1822,77 @@ function TransactionsTab({
               </>
             )}
 
-            {/* External: bank fields + Amount */}
+            {/* External: saved accounts picker or manual entry */}
             {trMode==="external"&&(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
-                <div style={{gridColumn:"1/-1"}}>
-                  <label style={LBL}>Bank Name</label>
-                  <input type="text" placeholder="e.g. Chase, Wells Fargo…" value={trExt.bankName} onChange={e=>upTrExt("bankName",e.target.value)} style={INP}/>
+              <div style={{marginBottom:14}}>
+                <div style={{background:"rgba(17,24,39,.03)",border:"1px solid rgba(17,24,39,.09)",borderRadius:10,padding:"14px 16px",marginBottom:14}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                    <span style={{fontSize:12.5,fontWeight:700,color:MID}}>Destination Bank Account</span>
+                    {trExtAccts.length>0&&(
+                      <button type="button" onClick={()=>setTrExtPickMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>
+                        {trExtPickMode==="pick"?"+ Enter New Details":"← Saved Accounts"}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Pick from saved accounts */}
+                  {trExtPickMode==="pick"&&trExtAccts.length>0?(
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {trExtAccts.map(a=>(
+                        <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${trSelExtId===a.id?RED:"rgba(17,24,39,.1)"}`,borderRadius:9,background:trSelExtId===a.id?"rgba(140,29,37,.04)":"#fff",transition:"all .15s"}}>
+                          <input type="radio" name="trExtAcct" checked={trSelExtId===a.id} onChange={()=>setTrSelExtId(a.id)} style={{accentColor:RED,marginTop:2,flexShrink:0}}/>
+                          <div style={{minWidth:0}}>
+                            <div style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bank_name||"External Account"}</div>
+                            <div style={{fontSize:12,color:GRAY,marginTop:2}}>
+                              {a.bank_name&&<span style={{marginRight:4}}>{a.bank_name} ·</span>}
+                              <span style={{textTransform:"capitalize"}}>{a.account_type}</span>
+                              {" · "}••••{(a.account_number||"").slice(-4)}
+                            </div>
+                            <div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{a.holder_name} · Routing ••••{(a.routing_number||"").slice(-4)}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  ):(
+                    /* Manual entry form */
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                      <div style={{gridColumn:"1/-1"}}>
+                        <label style={LBL}>Bank Name</label>
+                        <input type="text" placeholder="e.g. Chase, Wells Fargo…" value={trExt.bankName} onChange={e=>upTrExt("bankName",e.target.value)} style={INP}/>
+                      </div>
+                      <div>
+                        <label style={LBL}>Routing Number</label>
+                        <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={trExt.routingNumber} onChange={e=>upTrExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                      </div>
+                      <div>
+                        <label style={LBL}>Account Number</label>
+                        <input type="text" inputMode="numeric" placeholder="Account number" value={trExt.accountNumber} onChange={e=>upTrExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
+                      </div>
+                      <div>
+                        <label style={LBL}>Account Type</label>
+                        <select value={trExt.accountType} onChange={e=>upTrExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
+                          <option value="checking">Checking</option>
+                          <option value="savings">Savings</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style={LBL}>Account Holder Name</label>
+                        <input type="text" placeholder="Full name on account" value={trExt.holderName} onChange={e=>upTrExt("holderName",e.target.value)} style={INP}/>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label style={LBL}>Routing Number</label>
-                  <input type="text" inputMode="numeric" maxLength={9} placeholder="9-digit ABA" value={trExt.routingNumber} onChange={e=>upTrExt("routingNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
-                </div>
-                <div>
-                  <label style={LBL}>Account Number</label>
-                  <input type="text" inputMode="numeric" placeholder="Account number" value={trExt.accountNumber} onChange={e=>upTrExt("accountNumber",e.target.value.replace(/\D/g,""))} style={INP}/>
-                </div>
-                <div>
-                  <label style={LBL}>Account Type</label>
-                  <select value={trExt.accountType} onChange={e=>upTrExt("accountType",e.target.value)} style={{...INP,appearance:"auto" as React.CSSProperties["appearance"],cursor:"pointer"}}>
-                    <option value="checking">Checking</option>
-                    <option value="savings">Savings</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={LBL}>Account Holder Name</label>
-                  <input type="text" placeholder="Full name on account" value={trExt.holderName} onChange={e=>upTrExt("holderName",e.target.value)} style={INP}/>
-                </div>
-                <div style={{gridColumn:"1/-1"}}>
-                  <label style={LBL}>Amount</label>
-                  <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
-                </div>
-                <div style={{gridColumn:"1/-1"}}>
-                  <label style={LBL}>Note <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
-                  <input type="text" placeholder="e.g. Wire transfer, rent payment…" value={trExt.note} onChange={e=>upTrExt("note",e.target.value)} style={INP}/>
+
+                {/* Amount + Note always visible in external mode */}
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                  <div>
+                    <label style={LBL}>Amount</label>
+                    <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
+                  </div>
+                  <div>
+                    <label style={LBL}>Note <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
+                    <input type="text" placeholder="e.g. Wire transfer…" value={trExt.note} onChange={e=>upTrExt("note",e.target.value)} style={INP}/>
+                  </div>
                 </div>
               </div>
             )}
