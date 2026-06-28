@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     const isBusinessCC = dbType === "business_credit_card";
     const isPersonalCC = dbType === "credit_card";
 
-    await admin.from("accounts").insert({
+    const { error: acctErr } = await admin.from("accounts").insert({
       user_id:              appRow.user_id,
       account_type:         dbType,
       account_name:         `FSCB ${displayName}`,
@@ -65,6 +65,10 @@ export async function POST(request: Request) {
       status:               "active",
       opened_at:            new Date().toISOString(),
     });
+    if (acctErr) {
+      console.error("[approve] account insert failed:", acctErr.message);
+      return NextResponse.json({ error: `Account creation failed: ${acctErr.message}` }, { status: 500 });
+    }
   }
 
   logAction({ adminId: user.id, adminEmail: user.email ?? "", action: "application.approve", entityType: "application", entityId: applicationId, details: { accountType: appRow.account_type, userId: appRow.user_id } });

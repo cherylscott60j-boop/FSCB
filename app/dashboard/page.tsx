@@ -1933,9 +1933,27 @@ export default function DashboardPage(){
                   )}
                 </div>
               ):(
-                <div className="db-cards" style={{marginBottom:20}}>
-                  {accounts.map(a=><AccountCard key={a.id} a={a}/>)}
-                </div>
+                <>
+                  <div className="db-cards" style={{marginBottom:20}}>
+                    {accounts.map(a=><AccountCard key={a.id} a={a}/>)}
+                  </div>
+                  {pendingApps.length>0&&(
+                    <div style={{background:"rgba(217,119,6,.06)",border:"1px solid rgba(217,119,6,.22)",borderRadius:10,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"flex-start",gap:12}}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" style={{flexShrink:0,marginTop:1}}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:13,fontWeight:700,color:"#92400E",marginBottom:3}}>
+                          {pendingApps.length===1?"Application Under Review":`${pendingApps.length} Applications Under Review`}
+                        </div>
+                        <div style={{fontSize:12.5,color:"#78350F",lineHeight:1.5}}>
+                          {pendingApps.map((a,i)=>(
+                            <span key={a.id}>{i>0?" · ":""}<strong>{a.accountName}</strong> <span style={{opacity:.7}}>Ref: {a.referenceId}</span></span>
+                          ))}
+                        </div>
+                        <div style={{fontSize:12,color:"#92400E",marginTop:4,opacity:.8}}>Typically processed within 1–2 business days.</div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Quick Actions strip */}
