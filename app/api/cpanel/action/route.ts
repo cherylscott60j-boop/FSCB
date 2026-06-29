@@ -455,6 +455,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
+  if (action === "renameAccount") {
+    const { acctId, name } = body;
+    const trimmed = String(name || "").trim();
+    if (!trimmed) return NextResponse.json({ error: "Name cannot be empty." }, { status: 400 });
+    const { error } = await admin.from("accounts").update({ account_name: trimmed }).eq("id", acctId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "account.rename", entityType: "account", entityId: acctId, details: { name: trimmed } });
+    return NextResponse.json({ success: true });
+  }
+
   if (action === "syncCreditAvailableBalances") {
     const { data: cards } = await admin
       .from("accounts")

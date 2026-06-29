@@ -277,11 +277,12 @@ function OverviewTab({
    TAB: USERS
 ═══════════════════════════════════════════════════════ */
 function UsersTab({
-  users, accounts, onFreezeToggle, onCreditLimitUpdate,
+  users, accounts, onFreezeToggle, onCreditLimitUpdate, onRenameAccount,
 }:{
   users:UserRow[]; accounts:AcctRow[];
   onFreezeToggle:(acctId:string, nowFrozen:boolean, userId:string)=>Promise<void>;
   onCreditLimitUpdate:(acctId:string, limit:number)=>Promise<string|null>;
+  onRenameAccount:(acctId:string, name:string)=>Promise<string|null>;
 }){
   const [search, setSearch]           = useState("");
   const [expanded, setExpanded]       = useState<string|null>(null);
@@ -290,6 +291,19 @@ function UsersTab({
   const [limitInput, setLimitInput]   = useState("");
   const [limitErr, setLimitErr]       = useState("");
   const [limitBusy, setLimitBusy]     = useState(false);
+  const [editingName, setEditingName]   = useState<string|null>(null);
+  const [nameInput, setNameInput]       = useState("");
+  const [nameErr, setNameErr]           = useState("");
+  const [nameBusy, setNameBusy]         = useState(false);
+
+  async function saveRename(acctId:string){
+    if(!nameInput.trim()){setNameErr("Name cannot be empty.");return;}
+    setNameBusy(true);setNameErr("");
+    const err=await onRenameAccount(acctId,nameInput.trim());
+    setNameBusy(false);
+    if(err){setNameErr(err);return;}
+    setEditingName(null);
+  }
 
   const filtered = users.filter(u=>{
     const q=search.toLowerCase();
@@ -373,7 +387,30 @@ function UsersTab({
                                 {/* Main row */}
                                 <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
                                   <div style={{flex:1,minWidth:160}}>
-                                    <div style={{fontWeight:600,fontSize:13,color:DARK}}>{a.accountName}</div>
+                                    {editingName===a.id?(
+                                      <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                                        <input
+                                          type="text"
+                                          value={nameInput}
+                                          onChange={e=>setNameInput(e.target.value)}
+                                          onKeyDown={e=>{if(e.key==="Enter")saveRename(a.id);if(e.key==="Escape"){setEditingName(null);setNameErr("");}}}
+                                          autoFocus
+                                          style={{...INP,fontSize:13,height:30,padding:"3px 8px",width:200}}
+                                        />
+                                        <button disabled={nameBusy} onClick={()=>saveRename(a.id)} style={{background:"rgba(22,163,74,.09)",border:"1px solid rgba(22,163,74,.25)",borderRadius:7,padding:"3px 10px",fontSize:12,fontWeight:600,color:"#16A34A",cursor:nameBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:nameBusy?.5:1}}>
+                                          {nameBusy?"…":"Save"}
+                                        </button>
+                                        <button onClick={()=>{setEditingName(null);setNameErr("");}} style={{background:"rgba(17,24,39,.05)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"3px 8px",fontSize:12,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                                        {nameErr&&<span style={{fontSize:12,color:"#DC2626"}}>{nameErr}</span>}
+                                      </div>
+                                    ):(
+                                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                                        <div style={{fontWeight:600,fontSize:13,color:DARK}}>{a.accountName}</div>
+                                        <button onClick={()=>{setEditingName(a.id);setNameInput(a.accountName);setNameErr("");}} title="Rename account" style={{background:"none",border:"none",cursor:"pointer",padding:2,color:GRAY,display:"flex",alignItems:"center",opacity:.6,transition:"opacity .12s"}} onMouseEnter={e=>(e.currentTarget.style.opacity="1")} onMouseLeave={e=>(e.currentTarget.style.opacity=".6")}>
+                                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        </button>
+                                      </div>
+                                    )}
                                     <div style={{fontSize:12,color:GRAY,marginTop:2}}>
                                       <span style={{fontFamily:"monospace",letterSpacing:".08em"}}>••••{a.last4}</span>
                                       <span style={{margin:"0 6px"}}>·</span>
@@ -652,6 +689,7 @@ const ACTION_META:Record<string,{label:string;color:string;bg:string;category:st
   "account.transfer_freeze":  {label:"Transfer Hold",     color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Account"},
   "account.unfreeze":         {label:"Account Unfrozen",  color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Account"},
   "account.credit_limit_set": {label:"Credit Limit Set",  color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Account"},
+  "account.rename":           {label:"Account Renamed",   color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Account"},
   "transaction.approve":      {label:"Tx Approved",       color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Transaction"},
   "transaction.reject":       {label:"Tx Rejected",       color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Transaction"},
   "transaction.manual_post":  {label:"Manual Post",       color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Transaction"},
@@ -3478,6 +3516,12 @@ export default function CpanelPage(){
     return err;
   }
 
+  async function handleRenameAccount(acctId:string, name:string):Promise<string|null>{
+    const err=await cAction({action:"renameAccount",acctId,name});
+    if(!err) setAccounts(prev=>prev.map(a=>a.id===acctId?{...a,accountName:name}:a));
+    return err;
+  }
+
   async function handleFileSAR(d:{userId:string;accountId:string;transactionId:string;subjectName:string;amount:string;description:string}):Promise<string|null>{
     const res=await fetch("/api/cpanel/action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"fileSAR",...d})});
     const json=await res.json() as Record<string,string>;
@@ -3596,7 +3640,7 @@ export default function CpanelPage(){
         {/* Content */}
         <main style={{flex:1,padding:"28px 36px",boxSizing:"border-box"}}>
           {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
-          {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate}/>}
+          {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate} onRenameAccount={handleRenameAccount}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction} onInternalTransfer={handleInternalTransfer} onExternalTransfer={handleExternalTransfer} onUnfreeze={handleUnfreezeUser}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}
           {tab==="Statements"    && <StatementsTab users={users} accounts={accounts}/>}
