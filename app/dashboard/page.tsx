@@ -1618,9 +1618,9 @@ export default function DashboardPage(){
     const {data:{user}}=await sb.auth.getUser();
     if(!user){window.location.href="/login";return;}
     const now=new Date(),mo=now.getMonth()+1,yr=now.getFullYear(),mm=String(mo).padStart(2,"0");
-    const [{data:p},{data:a},{data:t},{data:tp},{data:n},{data:aps}]=await Promise.all([
+    const [{data:p},{data:a,error:acctErr},{data:t},{data:tp},{data:n},{data:aps}]=await Promise.all([
       sb.from("profiles").select("first_name,last_name,email,phone,date_of_birth,member_since,role,kyc_status").eq("id",user.id).single(),
-      sb.from("accounts").select("*").eq("user_id",user.id).eq("status","active").order("opened_at"),
+      sb.from("accounts").select("*").eq("user_id",user.id).neq("status","closed").order("opened_at"),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","posted").order("posted_at",{ascending:false}).limit(100),
       sb.from("transactions").select("*").eq("user_id",user.id).eq("status","pending").order("submitted_at",{ascending:false}),
       sb.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(20),
@@ -1629,6 +1629,7 @@ export default function DashboardPage(){
     const ll=user.last_sign_in_at?new Date(user.last_sign_in_at).toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}):"";
     const pr=p as Record<string,string>|null;
     setProfile({firstName:pr?.first_name||user.email?.split("@")[0]||"User",lastName:pr?.last_name||"",email:pr?.email||user.email||"",phone:pr?.phone||"",dob:pr?.date_of_birth||"",lastLogin:ll,memberSince:pr?.member_since?new Date(pr.member_since).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}):"",role:pr?.role||"",kycStatus:pr?.kyc_status||"pending"});
+    if(acctErr) console.error("[dashboard] accounts query error:",acctErr.message,acctErr.code);
     setUserId(user.id);
     setAccounts(((a??[]) as Record<string,unknown>[]).map(mapAcct));
     const posted=(t??[]) as Record<string,unknown>[];
