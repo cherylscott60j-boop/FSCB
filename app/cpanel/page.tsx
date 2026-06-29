@@ -3353,7 +3353,7 @@ export default function CpanelPage(){
         return;
       }
       setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));
-      load();
+      await load();
     } else {
       await cAction({action:"rejectApplication",applicationId:id});
       setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));

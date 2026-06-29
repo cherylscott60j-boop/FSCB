@@ -30,7 +30,7 @@ export async function GET() {
     { data: ofacScreenings },
   ] = await Promise.all([
     admin.from("profiles").select("id,email,first_name,last_name,phone,member_since,role,kyc_status"),
-    admin.from("accounts").select("id,user_id,account_type,account_name,account_number_last4,balance,status,freeze_reason,credit_limit"),
+    admin.from("accounts").select("id,user_id,account_type,account_name,account_number_last4,balance,status,freeze_reason,credit_limit").order("opened_at", {ascending: false}),
     admin.from("transactions").select("id,user_id,account_id,merchant,category,amount,posted_at").eq("status", "posted").order("posted_at", { ascending: false }).limit(50),
     admin.from("transactions").select("id,user_id,account_id,merchant,category,amount,transaction_type,memo,submitted_at,posted_at").eq("status", "pending").order("submitted_at", { ascending: false }),
     admin.from("applications").select("*").order("submitted_at", { ascending: false }),
@@ -43,5 +43,5 @@ export async function GET() {
     admin.from("ofac_screenings").select("id,user_id,screened_name,match_score,matched_entry,status,reviewed_by,reviewed_at,created_at").order("created_at", { ascending: false }).limit(150),
   ]);
 
-  return NextResponse.json({ profiles, accounts, transactions, pendingTransactions, applications, fraudAlerts: fraudAlerts ?? [], disputes: disputes ?? [], auditLogs: auditLogs ?? [], rateConfig: rateConfig ?? [], feeSchedule: feeSchedule ?? [], complianceReports: (complianceReports as Record<string,unknown>[]) ?? [], ofacScreenings: (ofacScreenings as Record<string,unknown>[]) ?? [] });
+  return NextResponse.json({ profiles: profiles ?? [], accounts: accounts ?? [], transactions: transactions ?? [], pendingTransactions: pendingTransactions ?? [], applications: applications ?? [], fraudAlerts: fraudAlerts ?? [], disputes: disputes ?? [], auditLogs: auditLogs ?? [], rateConfig: rateConfig ?? [], feeSchedule: feeSchedule ?? [], complianceReports: (complianceReports as Record<string,unknown>[]) ?? [], ofacScreenings: (ofacScreenings as Record<string,unknown>[]) ?? [] });
 }

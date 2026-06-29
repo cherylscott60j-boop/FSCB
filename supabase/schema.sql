@@ -263,11 +263,13 @@ CREATE TYPE application_status AS ENUM (
   'pending', 'approved', 'denied', 'cancelled', 'more_info_needed'
 );
 
+-- Live DB migration: ALTER TABLE applications ADD COLUMN IF NOT EXISTS account_name TEXT;
 CREATE TABLE IF NOT EXISTS applications (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   reference_id    TEXT UNIQUE NOT NULL,
   account_type    TEXT NOT NULL,
+  account_name    TEXT,
   category        application_category NOT NULL,
   first_name      TEXT NOT NULL,
   last_name       TEXT NOT NULL,

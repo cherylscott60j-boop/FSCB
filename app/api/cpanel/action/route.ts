@@ -171,7 +171,8 @@ export async function POST(request: Request) {
     if (limitNum > CREDIT.maxLimit)
       return NextResponse.json({ error: `Limit cannot exceed ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(CREDIT.maxLimit)}.` }, { status: 400 });
     const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", acctId).single();
-    if (!acct || (acct as Record<string,unknown>).account_type !== "credit_card")
+    const acctType = (acct as Record<string,unknown>)?.account_type;
+    if (!acct || (acctType !== "credit_card" && acctType !== "business_credit_card"))
       return NextResponse.json({ error: "Account not found or not a credit card." }, { status: 400 });
     const balance = Number((acct as Record<string,number>).balance);
     const outstanding = balance < 0 ? Math.abs(balance) : 0;
@@ -458,7 +459,7 @@ export async function POST(request: Request) {
     const { data: cards } = await admin
       .from("accounts")
       .select("id, balance, credit_limit, available_balance")
-      .eq("account_type", "credit_card")
+      .in("account_type", ["credit_card", "business_credit_card"])
       .gt("credit_limit", 0);
     if (cards) {
       const stale = (cards as Array<{ id: string; balance: number; credit_limit: number; available_balance: number }>)
