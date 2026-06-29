@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     user_id:       user.id,
     reference_id:  referenceId,
     account_type:  body.account     ?? "",
-    account_name:  body.accountName ?? body.account ?? "",
+    account_name:  (body.category === "business" && body.businessName) ? body.businessName : (body.accountName ?? body.account ?? ""),
     category:      body.category    ?? "personal",
     first_name:    body.firstName   ?? "",
     last_name:     body.lastName    ?? "",
