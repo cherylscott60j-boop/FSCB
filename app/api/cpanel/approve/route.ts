@@ -71,13 +71,15 @@ export async function POST(request: Request) {
     }
 
     // Notify the user their account is ready
-    await admin.from("notifications").insert({
-      user_id: appRow.user_id,
-      type:    "success",
-      title:   "Account Approved",
-      message: `Your ${displayName} has been approved and is now active. You can start using it right away.`,
-      read:    false,
-    }).catch(() => {/* non-critical */});
+    try {
+      await admin.from("notifications").insert({
+        user_id: appRow.user_id,
+        type:    "success",
+        title:   "Account Approved",
+        message: `Your ${displayName} has been approved and is now active. You can start using it right away.`,
+        read:    false,
+      });
+    } catch { /* non-critical */ }
   }
 
   logAction({ adminId: user.id, adminEmail: user.email ?? "", action: "application.approve", entityType: "application", entityId: applicationId, details: { accountType: appRow.account_type, userId: appRow.user_id } });
