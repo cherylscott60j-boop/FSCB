@@ -1653,7 +1653,7 @@ function TransactionsTab({
   const [date,setDate]=useState(new Date().toISOString().split("T")[0]);
   const [manErr,setManErr]=useState(""); const [manDone,setManDone]=useState(false); const [manBusy,setManBusy]=useState(false);
   const userAccts=accounts.filter(a=>a.userId===selUser);
-  const CATS=["Income","Transfer","Groceries","Dining","Shopping","Auto & Gas","Entertainment","Housing","Bill Payment","Deposit","Withdrawal","Fee","Other"];
+  const CATS=["Income","Transfer","Incoming Wire","Outgoing Wire","Groceries","Dining","Shopping","Auto & Gas","Entertainment","Housing","Bill Payment","Deposit","Withdrawal","Fee","Other"];
 
   /* ── Post Transfer state ── */
   const [trMode,setTrMode]=useState<"internal"|"external">("internal");
