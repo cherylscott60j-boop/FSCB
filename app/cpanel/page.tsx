@@ -3346,11 +3346,18 @@ export default function CpanelPage(){
 
   async function handleAppStatus(id:string, status:"approved"|"rejected"){
     if(status==="approved"){
-      await fetch("/api/cpanel/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({applicationId:id})});
+      const res=await fetch("/api/cpanel/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({applicationId:id})});
+      if(!res.ok){
+        const body=await res.json().catch(()=>({})) as Record<string,string>;
+        alert(`Approval failed: ${body.error||res.statusText}. The account was not created.`);
+        return;
+      }
+      setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));
+      load();
     } else {
       await cAction({action:"rejectApplication",applicationId:id});
+      setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));
     }
-    setApps(prev=>prev.map(a=>a.id===id?{...a,status}:a));
   }
 
   async function handleApproveTransaction(tx:PendingTx, date:string){
