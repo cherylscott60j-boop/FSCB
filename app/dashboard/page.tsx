@@ -152,27 +152,50 @@ function AccountCard({a}:{a:Acct}){
   );
 }
 
-function TxRow({tx}:{tx:Tx}){
+function TxRow({tx,onCancel}:{tx:Tx;onCancel?:(id:string)=>Promise<void>}){
   const credit=tx.amount>0;
   const cc=CAT_COLOR[tx.category]??GRAY;
   const pending=tx.status==="pending";
   const rejected=tx.status==="rejected";
+  const cancelled=tx.status==="cancelled";
+  const isZelle=pending&&tx.merchant.startsWith("Zelle®")&&!!onCancel;
+  const [cancelling,setCancelling]=useState(false);
+
+  async function handleCancel(){
+    if(!onCancel||cancelling)return;
+    setCancelling(true);
+    await onCancel(tx.id);
+    setCancelling(false);
+  }
+
   return(
-    <div className="db-tx-row" style={{display:"grid",gridTemplateColumns:"1fr auto",alignItems:"center",gap:16,padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.06)",opacity:rejected?.5:1}}>
+    <div className="db-tx-row" style={{display:"grid",gridTemplateColumns:"1fr auto",alignItems:"center",gap:16,padding:"12px 20px",borderBottom:"1px solid rgba(17,24,39,.06)",opacity:(rejected||cancelled)?.5:1}}>
       <div style={{display:"flex",alignItems:"center",gap:12,minWidth:0}}>
-        <div style={{width:8,height:8,borderRadius:"50%",background:pending?"#D97706":rejected?GRAY:cc,flexShrink:0}}/>
+        <div style={{width:8,height:8,borderRadius:"50%",background:pending?"#D97706":(rejected||cancelled)?GRAY:cc,flexShrink:0}}/>
         <div style={{minWidth:0}}>
           <div style={{fontSize:13.5,fontWeight:500,color:DARK,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{tx.merchant}</div>
           <div style={{fontSize:12,color:GRAY,marginTop:2}}>
             <span style={{marginRight:8}}>{tx.category}</span><span>{tx.date}</span>
             {pending&&<span style={{marginLeft:8,fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:4,background:"rgba(217,119,6,.12)",color:"#92400E"}}>PENDING</span>}
             {rejected&&<span style={{marginLeft:8,fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:4,background:"rgba(107,114,128,.12)",color:GRAY}}>REJECTED</span>}
+            {cancelled&&<span style={{marginLeft:8,fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:4,background:"rgba(107,114,128,.12)",color:GRAY}}>CANCELLED</span>}
           </div>
         </div>
       </div>
-      <div style={{textAlign:"right",flexShrink:0}}>
-        <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:pending?"#D97706":credit?"#16A34A":DARK,whiteSpace:"nowrap"}}>{credit?"+":"-"}{usd(tx.amount)}</div>
-        <div style={{fontSize:11,color:pending?"#D97706":credit?"#16A34A":"#DC2626",marginTop:2}}>{pending?"Pending":rejected?"Rejected":credit?"Credit":"Debit"}</div>
+      <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+        {isZelle&&(
+          <button
+            onClick={handleCancel}
+            disabled={cancelling}
+            style={{fontSize:11.5,fontWeight:600,padding:"3px 10px",borderRadius:6,border:"1px solid rgba(220,38,38,.3)",background:"rgba(220,38,38,.06)",color:"#DC2626",cursor:cancelling?"not-allowed":"pointer",fontFamily:"inherit",opacity:cancelling?.6:1}}
+          >
+            {cancelling?"Cancelling…":"Cancel"}
+          </button>
+        )}
+        <div style={{textAlign:"right"}}>
+          <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:pending?"#D97706":credit?"#16A34A":DARK,whiteSpace:"nowrap"}}>{credit?"+":"-"}{usd(tx.amount)}</div>
+          <div style={{fontSize:11,color:pending?"#D97706":credit?"#16A34A":"#DC2626",marginTop:2}}>{pending?"Pending":(rejected||cancelled)?(rejected?"Rejected":"Cancelled"):credit?"Credit":"Debit"}</div>
+        </div>
       </div>
     </div>
   );
@@ -1674,6 +1697,11 @@ export default function DashboardPage(){
     window.location.replace("/login");
   },[]);
 
+  const handleCancelZelle = useCallback(async(txId:string)=>{
+    const res=await fetch("/api/zelle/cancel",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({txId})});
+    if(res.ok) loadDashboard();
+  },[loadDashboard]);
+
   /* ── Back-button lock: keep logged-in users on dashboard ── */
   useEffect(()=>{
     window.history.pushState({dashboardLocked:true},"","/dashboard");
@@ -1998,7 +2026,7 @@ export default function DashboardPage(){
                   </div>
                   {shown.length===0
                     ?<div style={{padding:"40px 20px",textAlign:"center",color:GRAY,fontSize:13.5}}>No transactions match this filter.</div>
-                    :shown.slice(0,txShown).map(tx=><TxRow key={tx.id} tx={tx}/>)
+                    :shown.slice(0,txShown).map(tx=><TxRow key={tx.id} tx={tx} onCancel={handleCancelZelle}/>)
                   }
                   {shown.length>txShown&&<div style={{padding:"14px 20px",borderTop:"1px solid rgba(17,24,39,.06)",textAlign:"center"}}>
                     <button onClick={()=>setTxShown(n=>n+10)} style={{background:"none",border:"1px solid rgba(17,24,39,.12)",borderRadius:8,padding:"8px 22px",fontSize:13,color:MID,cursor:"pointer",fontFamily:"inherit"}}
