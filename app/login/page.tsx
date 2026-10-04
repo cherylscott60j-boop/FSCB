@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
+import Logo from "@/components/Logo";
 
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
 const RED  = "#8C1D25";
@@ -85,7 +86,7 @@ export default function LoginPage() {
 
             <Link href="/" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none", marginBottom: 64 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 40, width: "auto", filter: "brightness(0) invert(1)" }} />
+              <Logo height={40} variant="light" />
             </Link>
 
             <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 42, color: "#fff", margin: "0 0 18px", lineHeight: 1.08, letterSpacing: "-.03em" }}>
@@ -110,8 +111,8 @@ export default function LoginPage() {
 
             <div style={{ padding: "13px 16px", background: "rgba(0,0,0,.28)", borderRadius: 10, borderLeft: `3px solid rgba(212,175,55,.5)`, backdropFilter: "blur(4px)", maxWidth: 400 }}>
               <p style={{ fontSize: 11.5, color: "rgba(255,255,255,.5)", lineHeight: 1.55, margin: 0 }}>
-                FSCB will <strong style={{ color: "rgba(255,255,255,.72)" }}>never</strong> ask for your password via email or phone.
-                Questions? Call <a href="tel:18002372669" style={{ color: "rgba(212,175,55,.8)", textDecoration: "none", fontWeight: 700 }}>1-800-FSCB-NOW</a>.
+                Safeguard Global will <strong style={{ color: "rgba(255,255,255,.72)" }}>never</strong> ask for your password via email or phone.
+                Questions? Call <a href="tel:18002372669" style={{ color: "rgba(212,175,55,.8)", textDecoration: "none", fontWeight: 700 }}>1-800-SAFEGRD</a>.
               </p>
             </div>
           </div>
@@ -124,7 +125,7 @@ export default function LoginPage() {
               <div className="login-card-header" style={{ padding: "16px 32px", display: "flex", justifyContent: "flex-end", borderBottom: "1px solid rgba(17,24,39,.06)" }}>
                 <Link href="/" style={{ fontSize: 13, color: GRAY, textDecoration: "none", display: "flex", alignItems: "center", gap: 6, fontWeight: 500 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
-                  Back to fscb.com
+                  Back to safeguardglobal.com
                 </Link>
               </div>
 
@@ -132,7 +133,7 @@ export default function LoginPage() {
                 {/* Heading */}
                 <div style={{ marginBottom: 32 }}>
                   <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 30, color: DARK, margin: "0 0 6px", letterSpacing: "-.03em" }}>Welcome back</h1>
-                  <p style={{ fontSize: 14.5, color: GRAY, margin: 0, lineHeight: 1.5 }}>Sign in to your FSCB account</p>
+                  <p style={{ fontSize: 14.5, color: GRAY, margin: 0, lineHeight: 1.5 }}>Sign in to your Safeguard Global account</p>
                 </div>
 
                 <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -209,7 +210,7 @@ export default function LoginPage() {
                     onMouseEnter={(e) => (e.currentTarget.style.borderColor = RED)}
                     onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(17,24,39,.09)")}>
                     <div>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: DARK, marginBottom: 2 }}>New to FSCB?</div>
+                      <div style={{ fontSize: 13.5, fontWeight: 700, color: DARK, marginBottom: 2 }}>New to Safeguard Global?</div>
                       <div style={{ fontSize: 12.5, color: GRAY }}>Open an account in minutes</div>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>

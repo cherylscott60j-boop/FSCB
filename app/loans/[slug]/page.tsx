@@ -14,15 +14,15 @@ const PAGES = {
     subtitle: "Flexible financing for any purpose — fast local decisions with no hidden fees.",
     hero: "linear-gradient(145deg,#0d1f3c,#1a3a6b)",
     stats: [{ v: "$1K–$50K", l: "Loan range" }, { v: "As low as 7.99%", l: "Starting APR*" }, { v: "Same day", l: "Funding available" }],
-    overview: "Whether you're consolidating high-interest debt, funding a home renovation, or covering an unexpected expense, FSCB personal loans give you a fixed rate, predictable payment, and a local team who reviews your application personally — not an algorithm.",
+    overview: "Whether you're consolidating high-interest debt, funding a home renovation, or covering an unexpected expense, Safeguard Global personal loans give you a fixed rate, predictable payment, and a local team who reviews your application personally — not an algorithm.",
     uses: ["Debt consolidation", "Home improvements", "Medical expenses", "Major appliances", "Wedding costs", "Vacation financing", "Moving expenses", "Emergency expenses"],
     features: [
       { title: "Fixed Monthly Payments", desc: "Your rate and payment are locked from day one — no variable rate surprises ever.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
       { title: "No Origination Fees", desc: "We don't charge application fees, origination fees, or prepayment penalties.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
       { title: "12–84 Month Terms", desc: "Choose your repayment period to fit your budget — from 1 to 7 years.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
-      { title: "Same-Day Funding", desc: "Approve by noon and funds are often deposited to your FSCB account the same business day.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+      { title: "Same-Day Funding", desc: "Approve by noon and funds are often deposited to your Safeguard Global account the same business day.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
       { title: "Soft Pull Pre-Qualification", desc: "Check your rate with no impact to your credit score before you formally apply.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
-      { title: "Local Underwriting", desc: "Every application is reviewed by an FSCB banker who understands our community's needs.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
+      { title: "Local Underwriting", desc: "Every application is reviewed by a Safeguard Global banker who understands our community's needs.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
     ],
     rates: [
       { term: "12–24 months", range: "7.99% – 14.99%", amount: "$1,000–$15,000", best: "Short-term needs" },
@@ -48,7 +48,7 @@ const PAGES = {
     subtitle: "Buy or refinance your home with local expertise and competitive rates.",
     hero: "linear-gradient(145deg,#0f1e0f,#1e3d20)",
     stats: [{ v: "15 & 30 yr", l: "Fixed rate options" }, { v: "FHA / VA / USDA", l: "Government programs" }, { v: "Local", l: "Fast closings" }],
-    overview: "Buying a home is the biggest financial decision most people ever make. At FSCB, your mortgage application is reviewed by local underwriters who know your market, not a national call center. From first-time buyer programs to jumbo loans, we have the right mortgage for every buyer.",
+    overview: "Buying a home is the biggest financial decision most people ever make. At Safeguard Global, your mortgage application is reviewed by local underwriters who know your market, not a national call center. From first-time buyer programs to jumbo loans, we have the right mortgage for every buyer.",
     uses: ["First home purchase", "Move-up purchase", "Investment property", "Rate and term refinance", "Cash-out refinance", "Construction-to-perm", "Vacation home", "Jumbo purchase"],
     features: [
       { title: "Conventional Loans", desc: "30, 20, and 15-year fixed-rate options with competitive rates for buyers with strong credit.", icon: "M3 21h18M5 21V9l7-6 7 6v12" },
@@ -65,13 +65,13 @@ const PAGES = {
     ],
     steps: [
       { n: "1", t: "Get Pre-Approved", d: "A pre-approval letter tells you exactly how much home you can afford and shows sellers you're serious." },
-      { n: "2", t: "Find Your Home", d: "Shop with confidence knowing your financing is ready. Your FSCB mortgage advisor is available throughout." },
+      { n: "2", t: "Find Your Home", d: "Shop with confidence knowing your financing is ready. Your Safeguard Global mortgage advisor is available throughout." },
       { n: "3", t: "Close with Confidence", d: "Local processing and underwriting means fewer delays. We target closings in 21–30 days." },
     ],
     faqs: [
       { q: "How much down payment do I need?", a: "It depends on the loan type. Conventional loans start at 3% down, FHA at 3.5%, VA and USDA offer 0% down for eligible buyers." },
-      { q: "What's the difference between pre-qualification and pre-approval?", a: "Pre-qualification is an estimate based on self-reported info. Pre-approval is a verified commitment from FSCB based on your actual financial documents." },
-      { q: "How long does the mortgage process take?", a: "From complete application to closing, FSCB targets 21–30 days for most purchase loans. Refinances may be faster." },
+      { q: "What's the difference between pre-qualification and pre-approval?", a: "Pre-qualification is an estimate based on self-reported info. Pre-approval is a verified commitment from Safeguard Global based on your actual financial documents." },
+      { q: "How long does the mortgage process take?", a: "From complete application to closing, Safeguard Global targets 21–30 days for most purchase loans. Refinances may be faster." },
       { q: "Can I lock my interest rate?", a: "Yes — once your application is approved, you can lock your rate for 30, 45, or 60 days while you finalize your purchase." },
     ],
     cta: "Start Your Mortgage Application",
@@ -82,12 +82,12 @@ const PAGES = {
     subtitle: "Drive away with great rates on new, used, or refinanced vehicle loans.",
     hero: "linear-gradient(145deg,#1a0d00,#3d2000)",
     stats: [{ v: "Up to 84 mo", l: "Loan terms" }, { v: "Pre-approval", l: "Available before you shop" }, { v: "Same day", l: "Decisions" }],
-    overview: "Shop for your next car with confidence. FSCB auto loans offer competitive rates on new and used vehicles, fast decisions, and the option to get pre-approved before you set foot on the lot. No dealer financing pressure — just straightforward local lending.",
+    overview: "Shop for your next car with confidence. Safeguard Global auto loans offer competitive rates on new and used vehicles, fast decisions, and the option to get pre-approved before you set foot on the lot. No dealer financing pressure — just straightforward local lending.",
     uses: ["New car purchase", "Used car purchase", "Private-party purchase", "Refinance existing loan", "Motorcycle or RV", "Boat financing", "Classic car purchase", "Commercial vehicle"],
     features: [
-      { title: "New Vehicle Financing", desc: "Competitive rates on new vehicles from any dealership. Bring your FSCB check and negotiate as a cash buyer.", icon: "M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4v4a2 2 0 0 1-2 2h-1" },
+      { title: "New Vehicle Financing", desc: "Competitive rates on new vehicles from any dealership. Bring your Safeguard Global check and negotiate as a cash buyer.", icon: "M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11l4 4v4a2 2 0 0 1-2 2h-1" },
       { title: "Used Vehicle Financing", desc: "Finance used vehicles up to 10 years old from dealerships or private sellers.", icon: "M9 17H7m10 0h-4M3 11l2-4 16.5.5-2 3.5" },
-      { title: "Refinancing", desc: "Lower your existing auto payment by refinancing with FSCB — often with no fees and quick processing.", icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9" },
+      { title: "Refinancing", desc: "Lower your existing auto payment by refinancing with Safeguard Global — often with no fees and quick processing.", icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9" },
       { title: "Pre-Approval in Minutes", desc: "Know your rate and budget before you shop. Pre-approval letters are accepted at all dealerships.", icon: "M9 12l2 2 4-4" },
       { title: "Terms Up to 84 Months", desc: "Choose the repayment term that fits your monthly budget — from 24 to 84 months.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
       { title: "No Prepayment Penalties", desc: "Pay extra or pay it off early whenever you want — with absolutely no penalty.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
@@ -100,13 +100,13 @@ const PAGES = {
     steps: [
       { n: "1", t: "Get Pre-Approved", d: "Apply in 5 minutes online or in-branch. Receive your pre-approval letter the same day." },
       { n: "2", t: "Shop Your Vehicle", d: "Visit any dealership or private seller. Present your pre-approval and negotiate from strength." },
-      { n: "3", t: "Finalize and Drive", d: "Bring the signed purchase agreement to FSCB. We fund the dealer directly and you drive home." },
+      { n: "3", t: "Finalize and Drive", d: "Bring the signed purchase agreement to Safeguard Global. We fund the dealer directly and you drive home." },
     ],
     faqs: [
-      { q: "Can I finance a private-party purchase?", a: "Yes — FSCB funds private-party vehicle purchases. We'll need the title and a bill of sale from the seller." },
+      { q: "Can I finance a private-party purchase?", a: "Yes — Safeguard Global funds private-party vehicle purchases. We'll need the title and a bill of sale from the seller." },
       { q: "Is there a minimum loan amount?", a: "We typically finance vehicles of $5,000 or more. Contact a banker for purchases below that amount." },
       { q: "Can I include tax, title, and registration in my loan?", a: "Yes — in most cases, we can roll in tax, title, and registration fees so you owe nothing out of pocket at purchase." },
-      { q: "Does my vehicle serve as collateral?", a: "Yes — auto loans are secured by the vehicle. FSCB holds the title until the loan is paid in full." },
+      { q: "Does my vehicle serve as collateral?", a: "Yes — auto loans are secured by the vehicle. Safeguard Global holds the title until the loan is paid in full." },
     ],
     cta: "Apply for an Auto Loan",
   },
@@ -116,7 +116,7 @@ const PAGES = {
     subtitle: "Put your home's built-up value to work for you — on your terms.",
     hero: "linear-gradient(145deg,#1c1200,#3d2c00)",
     stats: [{ v: "Up to 85%", l: "LTV available" }, { v: "HELOC or fixed", l: "Two options" }, { v: "Local", l: "Appraisals & decisions" }],
-    overview: "Your home may be your biggest asset — and FSCB can help you access its equity for renovations, debt consolidation, education, or any major expense. Choose between a fixed-rate Home Equity Loan (lump sum) or a flexible Home Equity Line of Credit (HELOC).",
+    overview: "Your home may be your biggest asset — and Safeguard Global can help you access its equity for renovations, debt consolidation, education, or any major expense. Choose between a fixed-rate Home Equity Loan (lump sum) or a flexible Home Equity Line of Credit (HELOC).",
     uses: ["Home renovations", "Debt consolidation", "College tuition", "Major medical expenses", "Emergency fund", "Investment opportunity", "Business startup costs", "Dream vacation"],
     features: [
       { title: "Borrow Up to 85% LTV", desc: "Access up to 85% of your home's appraised value minus your existing mortgage balance.", icon: "M4 11l8-6 8 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z" },
@@ -124,7 +124,7 @@ const PAGES = {
       { title: "HELOC — Draw as You Need", desc: "A revolving credit line you draw from when needed. Pay interest only on what you use during the draw period.", icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9" },
       { title: "Potential Tax Deduction", desc: "Interest on home equity loans used for home improvements may be tax-deductible. Consult your tax advisor.", icon: "M9 14l6-6m-5.5.5h.01m4.99 5h.01" },
       { title: "No Closing Costs on Select Loans", desc: "Qualifying home equity loans include a no-closing-cost option — saving you thousands upfront.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "Local Appraisal Team", desc: "FSCB uses trusted local appraisers for faster turnaround and fair market value assessments.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
+      { title: "Local Appraisal Team", desc: "Safeguard Global uses trusted local appraisers for faster turnaround and fair market value assessments.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
     ],
     rates: [
       { term: "HELOC (variable rate)", range: "Prime + margin", amount: "$10K–$500K", best: "Ongoing projects" },
@@ -150,7 +150,7 @@ const PAGES = {
     subtitle: "Capital for growth, expansion, equipment, and commercial real estate — decided locally.",
     hero: "linear-gradient(145deg,#0f0f1e,#1e1e40)",
     stats: [{ v: "$10K–$5M", l: "Loan range" }, { v: "SBA preferred", l: "Lender" }, { v: "3–5 days", l: "Average decision" }],
-    overview: "The capital you need to grow your business shouldn't require a trip to a distant headquarters. FSCB business loans are underwritten by local bankers who know your market and your industry — from startups seeking their first credit line to established businesses financing major expansions.",
+    overview: "The capital you need to grow your business shouldn't require a trip to a distant headquarters. Safeguard Global business loans are underwritten by local bankers who know your market and your industry — from startups seeking their first credit line to established businesses financing major expansions.",
     uses: ["Equipment purchase", "Working capital", "Commercial RE purchase", "Business acquisition", "Franchise financing", "Inventory purchase", "Tenant improvements", "Partner buyout"],
     features: [
       { title: "SBA 7(a) Loans", desc: "Up to $5M in SBA-backed financing with lower down payments, longer terms, and more flexible eligibility.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
@@ -168,13 +168,13 @@ const PAGES = {
     steps: [
       { n: "1", t: "Initial Consultation", d: "Meet with a business banker to discuss your needs, timeline, and which loan type fits best." },
       { n: "2", t: "Submit Your Package", d: "Two years of business tax returns, P&L, balance sheet, and personal financials for all 20%+ owners." },
-      { n: "3", t: "Local Decision", d: "FSCB underwrites business loans in-house. Most decisions within 3–5 business days of a complete package." },
+      { n: "3", t: "Local Decision", d: "Safeguard Global underwrites business loans in-house. Most decisions within 3–5 business days of a complete package." },
     ],
     faqs: [
       { q: "Do I need collateral to qualify?", a: "Most business loans require some form of collateral — real estate, equipment, or business assets. SBA loans include a government guarantee that can reduce collateral requirements." },
       { q: "Can startups apply?", a: "Yes. Startups with strong personal credit, industry experience, and a viable business plan can qualify for certain loan types, particularly SBA programs." },
       { q: "How long is the SBA loan process?", a: "SBA 7(a) loans typically take 30–60 days from complete application to funding. SBA 504 loans may take 45–90 days due to the dual-lender structure." },
-      { q: "Do you offer construction loans for businesses?", a: "Yes — FSCB offers commercial construction loans for ground-up builds and major renovations, with draws released in stages as work is completed." },
+      { q: "Do you offer construction loans for businesses?", a: "Yes — Safeguard Global offers commercial construction loans for ground-up builds and major renovations, with draws released in stages as work is completed." },
     ],
     cta: "Apply for a Business Loan",
   },
@@ -243,7 +243,7 @@ export default async function LoansPage({ params }: { params: Promise<{ slug: st
       <div className="mob-section" style={{ background: "#F8F9FA", padding: "72px 32px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Why FSCB</div>
+            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Why Safeguard Global</div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 36px)", letterSpacing: "-.02em", margin: 0, color: DARK }}>What sets our loans apart</h2>
           </div>
           <div className="g-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
@@ -272,7 +272,7 @@ export default async function LoansPage({ params }: { params: Promise<{ slug: st
               </div>
             ))}
           </div>
-          <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 12 }}>* APR shown is illustrative and varies based on creditworthiness, term, and loan type. Contact FSCB for your personalized rate.</p>
+          <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 12 }}>* APR shown is illustrative and varies based on creditworthiness, term, and loan type. Contact Safeguard Global for your personalized rate.</p>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Logo from "./Logo";
 
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
 
@@ -108,16 +109,15 @@ export default function Footer() {
           {/* Brand column */}
           <div>
             <Link href="/" style={{ display: "inline-flex", alignItems: "center", marginBottom: 18, textDecoration: "none" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 36, width: "auto", filter: "brightness(0) invert(1)" }} />
+              <Logo height={36} variant="light" />
             </Link>
 
             <p style={{ fontSize: 13.5, lineHeight: 1.68, margin: "0 0 8px", maxWidth: 270, color: "rgba(255,255,255,.65)" }}>
-              Locally owned and operated since 1902. Banking built on trust, driven by community.
+              Founded 1902. Banking built on trust, now serving clients across 40+ countries.
             </p>
             <p style={{ fontSize: 13, lineHeight: 1.55, margin: "0 0 24px", maxWidth: 270, color: "rgba(255,255,255,.4)" }}>
-              Main Street Branch &middot; 102 Main Street<br />
-              Mon–Fri 9am–5pm &middot; Sat 9am–12pm
+              Headquarters &middot; 1 Harbor Point Plaza, New York, NY<br />
+              Mon–Fri 9am–5pm &middot; Sat 9:30am–4pm
             </p>
 
             {/* Socials */}
@@ -219,6 +219,18 @@ export default function Footer() {
             <span style={{ fontSize: 11, color: "rgba(255,255,255,.7)" }}>Member FDIC</span>
           </div>
 
+          {/* SIPC badge */}
+          <div
+            style={{
+              display: "flex", alignItems: "center", gap: 8,
+              border: "1px solid rgba(255,255,255,.18)", borderRadius: 7, padding: "7px 12px",
+              flexShrink: 0,
+            }}
+          >
+            <span style={{ fontFamily: FONT, fontWeight: 800, fontSize: 12.5, color: "#fff", letterSpacing: ".04em" }}>SIPC</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,.7)" }}>Securities Member SIPC</span>
+          </div>
+
           {/* Equal Housing badge */}
           <div
             style={{
@@ -253,9 +265,10 @@ export default function Footer() {
               margin: 0, flex: 1, minWidth: 260,
             }}
           >
-            First State Community Bank is FDIC insured. Deposits insured up to $250,000 per depositor. Investment
-            products are not FDIC insured, not bank guaranteed, and may lose value. All loans subject to credit
-            approval. Rates and terms subject to change without notice.{" "}
+            Safeguard Global Investment Bank is FDIC insured. Deposits insured up to $250,000 per depositor.
+            Securities and investment products are not FDIC insured, not bank guaranteed, and may lose value —
+            they are protected up to $500,000 by SIPC. All loans subject to credit approval. Rates and terms
+            subject to change without notice.{" "}
             <Link href="/disclosures" style={{ color: "rgba(255,255,255,.45)", textDecoration: "underline" }}>
               Full disclosures →
             </Link>
@@ -280,7 +293,7 @@ export default function Footer() {
             <img src="/fdic.png" alt="FDIC Insured" style={{ height: 36, width: "auto" }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/lenderlogo.png" alt="Equal Housing Lender" style={{ height: 36, width: "auto" }} />
-            <span>&copy; {new Date().getFullYear()} First State Community Bank. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} Safeguard Global Investment Bank. All rights reserved.</span>
           </div>
           <div style={{ display: "flex", gap: 22, flexWrap: "wrap" }}>
             {LEGAL_LINKS.map((l) => (

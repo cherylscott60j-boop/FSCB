@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/components/Logo";
 
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
@@ -73,7 +74,7 @@ export default function ResetPasswordPage() {
         {/* Logo */}
         <div style={{ marginBottom: 28 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 36, width: "auto" }} />
+          <Logo height={36} variant="dark" />
         </div>
 
         {/* ── Success ── */}
@@ -113,7 +114,7 @@ export default function ResetPasswordPage() {
         {status === "ready" && (
           <>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 6px" }}>Set New Password</h2>
-            <p style={{ color: GRAY, fontSize: 13.5, margin: "0 0 24px", lineHeight: 1.5 }}>Choose a strong password for your FSCB account.</p>
+            <p style={{ color: GRAY, fontSize: 13.5, margin: "0 0 24px", lineHeight: 1.5 }}>Choose a strong password for your Safeguard Global account.</p>
 
             <form onSubmit={handleSubmit}>
               {/* New password */}

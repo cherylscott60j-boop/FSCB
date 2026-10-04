@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 const CARDS = [
   {
-    title: "Strong Local Roots",
-    body: "Serving our community since 1902 — built on trust, guided by values, and always close to home.",
+    title: "Deep-Rooted Heritage",
+    body: "Founded in 1902, now serving clients in 40+ countries — built on trust, guided by values that never changed.",
     cta: "Learn about us",
     iconBg: "rgba(140,29,37,.09)",
     iconColor: "#8C1D25",
@@ -29,8 +29,8 @@ const CARDS = [
     ),
   },
   {
-    title: "Community-Local Banking",
-    body: "We're proud to be part of this community — supporting local families, businesses, and causes every day.",
+    title: "Global Reach, Personal Touch",
+    body: "From Main Street to global markets — supporting families, businesses, and causes every day.",
     cta: "See our impact",
     iconBg: "rgba(16,185,129,.1)",
     iconColor: "#059669",
@@ -74,7 +74,7 @@ export default function WhySection() {
             fontWeight: 700,
           }}
         >
-          Why Bank with FSCB?
+          Why Bank with Safeguard Global?
         </span>
         <h2
           style={{
