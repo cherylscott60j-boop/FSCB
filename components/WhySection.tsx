@@ -74,7 +74,7 @@ export default function WhySection() {
             fontWeight: 700,
           }}
         >
-          Why Bank with FSCB?
+          Why Bank with SGGINV?
         </span>
         <h2
           style={{

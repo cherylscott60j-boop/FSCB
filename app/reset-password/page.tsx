@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/components/Logo";
 
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
@@ -72,8 +73,7 @@ export default function ResetPasswordPage() {
 
         {/* Logo */}
         <div style={{ marginBottom: 28 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 36, width: "auto" }} />
+          <Logo variant="dark" height={36} />
         </div>
 
         {/* ── Success ── */}
@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 20, color: DARK, margin: "0 0 10px" }}>Password Updated!</h2>
             <p style={{ color: GRAY, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>Your password has been changed successfully. Redirecting you to your dashboard…</p>
             <div style={{ height: 3, background: "rgba(17,24,39,.06)", borderRadius: 99, overflow: "hidden" }}>
-              <div style={{ height: "100%", background: RED, borderRadius: 99, animation: "fscb-progress 3s linear forwards" }}/>
+              <div style={{ height: "100%", background: RED, borderRadius: 99, animation: "sgginv-progress 3s linear forwards" }}/>
             </div>
           </div>
         )}
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
         {status === "ready" && (
           <>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 6px" }}>Set New Password</h2>
-            <p style={{ color: GRAY, fontSize: 13.5, margin: "0 0 24px", lineHeight: 1.5 }}>Choose a strong password for your FSCB account.</p>
+            <p style={{ color: GRAY, fontSize: 13.5, margin: "0 0 24px", lineHeight: 1.5 }}>Choose a strong password for your SGGINV account.</p>
 
             <form onSubmit={handleSubmit}>
               {/* New password */}

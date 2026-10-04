@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 /* ─── Menu data ─────────────────────────────────────────────────────────── */
 
@@ -443,7 +444,7 @@ export default function Nav() {
           {/* Logo */}
           <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 38, width: "auto" }} />
+            <Logo variant="dark" height={38} />
           </Link>
 
           {/* Desktop nav */}
@@ -579,7 +580,7 @@ export default function Nav() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 74, borderBottom: "1px solid rgba(17,24,39,.06)" }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }} onClick={() => setMenuOpen(false)}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 34, width: "auto" }} />
+            <Logo variant="dark" height={34} />
           </Link>
           <button style={{ background: "none", border: "none", cursor: "pointer", padding: 8, color: "#111827" }} onClick={() => setMenuOpen(false)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 6L6 18M6 6l12 12" /></svg>

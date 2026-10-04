@@ -1,5 +1,5 @@
 -- ============================================================
--- FSCB Banking App — Supabase Schema
+-- SGGINV Banking App — Supabase Schema
 -- Run in: Supabase Dashboard → SQL Editor → Run
 -- ============================================================
 

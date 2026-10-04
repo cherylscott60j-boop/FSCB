@@ -24,7 +24,7 @@ export default function Loading() {
           overflow: "hidden",
         }}
       >
-        <div className="fscb-progress-bar" />
+        <div className="sgginv-progress-bar" />
       </div>
 
       {/* Subtle radial glow */}
@@ -73,7 +73,7 @@ export default function Loading() {
           lineHeight: 1,
         }}
       >
-        FSCB
+        SGGINV
       </div>
       <div
         style={{
@@ -89,9 +89,9 @@ export default function Loading() {
 
       {/* Pulsing dots */}
       <div style={{ display: "flex", gap: 8, marginTop: 36 }}>
-        <span className="fscb-dot" />
-        <span className="fscb-dot" />
-        <span className="fscb-dot" />
+        <span className="sgginv-dot" />
+        <span className="sgginv-dot" />
+        <span className="sgginv-dot" />
       </div>
     </div>
   );

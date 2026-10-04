@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { BANK } from "@/lib/bankConstants";
+import Logo from "@/components/Logo";
 
 /* ── Design tokens ───────────────────────────────── */
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
@@ -48,14 +49,22 @@ type Notif = {id:string;type:string;title:string;message:string;created_at:strin
 type ModalKey = "transfer"|"paybill"|"deposit"|"zelle"|"lockcard";
 type ExtAcct = {id:string;nickname:string;bankName:string;routingNumber:string;accountNumber:string;accountType:string;holderName:string;};
 
-/* ── External bank logos ─────────────────────────── */
+/* ── External bank options ───────────────────────── */
+// Generic icon only — we don't reproduce other banks' logos.
 const EXT_BANKS=[
-  {key:"chase",    name:"Chase",            logo:"/CHASE.png"},
-  {key:"bofa",     name:"Bank of America",  logo:"/boa.png"},
-  {key:"wells",    name:"Wells Fargo",      logo:"/Wellsfargo.png"},
-  {key:"td",       name:"TD Bank",          logo:"/TD.png"},
-  {key:"regions",  name:"Regions Bank",     logo:"/REGION.png"},
+  {key:"chase",    name:"Chase"},
+  {key:"bofa",     name:"Bank of America"},
+  {key:"wells",    name:"Wells Fargo"},
+  {key:"td",       name:"TD Bank"},
+  {key:"regions",  name:"Regions Bank"},
 ];
+function BankIcon({size=28}:{size?:number}){
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.6">
+      <path d="M3 10l9-6 9 6M4 10v9h16v-9M4 19h16M9 19v-6M15 19v-6" />
+    </svg>
+  );
+}
 
 /* ── Helpers ─────────────────────────────────────── */
 const usd  = (n:number) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Math.abs(n));
@@ -308,8 +317,7 @@ function PageSkeleton(){
     <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center",fontFamily:FONT}}>
         <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:40,width:"auto"}} />
+          <Logo variant="dark" height={40} />
         </div>
         <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading your accounts…</div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -528,7 +536,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                         onClick={()=>{setSelBank(b.key);upExt("bankName",b.name);}}
                         style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={b.logo} alt={b.name} style={{height:28,width:"auto",maxWidth:64,objectFit:"contain"}}/>
+                        <BankIcon />
                         <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?RED:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
                       </button>
                     ))}
@@ -555,7 +563,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                     <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(140,29,37,.04)",border:"1px solid rgba(140,29,37,.16)",borderRadius:8}}>
                       {selBank!=="other"&&EXT_BANKS.find(b=>b.key===selBank)&&(
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={EXT_BANKS.find(b=>b.key===selBank)!.logo} alt="" style={{height:20,width:"auto",maxWidth:52,objectFit:"contain"}}/>
+                        <BankIcon size={20} />
                       )}
                       <span style={{fontSize:13,fontWeight:700,color:RED}}>{extForm.bankName||"Other Bank"}</span>
                       <button type="button" onClick={()=>{setSelBank("");upExt("bankName","");}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:"2px 6px",color:GRAY,fontSize:11.5,fontWeight:500,fontFamily:"inherit",borderRadius:5}}>Change</button>
@@ -858,7 +866,7 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
                 <DetailRow label="ABA / ACH Routing" value={BANK.achRouting} copyVal={BANK.achRouting} revealed/>
                 <DetailRow label="Domestic Wire Routing" value={BANK.wireRouting} copyVal={BANK.wireRouting} revealed/>
                 <DetailRow label="SWIFT / BIC (International)" value={BANK.swiftCode} copyVal={BANK.swiftCode} revealed/>
-                <p style={{fontSize:11,color:GRAY,margin:"10px 0 8px",lineHeight:1.5}}>Use these details to receive wire transfers or set up direct deposits. For international transfers, provide your bank name: <strong>First State Community Bank</strong>.</p>
+                <p style={{fontSize:11,color:GRAY,margin:"10px 0 8px",lineHeight:1.5}}>Use these details to receive wire transfers or set up direct deposits. For international transfers, provide your bank name: <strong>Safeguard Global Investment Bank</strong>.</p>
               </div>
             )}
           </div>
@@ -1033,7 +1041,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                             onClick={()=>{setSelBank(b.key);upExt("bankName",b.name);}}
                             style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={b.logo} alt={b.name} style={{height:28,width:"auto",maxWidth:64,objectFit:"contain"}}/>
+                            <BankIcon />
                             <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?RED:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
                           </button>
                         ))}
@@ -1060,7 +1068,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                         <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(140,29,37,.04)",border:"1px solid rgba(140,29,37,.16)",borderRadius:8}}>
                           {selBank!=="other"&&EXT_BANKS.find(b=>b.key===selBank)&&(
                             /* eslint-disable-next-line @next/next/no-img-element */
-                            <img src={EXT_BANKS.find(b=>b.key===selBank)!.logo} alt="" style={{height:20,width:"auto",maxWidth:52,objectFit:"contain"}}/>
+                            <BankIcon size={20} />
                           )}
                           <span style={{fontSize:13,fontWeight:700,color:RED}}>{extForm.bankName||"Other Bank"}</span>
                           <button type="button" onClick={()=>{setSelBank("");upExt("bankName","");}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:"2px 6px",color:GRAY,fontSize:11.5,fontWeight:500,fontFamily:"inherit",borderRadius:5}}>Change</button>
@@ -1769,8 +1777,7 @@ export default function DashboardPage(){
         <div className="db-header-inner" style={{maxWidth:"100%",padding:"0 24px",height:60,display:"flex",alignItems:"center",gap:16}}>
 
           <Link href="/" style={{display:"flex",alignItems:"center",textDecoration:"none",flexShrink:0}}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:32,width:"auto"}} />
+            <Logo variant="dark" height={32} />
           </Link>
 
           {/* Active tab label — desktop */}
@@ -1929,7 +1936,7 @@ export default function DashboardPage(){
                       <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(140,29,37,.08)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.8"><path d="M4 19V8.5L12 4l8 4.5V19"/><path d="M9 19v-5h6v5"/></svg>
                       </div>
-                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:18,color:DARK,marginBottom:8}}>Welcome to FSCB, {profile.firstName}!</div>
+                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:18,color:DARK,marginBottom:8}}>Welcome to SGGINV, {profile.firstName}!</div>
                       <div style={{fontSize:13.5,color:GRAY,lineHeight:1.6,marginBottom:28,maxWidth:400,margin:"0 auto 28px"}}>You don&apos;t have any accounts yet. Open your first account to get started with banking, savings, and more.</div>
                       <Link href="/open-account" style={{display:"inline-flex",alignItems:"center",gap:8,background:RED,color:"#fff",borderRadius:10,padding:"12px 28px",fontSize:14,fontWeight:700,fontFamily:FONT,textDecoration:"none",boxShadow:"0 4px 14px -2px rgba(140,29,37,.4)"}}>
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>

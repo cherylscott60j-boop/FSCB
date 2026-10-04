@@ -75,7 +75,7 @@ export default function ContactForm() {
         </div>
         <h3 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 10px" }}>Message Sent!</h3>
         <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.6, margin: "0 0 24px" }}>
-          Thanks, <strong style={{ color: DARK }}>{form.name.split(" ")[0]}</strong>. A local FSCB banker will follow up at{" "}
+          Thanks, <strong style={{ color: DARK }}>{form.name.split(" ")[0]}</strong>. A local SGGINV banker will follow up at{" "}
           <strong style={{ color: DARK }}>{form.email}</strong> within one business day.
         </p>
         <button

@@ -1,7 +1,7 @@
 const TESTIMONIALS = [
   {
     quote:
-      "We went from a small farm to a thriving business. FSCB's local lending team understood our needs when no one else would.",
+      "We went from a small farm to a thriving business. SGGINV's local lending team understood our needs when no one else would.",
     name: "Marcus & Joan Whitfield",
     role: "Small Business Owners",
     initials: "MW",

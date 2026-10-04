@@ -65,7 +65,7 @@ export default function PrivacyPage() {
             Privacy Notice
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.7)", lineHeight: 1.65, margin: "0 0 20px" }}>
-            First State Community Bank &mdash; Annual Privacy Notice required by the Gramm-Leach-Bliley Act (15 U.S.C. § 6801).
+            Safeguard Global Investment Bank &mdash; Annual Privacy Notice required by the Gramm-Leach-Bliley Act (15 U.S.C. § 6801).
           </p>
           <p style={{ fontSize: 13, color: "rgba(255,255,255,.45)", margin: 0 }}>Last updated: January 1, 2026</p>
         </div>
@@ -76,13 +76,13 @@ export default function PrivacyPage() {
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ background: "rgba(140,29,37,.04)", border: "1.5px solid rgba(140,29,37,.12)", borderRadius: 18, padding: "32px 36px", marginBottom: 52 }}>
             <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 17, color: DARK, marginBottom: 14 }}>
-              FACTS — What does First State Community Bank do with your personal information?
+              FACTS — What does Safeguard Global Investment Bank do with your personal information?
             </div>
             <div className="g-3col" style={{ gap: 28 }}>
               {[
                 { q: "Why?", a: "Financial companies choose how they share your personal information. Federal law gives consumers the right to limit some but not all sharing. Federal law also requires us to tell you how we collect, share, and protect your personal information. Please read this notice carefully to understand what we do." },
                 { q: "What?", a: "The types of personal information we collect and share depend on the product or service you have with us. This information can include Social Security number and account balances; payment history and credit history; checking account information and wire transfer instructions." },
-                { q: "How?", a: "All financial companies need to share customers' personal information to run their everyday business. In the section below, we list the reasons financial companies can share their customers' personal information; the reasons FSCB chooses to share; and whether you can limit this sharing." },
+                { q: "How?", a: "All financial companies need to share customers' personal information to run their everyday business. In the section below, we list the reasons financial companies can share their customers' personal information; the reasons SGGINV chooses to share; and whether you can limit this sharing." },
               ].map((item) => (
                 <div key={item.q}>
                   <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 13, color: RED, textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 8 }}>{item.q}</div>
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
             <div className="mob-table-wrap" style={{ marginTop: 8 }}>
             <div style={{ borderRadius: 14, overflow: "hidden", border: "1px solid rgba(17,24,39,.09)", minWidth: 500 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 140px", background: RED, padding: "13px 20px" }}>
-                {["Reasons we can share your personal information", "Does FSCB share?", "Can you limit this sharing?"].map((h) => (
+                {["Reasons we can share your personal information", "Does SGGINV share?", "Can you limit this sharing?"].map((h) => (
                   <div key={h} style={{ fontSize: 11.5, fontWeight: 700, color: "#fff", letterSpacing: ".06em", textTransform: "uppercase" }}>{h}</div>
                 ))}
               </div>
@@ -128,25 +128,25 @@ export default function PrivacyPage() {
             <div style={{ background: "rgba(140,29,37,.04)", border: "1px solid rgba(140,29,37,.1)", borderRadius: 12, padding: "20px 24px", marginTop: 16 }}>
               <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 14.5, color: DARK, marginBottom: 10 }}>Contact us to limit sharing:</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 14.5 }}>
-                <span><strong>Phone:</strong> Call <a href="tel:18002372669" style={{ color: RED }}>1-800-FSCB-NOW</a> Mon–Fri 8am–7pm</span>
-                <span><strong>Mail:</strong> First State Community Bank, Privacy Officer, 102 Main Street, Hometown, ST 00000</span>
-                <span><strong>In person:</strong> Visit any FSCB branch and speak with a banker</span>
+                <span><strong>Phone:</strong> Call <a href="tel:18002372669" style={{ color: RED }}>1-800-SGGINV-NOW</a> Mon–Fri 8am–7pm</span>
+                <span><strong>Mail:</strong> Safeguard Global Investment Bank, Privacy Officer, 102 Main Street, Hometown, ST 00000</span>
+                <span><strong>In person:</strong> Visit any SGGINV branch and speak with a banker</span>
               </div>
             </div>
           </Section>
 
           <Section title="Who we are">
             <p>
-              <strong>Who is providing this notice?</strong> First State Community Bank, an independently owned community bank chartered under state banking law and insured by the Federal Deposit Insurance Corporation (FDIC).
+              <strong>Who is providing this notice?</strong> Safeguard Global Investment Bank. [Chartering jurisdiction and regulator/deposit-protection-scheme membership to be added here.]
             </p>
           </Section>
 
           <Section title="What we do">
-            <p style={{ marginBottom: 16 }}><strong>How does FSCB protect my personal information?</strong></p>
+            <p style={{ marginBottom: 16 }}><strong>How does SGGINV protect my personal information?</strong></p>
             <p>
               To protect your personal information from unauthorized access and use, we use security measures that comply with federal law. These measures include computer safeguards and secured files and buildings. We restrict access to your personal information to those employees who need it to provide products or services to you. Employees who violate our privacy policies are subject to disciplinary action, including termination of employment.
             </p>
-            <p style={{ marginTop: 16, marginBottom: 16 }}><strong>How does FSCB collect my personal information?</strong></p>
+            <p style={{ marginTop: 16, marginBottom: 16 }}><strong>How does SGGINV collect my personal information?</strong></p>
             <p>We collect your personal information, for example, when you:</p>
             <ul style={{ paddingLeft: 20, margin: "10px 0", display: "flex", flexDirection: "column", gap: 6 }}>
               <li>Open an account or apply for a loan</li>
@@ -167,9 +167,9 @@ export default function PrivacyPage() {
           <Section title="Definitions">
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[
-                { term: "Affiliates", def: "Companies related by common ownership or control. They can be financial and nonfinancial companies. FSCB does not share with affiliates." },
-                { term: "Nonaffiliates", def: "Companies not related by common ownership or control. They can be financial and nonfinancial companies. FSCB does not share with nonaffiliates so they can market to you." },
-                { term: "Joint marketing", def: "A formal agreement between nonaffiliated financial companies that together market financial products or services to you. FSCB does not jointly market." },
+                { term: "Affiliates", def: "Companies related by common ownership or control. They can be financial and nonfinancial companies. SGGINV does not share with affiliates." },
+                { term: "Nonaffiliates", def: "Companies not related by common ownership or control. They can be financial and nonfinancial companies. SGGINV does not share with nonaffiliates so they can market to you." },
+                { term: "Joint marketing", def: "A formal agreement between nonaffiliated financial companies that together market financial products or services to you. SGGINV does not jointly market." },
               ].map((d) => (
                 <div key={d.term} style={{ display: "flex", gap: 12 }}>
                   <div style={{ flexShrink: 0, fontFamily: FONT, fontWeight: 700, fontSize: 14, color: DARK, width: 140 }}>{d.term}</div>
@@ -188,8 +188,8 @@ export default function PrivacyPage() {
             </p>
             <p style={{ marginTop: 14 }}>
               Questions? Contact our Privacy Officer at{" "}
-              <a href="mailto:privacy@fscb.com" style={{ color: RED }}>privacy@fscb.com</a> or call{" "}
-              <a href="tel:18002372669" style={{ color: RED }}>1-800-FSCB-NOW</a>.
+              <a href="mailto:privacy@sgginv.com" style={{ color: RED }}>privacy@sgginv.com</a> or call{" "}
+              <a href="tel:18002372669" style={{ color: RED }}>1-800-SGGINV-NOW</a>.
             </p>
           </Section>
 

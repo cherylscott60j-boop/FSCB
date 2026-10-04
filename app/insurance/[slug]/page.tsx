@@ -30,7 +30,7 @@ const PAGES = {
     faqs: [
       { q: "What does home insurance not cover?", a: "Standard policies typically exclude flood, earthquake, normal wear and tear, and pest damage. Riders or separate policies are available for most of these." },
       { q: "How is my premium calculated?", a: "Factors include the home's replacement cost, location, construction type, claims history, credit score, and chosen deductible." },
-      { q: "How do I file a claim?", a: "Call our 24/7 claims line or use the FSCB insurance portal online. A local adjuster will be assigned to your claim." },
+      { q: "How do I file a claim?", a: "Call our 24/7 claims line or use the SGGINV insurance portal online. A local adjuster will be assigned to your claim." },
       { q: "Is home insurance required by law?", a: "Not by law, but mortgage lenders require it. It's strongly recommended even for homeowners without a mortgage." },
     ],
     cta: "Get a Home Insurance Quote",
@@ -56,7 +56,7 @@ const PAGES = {
     ],
     discounts: ["Safe driver discount", "Good student discount", "Multi-car discount", "Anti-theft device discount", "Pay-in-full discount"],
     faqs: [
-      { q: "What auto coverage is required in my state?", a: "Most states require liability coverage at a minimum. Requirements vary — contact an FSCB insurance advisor to confirm what's required in your state." },
+      { q: "What auto coverage is required in my state?", a: "Most states require liability coverage at a minimum. Requirements vary — contact an SGGINV insurance advisor to confirm what's required in your state." },
       { q: "Does my auto insurance cover rental cars?", a: "If you have comprehensive and collision coverage, it typically extends to rental vehicles. Check your policy for specific terms." },
       { q: "What is gap insurance and do I need it?", a: "Gap insurance covers the difference between your car's actual cash value and what you owe on your loan if the car is totaled. It's recommended if you owe more than the car is worth." },
       { q: "How can I lower my auto insurance premium?", a: "Maintain a clean driving record, increase your deductible, bundle with home insurance, take a defensive driving course, and ask about all available discounts." },
@@ -80,7 +80,7 @@ const PAGES = {
       { title: "Coverage from $50K to $5M+", desc: "Right-size your coverage to match your income, debt obligations, and family's specific needs.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "No Medical Exam Options", desc: "Qualifying applicants can receive coverage without a physical exam — faster approval, less hassle.", icon: "M9 12l2 2 4-4" },
       { title: "Living Benefits", desc: "Access a portion of your death benefit early if diagnosed with a terminal, chronic, or critical illness.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
-      { title: "Local Advisor Guidance", desc: "An FSCB insurance advisor helps you choose the right policy and coverage amount for your family.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
+      { title: "Local Advisor Guidance", desc: "An SGGINV insurance advisor helps you choose the right policy and coverage amount for your family.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
     ],
     discounts: ["Non-smoker discount", "Healthy lifestyle discount", "Multi-policy discount", "Annual pay discount", "Young buyer discount"],
     faqs: [
@@ -113,7 +113,7 @@ const PAGES = {
     discounts: ["Claims-free discount", "Multi-policy bundle", "Safety program discount", "New business discount", "Annual pay discount"],
     faqs: [
       { q: "What is the difference between a BOP and separate policies?", a: "A Business Owner's Policy bundles GL and commercial property at a lower combined rate. Businesses with unique risks may need separate policies for more customized coverage." },
-      { q: "Is workers' compensation required?", a: "In most states, yes — if you have employees. Requirements vary by state and business type. An FSCB advisor can confirm your state's requirements." },
+      { q: "Is workers' compensation required?", a: "In most states, yes — if you have employees. Requirements vary by state and business type. An SGGINV advisor can confirm your state's requirements." },
       { q: "What is cyber liability insurance?", a: "Cyber liability covers the costs of data breaches, ransomware attacks, and regulatory fines. With cyber threats rising, it's increasingly essential for businesses of all sizes." },
       { q: "How is my business insurance premium calculated?", a: "Key factors include business type, annual revenue, number of employees, claims history, location, and coverage limits." },
     ],
@@ -135,14 +135,14 @@ const PAGES = {
     features: [
       { title: "Marketplace Plan Guidance", desc: "Confused by the ACA marketplace? Our advisors compare plans and help you apply for available subsidies.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" },
       { title: "Group Benefits Consulting", desc: "Design a competitive employee benefits package that fits your budget and helps attract top talent.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
-      { title: "HSA Account Management", desc: "Pair your high-deductible plan with an FSCB Health Savings Account for tax-free medical savings.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
+      { title: "HSA Account Management", desc: "Pair your high-deductible plan with an SGGINV Health Savings Account for tax-free medical savings.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
       { title: "Open Enrollment Support", desc: "Year-round guidance and hands-on help during open enrollment for individuals and employers.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
     ],
     discounts: ["Employer contribution (group)", "Non-smoker discount", "Wellness program discount", "Annual pay discount", "HSA contribution match"],
     faqs: [
       { q: "When can I enroll in a health insurance plan?", a: "During the ACA Open Enrollment Period (Nov 1–Jan 15) or during a Special Enrollment Period triggered by a qualifying life event such as job loss, marriage, or birth of a child." },
       { q: "What is a deductible?", a: "The amount you pay out-of-pocket for covered healthcare services before your insurance begins to pay. Higher deductible plans typically have lower monthly premiums." },
-      { q: "Does FSCB offer group health plans for small businesses?", a: "Yes — we offer group health insurance for businesses with 2 or more employees. Our advisors can design a plan that fits your budget and workforce." },
+      { q: "Does SGGINV offer group health plans for small businesses?", a: "Yes — we offer group health insurance for businesses with 2 or more employees. Our advisors can design a plan that fits your budget and workforce." },
       { q: "What is an HSA and how does it work?", a: "A Health Savings Account lets you contribute pre-tax dollars to pay for qualified medical expenses. Funds roll over year to year and can be invested for long-term growth." },
     ],
     cta: "Explore Health Insurance Options",
@@ -218,11 +218,11 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
         </div>
       </div>
 
-      {/* Why FSCB */}
+      {/* Why SGGINV */}
       <div className="mob-section" style={{ background: "#fff", padding: "72px 32px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 44 }}>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Why FSCB Insurance</div>
+            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Why SGGINV Insurance</div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 36px)", letterSpacing: "-.02em", margin: 0, color: DARK }}>More than just a policy</h2>
           </div>
           <div className="mob-stack" style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 20 }}>
@@ -237,7 +237,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
           <div>
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Save More</div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 34, letterSpacing: "-.02em", margin: "0 0 18px", color: DARK }}>Available discounts</h2>
-            <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.7, margin: 0 }}>Many policyholders save significantly through available discounts. Ask your FSCB insurance advisor which ones apply to you.</p>
+            <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.7, margin: 0 }}>Many policyholders save significantly through available discounts. Ask your SGGINV insurance advisor which ones apply to you.</p>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {page.discounts.map((d, i) => (
@@ -274,7 +274,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
       <div className="mob-section" style={{ background: page.hero, padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Get covered today</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Talk to a local FSCB insurance advisor — no obligation, just honest guidance.</p>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Talk to a local SGGINV insurance advisor — no obligation, just honest guidance.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "16px 40px", borderRadius: 12, cursor: "pointer" }}>{page.cta}</button>
         </div>
       </div>

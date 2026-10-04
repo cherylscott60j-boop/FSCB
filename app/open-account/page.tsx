@@ -29,7 +29,7 @@ interface Account {
 const PERSONAL_ACCOUNTS: Account[] = [
   { id:"free-checking",   name:"Free Checking",        tag:null,          fee:"$0 / month",   min:"No minimum",       bestFor:"Everyday spending & bill pay",             highlights:["No monthly fee — ever","55,000+ surcharge-free ATMs","Early direct deposit (2 days early)","Zelle® transfers included"], type:"deposit", minDeposit:0 },
   { id:"premium-checking",name:"Premium Checking",     tag:"Most Popular", fee:"$0 / month*",  min:"$500 avg. balance", bestFor:"Direct deposit users who want perks",      highlights:["ATM fee rebates nationwide","Higher debit purchase limits","Free first order of checks","Priority customer service"], type:"deposit", minDeposit:25 },
-  { id:"regular-savings", name:"Regular Savings",      tag:null,          fee:"$0 / month",   min:"No minimum",       bestFor:"Emergency fund or savings goals",           highlights:["Competitive APY, compounded daily","Automatic round-up deposits","Goal tracking in app","FDIC insured to $250,000"], type:"deposit", minDeposit:0 },
+  { id:"regular-savings", name:"Regular Savings",      tag:null,          fee:"$0 / month",   min:"No minimum",       bestFor:"Emergency fund or savings goals",           highlights:["Competitive APY, compounded daily","Automatic round-up deposits","Goal tracking in app","[deposit-protected] up to [$LIMIT]"], type:"deposit", minDeposit:0 },
   { id:"money-market",    name:"Money Market",         tag:"Best Rate",   fee:"$0 / month*",  min:"$2,500 minimum",   bestFor:"Larger balances earning maximum yield",     highlights:["Highest tiered APY","Unlimited transfers","Check-writing privileges","Same-day link to checking"], type:"deposit", minDeposit:2500 },
   { id:"community-card",  name:"Community Credit Card",tag:null,          fee:"$0 annual fee",min:"Good credit 620+",  bestFor:"Simple everyday rewards, no complexity",    highlights:["1% cashback on all purchases","0% intro APR for 12 months","No foreign transaction fees","Free credit score monitoring"], type:"credit" },
   { id:"rewards-card",    name:"Rewards Credit Card",  tag:"Best Value",  fee:"$0 annual fee",min:"Good–Excellent 680+",bestFor:"Max rewards on groceries, gas & dining",  highlights:["3% cashback on groceries & gas","2% cashback on dining","1% on all other purchases","Rewards never expire"], type:"credit" },
@@ -37,7 +37,7 @@ const PERSONAL_ACCOUNTS: Account[] = [
 const BUSINESS_ACCOUNTS: Account[] = [
   { id:"biz-basic-checking",   name:"Business Basic Checking",   tag:null,          fee:"$0 / month",  min:"$0 to open",       bestFor:"New businesses & sole proprietors",        highlights:["200 transactions/month","Free business online & mobile banking","Business debit card included","Dedicated local business banker"], type:"deposit", minDeposit:0 },
   { id:"biz-premium-checking", name:"Business Premium Checking", tag:"Most Popular", fee:"$0 / month*", min:"$500 avg. balance", bestFor:"Growing businesses with high volume",       highlights:["Unlimited transactions","Same-day ACH payments","Multi-user roles & permissions","ACH and wire fee discounts"], type:"deposit", minDeposit:100 },
-  { id:"biz-savings",          name:"Business Savings",          tag:null,          fee:"$0 / month",  min:"$100 to open",     bestFor:"Tax reserves & operating cash buffer",      highlights:["Competitive business APY","Instant transfers to business checking","6 withdrawals/month","FDIC insured to $250,000"], type:"deposit", minDeposit:100 },
+  { id:"biz-savings",          name:"Business Savings",          tag:null,          fee:"$0 / month",  min:"$100 to open",     bestFor:"Tax reserves & operating cash buffer",      highlights:["Competitive business APY","Instant transfers to business checking","6 withdrawals/month","[deposit-protected] up to [$LIMIT]"], type:"deposit", minDeposit:100 },
   { id:"biz-money-market",     name:"Business Money Market",     tag:"Best Rate",   fee:"$0 / month*", min:"$2,500 minimum",   bestFor:"Larger cash reserves earning higher yield", highlights:["Highest tiered business APY","Unlimited transfers","Treasury sweep available","Same-day link to business checking"], type:"deposit", minDeposit:2500 },
   { id:"biz-credit-card",      name:"Business Rewards Card",     tag:"New",         fee:"$0 annual fee",min:"Good–Excellent 680+",bestFor:"Business spending with cash back rewards", highlights:["2% back on office supplies, gas & dining","1% back on all other purchases","0% intro APR for 12 months","Up to $50,000 credit limit · free employee cards"], type:"credit" },
 ];
@@ -273,12 +273,12 @@ export default function OpenAccountPage() {
           <div style={{maxWidth:860,margin:"0 auto",position:"relative"}}>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
               <div style={{width:6,height:6,borderRadius:"50%",background:GOLD}}/>
-              <span style={{fontSize:11.5,letterSpacing:".16em",textTransform:"uppercase",fontWeight:700,color:"rgba(212,175,55,.85)"}}>FSCB — Secure Application</span>
+              <span style={{fontSize:11.5,letterSpacing:".16em",textTransform:"uppercase",fontWeight:700,color:"rgba(212,175,55,.85)"}}>SGGINV — Secure Application</span>
             </div>
             <h1 style={{fontFamily:FONT,fontWeight:900,fontSize:34,color:"#fff",margin:"0 0 10px",letterSpacing:"-.02em",lineHeight:1.15}}>Open Your Account Today</h1>
-            <p style={{fontSize:15,color:"rgba(255,255,255,.6)",margin:"0 0 28px",lineHeight:1.6,maxWidth:500}}>Join thousands of members banking with FSCB. Apply in minutes — most applications approved same day.</p>
+            <p style={{fontSize:15,color:"rgba(255,255,255,.6)",margin:"0 0 28px",lineHeight:1.6,maxWidth:500}}>Join thousands of members banking with SGGINV. Apply in minutes — most applications approved same day.</p>
             <div style={{display:"flex",gap:20,flexWrap:"wrap"}}>
-              {[{icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",label:"256-bit SSL Encryption"},{icon:"M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z",label:"Member FDIC"},{icon:"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",label:"PATRIOT Act Compliant"}].map(item=>(
+              {[{icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",label:"256-bit SSL Encryption"},{icon:"M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z",label:"[Deposit Protection Scheme]"},{icon:"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",label:"[Compliance — TBD]"}].map(item=>(
                 <div key={item.label} style={{display:"flex",alignItems:"center",gap:7,fontSize:12.5,color:"rgba(255,255,255,.55)",fontWeight:500}}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d={item.icon}/></svg>
                   {item.label}
@@ -375,7 +375,7 @@ export default function OpenAccountPage() {
             </div>
             {isBusiness&&(
               <div style={{background:"rgba(212,175,55,.07)",border:"1px solid rgba(212,175,55,.28)",borderRadius:12,padding:"14px 18px",marginBottom:24,fontSize:13.5,color:"#6B4F00",lineHeight:1.6}}>
-                <strong>Note for business accounts:</strong> After submission, an FSCB business banker will contact you within 1 business day for in-branch document verification (EIN, formation documents, owner IDs).
+                <strong>Note for business accounts:</strong> After submission, an SGGINV business banker will contact you within 1 business day for in-branch document verification (EIN, formation documents, owner IDs).
               </div>
             )}
             <div style={{display:"flex",justifyContent:"space-between"}}>
@@ -470,7 +470,7 @@ export default function OpenAccountPage() {
                     </div>
                   </div>
                 )}
-                <Field label="Existing FSCB Customer?">
+                <Field label="Existing SGGINV Customer?">
                   <RadioGroup name="existingAccount" value={form.existingAccount} onChange={v=>update("existingAccount",v)} options={[{value:"yes",label:"Yes, existing customer"},{value:"no",label:"No, first account"}]}/>
                 </Field>
               </div>
@@ -520,7 +520,7 @@ export default function OpenAccountPage() {
                 )}
                 {form.fundingMethod==="check"&&(
                   <div style={{marginTop:16,padding:"16px 20px",background:"rgba(17,24,39,.03)",borderRadius:12,fontSize:14,color:DARK,lineHeight:1.7}}>
-                    Make your check payable to <strong>First State Community Bank</strong> and mail to:<br/>
+                    Make your check payable to <strong>Safeguard Global Investment Bank</strong> and mail to:<br/>
                     <span style={{color:GRAY}}>Attn: New Accounts · 102 Main Street · Hometown, ST 00000</span>
                   </div>
                 )}
@@ -531,11 +531,11 @@ export default function OpenAccountPage() {
             <Section title="Required Disclosures">
               <p style={{fontSize:13.5,color:GRAY,margin:"0 0 18px",lineHeight:1.55}}>Please read and acknowledge each of the following before submitting.</p>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                <DiscCheck checked={form.discFDIC} onChange={v=>update("discFDIC",v)}>I have received and read the <strong>FDIC Deposit Insurance</strong> notice. Deposits are insured up to $250,000 per depositor per ownership category. <Link href="/disclosures#fdic" style={{color:RED}}>View notice →</Link></DiscCheck>
-                <DiscCheck checked={form.discPrivacy} onChange={v=>update("discPrivacy",v)}>I have received and read FSCB's <strong>Privacy Notice</strong> (Gramm-Leach-Bliley Act). <Link href="/privacy" style={{color:RED}}>View notice →</Link></DiscCheck>
+                <DiscCheck checked={form.discFDIC} onChange={v=>update("discFDIC",v)}>I have received and read the <strong>Deposit Protection</strong> notice. <Link href="/disclosures#fdic" style={{color:RED}}>View notice →</Link></DiscCheck>
+                <DiscCheck checked={form.discPrivacy} onChange={v=>update("discPrivacy",v)}>I have received and read SGGINV's <strong>Privacy Notice</strong>. <Link href="/privacy" style={{color:RED}}>View notice →</Link></DiscCheck>
                 <DiscCheck checked={form.discTerms} onChange={v=>update("discTerms",v)}>I agree to the <strong>Account Terms &amp; Conditions</strong> and <strong>Terms of Use</strong>. <Link href="/terms" style={{color:RED}}>View terms →</Link></DiscCheck>
-                <DiscCheck checked={form.discEStatements} onChange={v=>update("discEStatements",v)}>I consent to receive <strong>electronic statements and disclosures</strong> via email. I may opt out at any time by contacting FSCB.</DiscCheck>
-                <DiscCheck checked={form.discCertify} onChange={v=>update("discCertify",v)}><strong>I certify</strong> under penalty of perjury that all information in this application is true, accurate, and complete. I authorize FSCB to verify this information and perform a credit or identity inquiry as needed.</DiscCheck>
+                <DiscCheck checked={form.discEStatements} onChange={v=>update("discEStatements",v)}>I consent to receive <strong>electronic statements and disclosures</strong> via email. I may opt out at any time by contacting SGGINV.</DiscCheck>
+                <DiscCheck checked={form.discCertify} onChange={v=>update("discCertify",v)}><strong>I certify</strong> under penalty of perjury that all information in this application is true, accurate, and complete. I authorize SGGINV to verify this information and perform a credit or identity inquiry as needed.</DiscCheck>
               </div>
             </Section>
 
@@ -615,7 +615,7 @@ export default function OpenAccountPage() {
             </div>
 
             <p style={{marginTop:28,fontSize:13,color:GRAY,lineHeight:1.6}}>
-              Questions? Call <a href="tel:18002372669" style={{color:RED,fontWeight:600,textDecoration:"none"}}>1-800-FSCB-NOW</a> or{" "}
+              Questions? Call <a href="tel:18002372669" style={{color:RED,fontWeight:600,textDecoration:"none"}}>1-800-SGGINV-NOW</a> or{" "}
               <Link href="/about/contact" style={{color:RED,fontWeight:600,textDecoration:"none"}}>visit a branch</Link>.
             </p>
           </div>
@@ -627,14 +627,14 @@ export default function OpenAccountPage() {
         <div style={{borderTop:"1px solid rgba(17,24,39,.08)",background:"#fff",padding:"18px 32px"}}>
           <div style={{maxWidth:860,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
             <div style={{display:"flex",gap:24,flexWrap:"wrap"}}>
-              {[{icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",label:"256-bit SSL"},{icon:"M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z",label:"Member FDIC"},{icon:"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",label:"PATRIOT Act Compliant"}].map(item=>(
+              {[{icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",label:"256-bit SSL"},{icon:"M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z",label:"[Deposit Protection Scheme]"},{icon:"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",label:"[Compliance — TBD]"}].map(item=>(
                 <div key={item.label} style={{display:"flex",alignItems:"center",gap:7,fontSize:12,color:GRAY,fontWeight:500}}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2"><path d={item.icon}/></svg>
                   {item.label}
                 </div>
               ))}
             </div>
-            <div style={{fontSize:12,color:GRAY}}>Need help? <a href="tel:18002372669" style={{color:RED,fontWeight:600,textDecoration:"none"}}>1-800-FSCB-NOW</a></div>
+            <div style={{fontSize:12,color:GRAY}}>Need help? <a href="tel:18002372669" style={{color:RED,fontWeight:600,textDecoration:"none"}}>1-800-SGGINV-NOW</a></div>
           </div>
         </div>
       )}

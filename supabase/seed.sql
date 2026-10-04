@@ -1,5 +1,5 @@
 -- ============================================================
--- FSCB Banking App — Demo Seed Data
+-- SGGINV Banking App — Demo Seed Data
 --
 -- HOW TO USE:
 --   1. Create a user in Supabase Auth:
@@ -57,9 +57,9 @@ DELETE FROM accounts WHERE user_id = uid;
 INSERT INTO accounts (user_id, account_type, account_name, account_number_last4,
                       balance, available_balance, interest_rate, status)
 VALUES
-  (uid, 'checking',    'FSCB Free Checking',   '4821',  4821.43,  4821.43, 0.0000, 'active'),
-  (uid, 'savings',     'FSCB Regular Savings', '7309', 12540.00, 12540.00, 0.0425, 'active'),
-  (uid, 'credit_card', 'FSCB Rewards Card',    '2214',  -342.18,  4657.82, 0.2199, 'active');
+  (uid, 'checking',    'SGGINV Free Checking',   '4821',  4821.43,  4821.43, 0.0000, 'active'),
+  (uid, 'savings',     'SGGINV Regular Savings', '7309', 12540.00, 12540.00, 0.0425, 'active'),
+  (uid, 'credit_card', 'SGGINV Rewards Card',    '2214',  -342.18,  4657.82, 0.2199, 'active');
 
 -- Capture the individual IDs for transaction inserts
 SELECT id INTO chk_id FROM accounts WHERE user_id = uid AND account_type = 'checking'    LIMIT 1;
@@ -76,12 +76,12 @@ VALUES
   (chk_id, uid, 'Direct Deposit — Employer', 'Income',       +2350.00,  'credit',   NOW() - INTERVAL '1 day'),
   (chk_id, uid, 'Shell Gas Station',         'Auto & Gas',    -45.20,   'debit',    NOW() - INTERVAL '2 days'),
   (chk_id, uid, 'Netflix',                   'Entertainment', -15.99,   'debit',    NOW() - INTERVAL '3 days'),
-  (chk_id, uid, 'FSCB Savings Transfer',     'Transfer',     -500.00,   'transfer', NOW() - INTERVAL '3 days'),
+  (chk_id, uid, 'SGGINV Savings Transfer',     'Transfer',     -500.00,   'transfer', NOW() - INTERVAL '3 days'),
   (chk_id, uid, 'Chipotle Mexican Grill',    'Dining',        -14.75,   'debit',    NOW() - INTERVAL '4 days'),
   (chk_id, uid, 'Amazon.com',                'Shopping',      -63.18,   'debit',    NOW() - INTERVAL '5 days'),
   (chk_id, uid, 'ACH — Rent Payment',        'Housing',     -1200.00,   'payment',  NOW() - INTERVAL '6 days'),
   -- savings account (transfer in)
-  (sav_id, uid, 'FSCB Checking Transfer',    'Transfer',     +500.00,   'transfer', NOW() - INTERVAL '3 days');
+  (sav_id, uid, 'SGGINV Checking Transfer',    'Transfer',     +500.00,   'transfer', NOW() - INTERVAL '3 days');
 
 
 -- ── Budgets (current month) ────────────────────────────────────

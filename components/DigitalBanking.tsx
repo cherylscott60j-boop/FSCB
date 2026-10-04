@@ -61,7 +61,7 @@ export default function DigitalBanking() {
               margin: "14px 0 18px",
             }}
           >
-            Bank from anywhere with FSCB&apos;s digital banking tools
+            Bank from anywhere with SGGINV&apos;s digital banking tools
           </h2>
           <p
             style={{

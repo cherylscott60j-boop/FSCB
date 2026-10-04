@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/components/Logo";
 
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
 const RED  = "#8C1D25";
@@ -60,8 +61,7 @@ export default function ForgotPasswordPage() {
         <div style={{ position: "absolute", top: -60, right: -70, width: 220, height: 220, borderRadius: "50%", background: "rgba(255,255,255,.025)", pointerEvents: "none" }} />
 
         <Link href="/" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none", marginBottom: 52 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fscb-horizontal-logo.webp" alt="FSCB — First State Community Bank" style={{ height: 38, width: "auto", filter: "brightness(0) invert(1)" }} />
+          <Logo variant="light" height={38} />
         </Link>
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
           </div>
           <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 26, color: "#fff", margin: "0 0 14px", lineHeight: 1.2 }}>Forgot your password?</h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,.68)", lineHeight: 1.65, margin: "0 0 32px" }}>
-            No problem. Enter the email address tied to your FSCB account and we&apos;ll send you a reset link.
+            No problem. Enter the email address tied to your SGGINV account and we&apos;ll send you a reset link.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
@@ -92,7 +92,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div style={{ borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 20, fontSize: 12.5, color: "rgba(255,255,255,.4)" }}>
-          Need help? Call <span style={{ color: "rgba(255,255,255,.7)", fontWeight: 600 }}>1-800-555-FSCB</span> Mon–Fri 9am–5pm
+          Need help? Call <span style={{ color: "rgba(255,255,255,.7)", fontWeight: 600 }}>1-800-555-SGGINV</span> Mon–Fri 9am–5pm
         </div>
       </div>
 
@@ -153,7 +153,7 @@ export default function ForgotPasswordPage() {
                   </Link>
                   <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 32, color: DARK, margin: "0 0 8px", letterSpacing: "-.025em" }}>Reset your password</h1>
                   <p style={{ fontSize: 15, color: GRAY, margin: 0, lineHeight: 1.55 }}>
-                    Enter the email address on your FSCB account and we&apos;ll send a reset link.
+                    Enter the email address on your SGGINV account and we&apos;ll send a reset link.
                   </p>
                 </div>
 
@@ -216,7 +216,7 @@ export default function ForgotPasswordPage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: GRAY }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-            Member FDIC
+            [Deposit Protection Scheme]
           </div>
           <div style={{ marginLeft: "auto", display: "flex", gap: 18, fontSize: 12 }}>
             <Link href="/privacy" style={{ color: GRAY, textDecoration: "none" }}>Privacy Policy</Link>
