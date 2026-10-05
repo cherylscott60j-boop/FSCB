@@ -28,40 +28,12 @@ const PAGES = {
       { n: "4", t: "Ongoing Review", d: "Regular quarterly reviews and proactive outreach ensure your plan evolves with your life and market conditions." },
     ],
     faqs: [
-      { q: "What is the minimum investment to work with SGGINV Wealth Management?", a: "We serve clients with investable assets starting from $250,000. For smaller balances, we can refer you to our financial planning services." },
+      { q: "What is the minimum investment to work with SGGINV Wealth Management?", a: "We serve clients with investable assets starting from £250,000. For smaller balances, we can refer you to our financial planning services." },
       { q: "How are SGGINV wealth advisors compensated?", a: "Our advisors are fee-based — we charge a percentage of assets under management. We do not earn commissions on product sales, so our advice is aligned with your interests." },
       { q: "Do you manage retirement accounts like IRAs and 401(k)s?", a: "Yes — we manage a wide range of account types including IRAs, Roth IRAs, trusts, taxable brokerage accounts, and inherited accounts." },
       { q: "How often will I meet with my advisor?", a: "You'll have formal quarterly reviews and can schedule additional meetings at any time. We also reach out proactively when market events or life changes warrant a conversation." },
     ],
     cta: "Schedule a Wealth Consultation",
-  },
-
-  retirement: {
-    title: "Retirement Planning",
-    subtitle: "Build the retirement you deserve — guided by advisors who understand your goals.",
-    hero: "linear-gradient(145deg,#0d2020,#1a4040)",
-    stats: [{ v: "All ages", l: "We plan for any stage" }, { v: "IRA / 401(k)", l: "All account types" }, { v: "Tax-smart", l: "Withdrawal strategies" }],
-    overview: "Retirement planning is about more than accumulating a number — it's about designing the life you want and building a financial foundation that supports it for decades. Whether you're 30 years from retirement or already there, SGGINV retirement planners create personalized roadmaps that account for every variable.",
-    services: [
-      { name: "Retirement Income Planning", desc: "Map out exactly how much you need, where it will come from, and how long it will last — with built-in inflation protection." },
-      { name: "Social Security Optimization", desc: "Strategic timing of Social Security benefits to maximize your lifetime payout — often worth tens of thousands of dollars." },
-      { name: "401(k) Rollover Consulting", desc: "Consolidate old workplace retirement plans into a managed IRA for better investment choices and lower fees." },
-      { name: "Required Minimum Distribution (RMD) Planning", desc: "Strategically manage RMDs to minimize taxes and preserve more wealth for your heirs or charitable goals." },
-      { name: "Roth Conversion Analysis", desc: "Identify optimal years and amounts to convert traditional IRA assets to Roth — building tax-free income for retirement." },
-    ],
-    process: [
-      { n: "1", t: "Retirement Gap Analysis", d: "We calculate exactly how much you need and compare it to what you're currently on track to accumulate." },
-      { n: "2", t: "Savings and Investment Strategy", d: "Optimize your contributions across 401(k), IRA, Roth, and taxable accounts for maximum tax efficiency." },
-      { n: "3", t: "Income Drawdown Plan", d: "Design a sequenced withdrawal strategy that minimizes taxes and sustains your portfolio throughout retirement." },
-      { n: "4", t: "Ongoing Monitoring", d: "Annual reviews keep your plan calibrated as your income, expenses, and market conditions change." },
-    ],
-    faqs: [
-      { q: "What is the contribution limit for IRAs in 2025?", a: "For 2025, the contribution limit is $7,000 per year ($8,000 if you're 50 or older). Income limits apply for Roth IRA contributions." },
-      { q: "When should I start taking Social Security?", a: "This depends on your health, other income sources, and marital status. Delaying from age 62 to 70 can increase your monthly benefit by up to 77%. We can run a personalized breakeven analysis." },
-      { q: "What is a Required Minimum Distribution?", a: "The IRS requires you to withdraw a minimum amount from traditional IRAs and most employer plans beginning at age 73 (as of 2023). Failing to take RMDs results in significant penalties." },
-      { q: "Is my retirement account protected if the bank fails?", a: "IRA deposits held at SGGINV are [deposit-protected] up to $250,000. Securities held in brokerage accounts are protected by SIPC up to $500,000." },
-    ],
-    cta: "Start Retirement Planning",
   },
 
   investments: {
@@ -84,9 +56,8 @@ const PAGES = {
       { n: "4", t: "Performance Reporting", d: "Review detailed performance reports and meet with your advisor quarterly to assess progress toward your goals." },
     ],
     faqs: [
-      { q: "What is the minimum to open an investment account?", a: "Managed portfolios start at $10,000. Self-directed brokerage accounts can be opened with any amount." },
+      { q: "What is the minimum to open an investment account?", a: "Managed portfolios start at £10,000. Self-directed brokerage accounts can be opened with any amount." },
       { q: "What fees do you charge?", a: "Managed account fees range from 0.25% to 1.00% annually depending on account size. Self-directed brokerage trades are commission-free for stocks and ETFs." },
-      { q: "Are my investments insured?", a: "Investment accounts are not deposit-protected, but are protected by SIPC up to $500,000 (including $250,000 for cash claims) against broker failure. Market losses are not covered by SIPC." },
       { q: "Can I transfer my existing brokerage account to SGGINV?", a: "Yes — SGGINV accepts in-kind transfers from most brokerage firms. The process takes 5–10 business days and can typically be done without liquidating your positions." },
     ],
     cta: "Open an Investment Account",
@@ -143,7 +114,7 @@ const PAGES = {
       { q: "Do I need a trust, or is a will enough?", a: "It depends on your situation. A will alone goes through probate — a public, sometimes slow process. A revocable living trust avoids probate, enables faster asset transfer, and provides privacy. For most people with meaningful assets, a trust is recommended." },
       { q: "What happens to my accounts if I die without a will?", a: "Your state's intestacy laws determine who inherits — which may not match your intentions. Accounts with named beneficiaries pass outside probate, but all other assets are distributed by the court." },
       { q: "How often should I update my estate plan?", a: "Review it every 3–5 years and after major life events: marriage, divorce, birth of a child or grandchild, death of a beneficiary, or significant change in financial status." },
-      { q: "What is the federal estate tax exemption?", a: "For 2025, the federal estate tax exemption is approximately $13.6 million per individual ($27.2M for married couples). Assets above this threshold may be subject to federal estate tax up to 40%." },
+      { q: "What is the federal estate tax exemption?", a: "For 2025, the federal estate tax exemption is approximately £13.6 million per individual (£27.2M for married couples). Assets above this threshold may be subject to federal estate tax up to 40%." },
     ],
     cta: "Start Estate Planning",
   },

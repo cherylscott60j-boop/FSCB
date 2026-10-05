@@ -169,7 +169,7 @@ export async function POST(request: Request) {
     if (!Number.isFinite(limitNum) || limitNum < 0)
       return NextResponse.json({ error: "Invalid limit amount." }, { status: 400 });
     if (limitNum > CREDIT.maxLimit)
-      return NextResponse.json({ error: `Limit cannot exceed ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(CREDIT.maxLimit)}.` }, { status: 400 });
+      return NextResponse.json({ error: `Limit cannot exceed ${new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(CREDIT.maxLimit)}.` }, { status: 400 });
     const { data: acct } = await admin.from("accounts").select("balance, account_type, credit_limit").eq("id", acctId).single();
     const acctType = (acct as Record<string,unknown>)?.account_type;
     if (!acct || (acctType !== "credit_card" && acctType !== "business_credit_card"))
@@ -177,7 +177,7 @@ export async function POST(request: Request) {
     const balance = Number((acct as Record<string,number>).balance);
     const outstanding = balance < 0 ? Math.abs(balance) : 0;
     if (limitNum < outstanding)
-      return NextResponse.json({ error: `Limit cannot be less than the outstanding balance of ${new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(outstanding)}.` }, { status: 400 });
+      return NextResponse.json({ error: `Limit cannot be less than the outstanding balance of ${new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(outstanding)}.` }, { status: 400 });
     const { error } = await admin.from("accounts").update({ credit_limit: limitNum, available_balance: limitNum + balance }).eq("id", acctId);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     logAction({ adminId: admin_user.id, adminEmail: admin_user.email ?? "", action: "account.credit_limit_set", entityType: "account", entityId: acctId, details: { oldLimit: Number((acct as Record<string,number>).credit_limit), newLimit: limitNum } });

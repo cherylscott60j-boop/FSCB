@@ -9,12 +9,11 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#E31E24";
-const GOLD = "#0800FF";
+const BLUE = "#0800FF";
 const DARK = "#111827";
 const MID  = "#374151";
 const GRAY = "#6B7280";
-const BG   = "#F5F7FA";
+const BG   = "#F4F5FB";
 
 /* ─── US States ──────────────────────────────────────────────────────────── */
 const STATES = "Alabama,Alaska,Arizona,Arkansas,California,Colorado,Connecticut,Delaware,Florida,Georgia,Hawaii,Idaho,Illinois,Indiana,Iowa,Kansas,Kentucky,Louisiana,Maine,Maryland,Massachusetts,Michigan,Minnesota,Mississippi,Missouri,Montana,Nebraska,Nevada,New Hampshire,New Jersey,New Mexico,New York,North Carolina,North Dakota,Ohio,Oklahoma,Oregon,Pennsylvania,Rhode Island,South Carolina,South Dakota,Tennessee,Texas,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming".split(",");
@@ -30,7 +29,7 @@ interface Account {
 const PERSONAL_ACCOUNTS: Account[] = [
   { id:"free-checking",   name:"Free Checking",        tag:null,          fee:"£0 / month",   min:"No minimum",       bestFor:"Everyday spending & bill pay",             highlights:["No monthly fee — ever","55,000+ surcharge-free ATMs","Early direct deposit (2 days early)"], type:"deposit", minDeposit:0 },
   { id:"premium-checking",name:"Premium Checking",     tag:"Most Popular", fee:"£0 / month*",  min:"£500 avg. balance", bestFor:"Direct deposit users who want perks",      highlights:["ATM fee rebates nationwide","Higher debit purchase limits","Free first order of checks","Priority customer service"], type:"deposit", minDeposit:25 },
-  { id:"regular-savings", name:"Regular Savings",      tag:null,          fee:"£0 / month",   min:"No minimum",       bestFor:"Emergency fund or savings goals",           highlights:["Competitive APY, compounded daily","Automatic round-up deposits","Goal tracking in app","CASS PROTECTED up to £120,000"], type:"deposit", minDeposit:0 },
+  { id:"regular-savings", name:"Regular Savings",      tag:null,          fee:"£0 / month",   min:"No minimum",       bestFor:"Emergency fund or savings goals",           highlights:["Competitive APY, compounded daily","Automatic round-up deposits","Goal tracking in app"], type:"deposit", minDeposit:0 },
   { id:"money-market",    name:"Money Market",         tag:"Best Rate",   fee:"£0 / month*",  min:"£2,500 minimum",   bestFor:"Larger balances earning maximum yield",     highlights:["Highest tiered APY","Unlimited transfers","Check-writing privileges","Same-day link to checking"], type:"deposit", minDeposit:2500 },
   { id:"community-card",  name:"Community Credit Card",tag:null,          fee:"£0 annual fee",min:"Good credit 620+",  bestFor:"Simple everyday rewards, no complexity",    highlights:["1% cashback on all purchases","0% intro APR for 12 months","No foreign transaction fees","Free credit score monitoring"], type:"credit" },
   { id:"rewards-card",    name:"Rewards Credit Card",  tag:"Best Value",  fee:"£0 annual fee",min:"Good–Excellent 680+",bestFor:"Max rewards on groceries, gas & dining",  highlights:["3% cashback on groceries & gas","2% cashback on dining","1% on all other purchases","Rewards never expire"], type:"credit" },
@@ -38,7 +37,7 @@ const PERSONAL_ACCOUNTS: Account[] = [
 const BUSINESS_ACCOUNTS: Account[] = [
   { id:"biz-basic-checking",   name:"Business Basic Checking",   tag:null,          fee:"£0 / month",  min:"£0 to open",       bestFor:"New businesses & sole proprietors",        highlights:["200 transactions/month","Free business online & mobile banking","Business debit card included","Dedicated local business banker"], type:"deposit", minDeposit:0 },
   { id:"biz-premium-checking", name:"Business Premium Checking", tag:"Most Popular", fee:"£0 / month*", min:"£500 avg. balance", bestFor:"Growing businesses with high volume",       highlights:["Unlimited transactions","Same-day ACH payments","Multi-user roles & permissions","ACH and wire fee discounts"], type:"deposit", minDeposit:100 },
-  { id:"biz-savings",          name:"Business Savings",          tag:null,          fee:"£0 / month",  min:"£100 to open",     bestFor:"Tax reserves & operating cash buffer",      highlights:["Competitive business APY","Instant transfers to business checking","6 withdrawals/month","[deposit-protected] up to [£LIMIT]"], type:"deposit", minDeposit:100 },
+  { id:"biz-savings",          name:"Business Savings",          tag:null,          fee:"£0 / month",  min:"£100 to open",     bestFor:"Tax reserves & operating cash buffer",      highlights:["Competitive business APY","Instant transfers to business checking","6 withdrawals/month"], type:"deposit", minDeposit:100 },
   { id:"biz-money-market",     name:"Business Money Market",     tag:"Best Rate",   fee:"£0 / month*", min:"£2,500 minimum",   bestFor:"Larger cash reserves earning higher yield", highlights:["Highest tiered business APY","Unlimited transfers","Treasury sweep available","Same-day link to business checking"], type:"deposit", minDeposit:2500 },
   { id:"biz-credit-card",      name:"Business Rewards Card",     tag:"New",         fee:"£0 annual fee",min:"Good–Excellent 680+",bestFor:"Business spending with cash back rewards", highlights:["2% back on office supplies, gas & dining","1% back on all other purchases","0% intro APR for 12 months","Up to £50,000 credit limit · free employee cards"], type:"credit" },
 ];
@@ -70,7 +69,7 @@ const EMPTY: FormData = {
 
 /* ─── Field primitives ────────────────────────────────────────────────────── */
 const iStyle: React.CSSProperties = {
-  width:"100%",padding:"12px 16px",fontSize:14.5,borderRadius:10,
+  width:"100%",padding:"12px 16px",fontSize:14.5,borderRadius:4,
   border:"1.5px solid rgba(17,24,39,.14)",outline:"none",
   boxSizing:"border-box",background:"#fff",color:DARK,fontFamily:"inherit",
   transition:"border-color .15s",
@@ -99,8 +98,8 @@ function RadioGroup({ name,value,onChange,options }:{ name:string;value:string;o
   return (
     <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
       {options.map(opt=>(
-        <label key={opt.value} style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer",padding:"11px 18px",border:`1.5px solid ${value===opt.value?RED:"rgba(17,24,39,.12)"}`,borderRadius:10,background:value===opt.value?"rgba(227,30,36,.04)":"#fff",flex:"1 1 120px",transition:"all .15s"}}>
-          <input type="radio" name={name} value={opt.value} checked={value===opt.value} onChange={()=>onChange(opt.value)} style={{accentColor:RED,width:16,height:16}}/>
+        <label key={opt.value} style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer",padding:"11px 18px",border:`1.5px solid ${value===opt.value?BLUE:"rgba(17,24,39,.12)"}`,borderRadius:4,background:value===opt.value?"rgba(8,0,255,.04)":"#fff",flex:"1 1 120px",transition:"all .15s"}}>
+          <input type="radio" name={name} value={opt.value} checked={value===opt.value} onChange={()=>onChange(opt.value)} style={{accentColor:BLUE,width:16,height:16}}/>
           <span style={{fontSize:14,fontWeight:600,color:DARK}}>{opt.label}</span>
         </label>
       ))}
@@ -109,8 +108,8 @@ function RadioGroup({ name,value,onChange,options }:{ name:string;value:string;o
 }
 function DiscCheck({ checked,onChange,children }:{ checked:boolean;onChange:(v:boolean)=>void;children:React.ReactNode }) {
   return (
-    <label style={{display:"flex",gap:13,cursor:"pointer",alignItems:"flex-start",padding:"14px 16px",borderRadius:10,border:`1.5px solid ${checked?"rgba(227,30,36,.25)":"rgba(17,24,39,.08)"}`,background:checked?"rgba(227,30,36,.03)":"#fff",transition:"all .15s"}}>
-      <input type="checkbox" checked={checked} onChange={e=>onChange(e.target.checked)} style={{accentColor:RED,width:17,height:17,marginTop:1,flexShrink:0,cursor:"pointer"}}/>
+    <label style={{display:"flex",gap:13,cursor:"pointer",alignItems:"flex-start",padding:"14px 16px",borderRadius:4,border:`1.5px solid ${checked?"rgba(8,0,255,.25)":"rgba(17,24,39,.08)"}`,background:checked?"rgba(8,0,255,.03)":"#fff",transition:"all .15s"}}>
+      <input type="checkbox" checked={checked} onChange={e=>onChange(e.target.checked)} style={{accentColor:BLUE,width:17,height:17,marginTop:1,flexShrink:0,cursor:"pointer"}}/>
       <span style={{fontSize:13.5,color:DARK,lineHeight:1.6}}>{children}</span>
     </label>
   );
@@ -135,7 +134,7 @@ const STEPS = ["Account Type","Choose Account","Your Info","Address","Review & S
 
 function StepTracker({ current }:{ current:number }) {
   return (
-    <div className="step-tracker-wrap" style={{background:"#fff",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
+    <div className="step-tracker-wrap" style={{background:"#fff",border:"1px solid rgba(17,24,39,.1)",borderRadius:8,overflowX:"auto"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0,padding:"28px 32px 24px",minWidth:"fit-content",margin:"0 auto"}}>
       {STEPS.map((label,i)=>{
         const n=i+1;
@@ -144,14 +143,14 @@ function StepTracker({ current }:{ current:number }) {
         return(
           <div key={label} style={{display:"flex",alignItems:"center"}}>
             <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
-              <div style={{width:34,height:34,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:13,transition:"all .25s",background:done?RED:active?"rgba(227,30,36,.1)":"rgba(17,24,39,.06)",color:done?"#fff":active?RED:GRAY,border:active?`2px solid ${RED}`:"2px solid transparent",boxShadow:active?"0 0 0 4px rgba(227,30,36,.12)":"none"}}>
+              <div style={{width:34,height:34,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:13,transition:"all .25s",background:done?BLUE:active?"rgba(8,0,255,.1)":"rgba(17,24,39,.06)",color:done?"#fff":active?BLUE:GRAY,border:active?`2px solid ${BLUE}`:"2px solid transparent"}}>
                 {done?(
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg>
                 ):n}
               </div>
-              <span className="step-label" style={{fontSize:11,fontWeight:active?700:500,color:active?RED:done?MID:GRAY,whiteSpace:"nowrap",letterSpacing:".01em"}}>{label}</span>
+              <span className="step-label" style={{fontSize:11,fontWeight:active?700:500,color:active?BLUE:done?MID:GRAY,whiteSpace:"nowrap",letterSpacing:".01em"}}>{label}</span>
             </div>
-            {i<STEPS.length-1&&<div className="step-connector" style={{width:60,height:2,background:done?"rgba(227,30,36,.35)":"rgba(17,24,39,.08)",margin:"0 6px 20px",flexShrink:0,transition:"background .25s"}}/>}
+            {i<STEPS.length-1&&<div className="step-connector" style={{width:60,height:2,background:done?"rgba(8,0,255,.35)":"rgba(17,24,39,.08)",margin:"0 6px 20px",flexShrink:0,transition:"background .25s"}}/>}
           </div>
         );
       })}
@@ -163,9 +162,8 @@ function StepTracker({ current }:{ current:number }) {
 /* ─── Section card ────────────────────────────────────────────────────────── */
 function Section({ title,children }:{ title:string;children:React.ReactNode }) {
   return (
-    <div style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:18,padding:"32px 32px 28px",marginBottom:20,boxShadow:"0 2px 12px rgba(17,24,39,.04)"}}>
+    <div style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:8,padding:"32px 32px 28px",marginBottom:20}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:26,paddingBottom:18,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
-        <div style={{width:4,height:20,borderRadius:2,background:RED,flexShrink:0}}/>
         <div style={{fontFamily:FONT,fontWeight:600,fontSize:16,color:DARK}}>{title}</div>
       </div>
       {children}
@@ -176,7 +174,7 @@ function Section({ title,children }:{ title:string;children:React.ReactNode }) {
 /* ─── Nav buttons ─────────────────────────────────────────────────────────── */
 function BackBtn({ onClick }:{ onClick:()=>void }) {
   return (
-    <button onClick={onClick} style={{background:"none",border:"1.5px solid rgba(17,24,39,.14)",color:MID,fontFamily:FONT,fontSize:14,fontWeight:600,padding:"12px 26px",borderRadius:11,cursor:"pointer",display:"flex",alignItems:"center",gap:7,transition:"all .15s"}}>
+    <button onClick={onClick} style={{background:"none",border:"1.5px solid rgba(17,24,39,.14)",color:MID,fontFamily:FONT,fontSize:14,fontWeight:600,padding:"12px 26px",borderRadius:4,cursor:"pointer",display:"flex",alignItems:"center",gap:7,transition:"all .15s"}}>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       Back
     </button>
@@ -184,7 +182,7 @@ function BackBtn({ onClick }:{ onClick:()=>void }) {
 }
 function NextBtn({ onClick,disabled=false,label="Continue",loading=false }:{ onClick:()=>void;disabled?:boolean;label?:string;loading?:boolean }) {
   return (
-    <button onClick={onClick} disabled={disabled} style={{background:loading?RED:disabled?"rgba(17,24,39,.1)":RED,color:loading?"#fff":disabled?GRAY:"#fff",border:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"13px 34px",borderRadius:12,cursor:loading?"wait":disabled?"not-allowed":"pointer",display:"inline-flex",alignItems:"center",gap:9,boxShadow:loading||!disabled?"0 4px 18px rgba(227,30,36,.35)":"none",transition:"all .2s"}}>
+    <button onClick={onClick} disabled={disabled} style={{background:loading?BLUE:disabled?"rgba(17,24,39,.1)":BLUE,color:loading?"#fff":disabled?GRAY:"#fff",border:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"13px 34px",borderRadius:4,cursor:loading?"wait":disabled?"not-allowed":"pointer",display:"inline-flex",alignItems:"center",gap:9,transition:"all .2s"}}>
       {loading&&<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>}
       {loading?"Submitting…":label}
       {!loading&&!disabled&&<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>}
@@ -260,12 +258,27 @@ export default function OpenAccountPage() {
   if(loggedInUserId === undefined) return null;
 
   return(
-    <div style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
+    <div style={{minHeight:"100vh",background:BG}}>
       <Suspense fallback={null}><DeepLinkHandler onDeepLink={handleDeepLink}/></Suspense>
 
       {/* ── Site Nav ─────────────────────────────────────────── */}
       <TopBar/>
       <Nav/>
+
+      {/* ── Header ───────────────────────────────────────────── */}
+      <section className="mob-hero" style={{background:BLUE,clipPath:"polygon(0 0, 100% 0, 100% calc(100% - 40px), 0 100%)",padding:"56px 32px 120px",fontFamily:FONT}}>
+        <div style={{maxWidth:1180,margin:"0 auto"}}>
+          <div style={{fontSize:12.5,letterSpacing:".14em",textTransform:"uppercase",fontWeight:700,color:"rgba(255,255,255,.75)",marginBottom:12}}>{step<6?`Step ${step} of ${STEPS.length}`:"Application submitted"}</div>
+          <h1 style={{fontWeight:600,fontSize:"clamp(28px, 4vw, 42px)",lineHeight:1.2,letterSpacing:"-.02em",color:"#fff",margin:"0 0 12px"}}>Open an account</h1>
+          <p style={{fontSize:17,lineHeight:1.65,color:"rgba(255,255,255,.82)",margin:0,maxWidth:560}}>Apply online in about 5 minutes. Your progress is saved as you go through each step.</p>
+        </div>
+      </section>
+
+      {step<6&&(
+        <div className="mob-px" style={{maxWidth:1180,margin:"-72px auto 0",position:"relative",boxSizing:"border-box"}}>
+          <StepTracker current={step}/>
+        </div>
+      )}
 
       {/* ── Content ──────────────────────────────────────────── */}
       <div style={{maxWidth:1180,margin:"0 auto",padding:step<6?"0":"40px 24px 60px"}}>
@@ -277,7 +290,7 @@ export default function OpenAccountPage() {
         {step===1&&(
           <div>
             <div style={{marginBottom:32}}>
-              <h2 style={{fontFamily:FONT,fontWeight:600,fontSize:28,color:DARK,margin:"0 0 8px",letterSpacing:"-.015em"}}>WHAT ACCOUNT ARE YOU OPENING TODAY?</h2>
+              <h2 style={{fontFamily:FONT,fontWeight:600,fontSize:28,color:DARK,margin:"0 0 8px",letterSpacing:"-.015em"}}>What account are you opening today?</h2>
               <p style={{fontSize:15,color:GRAY,margin:0,lineHeight:1.6}}>Choose personal for individual banking, or business for your company.</p>
             </div>
             <div className="mob-stack" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:18,marginBottom:36}}>
@@ -287,18 +300,18 @@ export default function OpenAccountPage() {
               ] as const).map(cat=>{
                 const sel=category===cat.key;
                 return(
-                  <button key={cat.key} onClick={()=>setCategory(cat.key)} style={{background:sel?"rgba(227,30,36,.04)":"#fff",border:`2px solid ${sel?RED:"rgba(17,24,39,.09)"}`,borderRadius:20,padding:"32px 28px",cursor:"pointer",textAlign:"left",fontFamily:FONT,position:"relative",transition:"all .2s",boxShadow:sel?"0 8px 32px rgba(227,30,36,.14)":"0 2px 8px rgba(17,24,39,.04)"}}>
-                    {sel&&<div style={{position:"absolute",top:16,right:16,width:26,height:26,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg></div>}
-                    <div style={{width:52,height:52,borderRadius:16,background:sel?"rgba(227,30,36,.1)":"rgba(17,24,39,.05)",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20,transition:"background .2s"}}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={sel?RED:GRAY} strokeWidth="1.7"><path d={cat.icon}/></svg>
+                  <button key={cat.key} onClick={()=>setCategory(cat.key)} style={{background:sel?"rgba(8,0,255,.04)":"#fff",border:`2px solid ${sel?BLUE:"rgba(17,24,39,.09)"}`,borderRadius:8,padding:"32px 28px",cursor:"pointer",textAlign:"left",fontFamily:FONT,position:"relative",transition:"all .2s"}}>
+                    {sel&&<div style={{position:"absolute",top:16,right:16,width:26,height:26,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg></div>}
+                    <div style={{width:52,height:52,borderRadius:8,background:sel?"rgba(8,0,255,.1)":"rgba(17,24,39,.05)",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20,transition:"background .2s"}}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={sel?BLUE:GRAY} strokeWidth="1.7"><path d={cat.icon}/></svg>
                     </div>
                     <div style={{fontWeight:600,fontSize:20,color:DARK,marginBottom:8}}>{cat.title}</div>
                     <div style={{fontSize:13.5,color:GRAY,lineHeight:1.6,marginBottom:20}}>{cat.sub}</div>
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
                       {cat.items.map(item=>(
                         <div key={item} style={{display:"flex",gap:9,alignItems:"center",fontSize:13.5}}>
-                          <div style={{width:18,height:18,borderRadius:"50%",background:"rgba(227,30,36,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg>
+                          <div style={{width:18,height:18,borderRadius:"50%",background:"rgba(8,0,255,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg>
                           </div>
                           <span style={{color:DARK,fontWeight:500}}>{item}</span>
                         </div>
@@ -328,21 +341,21 @@ export default function OpenAccountPage() {
               {accounts.map(acc=>{
                 const sel=selectedAccount?.id===acc.id;
                 return(
-                  <button key={acc.id} onClick={()=>setSelected(acc)} style={{background:sel?"rgba(227,30,36,.03)":"#fff",border:`2px solid ${sel?RED:"rgba(17,24,39,.08)"}`,borderRadius:18,padding:"24px 22px 22px",cursor:"pointer",textAlign:"left",fontFamily:FONT,position:"relative",transition:"all .2s",boxShadow:sel?"0 8px 28px rgba(227,30,36,.13)":"0 2px 8px rgba(17,24,39,.04)"}}>
+                  <button key={acc.id} onClick={()=>setSelected(acc)} style={{background:sel?"rgba(8,0,255,.03)":"#fff",border:`2px solid ${sel?BLUE:"rgba(17,24,39,.08)"}`,borderRadius:8,padding:"24px 22px 22px",cursor:"pointer",textAlign:"left",fontFamily:FONT,position:"relative",transition:"all .2s"}}>
                     {acc.tag&&(
-                      <div style={{position:"absolute",top:-12,left:18,background:acc.tag==="Most Popular"?RED:GOLD,color:"#fff",fontSize:10,fontWeight:800,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 12px",borderRadius:999,boxShadow:"0 3px 10px rgba(0,0,0,.18)"}}>{acc.tag}</div>
+                      <div style={{position:"absolute",top:-12,left:18,background:acc.tag==="Most Popular"?BLUE:BLUE,color:"#fff",fontSize:10,fontWeight:800,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 12px",borderRadius:4}}>{acc.tag}</div>
                     )}
-                    {sel&&<div style={{position:"absolute",top:14,right:14,width:24,height:24,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg></div>}
+                    {sel&&<div style={{position:"absolute",top:14,right:14,width:24,height:24,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path d="M5 12l5 5L20 7"/></svg></div>}
                     <div style={{fontFamily:FONT,fontWeight:600,fontSize:17,color:DARK,marginBottom:5}}>{acc.name}</div>
                     <div style={{fontSize:12.5,color:GRAY,marginBottom:14,lineHeight:1.5}}>{acc.bestFor}</div>
                     <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
-                      <span style={{background:"rgba(17,24,39,.06)",color:MID,fontSize:11.5,fontWeight:700,padding:"3px 10px",borderRadius:999}}>{acc.fee}</span>
-                      <span style={{background:"rgba(17,24,39,.06)",color:MID,fontSize:11.5,fontWeight:700,padding:"3px 10px",borderRadius:999}}>{acc.min}</span>
+                      <span style={{background:"rgba(17,24,39,.06)",color:MID,fontSize:11.5,fontWeight:700,padding:"3px 10px",borderRadius:4}}>{acc.fee}</span>
+                      <span style={{background:"rgba(17,24,39,.06)",color:MID,fontSize:11.5,fontWeight:700,padding:"3px 10px",borderRadius:4}}>{acc.min}</span>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:7}}>
                       {acc.highlights.map(h=>(
                         <div key={h} style={{display:"flex",gap:8,alignItems:"flex-start",fontSize:13}}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{flexShrink:0,marginTop:1}}><path d="M5 12l5 5L20 7"/></svg>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2.5" style={{flexShrink:0,marginTop:1}}><path d="M5 12l5 5L20 7"/></svg>
                           <span style={{color:DARK,lineHeight:1.45}}>{h}</span>
                         </div>
                       ))}
@@ -377,7 +390,7 @@ export default function OpenAccountPage() {
                 <Field label="Email Address"><TextInput type="email" value={form.email} onChange={v=>update("email",v)} placeholder="you@example.com" autoComplete="email"/></Field>
                 <Field label="Mobile Phone"><TextInput type="tel" value={form.phone} onChange={v=>update("phone",v)} placeholder="(555) 000-0000" autoComplete="tel"/></Field>
               </div>
-              <div style={{marginTop:20,background:"rgba(17,24,39,.025)",border:"1px solid rgba(17,24,39,.07)",borderRadius:12,padding:"16px 18px"}}>
+              <div style={{marginTop:20,background:"rgba(17,24,39,.025)",border:"1px solid rgba(17,24,39,.07)",borderRadius:4,padding:"16px 18px"}}>
                 <Field label="Are you a U.S. Citizen or Permanent Resident?" hint="Non-residents must visit a branch to open an account.">
                   <RadioGroup name="usCitizen" value={form.usCitizen} onChange={v=>update("usCitizen",v)} options={[{value:"yes",label:"Yes"},{value:"no",label:"No — I'll visit a branch"}]}/>
                 </Field>
@@ -431,7 +444,7 @@ export default function OpenAccountPage() {
                   <RadioGroup name="sameMailing" value={form.sameMailing} onChange={v=>update("sameMailing",v)} options={[{value:"yes",label:"Yes, same address"},{value:"no",label:"No, different address"}]}/>
                 </Field>
                 {form.sameMailing==="no"&&(
-                  <div style={{padding:"22px 24px",background:"rgba(17,24,39,.02)",border:"1px solid rgba(17,24,39,.08)",borderRadius:14}}>
+                  <div style={{padding:"22px 24px",background:"rgba(17,24,39,.02)",border:"1px solid rgba(17,24,39,.08)",borderRadius:8}}>
                     <div style={{fontWeight:700,fontSize:12,color:DARK,marginBottom:16,letterSpacing:".02em",textTransform:"uppercase"}}>Mailing Address</div>
                     <div style={{display:"flex",flexDirection:"column",gap:16}}>
                       <Field label="Street Address"><TextInput value={form.mailingStreet} onChange={v=>update("mailingStreet",v)} placeholder="PO Box or street address"/></Field>
@@ -479,7 +492,7 @@ export default function OpenAccountPage() {
             {!isCredit&&(
               <Section title="Initial Deposit">
                 {(selectedAccount?.minDeposit??0)>0&&(
-                  <div style={{background:"rgba(8,0,255,.07)",border:"1px solid rgba(8,0,255,.25)",borderRadius:10,padding:"11px 16px",marginBottom:18,fontSize:13.5,color:DARK}}>
+                  <div style={{background:"rgba(8,0,255,.07)",border:"1px solid rgba(8,0,255,.25)",borderRadius:4,padding:"11px 16px",marginBottom:18,fontSize:13.5,color:DARK}}>
                     This account requires a minimum opening deposit of <strong>£{selectedAccount?.minDeposit?.toLocaleString()}</strong>.
                   </div>
                 )}
@@ -492,7 +505,7 @@ export default function OpenAccountPage() {
                   </div>
                 )}
                 {form.fundingMethod==="check"&&(
-                  <div style={{marginTop:16,padding:"16px 20px",background:"rgba(17,24,39,.03)",borderRadius:12,fontSize:14,color:DARK,lineHeight:1.7}}>
+                  <div style={{marginTop:16,padding:"16px 20px",background:"rgba(17,24,39,.03)",borderRadius:4,fontSize:14,color:DARK,lineHeight:1.7}}>
                     Make your check payable to <strong>Safeguard Global Investment Bank</strong> and mail to:<br/>
                     <span style={{color:GRAY}}>Attn: New Accounts · 102 Main Street · Hometown, ST 00000</span>
                   </div>
@@ -504,24 +517,24 @@ export default function OpenAccountPage() {
             <Section title="Required Disclosures">
               <p style={{fontSize:13.5,color:GRAY,margin:"0 0 18px",lineHeight:1.55}}>Please read and acknowledge each of the following before submitting.</p>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                <DiscCheck checked={form.discFDIC} onChange={v=>update("discFDIC",v)}>I have received and read the <strong>Deposit Protection</strong> notice. <Link href="/disclosures#fdic" style={{color:RED}}>View notice →</Link></DiscCheck>
-                <DiscCheck checked={form.discPrivacy} onChange={v=>update("discPrivacy",v)}>I have received and read SGGINV's <strong>Privacy Notice</strong>. <Link href="/privacy" style={{color:RED}}>View notice →</Link></DiscCheck>
-                <DiscCheck checked={form.discTerms} onChange={v=>update("discTerms",v)}>I agree to the <strong>Account Terms &amp; Conditions</strong> and <strong>Terms of Use</strong>. <Link href="/terms" style={{color:RED}}>View terms →</Link></DiscCheck>
+                <DiscCheck checked={form.discFDIC} onChange={v=>update("discFDIC",v)}>I understand my deposits are <strong>not covered by any deposit protection scheme</strong>. <Link href="/disclosures#deposits" style={{color:BLUE}}>View notice →</Link></DiscCheck>
+                <DiscCheck checked={form.discPrivacy} onChange={v=>update("discPrivacy",v)}>I have received and read SGGINV&apos;s <strong>Privacy Notice</strong>. <Link href="/privacy" style={{color:BLUE}}>View notice →</Link></DiscCheck>
+                <DiscCheck checked={form.discTerms} onChange={v=>update("discTerms",v)}>I agree to the <strong>Account Terms &amp; Conditions</strong> and <strong>Terms of Use</strong>. <Link href="/terms" style={{color:BLUE}}>View terms →</Link></DiscCheck>
                 <DiscCheck checked={form.discEStatements} onChange={v=>update("discEStatements",v)}>I consent to receive <strong>electronic statements and disclosures</strong> via email. I may opt out at any time by contacting SGGINV.</DiscCheck>
                 <DiscCheck checked={form.discCertify} onChange={v=>update("discCertify",v)}><strong>I certify</strong> under penalty of perjury that all information in this application is true, accurate, and complete. I authorize SGGINV to verify this information and perform a credit or identity inquiry as needed.</DiscCheck>
               </div>
             </Section>
 
             {isBusiness&&(
-              <div style={{background:"rgba(8,0,255,.06)",border:"1px solid rgba(8,0,255,.22)",borderRadius:12,padding:"14px 18px",marginBottom:24,fontSize:13.5,color:DARK,lineHeight:1.55}}>
+              <div style={{background:"rgba(8,0,255,.06)",border:"1px solid rgba(8,0,255,.22)",borderRadius:4,padding:"14px 18px",marginBottom:24,fontSize:13.5,color:DARK,lineHeight:1.55}}>
                 <strong>Business accounts:</strong> After submission, a banker will contact you within 1 business day to schedule your in-branch document verification.
               </div>
             )}
 
             {submitError&&(
-              <div style={{background:"rgba(220,38,38,.06)",border:"1px solid rgba(220,38,38,.2)",borderRadius:10,padding:"12px 16px",marginBottom:16,display:"flex",alignItems:"flex-start",gap:10}}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" style={{flexShrink:0,marginTop:1}}><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                <span style={{fontSize:13.5,color:"#991B1B",lineHeight:1.5}}>{submitError}</span>
+              <div style={{background:"rgba(8,0,255,.06)",border:"1px solid rgba(8,0,255,.25)",borderRadius:4,padding:"12px 16px",marginBottom:16,display:"flex",alignItems:"flex-start",gap:10}}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" style={{flexShrink:0,marginTop:1}}><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                <span style={{fontSize:13.5,color:DARK,lineHeight:1.5}}>{submitError}</span>
               </div>
             )}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -541,7 +554,7 @@ export default function OpenAccountPage() {
               top:114,
               height:"50vh",
               overflow:"hidden",
-              background:"linear-gradient(135deg,#0D1B4C 0%,#0800FF 60%,#E31E24 100%)",
+              background:BLUE,
               clipPath:"polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 56px))",
             }}
           >
@@ -557,11 +570,11 @@ export default function OpenAccountPage() {
         step===6&&(
           <div style={{maxWidth:640,margin:"0 auto",textAlign:"center",paddingTop:16}}>
             {/* Animated success */}
-            <div style={{width:90,height:90,borderRadius:"50%",background:"linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05))",border:"2px solid rgba(16,185,129,.25)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 28px",boxShadow:"0 8px 32px rgba(16,185,129,.15)"}}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12l5 5L20 7"/></svg>
+            <div style={{width:90,height:90,borderRadius:"50%",background:"rgba(8,0,255,.08)",border:"2px solid rgba(8,0,255,.2)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 28px"}}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2.2" strokeLinecap="round"><path d="M5 12l5 5L20 7"/></svg>
             </div>
 
-            <div style={{display:"inline-flex",alignItems:"center",gap:7,background:"rgba(16,185,129,.08)",border:"1px solid rgba(16,185,129,.2)",borderRadius:999,padding:"5px 14px",fontSize:12,fontWeight:700,color:"#059669",letterSpacing:".06em",textTransform:"uppercase",marginBottom:20}}>
+            <div style={{display:"inline-flex",alignItems:"center",gap:7,background:"rgba(8,0,255,.06)",border:"1px solid rgba(8,0,255,.2)",borderRadius:4,padding:"5px 14px",fontSize:12,fontWeight:700,color:BLUE,letterSpacing:".06em",textTransform:"uppercase",marginBottom:20}}>
               Application Submitted
             </div>
 
@@ -571,7 +584,7 @@ export default function OpenAccountPage() {
             </p>
 
             {/* What's next */}
-            <div style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:20,padding:"28px 30px",textAlign:"left",marginBottom:28,boxShadow:"0 4px 20px rgba(17,24,39,.06)"}}>
+            <div style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:8,padding:"28px 30px",textAlign:"left",marginBottom:28}}>
               <div style={{fontFamily:FONT,fontWeight:600,fontSize:16,color:DARK,marginBottom:24}}>What happens next</div>
               <div style={{display:"flex",flexDirection:"column",gap:0}}>
                 {[
@@ -580,7 +593,7 @@ export default function OpenAccountPage() {
                   {n:"3",title:isCredit?"Card delivery":"Account activation",body:isCredit?`If approved, your card arrives in 7–10 business days.${isGuest?" You can log in with the password you created to track your application.":""}`:`Once approved, your account will be active.${isGuest?" You can log in with the email and password you created — your login is activated upon approval.":""}`},
                 ].map((item,i,arr)=>(
                   <div key={item.n} style={{display:"flex",gap:16,alignItems:"flex-start",paddingBottom:i<arr.length-1?20:0,marginBottom:i<arr.length-1?20:0,borderBottom:i<arr.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
-                    <div style={{flex:"none",width:34,height:34,borderRadius:"50%",background:RED,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:14}}>{item.n}</div>
+                    <div style={{flex:"none",width:34,height:34,borderRadius:"50%",background:BLUE,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:14}}>{item.n}</div>
                     <div style={{paddingTop:4}}>
                       <div style={{fontWeight:700,fontSize:15,color:DARK,marginBottom:4}}>{item.title}</div>
                       <div style={{fontSize:13.5,color:GRAY,lineHeight:1.6}}>{item.body}</div>
@@ -593,16 +606,16 @@ export default function OpenAccountPage() {
             <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
               {isGuest?(
                 <>
-                  <Link href="/login" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:12,display:"inline-flex",alignItems:"center",gap:8,boxShadow:"0 4px 18px rgba(227,30,36,.35)"}}>
+                  <Link href="/login" style={{background:BLUE,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:4,display:"inline-flex",alignItems:"center",gap:8}}>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
                     Enroll in Online Banking
                   </Link>
-                  <Link href="/" style={{background:"#fff",color:DARK,textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:600,padding:"14px 30px",borderRadius:12,border:"1.5px solid rgba(17,24,39,.13)",display:"inline-block"}}>
+                  <Link href="/" style={{background:"#fff",color:DARK,textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:600,padding:"14px 30px",borderRadius:4,border:"1.5px solid rgba(17,24,39,.13)",display:"inline-block"}}>
                     Return to Home
                   </Link>
                 </>
               ):(
-                <Link href="/dashboard" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:12,display:"inline-flex",alignItems:"center",gap:8,boxShadow:"0 4px 18px rgba(227,30,36,.35)"}}>
+                <Link href="/dashboard" style={{background:BLUE,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:4,display:"inline-flex",alignItems:"center",gap:8}}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                   Return to Dashboard
                 </Link>
@@ -610,8 +623,8 @@ export default function OpenAccountPage() {
             </div>
 
             <p style={{marginTop:28,fontSize:13,color:GRAY,lineHeight:1.6}}>
-              Questions? Call <a href="tel:18002372669" style={{color:RED,fontWeight:600,textDecoration:"none"}}>1-800-SGGINV-NOW</a> or{" "}
-              <Link href="/about/contact" style={{color:RED,fontWeight:600,textDecoration:"none"}}>visit a branch</Link>.
+              Questions? Call <a href="tel:5553021900" style={{color:BLUE,fontWeight:600,textDecoration:"none"}}>(555) 302-1900</a> or{" "}
+              <Link href="/about/contact" style={{color:BLUE,fontWeight:600,textDecoration:"none"}}>visit a branch</Link>.
             </p>
           </div>
         ))}
@@ -619,8 +632,8 @@ export default function OpenAccountPage() {
 
       {submitting&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center"}}>
-          <div style={{background:"#fff",borderRadius:20,padding:"44px 60px",textAlign:"center",boxShadow:"0 24px 64px rgba(0,0,0,.35)",display:"flex",flexDirection:"column",alignItems:"center",gap:14}}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>
+          <div style={{background:"#fff",borderRadius:8,padding:"44px 60px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:14}}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>
             <div style={{fontFamily:FONT,fontWeight:600,fontSize:18,color:DARK}}>Submitting Your Application</div>
             <div style={{fontSize:14,color:GRAY,lineHeight:1.6}}>Please don&apos;t close this page…</div>
           </div>

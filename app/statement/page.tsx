@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
 const usd = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+  new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n);
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -116,9 +116,6 @@ function StatementInner() {
           <div>
             <div style={{ fontSize: 22, fontWeight: 700, color: "#8C1D25", letterSpacing: "-.01em", marginBottom: 2 }}>SGGINV</div>
             <div style={{ fontSize: 10.5, color: "#6B7280", letterSpacing: ".12em", textTransform: "uppercase" }}>Safeguard Global Investment Bank</div>
-            <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 6, lineHeight: 1.5 }}>
-              [Deposit Protection Scheme] · [Equal Housing Lender]
-            </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 4 }}>Account Statement</div>
@@ -221,8 +218,8 @@ function StatementInner() {
 
         {/* ── Footer ── */}
         <div style={{ marginTop: 40, paddingTop: 16, borderTop: "1px solid #E5E7EB", fontSize: 9.5, color: "#9CA3AF", lineHeight: 1.6 }}>
-          <strong style={{ color: "#6B7280" }}>SGGINV — Safeguard Global Investment Bank</strong> · [Deposit Protection Scheme] · [Equal Housing Lender]<br />
-          Questions? Visit sgginv.bank or call 1-800-SGGINV-BANK · Deposits insured up to $250,000 per depositor<br />
+          <strong style={{ color: "#6B7280" }}>SGGINV — Safeguard Global Investment Bank</strong><br />
+          Questions? Call (555) 302-1900<br />
           This statement is for informational purposes. Please report any discrepancies within 60 days.
         </div>
 

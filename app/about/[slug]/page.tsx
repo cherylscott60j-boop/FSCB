@@ -1,7 +1,6 @@
 import SiteLayout from "@/components/SiteLayout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ContactForm from "@/components/ContactForm";
 
 const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
@@ -17,7 +16,7 @@ function StoryPage() {
     { year: "1935", title: "Through the Depression", desc: "While larger banks closed their doors, SGGINV remained open — never missing a single day of service to account holders." },
     { year: "1968", title: "New Headquarters", desc: "Moved into our landmark Main Street building, which remains our primary branch and community hub to this day." },
     { year: "1997", title: "Online Banking Launched", desc: "Among the first community banks in the region to offer internet banking — a commitment to innovation that continues today." },
-    { year: "2010", title: "$500M in Assets", desc: "Crossed half a billion dollars in assets while remaining independently owned and community-focused." },
+    { year: "2010", title: "£500M in Assets", desc: "Crossed half a billion pounds in assets while remaining independently owned and community-focused." },
     { year: "2024", title: "120+ Years Strong", desc: "Now serving 17,000+ account holders with expanded digital tools, multiple branches, and deeper community investment than ever." },
   ];
   const VALUES = [
@@ -153,7 +152,7 @@ function StoryPage() {
 
 function CommunityPage() {
   const METRICS = [
-    { v: "$1M+", l: "Donated locally", sub: "Grants, sponsorships, and direct giving" },
+    { v: "£1M+", l: "Donated locally", sub: "Grants, sponsorships, and direct giving" },
     { v: "200+", l: "Projects funded", sub: "Neighborhood revitalization initiatives" },
     { v: "17K+", l: "Volunteer hours", sub: "Logged by SGGINV staff and partners" },
     { v: "5K+", l: "Students reached", sub: "Through financial literacy programs" },
@@ -171,7 +170,7 @@ function CommunityPage() {
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
           <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Community Impact</h1>
-          <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We measure our success by the strength of the community around us — $1M+ reinvested and counting.</p>
+          <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We measure our success by the strength of the community around us — £1M+ reinvested and counting.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>See Our Impact Report</button>
         </div>
       </div>
@@ -265,7 +264,7 @@ function CareersPage() {
     { title: "Health, Dental & Vision", desc: "Comprehensive medical coverage for you and your family, with SGGINV covering a majority of premiums.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
     { title: "401(k) with Match", desc: "Save for retirement with up to 4% employer match — fully vested after just two years.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
     { title: "Paid Volunteer Time", desc: "Dedicated paid hours each year to volunteer with local nonprofits and causes you care about.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
-    { title: "Tuition Assistance", desc: "Up to $5,000 per year toward continuing education, certifications, and degree programs.", icon: "M3 7l9-4 9 4-9 4-9-4z" },
+    { title: "Tuition Assistance", desc: "Up to £5,000 per year toward continuing education, certifications, and degree programs.", icon: "M3 7l9-4 9 4-9 4-9-4z" },
     { title: "Work-Life Balance", desc: "Flexible scheduling, generous PTO starting at 3 weeks, and 11 paid holidays per year.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
   ];
   const ROLES = [
@@ -392,15 +391,15 @@ function NewsPage() {
   const FEATURED = {
     date: "June 10, 2026",
     tag: "Community",
-    title: "SGGINV Awards $120,000 in Small Business Grants to 12 Local Entrepreneurs",
-    excerpt: "In our largest grant cycle to date, SGGINV's Community Investment Fund awarded $120,000 to twelve local small businesses — including a family-owned bakery, a minority-owned construction firm, and a nonprofit childcare center serving working families.",
+    title: "SGGINV Awards £120,000 in Small Business Grants to 12 Local Entrepreneurs",
+    excerpt: "In our largest grant cycle to date, SGGINV's Community Investment Fund awarded £120,000 to twelve local small businesses — including a family-owned bakery, a minority-owned construction firm, and a nonprofit childcare center serving working families.",
   };
   const NEWS = [
     { date: "May 28, 2026", tag: "Products", title: "SGGINV Launches New High-Yield Savings Account with 5.10% APY", excerpt: "Starting June 1st, new and existing SGGINV customers can open our new Premium Savings account featuring one of the most competitive yields in the region." },
     { date: "May 14, 2026", tag: "Community", title: "SGGINV Volunteers Log 2,400 Hours During Spring Community Day", excerpt: "Over 180 SGGINV employees across all branches participated in our annual community day, partnering with local nonprofits on cleanup, renovation, and food drive projects." },
     { date: "April 22, 2026", tag: "Awards", title: "SGGINV Named Best Community Bank in the Region for 4th Consecutive Year", excerpt: "The regional business journal honored SGGINV with the Best Community Bank award, citing customer satisfaction scores, local reinvestment, and digital banking innovation." },
     { date: "April 5, 2026", tag: "Technology", title: "New Mobile App Update Brings Budgeting Tools and Instant Card Controls", excerpt: "The latest version of the SGGINV mobile app includes real-time spending insights, custom budget categories, and the ability to instantly freeze or unfreeze your debit card." },
-    { date: "March 18, 2026", tag: "Lending", title: "SGGINV Expands SBA Lending Program Following $50M in Business Loans", excerpt: "After crossing $50 million in SBA loan originations, SGGINV has expanded its business lending team and added new SBA 504 program capabilities for commercial real estate." },
+    { date: "March 18, 2026", tag: "Lending", title: "SGGINV Expands SBA Lending Program Following £50M in Business Loans", excerpt: "After crossing £50 million in SBA loan originations, SGGINV has expanded its business lending team and added new SBA 504 program capabilities for commercial real estate." },
     { date: "February 28, 2026", tag: "Community", title: "Financial Literacy Program Reaches 1,000th Student This Semester", excerpt: "SGGINV's school-based financial education program hit a milestone this spring, with volunteer bankers reaching students at 14 local schools across the district." },
   ];
   const tagColor = (tag: string) => {
@@ -497,129 +496,6 @@ function NewsPage() {
 
 /* ─── Contact ────────────────────────────────────────────────────────────── */
 
-function ContactPage() {
-  const BRANCHES = [
-    { name: "Main Street Branch", addr: "102 Main Street", city: "Downtown", hours: "Mon–Fri 9am–5pm · Sat 9am–12pm", phone: "(555) 302-1900", services: ["Full-service banking", "Mortgage center", "Safe deposit boxes", "Drive-through"] },
-    { name: "Westside Branch", addr: "4520 West Oak Avenue", city: "Westside", hours: "Mon–Fri 9am–6pm · Sat 9am–2pm", phone: "(555) 302-1940", services: ["Full-service banking", "Drive-through", "Extended Saturday hours", "ATM (24/7)"] },
-    { name: "Northpark Branch", addr: "8800 Northpark Plaza", city: "North District", hours: "Mon–Fri 9am–5pm · Sat 9am–12pm", phone: "(555) 302-1960", services: ["Full-service banking", "Investment center", "Business banking", "ATM (24/7)"] },
-  ];
-  const CHANNELS = [
-    { title: "General Banking Support", detail: "(555) 302-1900", sub: "Mon–Fri 8am–7pm · Sat 8am–4pm", icon: "M3 5a2 2 0 0 1 2-2h3.28a1 1 0 0 1 .948.684l1.498 4.493a1 1 0 0 1-.502 1.21l-2.257 1.13a11.042 11.042 0 0 0 5.516 5.516l1.13-2.257a1 1 0 0 1 1.21-.502l4.493 1.498a1 1 0 0 1 .684.949V19a2 2 0 0 1-2 2h-1C9.716 21 3 14.284 3 6V5z" },
-    { title: "24/7 Digital Banking Support", detail: "Online chat in the app", sub: "Always available for digital issues", icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" },
-    { title: "Email Us", detail: "banking@sgginv.com", sub: "Responses within 1 business day", icon: "M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" },
-    { title: "Lost or Stolen Card", detail: "(555) 302-1999", sub: "24/7 emergency card line", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
-  ];
-  return (
-    <SiteLayout>
-      {/* Hero */}
-      <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "88px 32px 80px" }}>
-        <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
-          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Contact Us</h1>
-          <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We&apos;re always here to help. Reach a real person by phone, visit any branch, or send us a message.</p>
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Find a Branch</button>
-            <button style={{ background: "rgba(255,255,255,.1)", color: "#fff", border: "1.5px solid rgba(255,255,255,.25)", fontFamily: "inherit", fontSize: 15, fontWeight: 600, padding: "15px 28px", borderRadius: 12, cursor: "pointer" }}>Call Us Now</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Contact channels */}
-      <div className="mob-section" style={{ background: "#fff", padding: "80px 32px" }}>
-        <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 52 }}>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Get in Touch</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 38px)", letterSpacing: "-.02em", margin: 0, color: DARK }}>We&apos;re always available</h2>
-          </div>
-          <div className="g-4col" style={{ gap: 20 }}>
-            {CHANNELS.map((c, i) => (
-              <div key={i} style={{ border: "1.5px solid rgba(17,24,39,.08)", borderRadius: 20, padding: "32px 24px", textAlign: "center" }}>
-                <div style={{ width: 52, height: 52, borderRadius: 15, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, margin: "0 auto 20px" }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={c.icon} /></svg>
-                </div>
-                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 14, color: GRAY, marginBottom: 10 }}>{c.title}</div>
-                <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 17, color: DARK, marginBottom: 6 }}>{c.detail}</div>
-                <div style={{ fontSize: 12.5, color: GRAY }}>{c.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Branches */}
-      <div className="mob-section" style={{ background: "#F8F9FA", padding: "80px 32px" }}>
-        <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 52 }}>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Our Branches</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 38px)", letterSpacing: "-.02em", margin: 0, color: DARK }}>Visit us in person</h2>
-          </div>
-          <div className="g-3col" style={{ gap: 24 }}>
-            {BRANCHES.map((b, i) => (
-              <div key={i} style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 20, padding: "32px 28px" }}>
-                <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 19, color: DARK, marginBottom: 4 }}>{b.name}</div>
-                <div style={{ fontSize: 14, color: RED, fontWeight: 600, marginBottom: 16 }}>{b.city}</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
-                  <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2" style={{ flexShrink: 0, marginTop: 2 }}><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
-                    <span style={{ fontSize: 14, color: GRAY }}>{b.addr}</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2" style={{ flexShrink: 0, marginTop: 2 }}><circle cx="12" cy="12" r="9" /><path d="M12 6v6l4 2" /></svg>
-                    <span style={{ fontSize: 14, color: GRAY }}>{b.hours}</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2" style={{ flexShrink: 0, marginTop: 2 }}><path d="M3 5a2 2 0 0 1 2-2h3.28a1 1 0 0 1 .948.684l1.498 4.493a1 1 0 0 1-.502 1.21l-2.257 1.13a11.042 11.042 0 0 0 5.516 5.516l1.13-2.257a1 1 0 0 1 1.21-.502l4.493 1.498a1 1 0 0 1 .684.949V19a2 2 0 0 1-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                    <span style={{ fontSize: 14, color: GRAY }}>{b.phone}</span>
-                  </div>
-                </div>
-                <div style={{ borderTop: "1px solid rgba(17,24,39,.07)", paddingTop: 18 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: DARK, marginBottom: 10, letterSpacing: ".05em", textTransform: "uppercase" }}>Services</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {b.services.map((s, j) => (
-                      <span key={j} style={{ fontSize: 12, background: "rgba(140,29,37,.07)", color: RED, padding: "3px 10px", borderRadius: 999, fontWeight: 600 }}>{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Send a message */}
-      <div className="mob-section" style={{ background: "#fff", padding: "80px 32px" }}>
-        <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "start" }}>
-          <div>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Send a Message</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 36, lineHeight: 1.12, letterSpacing: "-.02em", margin: "0 0 18px", color: DARK }}>We respond within one business day</h2>
-            <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.72, margin: "0 0 32px" }}>Have a question about your account, a loan, or a service? Fill out the form and a local SGGINV banker will follow up personally.</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {["No call centers — your message goes to a local banker", "Secure, encrypted message delivery", "Loan questions get routed directly to our lending team", "Current customers can also message in-app"].map((item, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 26, height: 26, borderRadius: 8, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12l5 5L20 7" /></svg>
-                  </div>
-                  <span style={{ fontSize: 14.5, color: DARK, fontWeight: 500 }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <ContactForm />
-        </div>
-      </div>
-
-      {/* Footer CTA */}
-      <div className="mob-section" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "72px 32px", textAlign: "center" }}>
-        <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>We&apos;re your neighbors</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Stop by any branch and meet the team in person. No appointment needed for most services.</p>
-          <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Find Your Branch</button>
-        </div>
-      </div>
-    </SiteLayout>
-  );
-}
-
 /* ─── Router ─────────────────────────────────────────────────────────────── */
 
 export default async function AboutPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -629,7 +505,6 @@ export default async function AboutPage({ params }: { params: Promise<{ slug: st
   if (slug === "community") return <CommunityPage />;
   if (slug === "careers")   return <CareersPage />;
   if (slug === "news")      return <NewsPage />;
-  if (slug === "contact")   return <ContactPage />;
 
   notFound();
 }

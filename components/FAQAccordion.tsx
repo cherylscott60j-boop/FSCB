@@ -7,7 +7,7 @@ const RED = "#E31E24";
 const DARK = "#111827";
 const GRAY = "#6B7280";
 
-export default function FAQAccordion({ faqs }: { faqs: { q: string; a: string }[] }) {
+export default function FAQAccordion({ faqs, accent = RED }: { faqs: { q: string; a: string }[]; accent?: string }) {
   const [open, setOpen] = useState<Set<number>>(new Set());
 
   function toggle(i: number) {
@@ -36,7 +36,7 @@ export default function FAQAccordion({ faqs }: { faqs: { q: string; a: string }[
             >
               <span style={{ fontWeight: 700, fontSize: 16, color: DARK }}>{f.q}</span>
               <svg
-                width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.4"
+                width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.4"
                 style={{ flexShrink: 0, transition: "transform .2s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
               >
                 <path d="M6 9l6 6 6-6" />

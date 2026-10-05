@@ -11,76 +11,6 @@ const GRAY = "#6B7280";
 
 /* ─── Page data ─────────────────────────────────────────────────────────── */
 const PAGES = {
-  checking: {
-    title: "Checking Accounts",
-    subtitle: "No-fee everyday banking with early direct deposit and 55,000+ surcharge-free ATMs.",
-    stats: [{ v: "£0", l: "Monthly fees" }, { v: "55K+", l: "Fee-free ATMs" }, { v: "2 Days", l: "Early direct deposit" }],
-    overview: "Our personal checking accounts are built for real life — no minimum balance, no hidden charges, and tools that actually help you stay on top of your money. Whether you're depositing a paycheck, sending money to a friend, or checking your balance at midnight, SGGINV is right there with you.",
-    features: [
-      { title: "No Monthly Fees", desc: "Keep every dollar you earn. No maintenance fees, no minimum balance requirements — ever.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 14C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z" },
-      { title: "Early Direct Deposit", desc: "Get your paycheck up to 2 days before payday when you set up direct deposit.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
-      { title: "55,000+ ATMs Nationwide", desc: "Access your cash anywhere through the Allpoint® network — surcharge-free, coast to coast.", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
-      { title: "Instant Card Controls", desc: "Lock and unlock your debit card instantly from the mobile app if it's ever lost or misplaced.", icon: "M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z" },
-      { title: "Zelle® Money Transfers", desc: "Send and receive money in seconds with Zelle® — directly from your SGGINV account.", icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" },
-      { title: "Overdraft Protection", desc: "Optional overdraft protection links your savings account so you're covered when it matters.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
-    ],
-    accounts: [
-      { name: "SGGINV Free Checking", monthly: "£0", min: "None", atm: "55,000+ free", dd: "Yes (+2 days)", zelle: "Yes", highlight: false, startHref: "/open-account?account=free-checking" },
-      { name: "SGGINV Premium Checking", monthly: "£0*", min: "£500 avg daily", atm: "55,000+ free + rebates", dd: "Yes (+2 days)", zelle: "Yes", highlight: true, startHref: "/open-account?account=premium-checking" },
-    ],
-    accountNote: "* Monthly fee waived with £500 average daily balance or £1,500 in monthly direct deposits.",
-    steps: [
-      { n: "1", t: "Apply Online", d: "Complete your application in under 5 minutes. Just your ID and Social Security number." },
-      { n: "2", t: "Fund Your Account", d: "Transfer money from another bank or deposit a check through the mobile app." },
-      { n: "3", t: "Start Banking", d: "Your debit card arrives in 5–7 days. Digital access is instant." },
-    ],
-    faqs: [
-      { q: "Is there a minimum opening deposit?", a: "No — you can open a Free Checking account with any amount. Premium Checking requires £25 to open." },
-      { q: "How does early direct deposit work?", a: "When your employer sends your paycheck electronically, we release the funds up to 2 business days before your actual payday." },
-      { q: "What if I overdraw my account?", a: "With optional overdraft protection, we transfer funds from your linked savings account automatically. Without it, transactions over your balance are declined to prevent fees." },
-      { q: "Can I open an account if I've had banking issues before?", a: "We review each application individually. Contact a local banker — we work with you, not against you." },
-      { q: "Can I use my debit card internationally?", a: "Yes — your SGGINV debit card works anywhere Visa® or Mastercard® is accepted. We'll waive the first two foreign transaction fees each month on Premium Checking." },
-      { q: "Is there a daily ATM withdrawal limit?", a: "Standard accounts have a £500 daily ATM withdrawal limit. You can request a higher limit through the mobile app or by speaking with a banker." },
-      { q: "How do I set up direct deposit?", a: "Download a pre-filled direct deposit form from the mobile app or online banking, and give it to your employer's payroll department. Most deposits start within 1–2 pay cycles." },
-      { q: "Can I add someone as a joint owner on my account?", a: "Yes — joint owners can be added when you open the account or anytime afterward in-branch. Both owners have full access to the account." },
-    ],
-    cta: "Open a Checking Account",
-    ctaHref: "/open-account",
-  },
-
-  savings: {
-    title: "Savings Accounts",
-    subtitle: "High-yield savings with automatic goal tracking and round-up tools that build real wealth.",
-    stats: [{ v: "High", l: "Competitive APY" }, { v: "£0", l: "Monthly fees" }, { v: "£250K", l: "[deposit-protected]" }],
-    overview: "A great savings account does more than hold your money — it grows it. SGGINV savings accounts come with goal-tracking tools, automatic round-ups on every debit card purchase, and competitive yields that put your money to work every single day.",
-    features: [
-      { title: "Competitive High-Yield APY", desc: "Earn more than the national average with rates that are reviewed regularly to stay competitive.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
-      { title: "Automatic Round-Ups", desc: "Every debit card purchase rounds up to the nearest dollar and sweeps the difference into savings.", icon: "M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" },
-      { title: "Savings Goals", desc: "Set goals for anything — a car, vacation, emergency fund — and track your progress in real time.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" },
-      { title: "No Minimum Balance", desc: "Start saving with whatever you have. There's no minimum balance requirement to earn your full APY.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "CASS PROTECTED up to £120,000", desc: "Eligible deposits may be protected under DEPOSIT INSURANCE, up to [£LIMIT] per depositor, per category.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
-      { title: "Instant Transfers", desc: "Move money between your SGGINV checking and savings accounts instantly, any time of day.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
-    ],
-    accounts: [
-      { name: "Regular Savings", monthly: "£0", min: "None", apy: "Competitive", transfers: "6/month", highlight: false, startHref: "/open-account?account=regular-savings" },
-      { name: "Money Market", monthly: "£0*", min: "£2,500", apy: "Higher yield", transfers: "Unlimited", highlight: true, startHref: "/open-account?account=money-market" },
-    ],
-    accountNote: "* Money Market fee waived with £2,500 minimum balance.",
-    steps: [
-      { n: "1", t: "Choose Your Account", d: "Pick Regular Savings for flexibility or Money Market for higher yields on larger balances." },
-      { n: "2", t: "Set Your Goals", d: "Use the app to create and name savings goals — emergency fund, vacation, down payment." },
-      { n: "3", t: "Automate and Grow", d: "Set up automatic transfers and round-ups and watch your savings grow on autopilot." },
-    ],
-    faqs: [
-      { q: "How often is interest calculated?", a: "Interest is compounded daily and credited to your account monthly." },
-      { q: "Is there a limit on how many times I can withdraw?", a: "Federal Regulation D limits savings withdrawals to 6 per month. Money Market accounts offer more flexibility." },
-      { q: "Can I have multiple savings accounts?", a: "Yes — you can open multiple accounts and dedicate each one to a specific goal." },
-      { q: "Are my savings CASS PROTECTED?", a: "Yes. All SGGINV deposits are CASS PROTECTED up to £120,000 per depositor per ownership category." },
-    ],
-    cta: "Open a Savings Account",
-    ctaHref: "/open-account",
-  },
-
   "credit-cards": {
     title: "Credit Cards",
     subtitle: "Earn rewards and cashback on every purchase with cards built for community members.",
@@ -147,38 +77,6 @@ const PAGES = {
     ctaHref: "/about/contact",
   },
 
-  "online-banking": {
-    title: "Online & Mobile Banking",
-    subtitle: "Bank securely from anywhere — your full SGGINV account in your pocket, 24/7.",
-    stats: [{ v: "24/7", l: "Account access" }, { v: "256-bit", l: "Encryption" }, { v: "Free", l: "Forever" }],
-    overview: "Managing your finances should be as easy as checking the weather. SGGINV Online and Mobile Banking gives you full control of your accounts from any device — check balances, pay bills, deposit checks, transfer money, and more — with bank-grade security protecting every action.",
-    features: [
-      { title: "Mobile Check Deposit", desc: "Deposit checks by taking a photo with your phone. No branch visit needed, funds available quickly.", icon: "M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" },
-      { title: "Bill Pay", desc: "Pay any bill — utilities, loans, vendors — directly from your SGGINV account on any schedule you choose.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" },
-      { title: "Instant Transfers", desc: "Move money between your SGGINV accounts or send to other banks via ACH — fast and free.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
-      { title: "Real-Time Alerts", desc: "Get push notifications for every transaction, low balance warning, or suspicious activity.", icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 0 0-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9" },
-      { title: "Spending Insights", desc: "Automatically categorize your spending, set budgets, and see trends across all your accounts.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
-      { title: "Bank-Grade Security", desc: "256-bit encryption, multi-factor authentication, biometric login, and real-time fraud detection.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
-    ],
-    accounts: [
-      { name: "Online Banking", monthly: "Free", min: "Any SGGINV account", apy: "Web & mobile", transfers: "Unlimited", highlight: false, startHref: "/login" },
-      { name: "Mobile App (iOS & Android)", monthly: "Free", min: "Any SGGINV account", apy: "Full-featured", transfers: "Biometric login", highlight: true, startHref: "/login" },
-    ],
-    accountNote: "Online and mobile banking are free for all SGGINV personal and business account holders.",
-    steps: [
-      { n: "1", t: "Enroll Online", d: "Register at sgginv.com with your account number and Social Security number. Takes 2 minutes." },
-      { n: "2", t: "Download the App", d: "Get the SGGINV app on the App Store or Google Play. Log in with your new credentials." },
-      { n: "3", t: "Set Up Your Preferences", d: "Enable biometric login, configure alerts, set up bill pay, and you're ready to go." },
-    ],
-    faqs: [
-      { q: "Is online banking secure?", a: "Yes. We use 256-bit SSL encryption, multi-factor authentication, and continuous fraud monitoring to protect your account." },
-      { q: "What if I forget my password?", a: "Use the 'Forgot Password' link to reset via your email or phone number on file — no branch visit needed." },
-      { q: "Can I deposit a check with my phone?", a: "Yes — mobile check deposit is available in the SGGINV app. Funds are typically available by the next business day." },
-      { q: "Is there a fee for online bill pay?", a: "No — bill pay is completely free for all personal account holders." },
-    ],
-    cta: "Enroll in Online Banking",
-    ctaHref: "/login",
-  },
 };
 
 /* ─── Sub-components ─────────────────────────────────────────────────────── */

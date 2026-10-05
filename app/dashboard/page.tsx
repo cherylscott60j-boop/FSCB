@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { BANK } from "@/lib/bankConstants";
 import Logo from "@/components/Logo";
 
 /* ── Design tokens ───────────────────────────────── */
@@ -67,7 +66,7 @@ function BankIcon({size=28}:{size?:number}){
 }
 
 /* ── Helpers ─────────────────────────────────────── */
-const usd  = (n:number) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Math.abs(n));
+const usd  = (n:number) => new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(Math.abs(n));
 const pct  = (n:number) => `${(n*100).toFixed(2)}% APY`;
 const apr  = (n:number) => `${(n*100).toFixed(2)}% APR`;
 
@@ -380,7 +379,7 @@ function Row2({children}:{children:React.ReactNode}){
 function AmtInput({value,set}:{value:string;set:(v:string)=>void}){
   return(
     <div style={{position:"relative"}}>
-      <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span>
+      <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>£</span>
       <input type="number" min="0.01" step="0.01" placeholder="0.00" value={value} onChange={e=>set(e.target.value)} style={{...INP,paddingLeft:24}}/>
     </div>
   );
@@ -863,10 +862,6 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
               <div style={{borderTop:"1px solid rgba(17,24,39,.06)",padding:"14px 20px 6px",background:"rgba(249,250,251,.7)"}}>
                 <div style={{fontSize:11,fontWeight:700,color:GRAY,letterSpacing:".08em",marginBottom:8,textTransform:"uppercase"}}>Banking Details</div>
                 <DetailRow label="Account Number" value={a.accountNumber||"Not assigned"} copyVal={a.accountNumber||""} revealed={revealedIds.has(a.id+"-acct")} onToggleReveal={()=>toggleReveal(a.id+"-acct")} canHide/>
-                <DetailRow label="ABA / ACH Routing" value={BANK.achRouting} copyVal={BANK.achRouting} revealed/>
-                <DetailRow label="Domestic Wire Routing" value={BANK.wireRouting} copyVal={BANK.wireRouting} revealed/>
-                <DetailRow label="SWIFT / BIC (International)" value={BANK.swiftCode} copyVal={BANK.swiftCode} revealed/>
-                <p style={{fontSize:11,color:GRAY,margin:"10px 0 8px",lineHeight:1.5}}>Use these details to receive wire transfers or set up direct deposits. For international transfers, provide your bank name: <strong>Safeguard Global Investment Bank</strong>.</p>
               </div>
             )}
           </div>
@@ -1438,7 +1433,7 @@ function ProfileTab({profile,accounts,initials}:{
                 <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>Active Account{accounts.length!==1?"s":""}</div>
               </div>
               <div style={{flex:1,background:"rgba(22,163,74,.05)",borderRadius:12,padding:"14px 16px",textAlign:"center"}}>
-                <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:"#16A34A"}}>{new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",notation:"compact",maximumFractionDigits:1}).format(totalBalance)}</div>
+                <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:"#16A34A"}}>{new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP",notation:"compact",maximumFractionDigits:1}).format(totalBalance)}</div>
                 <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>Total Balance</div>
               </div>
             </div>
@@ -1451,7 +1446,7 @@ function ProfileTab({profile,accounts,initials}:{
                   <div style={{fontSize:13,fontWeight:600,color:DARK,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.label}</div>
                   <div style={{fontSize:11.5,color:GRAY,fontFamily:"monospace",letterSpacing:".06em"}}>{a.number}</div>
                 </div>
-                <div style={{fontSize:13,fontWeight:700,color:DARK,fontFamily:FONT,flexShrink:0}}>{new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(a.balance)}</div>
+                <div style={{fontSize:13,fontWeight:700,color:DARK,fontFamily:FONT,flexShrink:0}}>{new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(a.balance)}</div>
               </div>
             ))}
             {accounts.length===0&&<div style={{padding:"12px 0",textAlign:"center",fontSize:13,color:GRAY}}>No active accounts.</div>}

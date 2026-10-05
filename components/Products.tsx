@@ -22,7 +22,7 @@ const PRODUCTS: Product[] = [
     tag: "Popular",
     tagColor: "#8C1D25",
     tagBg: "rgba(140,29,37,.1)",
-    rate: "$0",
+    rate: "£0",
     rateLabel: "monthly fees",
     href: "/personal/checking",
     icon: (
@@ -67,10 +67,10 @@ const PRODUCTS: Product[] = [
   {
     title: "Insurance",
     body: "Protect what matters most with home, auto, and life insurance solutions.",
-    tag: "From $29/mo",
+    tag: "From £29/mo",
     tagColor: "#b8941f",
     tagBg: "rgba(212,175,55,.15)",
-    rate: "$29+",
+    rate: "£29+",
     rateLabel: "per month",
     href: "/insurance/home",
     icon: (
@@ -85,7 +85,7 @@ const PRODUCTS: Product[] = [
     tag: "New",
     tagColor: "#8C1D25",
     tagBg: "rgba(140,29,37,.1)",
-    rate: "$0",
+    rate: "£0",
     rateLabel: "commissions",
     href: "/financial/investments",
     icon: (

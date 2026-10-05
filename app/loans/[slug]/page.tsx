@@ -9,74 +9,6 @@ const DARK = "#111827";
 const GRAY = "#6B7280";
 
 const PAGES = {
-  personal: {
-    title: "Personal Loans",
-    subtitle: "Flexible financing for any purpose — fast local decisions with no hidden fees.",
-    hero: "linear-gradient(145deg,#0d1f3c,#1a3a6b)",
-    stats: [{ v: "$1K–$50K", l: "Loan range" }, { v: "As low as 7.99%", l: "Starting APR*" }, { v: "Same day", l: "Funding available" }],
-    overview: "Whether you're consolidating high-interest debt, funding a home renovation, or covering an unexpected expense, SGGINV personal loans give you a fixed rate, predictable payment, and a local team who reviews your application personally — not an algorithm.",
-    uses: ["Debt consolidation", "Home improvements", "Medical expenses", "Major appliances", "Wedding costs", "Vacation financing", "Moving expenses", "Emergency expenses"],
-    features: [
-      { title: "Fixed Monthly Payments", desc: "Your rate and payment are locked from day one — no variable rate surprises ever.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
-      { title: "No Origination Fees", desc: "We don't charge application fees, origination fees, or prepayment penalties.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "12–84 Month Terms", desc: "Choose your repayment period to fit your budget — from 1 to 7 years.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
-      { title: "Same-Day Funding", desc: "Approve by noon and funds are often deposited to your SGGINV account the same business day.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
-      { title: "Soft Pull Pre-Qualification", desc: "Check your rate with no impact to your credit score before you formally apply.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
-      { title: "Local Underwriting", desc: "Every application is reviewed by an SGGINV banker who understands our community's needs.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
-    ],
-    rates: [
-      { term: "12–24 months", range: "7.99% – 14.99%", amount: "$1,000–$15,000", best: "Short-term needs" },
-      { term: "36–60 months", range: "9.49% – 18.99%", amount: "$5,000–$35,000", best: "Debt consolidation" },
-      { term: "61–84 months", range: "11.99% – 21.99%", amount: "$15,000–$50,000", best: "Large projects" },
-    ],
-    steps: [
-      { n: "1", t: "Pre-Qualify Online", d: "Enter the loan amount and purpose. We do a soft credit pull — zero impact to your score." },
-      { n: "2", t: "Submit Your Application", d: "Provide income verification and ID. The full application takes under 15 minutes." },
-      { n: "3", t: "Receive Your Funds", d: "Once approved and e-signed, funds hit your account same day or next business morning." },
-    ],
-    faqs: [
-      { q: "What credit score do I need to qualify?", a: "We look at the full picture, not just your score. Most personal loans require a score of 620+, but we have options for a range of credit profiles." },
-      { q: "Can I pay off my loan early?", a: "Yes — there are absolutely no prepayment penalties. Pay it off anytime and save on interest." },
-      { q: "How is my rate determined?", a: "Rates are based on your credit history, income, loan amount, and term. Better credit and shorter terms typically mean lower rates." },
-      { q: "Can I use the loan for anything?", a: "Almost. Personal loans cannot be used for education (see student loan refinancing) or business purposes (see business loans). Most other uses are fine." },
-    ],
-    cta: "Apply for a Personal Loan",
-  },
-
-  mortgage: {
-    title: "Home Mortgages",
-    subtitle: "Buy or refinance your home with local expertise and competitive rates.",
-    hero: "linear-gradient(145deg,#0f1e0f,#1e3d20)",
-    stats: [{ v: "15 & 30 yr", l: "Fixed rate options" }, { v: "FHA / VA / USDA", l: "Government programs" }, { v: "Local", l: "Fast closings" }],
-    overview: "Buying a home is the biggest financial decision most people ever make. At SGGINV, your mortgage application is reviewed by local underwriters who know your market, not a national call center. From first-time buyer programs to jumbo loans, we have the right mortgage for every buyer.",
-    uses: ["First home purchase", "Move-up purchase", "Investment property", "Rate and term refinance", "Cash-out refinance", "Construction-to-perm", "Vacation home", "Jumbo purchase"],
-    features: [
-      { title: "Conventional Loans", desc: "30, 20, and 15-year fixed-rate options with competitive rates for buyers with strong credit.", icon: "M3 21h18M5 21V9l7-6 7 6v12" },
-      { title: "FHA Loans", desc: "Low down payment options (3.5%) for first-time buyers or those with less-than-perfect credit.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
-      { title: "VA Loans", desc: "No down payment mortgages for eligible veterans and active-duty service members.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
-      { title: "USDA Rural Loans", desc: "100% financing for eligible rural and suburban homebuyers through the USDA program.", icon: "M3.055 11H5a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2 2 2 0 0 1 2 2v2.945" },
-      { title: "Jumbo Loans", desc: "Financing above conforming loan limits for higher-value properties with personalized terms.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
-      { title: "Construction Loans", desc: "Fund your build from the ground up with draw-based construction-to-permanent financing.", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 0-1 1h-3" },
-    ],
-    rates: [
-      { term: "30-Year Fixed", range: "Contact for today's rate", amount: "Up to conforming limit", best: "Lower monthly payment" },
-      { term: "15-Year Fixed", range: "Contact for today's rate", amount: "Up to conforming limit", best: "Build equity faster" },
-      { term: "5/1 ARM", range: "Contact for today's rate", amount: "Up to conforming limit", best: "Short-term ownership" },
-    ],
-    steps: [
-      { n: "1", t: "Get Pre-Approved", d: "A pre-approval letter tells you exactly how much home you can afford and shows sellers you're serious." },
-      { n: "2", t: "Find Your Home", d: "Shop with confidence knowing your financing is ready. Your SGGINV mortgage advisor is available throughout." },
-      { n: "3", t: "Close with Confidence", d: "Local processing and underwriting means fewer delays. We target closings in 21–30 days." },
-    ],
-    faqs: [
-      { q: "How much down payment do I need?", a: "It depends on the loan type. Conventional loans start at 3% down, FHA at 3.5%, VA and USDA offer 0% down for eligible buyers." },
-      { q: "What's the difference between pre-qualification and pre-approval?", a: "Pre-qualification is an estimate based on self-reported info. Pre-approval is a verified commitment from SGGINV based on your actual financial documents." },
-      { q: "How long does the mortgage process take?", a: "From complete application to closing, SGGINV targets 21–30 days for most purchase loans. Refinances may be faster." },
-      { q: "Can I lock my interest rate?", a: "Yes — once your application is approved, you can lock your rate for 30, 45, or 60 days while you finalize your purchase." },
-    ],
-    cta: "Start Your Mortgage Application",
-  },
-
   auto: {
     title: "Auto Loans",
     subtitle: "Drive away with great rates on new, used, or refinanced vehicle loans.",
@@ -104,7 +36,7 @@ const PAGES = {
     ],
     faqs: [
       { q: "Can I finance a private-party purchase?", a: "Yes — SGGINV funds private-party vehicle purchases. We'll need the title and a bill of sale from the seller." },
-      { q: "Is there a minimum loan amount?", a: "We typically finance vehicles of $5,000 or more. Contact a banker for purchases below that amount." },
+      { q: "Is there a minimum loan amount?", a: "We typically finance vehicles of £5,000 or more. Contact a banker for purchases below that amount." },
       { q: "Can I include tax, title, and registration in my loan?", a: "Yes — in most cases, we can roll in tax, title, and registration fees so you owe nothing out of pocket at purchase." },
       { q: "Does my vehicle serve as collateral?", a: "Yes — auto loans are secured by the vehicle. SGGINV holds the title until the loan is paid in full." },
     ],
@@ -127,9 +59,9 @@ const PAGES = {
       { title: "Local Appraisal Team", desc: "SGGINV uses trusted local appraisers for faster turnaround and fair market value assessments.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
     ],
     rates: [
-      { term: "HELOC (variable rate)", range: "Prime + margin", amount: "$10K–$500K", best: "Ongoing projects" },
-      { term: "Home Equity Loan (10 yr)", range: "Fixed — contact us", amount: "$10K–$500K", best: "One-time lump sum" },
-      { term: "Home Equity Loan (20 yr)", range: "Fixed — contact us", amount: "$25K–$500K", best: "Lower monthly payment" },
+      { term: "HELOC (variable rate)", range: "Prime + margin", amount: "£10K–£500K", best: "Ongoing projects" },
+      { term: "Home Equity Loan (10 yr)", range: "Fixed — contact us", amount: "£10K–£500K", best: "One-time lump sum" },
+      { term: "Home Equity Loan (20 yr)", range: "Fixed — contact us", amount: "£25K–£500K", best: "Lower monthly payment" },
     ],
     steps: [
       { n: "1", t: "Apply and Estimate Your Equity", d: "We'll calculate your available equity based on your home's value and existing mortgage balance." },
@@ -149,11 +81,11 @@ const PAGES = {
     title: "Business Loans",
     subtitle: "Capital for growth, expansion, equipment, and commercial real estate — decided locally.",
     hero: "linear-gradient(145deg,#0f0f1e,#1e1e40)",
-    stats: [{ v: "$10K–$5M", l: "Loan range" }, { v: "SBA preferred", l: "Lender" }, { v: "3–5 days", l: "Average decision" }],
+    stats: [{ v: "£10K–£5M", l: "Loan range" }, { v: "SBA preferred", l: "Lender" }, { v: "3–5 days", l: "Average decision" }],
     overview: "The capital you need to grow your business shouldn't require a trip to a distant headquarters. SGGINV business loans are underwritten by local bankers who know your market and your industry — from startups seeking their first credit line to established businesses financing major expansions.",
     uses: ["Equipment purchase", "Working capital", "Commercial RE purchase", "Business acquisition", "Franchise financing", "Inventory purchase", "Tenant improvements", "Partner buyout"],
     features: [
-      { title: "SBA 7(a) Loans", desc: "Up to $5M in SBA-backed financing with lower down payments, longer terms, and more flexible eligibility.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
+      { title: "SBA 7(a) Loans", desc: "Up to £5M in SBA-backed financing with lower down payments, longer terms, and more flexible eligibility.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
       { title: "SBA 504 Loans", desc: "Long-term, fixed-rate financing for major fixed assets like commercial real estate and large equipment.", icon: "M3 21h18M5 21V9l7-6 7 6v12" },
       { title: "Commercial Real Estate", desc: "Purchase or refinance owner-occupied or investment commercial property with local market expertise.", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 0-1 1h-3" },
       { title: "Equipment Financing", desc: "Finance new or used equipment with terms matched to the asset's useful life — up to 10 years.", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066" },
@@ -161,9 +93,9 @@ const PAGES = {
       { title: "Agricultural Lending", desc: "Farm operating loans, equipment financing, and real estate loans tailored for agricultural operations.", icon: "M3.055 11H5a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2 2 2 0 0 1 2 2v2.945" },
     ],
     rates: [
-      { term: "Business Term Loan", range: "Fixed or variable", amount: "$10,000–$1,000,000", best: "Equipment, expansion" },
-      { term: "SBA 7(a) Loan", range: "Prime + 2.25–4.75%", amount: "Up to $5,000,000", best: "Most business purposes" },
-      { term: "Business Line of Credit", range: "Variable rate", amount: "$25,000–$500,000", best: "Working capital" },
+      { term: "Business Term Loan", range: "Fixed or variable", amount: "£10,000–£1,000,000", best: "Equipment, expansion" },
+      { term: "SBA 7(a) Loan", range: "Prime + 2.25–4.75%", amount: "Up to £5,000,000", best: "Most business purposes" },
+      { term: "Business Line of Credit", range: "Variable rate", amount: "£25,000–£500,000", best: "Working capital" },
     ],
     steps: [
       { n: "1", t: "Initial Consultation", d: "Meet with a business banker to discuss your needs, timeline, and which loan type fits best." },

@@ -218,7 +218,7 @@ export default function DigitalBanking() {
                 </div>
                 <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.72)" }}>Available balance</div>
                 <div style={{ fontFamily: "var(--font-poppins), sans-serif", fontWeight: 800, fontSize: 32, margin: "4px 0 16px" }}>
-                  $12,840<span style={{ fontSize: 18, color: "rgba(255,255,255,.7)" }}>.20</span>
+                  £12,840<span style={{ fontSize: 18, color: "rgba(255,255,255,.7)" }}>.20</span>
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
                   {["Send", "Request", "Add"].map((label, i) => (
@@ -261,17 +261,17 @@ export default function DigitalBanking() {
                     <div style={{ width: "72%", height: "100%", background: "linear-gradient(90deg,#8C1D25,#A52430)" }} />
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#6B7280", marginTop: 8 }}>
-                    <span>$7,200 saved</span>
-                    <span>$10,000 goal</span>
+                    <span>£7,200 saved</span>
+                    <span>£10,000 goal</span>
                   </div>
                 </div>
 
                 {/* Recent activity */}
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: "#6B7280", margin: "4px 0 10px" }}>Recent activity</div>
                 {[
-                  { label: "Direct deposit", sub: "Today", amount: "+$2,400", positive: true, bg: "rgba(140,29,37,.12)" },
-                  { label: "Grocery store", sub: "Yesterday", amount: "-$87.00", positive: false, bg: "rgba(17,24,39,.06)" },
-                  { label: "Roundup to savings", sub: "Yesterday", amount: "-$3.20", positive: false, bg: "rgba(212,175,55,.16)" },
+                  { label: "Direct deposit", sub: "Today", amount: "+£2,400", positive: true, bg: "rgba(140,29,37,.12)" },
+                  { label: "Grocery store", sub: "Yesterday", amount: "-£87.00", positive: false, bg: "rgba(17,24,39,.06)" },
+                  { label: "Roundup to savings", sub: "Yesterday", amount: "-£3.20", positive: false, bg: "rgba(212,175,55,.16)" },
                 ].map((tx, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 12 }}>
                     <div style={{ width: 32, height: 32, borderRadius: 9, background: tx.bg, flex: "none" }} />

@@ -9,9 +9,9 @@ const UTILITY_LINKS = [
   { label: "Personal", href: "/" },
   { label: "Business", href: "/business" },
   { label: "Investing", href: "/financial" },
-  { label: "About", href: "/about" },
-  { label: "Service status", href: "/accessibility" },
-  { label: "Extra support for customers", href: "/accessibility" },
+  { label: "About", href: "/about/contact" },
+  { label: "Service status", href: "/service-status" },
+  { label: "Extra support for customers", href: "/extra-support" },
 ];
 
 export default function TopBar() {
@@ -46,7 +46,7 @@ export default function TopBar() {
         {/* Right: quick links */}
         <div style={{ display: "flex", alignItems: "center", gap: 20, flexShrink: 0 }}>
           <Link
-            href="/about/contact"
+            href="/about/contact#branches"
             className="sg-topbar-link"
             style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,.82)", textDecoration: "none" }}
           >

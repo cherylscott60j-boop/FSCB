@@ -120,29 +120,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Disclosure block */}
-        <div
-          style={{
-            borderTop: "1px solid rgba(255,255,255,.25)",
-            padding: "22px 0",
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-          }}
-        >
-          <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
-            Safeguard Global Investment Bank is a fictional bank built as a . It is not a real financial institution. It is not authorised or regulated by any financial authority, and it is not covered by any deposit protection scheme. Do not send real money or real personal or financial information through this site.{" "}
-            <Link href="/disclosures" style={{ color: "#fff", textDecoration: "underline" }}>
-              Full disclosures →
-            </Link>
-          </p>
-        </div>
-
         {/* Bottom bar */}
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,.25)",
-            padding: "18px 0 28px",
+            padding: "18px 0",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -165,6 +147,16 @@ export default function Footer() {
           <span style={{ color: "rgba(255,255,255,.8)" }}>
             Copyright {new Date().getFullYear()} {BANK.name}. All rights reserved.
           </span>
+        </div>
+
+        {/* Disclosure block */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,.25)", padding: "18px 0 28px" }}>
+          <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
+            Safeguard Global Investment Bank is a fictional bank. It is not a real financial institution. It is not authorised or regulated by any financial authority, and it is not covered by any deposit protection scheme. Do not send real money or real personal or financial information through this site.{" "}
+            <Link href="/disclosures" style={{ color: "#fff", textDecoration: "underline" }}>
+              Full disclosures →
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

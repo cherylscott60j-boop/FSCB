@@ -12,9 +12,20 @@ const NAV_LINKS = [
   { label: "Savings", href: "/personal/savings" },
   { label: "Borrowing", href: "/loans/personal" },
   { label: "Mortgages", href: "/loans/mortgage" },
-  { label: "Safe deposit boxes", href: "/about/contact" },
+  { label: "Safe deposit boxes", href: "/personal/safe-deposit-boxes" },
   { label: "Ways to bank", href: "/personal/online-banking" },
   { label: "Private banking", href: "/financial/retirement" },
+];
+
+// Top-bar links, repeated in the mobile menu because the top bar is hidden on small screens.
+const MOBILE_EXTRA_LINKS = [
+  { label: "Business", href: "/business" },
+  { label: "Investing", href: "/financial" },
+  { label: "About", href: "/about/contact" },
+  { label: "Find a Store", href: "/about/contact#branches" },
+  { label: "Service status", href: "/service-status" },
+  { label: "Extra support for customers", href: "/extra-support" },
+  { label: "Help", href: "/accessibility" },
 ];
 
 export default function Nav() {
@@ -97,20 +108,16 @@ export default function Nav() {
               {l.label}
             </Link>
           ))}
-          <Link
-            href="/about/contact"
-            onClick={() => setOpen(false)}
-            style={{ fontSize: 16, fontWeight: 600, color: "#111827", textDecoration: "none", padding: "14px 0", borderBottom: "1px solid rgba(17,24,39,.08)" }}
-          >
-            Find a Store
-          </Link>
-          <Link
-            href="/accessibility"
-            onClick={() => setOpen(false)}
-            style={{ fontSize: 16, fontWeight: 600, color: "#111827", textDecoration: "none", padding: "14px 0", borderBottom: "1px solid rgba(17,24,39,.08)" }}
-          >
-            Help
-          </Link>
+          {MOBILE_EXTRA_LINKS.map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              style={{ fontSize: 15, fontWeight: 500, color: "#4B5563", textDecoration: "none", padding: "12px 0", borderBottom: "1px solid rgba(17,24,39,.08)" }}
+            >
+              {l.label}
+            </Link>
+          ))}
         </nav>
         <Link
           href="/login"

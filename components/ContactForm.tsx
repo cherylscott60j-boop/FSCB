@@ -3,13 +3,13 @@
 import { useState } from "react";
 
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
+const BLUE = "#0800FF";
 const DARK = "#111827";
 const GRAY = "#6B7280";
 
 const INPUT: React.CSSProperties = {
   width: "100%", padding: "13px 16px", border: "1.5px solid rgba(17,24,39,.12)",
-  borderRadius: 12, fontSize: 14.5, fontFamily: "inherit", color: DARK,
+  borderRadius: 4, fontSize: 14.5, fontFamily: "inherit", color: DARK,
   background: "#fff", boxSizing: "border-box", outline: "none",
   transition: "border-color .15s",
 };
@@ -67,20 +67,20 @@ export default function ContactForm() {
 
   if (sent) {
     return (
-      <div style={{ background: "#F8F9FA", borderRadius: 22, padding: "40px 36px", textAlign: "center" }}>
-        <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(16,185,129,.12)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round">
+      <div style={{ background: "#fff", borderRadius: 8, border: "1px solid rgba(17,24,39,.06)", padding: "40px 36px", textAlign: "center" }}>
+        <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(8,0,255,.08)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2.5" strokeLinecap="round">
             <path d="M5 12l5 5L20 7" />
           </svg>
         </div>
-        <h3 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 10px" }}>Message Sent!</h3>
+        <h3 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 10px" }}>Message sent</h3>
         <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.6, margin: "0 0 24px" }}>
-          Thanks, <strong style={{ color: DARK }}>{form.name.split(" ")[0]}</strong>. A local SGGINV banker will follow up at{" "}
+          Thanks, <strong style={{ color: DARK }}>{form.name.split(" ")[0]}</strong>. A member of our team will reply at{" "}
           <strong style={{ color: DARK }}>{form.email}</strong> within one business day.
         </p>
         <button
           onClick={() => { setForm(EMPTY); setSent(false); }}
-          style={{ background: "none", border: `1.5px solid ${RED}`, borderRadius: 12, padding: "11px 24px", fontSize: 14, fontWeight: 700, color: RED, cursor: "pointer", fontFamily: "inherit" }}
+          style={{ background: "none", border: `1.5px solid ${BLUE}`, borderRadius: 4, padding: "11px 24px", fontSize: 14, fontWeight: 700, color: BLUE, cursor: "pointer", fontFamily: "inherit" }}
         >
           Send another message
         </button>
@@ -89,9 +89,9 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate style={{ background: "#F8F9FA", borderRadius: 22, padding: "40px 36px" }}>
+    <form onSubmit={handleSubmit} noValidate style={{ background: "#fff", borderRadius: 8, border: "1px solid rgba(17,24,39,.06)", padding: "40px 36px" }}>
       {error && (
-        <div style={{ background: "rgba(140,29,37,.07)", border: "1px solid rgba(140,29,37,.2)", borderRadius: 10, padding: "11px 15px", fontSize: 13.5, color: RED, display: "flex", alignItems: "center", gap: 9, marginBottom: 20 }}>
+        <div style={{ background: "rgba(8,0,255,.06)", border: "1px solid rgba(8,0,255,.2)", borderRadius: 4, padding: "11px 15px", fontSize: 13.5, color: BLUE, display: "flex", alignItems: "center", gap: 9, marginBottom: 20 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
             <circle cx="12" cy="12" r="9" /><path d="M12 8v4M12 16h.01" />
           </svg>
@@ -102,7 +102,7 @@ export default function ContactForm() {
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div>
           <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: DARK, marginBottom: 8 }}>
-            Full Name <span style={{ color: RED }}>*</span>
+            Full Name <span style={{ color: BLUE }}>*</span>
           </label>
           <input
             type="text"
@@ -111,14 +111,14 @@ export default function ContactForm() {
             placeholder="Your full name"
             autoComplete="name"
             style={INPUT}
-            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = RED; }}
+            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = BLUE; }}
             onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = "rgba(17,24,39,.12)"; }}
           />
         </div>
 
         <div>
           <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: DARK, marginBottom: 8 }}>
-            Email Address <span style={{ color: RED }}>*</span>
+            Email Address <span style={{ color: BLUE }}>*</span>
           </label>
           <input
             type="email"
@@ -127,7 +127,7 @@ export default function ContactForm() {
             placeholder="your@email.com"
             autoComplete="email"
             style={INPUT}
-            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = RED; }}
+            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = BLUE; }}
             onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = "rgba(17,24,39,.12)"; }}
           />
         </div>
@@ -141,7 +141,7 @@ export default function ContactForm() {
             placeholder="(555) 000-0000"
             autoComplete="tel"
             style={INPUT}
-            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = RED; }}
+            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = BLUE; }}
             onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = "rgba(17,24,39,.12)"; }}
           />
         </div>
@@ -164,7 +164,7 @@ export default function ContactForm() {
 
         <div>
           <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: DARK, marginBottom: 8 }}>
-            Message <span style={{ color: RED }}>*</span>
+            Message <span style={{ color: BLUE }}>*</span>
           </label>
           <textarea
             rows={4}
@@ -172,18 +172,22 @@ export default function ContactForm() {
             onChange={(e) => update("message", e.target.value)}
             placeholder="Tell us how we can help…"
             style={{ ...INPUT, resize: "vertical" }}
-            onFocus={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = RED; }}
+            onFocus={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = BLUE; }}
             onBlur={(e) => { (e.target as HTMLTextAreaElement).style.borderColor = "rgba(17,24,39,.12)"; }}
           />
         </div>
+
+        <p style={{ fontSize: 12.5, color: GRAY, lineHeight: 1.6, margin: 0 }}>
+          Please don&apos;t include account numbers, card numbers, passwords or one-time codes in your message.
+        </p>
 
         <button
           type="submit"
           disabled={loading}
           style={{
-            background: loading ? "rgba(140,29,37,.65)" : RED,
+            background: loading ? "rgba(8,0,255,.6)" : BLUE,
             color: "#fff", border: "none", fontFamily: "inherit",
-            fontSize: 15, fontWeight: 700, padding: 16, borderRadius: 12,
+            fontSize: 15, fontWeight: 700, padding: 16, borderRadius: 4,
             cursor: loading ? "not-allowed" : "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
             transition: "background .2s",

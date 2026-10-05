@@ -1,163 +1,218 @@
-import SiteLayout from "@/components/SiteLayout";
 import Link from "next/link";
+import SiteLayout from "@/components/SiteLayout";
+import FAQAccordion from "@/components/FAQAccordion";
+import LegalSections, { type LegalSection } from "@/components/product/LegalSections";
+import {
+  BLUE, ClosingCTA, DARK, FONT, GRAY, Icon,
+  OverlapSection, ProductHero, SectionTitle, TINT,
+} from "@/components/product/ui";
 
-const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
-const DARK = "#111827";
-const GRAY = "#6B7280";
+const SUMMARY = [
+  { t: "Use it lawfully", d: "Use our website and app for your own banking, and nothing illegal or harmful.", icon: "M9 12l2 2 4-4M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" },
+  { t: "Keep your login safe", d: "Never share your password, PIN or one-time codes with anyone.", icon: "M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z" },
+  { t: "Information, not advice", d: "Our website explains our products but isn't personal financial advice.", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
+  { t: "Product terms apply too", d: "Each account or loan has its own terms, which you'll get before you sign up.", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" },
+];
 
-function Section({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: 44 }}>
-      <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 20, color: DARK, margin: "0 0 14px", letterSpacing: "-.01em", display: "flex", gap: 12, alignItems: "baseline" }}>
-        <span style={{ color: RED, fontWeight: 900, fontSize: 16 }}>{n}.</span>
-        {title}
-      </h2>
-      <div style={{ fontSize: 15, color: GRAY, lineHeight: 1.78 }}>{children}</div>
-    </div>
-  );
-}
+const SECTIONS: LegalSection[] = [
+  {
+    id: "about",
+    title: "About these terms",
+    body: [
+      { p: "These terms explain how you can use our website and mobile app. By using them, you agree to these terms. If you don't agree, please don't use our website or app." },
+      { p: "These terms cover the website and app themselves. The accounts, loans and other products you hold with us have their own terms and conditions, which you'll receive before you open them. If anything in these terms conflicts with your product terms, your product terms apply." },
+    ],
+  },
+  {
+    id: "who",
+    title: "Who we are",
+    body: [
+      { p: "Safeguard Global Investment Bank is a fictional bank created for demonstration purposes. It is not a real financial institution and is not authorised or regulated by any financial authority." },
+      { p: "Please don't use this website to send real money, or to share real personal or financial information." },
+    ],
+  },
+  {
+    id: "use",
+    title: "Using our website and app",
+    body: [
+      { p: "You may use our website and app to:" },
+      {
+        list: [
+          { t: "Find out about our products", d: "Read about our accounts, loans, mortgages and other services." },
+          { t: "Apply for products", d: "Complete applications for accounts and lending online." },
+          { t: "Manage your accounts", d: "Use online and mobile banking to check balances, make payments and manage your cards." },
+          { t: "Contact us", d: "Send us messages and use our tools and calculators." },
+        ],
+      },
+      { p: "You must not use our website or app to break the law, to try to access accounts or systems you're not allowed to, to upload anything harmful such as viruses, or to copy, scrape or resell our content." },
+    ],
+  },
+  {
+    id: "security",
+    title: "Keeping your account secure",
+    body: [
+      { p: "You're responsible for keeping your login details safe. In particular:" },
+      {
+        list: [
+          { t: "Keep your details private", d: "Don't share your password, PIN or one-time codes with anyone, including people who say they're from the bank." },
+          { t: "Use a secure device", d: "Keep your device's software up to date and use a screen lock." },
+          { t: "Log out when you're done", d: "Especially on shared or public devices." },
+          { t: "Tell us straight away", d: "Call (555) 302-1911 at any time if you think someone else knows your details or has used your account." },
+        ],
+      },
+      { p: "We may suspend access to online banking if we think your account is at risk, and we'll tell you why unless the law stops us." },
+    ],
+  },
+  {
+    id: "content",
+    title: "Our content",
+    body: [
+      { p: "The content on our website and app, including text, images, logos and software, belongs to us or the people who license it to us. You can view and print pages for your own personal use, but you can't copy, change or share our content for any other purpose without our written permission." },
+    ],
+  },
+  {
+    id: "advice",
+    title: "Rates, information and advice",
+    body: [
+      { p: "We work hard to keep the information on our website accurate and up to date, but rates, fees and product features can change. The terms you're offered when you apply are the ones that apply to you." },
+      { p: "Calculators and examples on our website are for illustration only. Nothing on our website is personal financial, tax or legal advice. If you're not sure whether a product is right for you, please speak to a qualified adviser." },
+    ],
+  },
+  {
+    id: "links",
+    title: "Links to other websites",
+    body: [
+      { p: "Our website may link to websites run by other organisations. We don't control those websites and aren't responsible for their content or how they use your information. Please read their own terms and privacy notices." },
+    ],
+  },
+  {
+    id: "availability",
+    title: "Availability",
+    body: [
+      { p: "We aim to keep our website and app available at all times, but we can't promise they'll never be interrupted. We sometimes need to carry out maintenance, which we'll try to do overnight. You can check the current status of our services on our service status page." },
+    ],
+  },
+  {
+    id: "liability",
+    title: "Our responsibility to you",
+    body: [
+      { p: "We're responsible for losses you suffer as a direct and foreseeable result of us breaking these terms or not taking reasonable care. We're not responsible for losses caused by things outside our reasonable control, or for business losses if you use our personal website for business purposes." },
+      { p: "Nothing in these terms limits our responsibility where it would be unlawful to do so, or affects your legal rights as a consumer." },
+    ],
+  },
+  {
+    id: "communications",
+    title: "Electronic communications",
+    body: [
+      { p: "By using online banking, you agree that we can send you statements, notices and other documents electronically, through the app, online banking or by email. You can ask for paper copies at any time." },
+    ],
+  },
+  {
+    id: "changes",
+    title: "Changes to these terms",
+    body: [
+      { p: "We may update these terms from time to time, for example to reflect new features or changes in the law. We'll show the date of the latest version at the top of this page, and tell you about any important changes before they take effect." },
+    ],
+  },
+  {
+    id: "law",
+    title: "Law and disputes",
+    body: [
+      { p: "These terms are governed by the laws of England and Wales. If you have a complaint, please contact us first so we can try to put things right." },
+    ],
+  },
+];
+
+const FAQS = [
+  { q: "Do these terms replace my account terms?", a: "No. These terms cover using our website and app. Each product you hold has its own terms and conditions, which apply alongside these." },
+  { q: "What should I do if I think someone has accessed my account?", a: "Call us straight away on (555) 302-1911, any time of day. We'll secure your account and help you check for anything you don't recognise." },
+  { q: "Can I use your calculators to make decisions?", a: "Our calculators give illustrative figures only. The actual rate and terms you're offered will depend on your circumstances." },
+  { q: "How will I know if these terms change?", a: "We'll update the date at the top of this page and tell you about any important changes before they take effect." },
+];
 
 export default function TermsPage() {
   return (
     <SiteLayout>
-      {/* Hero */}
-      <div className="mob-px" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "72px 32px 64px" }}>
-        <div style={{ maxWidth: 780, margin: "0 auto" }}>
-          <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
-            Legal &amp; Privacy
-          </div>
-          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
-            Terms of Use
-          </h1>
-          <p style={{ fontSize: 16, color: "rgba(255,255,255,.7)", lineHeight: 1.65, margin: "0 0 20px" }}>
-            These Terms govern your use of the Safeguard Global Investment Bank website and digital services. Please read them carefully.
-          </p>
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,.45)", margin: 0 }}>Effective date: January 1, 2026 &middot; Last revised: January 1, 2026</p>
-        </div>
-      </div>
+      <ProductHero
+        eyebrow="Terms of use"
+        title="The terms for using our website and app"
+        subtitle="Please read these terms carefully. They explain what you can expect from us, and what we expect from you, when you use our website and mobile app."
+        primary={{ label: "Read the terms", href: "#terms" }}
+        secondary={{ label: "Contact us", href: "#contact" }}
+        highlights={[
+          { v: "Oct 2026", l: "Last updated" },
+          { v: `${SECTIONS.length}`, l: "Sections" },
+          { v: "5 min", l: "Reading time" },
+        ]}
+      />
 
-      {/* Content */}
-      <div className="mob-px" style={{ background: "#fff", padding: "56px 32px" }}>
-        <div style={{ maxWidth: 780, margin: "0 auto" }}>
-
-          {/* Intro */}
-          <div style={{ background: "rgba(140,29,37,.04)", border: "1.5px solid rgba(140,29,37,.12)", borderRadius: 16, padding: "24px 28px", marginBottom: 48, fontSize: 14.5, color: DARK, lineHeight: 1.7 }}>
-            By accessing or using the Safeguard Global Investment Bank website located at sgginv.com (the &ldquo;Site&rdquo;) and any associated digital services, mobile applications, or online banking portals (collectively, the &ldquo;Services&rdquo;), you agree to be bound by these Terms of Use (&ldquo;Terms&rdquo;). If you do not agree, please discontinue your use of the Site immediately. These Terms apply to all visitors, users, and account holders.
-          </div>
-
-          <Section n="1" title="Acceptance of Terms">
-            <p>
-              These Terms constitute a legally binding agreement between you and Safeguard Global Investment Bank (&ldquo;SGGINV,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By using the Site, you represent that you are at least 18 years of age or the legal age of majority in your jurisdiction, and that you have the authority to enter into this agreement. If you are using the Site on behalf of an organization, you represent that you have authority to bind that organization to these Terms.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              SGGINV reserves the right to modify these Terms at any time. Changes become effective immediately upon posting to the Site. Continued use of the Site after changes are posted constitutes your acceptance of the revised Terms. We will note the &ldquo;Last revised&rdquo; date at the top of this page whenever updates are made.
-            </p>
-          </Section>
-
-          <Section n="2" title="Permitted Use">
-            <p>
-              The Site and its content are provided for your personal, non-commercial use in connection with SGGINV banking products and services. You may use the Site to:
-            </p>
-            <ul style={{ paddingLeft: 20, margin: "12px 0", display: "flex", flexDirection: "column", gap: 7 }}>
-              <li>Learn about SGGINV products and services</li>
-              <li>Apply for accounts, loans, and other financial products</li>
-              <li>Access and manage your SGGINV accounts through our online banking portal</li>
-              <li>Contact SGGINV for customer service</li>
-              <li>Access financial tools and calculators</li>
-            </ul>
-            <p style={{ marginTop: 14 }}>
-              You agree not to use the Site to: (a) engage in any unlawful activity; (b) transmit any material that is defamatory, offensive, or harmful; (c) impersonate any person or entity; (d) attempt to gain unauthorized access to SGGINV systems or another user&apos;s account; (e) use automated tools to scrape, crawl, or extract data from the Site; or (f) interfere with or disrupt the integrity or performance of the Site.
-            </p>
-          </Section>
-
-          <Section n="3" title="Online Banking &amp; Account Security">
-            <p>
-              If you enroll in SGGINV Online Banking or the SGGINV mobile application, additional terms and conditions apply as set forth in the Online Banking Agreement provided at enrollment. You are responsible for maintaining the confidentiality of your username, password, and any other account credentials.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              You agree to notify SGGINV immediately of any unauthorized use of your account or any other breach of security by calling{" "}
-              <a href="tel:18002372669" style={{ color: RED }}>1-800-SGGINV-NOW</a> or visiting any branch. SGGINV will not be liable for any loss or damage resulting from your failure to maintain the security of your credentials.
-            </p>
-          </Section>
-
-          <Section n="4" title="Intellectual Property">
-            <p>
-              All content on this Site, including but not limited to text, graphics, logos, button icons, images, audio clips, digital downloads, data compilations, and software, is the property of Safeguard Global Investment Bank or its content suppliers and is protected by applicable United States and international copyright, trademark, and other intellectual property laws.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              You may print or download a single copy of pages from the Site for your own personal, non-commercial use, provided you do not modify the content and you retain all copyright and proprietary notices. Any other reproduction, distribution, republication, or retransmission of any content without the prior written consent of SGGINV is strictly prohibited.
-            </p>
-          </Section>
-
-          <Section n="5" title="Third-Party Links &amp; Services">
-            <p>
-              The Site may contain links to third-party websites, including payment processors, financial calculators, government agencies, and other resources. These links are provided solely for your convenience. SGGINV does not control, endorse, or assume responsibility for any third-party websites or their content, privacy practices, or availability.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              When you click a link to a third-party site, you leave the SGGINV website and are subject to that site&apos;s terms and privacy policies. SGGINV is not responsible for any losses or damages arising from your use of third-party sites or services.
-            </p>
-          </Section>
-
-          <Section n="6" title="No Financial Advice">
-            <p>
-              The information provided on this Site, including financial tools, calculators, rates, and general content, is for informational purposes only and does not constitute financial, legal, tax, or investment advice. You should consult with a qualified professional before making any financial decisions.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              Rates, terms, and product availability are subject to change without notice and may vary based on individual creditworthiness. Published rates are not guaranteed and are subject to approval.
-            </p>
-          </Section>
-
-          <Section n="7" title="Disclaimer of Warranties">
-            <p>
-              THE SITE AND ALL CONTENT, PRODUCTS, AND SERVICES AVAILABLE THROUGH THE SITE ARE PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              SGGINV does not warrant that the Site will be uninterrupted, error-free, free of viruses or other harmful components, or that defects will be corrected. We reserve the right to modify, suspend, or discontinue any part of the Site at any time without notice.
-            </p>
-          </Section>
-
-          <Section n="8" title="Limitation of Liability">
-            <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, SGGINV AND ITS DIRECTORS, OFFICERS, EMPLOYEES, AGENTS, AND LICENSORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF OR INABILITY TO USE THE SITE OR ITS CONTENT, EVEN IF SGGINV HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              This limitation of liability does not apply to claims arising from SGGINV&apos;s gross negligence, willful misconduct, or as otherwise required by law. Some jurisdictions do not allow the exclusion or limitation of certain damages, so the above limitation may not apply to you.
-            </p>
-          </Section>
-
-          <Section n="9" title="Electronic Communications">
-            <p>
-              By using the Site or communicating with us electronically, you consent to receive electronic communications from SGGINV. These communications may include notices about your account, security alerts, product announcements, and other information. You agree that all agreements, notices, disclosures, and other communications we send you electronically satisfy any legal requirement that such communications be in writing.
-            </p>
-          </Section>
-
-          <Section n="10" title="Governing Law">
-            <p>
-              These Terms shall be governed by and construed in accordance with the laws of the State in which SGGINV is chartered, without regard to its conflict of law provisions. Any dispute arising under these Terms shall be subject to the exclusive jurisdiction of the state and federal courts located in that jurisdiction.
-            </p>
-            <p style={{ marginTop: 14 }}>
-              If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect.
-            </p>
-          </Section>
-
-          <Section n="11" title="Contact Us">
-            <p>If you have questions about these Terms, please contact us:</p>
-            <div style={{ background: "rgba(140,29,37,.04)", border: "1px solid rgba(140,29,37,.1)", borderRadius: 12, padding: "20px 24px", marginTop: 16, display: "flex", flexDirection: "column", gap: 8, fontSize: 14.5 }}>
-              <span><strong>Safeguard Global Investment Bank</strong> — Legal Department</span>
-              <span>102 Main Street, Hometown, ST 00000</span>
-              <span>Phone: <a href="tel:18002372669" style={{ color: RED }}>1-800-SGGINV-NOW</a></span>
-              <span>Email: <a href="mailto:legal@sgginv.com" style={{ color: RED }}>legal@sgginv.com</a></span>
+      {/* Summary */}
+      <OverlapSection maxWidth={1240}>
+        <div className="g-4col" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", background: "#fff", borderRadius: 8, overflow: "hidden", border: "1px solid rgba(17,24,39,.1)" }}>
+          {SUMMARY.map((c, i) => (
+            <div key={c.t} style={{ padding: "30px 28px", borderLeft: i ? "1px solid rgba(17,24,39,.08)" : "none" }}>
+              <div style={{ width: 44, height: 44, borderRadius: 8, background: BLUE, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                <Icon d={c.icon} size={22} />
+              </div>
+              <div style={{ fontFamily: FONT, fontWeight: 600, fontSize: 17, color: DARK, marginBottom: 6 }}>{c.t}</div>
+              <div style={{ fontSize: 14, color: GRAY, lineHeight: 1.55 }}>{c.d}</div>
             </div>
-          </Section>
+          ))}
+        </div>
+      </OverlapSection>
 
-          <div style={{ borderTop: "1px solid rgba(17,24,39,.08)", paddingTop: 28, display: "flex", gap: 20, flexWrap: "wrap" }}>
-            <Link href="/privacy" style={{ fontSize: 14, color: RED, fontWeight: 600, textDecoration: "none" }}>Privacy Notice →</Link>
-            <Link href="/disclosures" style={{ fontSize: 14, color: RED, fontWeight: 600, textDecoration: "none" }}>Disclosures →</Link>
-            <Link href="/about/contact" style={{ fontSize: 14, color: RED, fontWeight: 600, textDecoration: "none" }}>Contact Us →</Link>
+      <LegalSections id="terms" sections={SECTIONS} />
+
+      {/* Contact */}
+      <section id="contact" className="mob-section" style={{ background: TINT, padding: "80px 32px" }}>
+        <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "stretch" }}>
+          <div style={{ background: BLUE, color: "#fff", borderRadius: 8, padding: "40px 36px" }}>
+            <div style={{ fontSize: 12.5, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.75)", marginBottom: 12 }}>Contact us</div>
+            <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 26, margin: "0 0 20px", letterSpacing: "-.01em" }}>Questions about these terms?</h3>
+            {[
+              ["Phone", "(555) 302-1900"],
+              ["Email", "help@sgginv.com"],
+              ["Post", "Customer Care, 102 Main Street, Downtown, ST 00001"],
+            ].map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "13px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15 }}>
+                <span style={{ color: "rgba(255,255,255,.72)" }}>{k}</span>
+                <span style={{ fontWeight: 600, textAlign: "right" }}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,.1)", borderRadius: 8, padding: "40px 36px" }}>
+            <div style={{ fontSize: 12.5, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700, color: BLUE, marginBottom: 12 }}>Related</div>
+            <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 26, margin: "0 0 20px", color: DARK, letterSpacing: "-.01em" }}>Other important information</h3>
+            {[
+              ["Privacy notice", "/privacy"],
+              ["Accessibility", "/accessibility"],
+              ["Disclosures", "/disclosures"],
+              ["Service status", "/service-status"],
+            ].map(([label, href]) => (
+              <Link key={href} href={href} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderTop: "1px solid rgba(17,24,39,.08)", fontSize: 15, fontWeight: 600, color: DARK, textDecoration: "none" }}>
+                {label}
+                <span style={{ color: BLUE }}><Icon d="M9 5l7 7-7 7" size={16} /></span>
+              </Link>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mob-section" style={{ background: "#fff", padding: "80px 32px" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <SectionTitle eyebrow="FAQs" title="Your questions answered" center mb={40} />
+          <FAQAccordion faqs={FAQS} accent={BLUE} />
+          <p style={{ fontSize: 13, color: GRAY, textAlign: "center", marginTop: 28 }}>These terms were last updated in October 2026.</p>
+        </div>
+      </section>
+
+      <ClosingCTA
+        title="Need help with online banking?"
+        text="Our team is here to help, by phone, chat or in branch."
+        primary={{ label: "Contact us", href: "/about/contact" }}
+        secondary={{ label: "Online banking help", href: "/personal/online-banking" }}
+      />
     </SiteLayout>
   );
 }

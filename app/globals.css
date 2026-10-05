@@ -201,6 +201,7 @@ img, video, svg, iframe {
 /* Grid base classes (display:grid must live here since inline style was removed) */
 .g-3col     { display: grid; grid-template-columns: repeat(3,1fr); }
 .g-4col     { display: grid; grid-template-columns: repeat(4,1fr); }
+.g-5col     { display: grid; grid-template-columns: repeat(5,1fr); }
 .g-2col-rev { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; }
 .g-digital  { display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
 .g-features { display: grid; grid-template-columns: repeat(2,1fr); }
@@ -226,6 +227,7 @@ img, video, svg, iframe {
   /* Grids → collapse */
   .g-3col     { grid-template-columns: repeat(2,1fr) !important; }
   .g-4col     { grid-template-columns: repeat(2,1fr) !important; }
+  .g-5col     { grid-template-columns: repeat(3,1fr) !important; }
   .g-2col     { grid-template-columns: 1fr !important; }
   .g-2col-rev { grid-template-columns: 1fr !important; }
   .g-digital  { grid-template-columns: 1fr !important; }
@@ -248,6 +250,7 @@ img, video, svg, iframe {
 @media (max-width: 600px) {
   .g-3col     { grid-template-columns: 1fr !important; }
   .g-4col     { grid-template-columns: 1fr 1fr !important; }
+  .g-5col     { grid-template-columns: 1fr 1fr !important; }
   .g-footer   { grid-template-columns: 1fr 1fr !important; }
   .hero-h1    { font-size: 32px !important; letter-spacing: -.015em !important; }
   .hero-badges { display: none !important; }
@@ -723,4 +726,17 @@ img, video, svg, iframe {
   h2 { word-break: break-word; }
   /* Prevent very long words / URLs from overflowing */
   p, span, div { word-break: break-word; overflow-wrap: break-word; }
+}
+
+/* Homepage: account cards sit over the hero on larger screens only. */
+@media (max-width: 1200px) {
+  .home-overlap { margin-top: -60px !important; }
+}
+@media (max-width: 760px) {
+  .home-overlap { margin-top: -14px !important; padding-top: 0 !important; }
+}
+
+/* Steps: the connector line only makes sense when steps sit side by side. */
+@media (max-width: 960px) {
+  .step-connector { display: none; }
 }

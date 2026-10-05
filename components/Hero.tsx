@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-const RED = "#E31E24";
+const BLUE = "#0800FF";
 
 export default function Hero() {
   return (
@@ -11,11 +11,11 @@ export default function Hero() {
       style={{
         position: "relative",
         overflow: "hidden",
-        backgroundImage: "url('/hero-background-2.webp')",
+        backgroundImage: "url('/hero-home.webp')",
         backgroundSize: "100% auto",
         backgroundRepeat: "no-repeat",
-        backgroundPosition: "top center",
-        backgroundColor: "#0b007e",
+        backgroundPosition: "bottom center",
+        backgroundColor: BLUE,
         clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 56px), 0 100%)",
       }}
     >
@@ -61,8 +61,8 @@ export default function Hero() {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            background: RED,
-            color: "#fff",
+            background: "#fff",
+            color: BLUE,
             fontWeight: 700,
             fontSize: 15,
             padding: "13px 30px",
@@ -78,29 +78,10 @@ export default function Hero() {
       <div className="sg-hero-mobile-img">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/hero-background-2.webp"
+          src="/hero-home.webp"
           alt=""
           style={{ width: "100%", height: "auto", display: "block" }}
         />
-      </div>
-
-      {/* scroll chevron, anchored to the bottom edge of the hero */}
-      <div className="sg-hero-chevron" style={{ position: "absolute", left: "50%", bottom: 36, transform: "translateX(-50%)" }}>
-        <span
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,.12)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </span>
       </div>
 
       <style>{`
@@ -109,11 +90,10 @@ export default function Hero() {
           .sg-hero {
             background-image: none !important;
             background-color: #0800FF !important;
-            clip-path: none !important;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), 0 100%) !important;
           }
           .sg-hero-content { padding: 48px 24px 32px !important; }
           .sg-hero-mobile-img { display: block; }
-          .sg-hero-chevron { display: none; }
           .sg-hero-h1 { font-size: 26px !important; }
         }
         @media (max-width: 400px) {

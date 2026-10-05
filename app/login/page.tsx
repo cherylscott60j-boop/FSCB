@@ -6,13 +6,12 @@ import { createBrowserClient } from "@supabase/ssr";
 import Logo from "@/components/Logo";
 
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
-const GOLD = "#D4AF37";
+const BLUE = "#0800FF";
 const DARK = "#111827";
 const GRAY = "#6B7280";
 
 const INPUT: React.CSSProperties = {
-  width: "100%", padding: "13px 16px", fontSize: 15, borderRadius: 10,
+  width: "100%", padding: "13px 16px", fontSize: 15, borderRadius: 4,
   border: "1.5px solid rgba(17,24,39,.13)", outline: "none",
   boxSizing: "border-box", background: "#FAFAFA", color: DARK,
   fontFamily: "inherit", transition: "border-color .15s, background .15s",
@@ -65,188 +64,169 @@ export default function LoginPage() {
     window.location.href = (profile as Record<string,string>|null)?.role === "admin" ? "/cpanel" : "/dashboard";
   }
 
+  const focusOn  = (e: React.FocusEvent<HTMLInputElement>) => { e.target.style.borderColor = BLUE; e.target.style.background = "#fff"; };
+  const focusOff = (e: React.FocusEvent<HTMLInputElement>) => { e.target.style.borderColor = "rgba(17,24,39,.13)"; e.target.style.background = "#FAFAFA"; };
+
+  const linkCard: React.CSSProperties = {
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    background: "#fff", border: "1px solid rgba(17,24,39,.12)", borderRadius: 8,
+    padding: "14px 18px", textDecoration: "none", transition: "border-color .15s",
+  };
+
   return (
-    <div style={{ minHeight: "100vh", fontFamily: FONT, position: "relative" }}>
+    <div style={{ minHeight: "100vh", fontFamily: FONT, background: BLUE, display: "flex", flexDirection: "column" }}>
 
-      {/* ── Full-page background image ── */}
-      <div style={{
-        position: "fixed", inset: 0, zIndex: 0,
-        backgroundImage: `url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=80")`,
-        backgroundSize: "cover", backgroundPosition: "center 30%",
-      }} />
-      <div style={{ position: "fixed", inset: 0, zIndex: 1, background: "linear-gradient(135deg, rgba(6,1,2,0.82) 0%, rgba(40,6,12,0.78) 40%, rgba(100,20,30,0.65) 100%)" }} />
+      <div className="mob-login-wrap" style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 460px", gap: 0, maxWidth: 1280, margin: "0 auto", width: "100%", padding: "0 60px", alignItems: "center" }}>
 
-      {/* ── Content layer ── */}
-      <div style={{ position: "relative", zIndex: 2, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        {/* Left: welcome copy */}
+        <div className="mob-login-left" style={{ padding: "60px 60px 60px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
 
-        <div className="mob-login-wrap" style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 460px", gap: 0, maxWidth: 1280, margin: "0 auto", width: "100%", padding: "0 60px", alignItems: "center" }}>
+          <Link href="/" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none", marginBottom: 64 }}>
+            <Logo variant="light" height={40} />
+          </Link>
 
-          {/* ── Left: hero content overlaid on image ── */}
-          <div className="mob-login-left" style={{ padding: "60px 60px 60px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 12.5, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.75)", marginBottom: 14 }}>Online banking</div>
+          <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(30px, 3.6vw, 44px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.15, letterSpacing: "-.02em" }}>
+            Your money, wherever<br />you are
+          </h2>
+          <p style={{ fontSize: 16.5, color: "rgba(255,255,255,.8)", lineHeight: 1.7, margin: "0 0 40px", maxWidth: 420 }}>
+            Check balances, move money, pay bills and manage your cards securely, any time of day.
+          </p>
 
-            <Link href="/" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none", marginBottom: 64 }}>
-              <Logo variant="light" height={40} />
-            </Link>
-
-            <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: 42, color: "#fff", margin: "0 0 18px", lineHeight: 1.08, letterSpacing: "-.03em" }}>
-              Banking built<br />for your community.
-            </h2>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,.6)", lineHeight: 1.65, margin: "0 0 44px", maxWidth: 380 }}>
-              Trusted by families and businesses across the region since 1987. Your money, your neighbors, your bank.
-            </p>
-
-            <div style={{ display: "flex", gap: 12, marginBottom: 40 }}>
-              {[
-                { value: "$250K", label: "[Deposit Protection]" },
-                { value: "37+",   label: "Years Serving" },
-                { value: "24/7",  label: "Fraud Monitoring" },
-              ].map((s) => (
-                <div key={s.label} style={{ flex: 1, padding: "14px 12px", background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.12)", borderRadius: 14, textAlign: "center", backdropFilter: "blur(6px)" }}>
-                  <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 20, color: GOLD, marginBottom: 4 }}>{s.value}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,.5)", letterSpacing: ".06em", textTransform: "uppercase" }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ padding: "13px 16px", background: "rgba(0,0,0,.28)", borderRadius: 10, borderLeft: `3px solid rgba(212,175,55,.5)`, backdropFilter: "blur(4px)", maxWidth: 400 }}>
-              <p style={{ fontSize: 11.5, color: "rgba(255,255,255,.5)", lineHeight: 1.55, margin: 0 }}>
-                SGGINV will <strong style={{ color: "rgba(255,255,255,.72)" }}>never</strong> ask for your password via email or phone.
-                Questions? Call <a href="tel:18002372669" style={{ color: "rgba(212,175,55,.8)", textDecoration: "none", fontWeight: 700 }}>1-800-SGGINV-NOW</a>.
-              </p>
-            </div>
+          <div style={{ display: "flex", gap: 40, flexWrap: "wrap", marginBottom: 44 }}>
+            {[
+              { value: "24/7", label: "Account access" },
+              { value: "24/7", label: "Fraud support" },
+              { value: "£0", label: "To use online banking" },
+            ].map((s) => (
+              <div key={s.label}>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,.65)", marginBottom: 4 }}>{s.label}</div>
+                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 28, color: "#fff" }}>{s.value}</div>
+              </div>
+            ))}
           </div>
 
-          {/* ── Right: form card ── */}
-          <div className="mob-login-right" style={{ padding: "40px 0" }}>
-            <div className="login-card" style={{ background: "#fff", borderRadius: 20, boxShadow: "0 24px 64px rgba(0,0,0,.35)", overflow: "hidden" }}>
+          <div style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "18px 20px", border: "1px solid rgba(255,255,255,.3)", borderRadius: 8, maxWidth: 440 }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
+              <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />
+            </svg>
+            <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.82)", lineHeight: 1.6, margin: 0 }}>
+              We&apos;ll <strong style={{ color: "#fff" }}>never</strong> ask for your password, PIN or a one-time code by email, text or phone.
+              Not sure? Call us on <a href="tel:5553021900" style={{ color: "#fff", fontWeight: 700 }}>(555) 302-1900</a>.
+            </p>
+          </div>
+        </div>
 
-              {/* Top bar */}
-              <div className="login-card-header" style={{ padding: "16px 32px", display: "flex", justifyContent: "flex-end", borderBottom: "1px solid rgba(17,24,39,.06)" }}>
-                <Link href="/" style={{ fontSize: 13, color: GRAY, textDecoration: "none", display: "flex", alignItems: "center", gap: 6, fontWeight: 500 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
-                  Back to sgginv.com
-                </Link>
+        {/* Right: form card */}
+        <div className="mob-login-right" style={{ padding: "40px 0" }}>
+          <div className="login-card" style={{ background: "#fff", borderRadius: 8, overflow: "hidden" }}>
+
+            <div className="login-card-header" style={{ padding: "16px 32px", display: "flex", justifyContent: "flex-end", borderBottom: "1px solid rgba(17,24,39,.08)" }}>
+              <Link href="/" style={{ fontSize: 13, color: GRAY, textDecoration: "none", display: "flex", alignItems: "center", gap: 6, fontWeight: 500 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
+                Back to homepage
+              </Link>
+            </div>
+
+            <div className="login-card-body" style={{ padding: "36px 32px 32px" }}>
+              <div style={{ marginBottom: 30 }}>
+                <h1 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 30, color: DARK, margin: "0 0 6px", letterSpacing: "-.02em" }}>Welcome back</h1>
+                <p style={{ fontSize: 14.5, color: GRAY, margin: 0, lineHeight: 1.5 }}>Log in to your account</p>
               </div>
 
-              <div className="login-card-body" style={{ padding: "36px 32px 32px" }}>
-                {/* Heading */}
-                <div style={{ marginBottom: 32 }}>
-                  <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: 30, color: DARK, margin: "0 0 6px", letterSpacing: "-.03em" }}>Welcome back</h1>
-                  <p style={{ fontSize: 14.5, color: GRAY, margin: 0, lineHeight: 1.5 }}>Sign in to your SGGINV account</p>
+              <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+
+                {error && (
+                  <div role="alert" style={{ background: "rgba(8,0,255,.06)", border: "1px solid rgba(8,0,255,.25)", borderRadius: 4, padding: "12px 15px", fontSize: 13.5, color: DARK, display: "flex", alignItems: "center", gap: 9 }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 8v4M12 16h.01" /></svg>
+                    {error}
+                  </div>
+                )}
+
+                <div>
+                  <label htmlFor="login-email" style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 7 }}>Email address</label>
+                  <input id="login-email" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="you@example.com" autoComplete="username" style={INPUT} onFocus={focusOn} onBlur={focusOff} />
                 </div>
 
-                <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-
-                  {error && (
-                    <div style={{ background: "rgba(140,29,37,.06)", border: "1px solid rgba(140,29,37,.2)", borderRadius: 10, padding: "12px 15px", fontSize: 13.5, color: RED, display: "flex", alignItems: "center", gap: 9 }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="9" /><path d="M12 8v4M12 16h.01" /></svg>
-                      {error}
-                    </div>
-                  )}
-
-                  <div>
-                    <label style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: DARK, marginBottom: 7 }}>Email Address</label>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="you@example.com" autoComplete="username" style={INPUT}
-                      onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = RED; (e.target as HTMLInputElement).style.background = "#fff"; }}
-                      onBlur={(e)  => { (e.target as HTMLInputElement).style.borderColor = "rgba(17,24,39,.13)"; (e.target as HTMLInputElement).style.background = "#FAFAFA"; }}
-                    />
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
+                    <label htmlFor="login-password" style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>Password</label>
+                    <Link href="/forgot-password" style={{ fontSize: 13, fontWeight: 600, color: BLUE, textDecoration: "none" }}>Forgot password?</Link>
                   </div>
-
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
-                      <label style={{ fontSize: 13.5, fontWeight: 600, color: DARK }}>Password</label>
-                      <Link href="/forgot-password" style={{ fontSize: 13, fontWeight: 600, color: RED, textDecoration: "none" }}>Forgot password?</Link>
-                    </div>
-                    <div style={{ position: "relative" }}>
-                      <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" autoComplete="current-password" style={{ ...INPUT, paddingRight: 50 }}
-                        onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = RED; (e.target as HTMLInputElement).style.background = "#fff"; }}
-                        onBlur={(e)  => { (e.target as HTMLInputElement).style.borderColor = "rgba(17,24,39,.13)"; (e.target as HTMLInputElement).style.background = "#FAFAFA"; }}
-                      />
-                      <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? "Hide password" : "Show password"}
-                        style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: GRAY, padding: 2, display: "flex" }}>
-                        {showPw ? (
-                          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                            <line x1="1" y1="1" x2="23" y2="23" />
-                          </svg>
-                        ) : (
-                          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  <button type="submit" disabled={loading} style={{
-                    width: "100%", background: loading ? "rgba(140,29,37,.6)" : RED,
-                    color: "#fff", border: "none", fontFamily: FONT, fontSize: 15.5, fontWeight: 700,
-                    padding: "15px", borderRadius: 12, cursor: loading ? "not-allowed" : "pointer",
-                    boxShadow: loading ? "none" : "0 6px 24px -4px rgba(140,29,37,.5)",
-                    letterSpacing: ".01em", display: "flex", alignItems: "center",
-                    justifyContent: "center", gap: 10, transition: "background .2s, box-shadow .2s",
-                  }}>
-                    {loading ? (
-                      <>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: "spin 0.75s linear infinite" }}>
-                          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                  <div style={{ position: "relative" }}>
+                    <input id="login-password" type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" autoComplete="current-password" style={{ ...INPUT, paddingRight: 50 }} onFocus={focusOn} onBlur={focusOff} />
+                    <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? "Hide password" : "Show password"}
+                      style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: GRAY, padding: 2, display: "flex" }}>
+                      {showPw ? (
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                          <line x1="1" y1="1" x2="23" y2="23" />
                         </svg>
-                        Signing in…
-                      </>
-                    ) : "Sign In →"}
-                  </button>
-
-                </form>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "24px 0" }}>
-                  <div style={{ flex: 1, height: 1, background: "rgba(17,24,39,.08)" }} />
-                  <span style={{ fontSize: 12.5, color: "rgba(17,24,39,.3)", fontWeight: 500 }}>or</span>
-                  <div style={{ flex: 1, height: 1, background: "rgba(17,24,39,.08)" }} />
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <Link href="/open-account" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#FAFAFA", border: "1.5px solid rgba(17,24,39,.09)", borderRadius: 13, padding: "14px 18px", textDecoration: "none", transition: "border-color .15s" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = RED)}
-                    onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(17,24,39,.09)")}>
-                    <div>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: DARK, marginBottom: 2 }}>New to SGGINV?</div>
-                      <div style={{ fontSize: 12.5, color: GRAY }}>Open an account in minutes</div>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                  </Link>
-                  <Link href="/open-account" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#FAFAFA", border: "1.5px solid rgba(17,24,39,.09)", borderRadius: 13, padding: "14px 18px", textDecoration: "none", transition: "border-color .15s" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = RED)}
-                    onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(17,24,39,.09)")}>
-                    <div>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: DARK, marginBottom: 2 }}>Have an account but no online access?</div>
-                      <div style={{ fontSize: 12.5, color: GRAY }}>Enroll in online banking</div>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Bottom strip */}
-              <div className="login-card-footer" style={{ padding: "14px 32px", borderTop: "1px solid rgba(17,24,39,.06)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "#FAFAFA" }}>
-                {[
-                  { icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", label: "256-bit SSL" },
-                  { icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z", label: "[Deposit Protection Scheme]" },
-                ].map((b) => (
-                  <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: GRAY }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={b.icon} /></svg>
-                    {b.label}
+                      ) : (
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+                        </svg>
+                      )}
+                    </button>
                   </div>
-                ))}
-                <div style={{ marginLeft: "auto", display: "flex", gap: 14, fontSize: 11.5 }}>
-                  <Link href="/privacy" style={{ color: GRAY, textDecoration: "none" }}>Privacy</Link>
-                  <Link href="/terms"   style={{ color: GRAY, textDecoration: "none" }}>Terms</Link>
                 </div>
+
+                <button type="submit" disabled={loading} style={{
+                  width: "100%", background: loading ? "rgba(8,0,255,.6)" : BLUE,
+                  color: "#fff", border: "none", fontFamily: FONT, fontSize: 15.5, fontWeight: 700,
+                  padding: "15px", borderRadius: 4, cursor: loading ? "not-allowed" : "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "background .2s",
+                }}>
+                  {loading ? (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: "spin 0.75s linear infinite" }}>
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </svg>
+                      Logging in…
+                    </>
+                  ) : "Log in"}
+                </button>
+              </form>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "24px 0" }}>
+                <div style={{ flex: 1, height: 1, background: "rgba(17,24,39,.08)" }} />
+                <span style={{ fontSize: 12.5, color: GRAY, fontWeight: 500 }}>or</span>
+                <div style={{ flex: 1, height: 1, background: "rgba(17,24,39,.08)" }} />
               </div>
 
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {[
+                  { t: "New to us?", d: "Open an account in about 5 minutes", href: "/open-account" },
+                  { t: "Have an account but no online access?", d: "Register for online banking", href: "/open-account" },
+                ].map((c) => (
+                  <Link key={c.t} href={c.href} style={linkCard}
+                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = BLUE)}
+                    onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(17,24,39,.12)")}>
+                    <div>
+                      <div style={{ fontSize: 13.5, fontWeight: 700, color: DARK, marginBottom: 2 }}>{c.t}</div>
+                      <div style={{ fontSize: 12.5, color: GRAY }}>{c.d}</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="login-card-footer" style={{ padding: "14px 32px", borderTop: "1px solid rgba(17,24,39,.08)", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", background: "#F4F5FB" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: GRAY }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                Encrypted connection
+              </div>
+              <div style={{ marginLeft: "auto", display: "flex", gap: 14, fontSize: 12 }}>
+                <Link href="/accessibility" style={{ color: GRAY, textDecoration: "none" }}>Accessibility</Link>
+                <Link href="/privacy" style={{ color: GRAY, textDecoration: "none" }}>Privacy</Link>
+                <Link href="/terms" style={{ color: GRAY, textDecoration: "none" }}>Terms</Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 }

@@ -214,10 +214,6 @@ export default function ForgotPasswordPage() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
             256-bit SSL Secured
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: GRAY }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-            [Deposit Protection Scheme]
-          </div>
           <div style={{ marginLeft: "auto", display: "flex", gap: 18, fontSize: 12 }}>
             <Link href="/privacy" style={{ color: GRAY, textDecoration: "none" }}>Privacy Policy</Link>
             <Link href="/terms" style={{ color: GRAY, textDecoration: "none" }}>Terms of Use</Link>
