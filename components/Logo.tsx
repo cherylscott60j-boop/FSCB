@@ -1,6 +1,32 @@
 const NAVY = "#0D1B4C";
 const RED = "#E31E24";
 
+/* The square wave mark on its own. `animated` makes the waves draw in a loop (used by the loading screen). */
+export function LogoMark({ size = 40, animated = false }: { size?: number; animated?: boolean }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }} aria-hidden>
+      <rect width="40" height="40" rx="10" fill={RED} />
+      <path
+        className={animated ? "sg-wave sg-wave-1" : undefined}
+        d="M9 24c3-5 7-5 10 0s7 5 10 0"
+        stroke="#fff"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        className={animated ? "sg-wave sg-wave-2" : undefined}
+        d="M9 16c3-5 7-5 10 0s7 5 10 0"
+        stroke="#fff"
+        strokeOpacity=".55"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
 export default function Logo({
   variant = "dark",
   height = 38,
@@ -14,24 +40,7 @@ export default function Logo({
 
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: height * 0.26 }}>
-      <svg width={iconSize} height={iconSize} viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
-        <rect width="40" height="40" rx="10" fill={RED} />
-        <path
-          d="M9 24c3-5 7-5 10 0s7 5 10 0"
-          stroke="#fff"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <path
-          d="M9 16c3-5 7-5 10 0s7 5 10 0"
-          stroke="#fff"
-          strokeOpacity=".55"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          fill="none"
-        />
-      </svg>
+      <LogoMark size={iconSize} />
       <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
         <span
           style={{

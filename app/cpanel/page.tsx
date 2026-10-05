@@ -4,16 +4,17 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/Logo";
+import BrandLoader from "@/components/BrandLoader";
+import { useMinDuration } from "@/lib/useMinDuration";
 
 /* ── Design tokens (mirrors dashboard) ───────────────── */
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
-const GOLD = "#D4AF37";
+const BLUE = "#0800FF";
 const DARK = "#111827";
 const MID  = "#374151";
 const GRAY = "#6B7280";
-const BG   = "#EEF0F4";
-const CARD = { background:"#fff", borderRadius:12, border:"1px solid rgba(17,24,39,.08)", boxShadow:"0 1px 4px rgba(17,24,39,.06)" } as const;
+const BG   = "#F4F5FB";
+const CARD = { background:"#fff", borderRadius:8, border:"1px solid rgba(17,24,39,.1)" } as const;
 const LBL:React.CSSProperties  = {display:"block",fontSize:12.5,fontWeight:600,color:MID,marginBottom:5,letterSpacing:".01em"};
 const INP:React.CSSProperties  = {width:"100%",padding:"9px 12px",border:"1px solid rgba(17,24,39,.15)",borderRadius:8,fontSize:13.5,fontFamily:"inherit",color:DARK,outline:"none",boxSizing:"border-box"};
 const SEL:React.CSSProperties  = {...INP,cursor:"pointer",appearance:"auto"};
@@ -114,7 +115,7 @@ const STATUS_COLOR:Record<string,{bg:string;text:string}> = {
   pending:  {bg:"rgba(234,179,8,.12)",   text:"#854D0E"},
   approved: {bg:"rgba(22,163,74,.1)",    text:"#16A34A"},
   rejected: {bg:"rgba(220,38,38,.1)",    text:"#DC2626"},
-  admin:    {bg:"rgba(140,29,37,.1)",    text:RED},
+  admin:    {bg:"rgba(8,0,255,.1)",    text:BLUE},
   user:     {bg:"rgba(107,114,128,.1)",  text:GRAY},
 };
 function Badge({status}:{status:string}){
@@ -124,17 +125,7 @@ function Badge({status}:{status:string}){
 
 /* ── Loading skeleton ────────────────────────────────── */
 function LoadingSpinner(){
-  return(
-    <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <div style={{textAlign:"center",fontFamily:FONT}}>
-        <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
-          <Logo variant="dark" height={40} />
-        </div>
-        <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading control panel…</div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-      </div>
-    </div>
-  );
+  return <BrandLoader message="Loading control panel…"/>;
 }
 
 /* ── Access Denied ───────────────────────────────────── */
@@ -156,7 +147,7 @@ function AccessDenied(){
 SET role = 'admin'
 WHERE email = 'your-email@example.com';`}
         </pre>
-        <Link href="/dashboard" style={{display:"inline-block",background:RED,color:"#fff",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,textDecoration:"none"}}>← Back to Dashboard</Link>
+        <Link href="/dashboard" style={{display:"inline-block",background:BLUE,color:"#fff",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,textDecoration:"none"}}>← Back to Dashboard</Link>
       </div>
     </div>
   );
@@ -164,10 +155,10 @@ WHERE email = 'your-email@example.com';`}
 
 /* ── Stat card ───────────────────────────────────────── */
 function StatCard({label,value,sub,color,icon}:{label:string;value:string;sub?:string;color?:string;icon:string}){
-  const c=color??RED;
+  const c=color??BLUE;
   return(
     <div style={{...CARD,padding:"18px 20px",display:"flex",alignItems:"flex-start",gap:14,overflow:"hidden"}}>
-      <div style={{width:40,height:40,borderRadius:10,background:c+"18",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:c}}>
+      <div style={{width:42,height:42,borderRadius:8,background:c,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#fff"}}>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={icon}/></svg>
       </div>
       <div style={{minWidth:0,flex:1}}>
@@ -198,75 +189,115 @@ function Empty({msg}:{msg:string}){
    TAB: OVERVIEW
 ═══════════════════════════════════════════════════════ */
 function OverviewTab({
-  users, accounts, txs, apps,
+  users, accounts, txs, apps, onNavigate,
 }:{
-  users:UserRow[]; accounts:AcctRow[]; txs:TxRow[]; apps:AppRow[];
+  users:UserRow[]; accounts:AcctRow[]; txs:TxRow[]; apps:AppRow[]; onNavigate:(tab:string)=>void;
 }){
   const totalDeposits = accounts.filter(a=>a.accountType!=="credit_card"&&a.accountType!=="business_credit_card").reduce((s,a)=>s+a.balance,0);
   const pending       = apps.filter(a=>a.status==="pending").length;
   const frozen        = accounts.filter(a=>a.status==="frozen").length;
   const recentTxs     = txs.slice(0,8);
+  const today         = new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+  const attention = [
+    {label:"Pending applications", value:pending, tab:"Applications", hint:pending?"Waiting for review":"All reviewed"},
+    {label:"Frozen accounts",      value:frozen,  tab:"Users",        hint:frozen?"Check account status":"None frozen"},
+  ];
+
+  const quick = [
+    {label:"Manage users",        desc:"View profiles and accounts",    tab:"Users",         icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"},
+    {label:"Review applications", desc:`${pending} waiting for review`, tab:"Applications",  icon:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"},
+    {label:"Send a notification", desc:"Message any customer",          tab:"Notifications", icon:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"},
+  ];
 
   return(
-    <div>
-      <SectionHead title="Control Panel Overview" sub="Live snapshot of all accounts and activity"/>
-
-      {/* Stats */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:14,marginBottom:24}}>
-        <StatCard label="Total Users"       value={String(users.length)}    sub="registered accounts"                color="#2563EB" icon="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-        <StatCard label="Total Accounts"    value={String(accounts.length)} sub={`${frozen} frozen`}                 color="#7C3AED" icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
-        <StatCard label="Total Deposits"    value={usd(totalDeposits)}      sub="across all accounts"                color="#059669" icon="M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"/>
-        <StatCard label="Pending Apps"      value={String(pending)}          sub={`${apps.length} total submitted`}  color={pending>0?"#D97706":GRAY} icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+    <div style={{fontFamily:"inherit"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",gap:16,flexWrap:"wrap",marginBottom:22}}>
+        <div>
+          <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:BLUE,marginBottom:6}}>Control panel</div>
+          <h2 style={{margin:"0 0 4px",fontFamily:FONT,fontWeight:600,fontSize:26,color:DARK,letterSpacing:"-.02em"}}>Overview</h2>
+          <p style={{margin:0,fontSize:13.5,color:GRAY}}>Live snapshot of all accounts and activity</p>
+        </div>
+        <div style={{fontSize:13,color:GRAY}}>{today}</div>
       </div>
 
-      {/* Recent Transactions */}
-      <div style={{...CARD,overflow:"hidden",marginBottom:20}}>
-        <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK}}>Recent Transactions</div>
-          <span style={{fontSize:12,color:GRAY}}>all users</span>
-        </div>
-        {recentTxs.length===0
-          ? <Empty msg="No transactions yet."/>
-          : <div style={{overflowX:"auto"}}>
-              <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-                <thead>
-                  <tr style={{borderBottom:"1px solid rgba(17,24,39,.07)"}}>
-                    {["Merchant","Category","Amount","Date"].map(h=>(
-                      <th key={h} style={{textAlign:"left",padding:"10px 20px",fontWeight:600,fontSize:12,color:GRAY,letterSpacing:".04em",whiteSpace:"nowrap"}}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentTxs.map((tx,i)=>(
-                    <tr key={tx.id} style={{borderBottom:i<recentTxs.length-1?"1px solid rgba(17,24,39,.05)":"none"}}>
-                      <td style={{padding:"11px 20px",color:DARK,fontWeight:500}}>{tx.merchant}</td>
-                      <td style={{padding:"11px 20px",color:GRAY}}>{tx.category}</td>
-                      <td style={{padding:"11px 20px",fontFamily:FONT,fontWeight:700,color:tx.amount>0?"#16A34A":"#DC2626"}}>
-                        {tx.amount>0?"+":"-"}{usd(tx.amount)}
-                      </td>
-                      <td style={{padding:"11px 20px",color:GRAY,whiteSpace:"nowrap"}}>{tx.date}</td>
+      {/* Stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:14,marginBottom:20}}>
+        <StatCard label="Total users"    value={String(users.length)}    sub="registered accounts"               icon="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        <StatCard label="Total accounts" value={String(accounts.length)} sub={`${frozen} frozen`}                icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
+        <StatCard label="Total deposits" value={usd(totalDeposits)}      sub="across all accounts"               icon="M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"/>
+        <StatCard label="Pending apps"   value={String(pending)}         sub={`${apps.length} total submitted`}  icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"minmax(0,2fr) minmax(260px,1fr)",gap:20,marginBottom:20}} className="cp-overview-grid">
+        {/* Recent transactions */}
+        <div style={{...CARD,overflow:"hidden"}}>
+          <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.08)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div style={{fontFamily:FONT,fontWeight:600,fontSize:15.5,color:DARK}}>Recent transactions</div>
+            <button onClick={()=>onNavigate("Transactions")} style={{background:"none",border:"none",color:BLUE,fontWeight:600,fontSize:13,cursor:"pointer",fontFamily:"inherit",padding:0}}>View all →</button>
+          </div>
+          {recentTxs.length===0
+            ? <Empty msg="No transactions yet."/>
+            : <div style={{overflowX:"auto"}}>
+                <table style={{width:"100%",borderCollapse:"collapse",fontSize:13.5}}>
+                  <thead>
+                    <tr style={{background:BG}}>
+                      {["Merchant","Category","Amount","Date"].map(h=>(
+                        <th key={h} style={{textAlign:h==="Amount"?"right":"left",padding:"10px 20px",fontWeight:700,fontSize:11.5,color:GRAY,letterSpacing:".06em",textTransform:"uppercase",whiteSpace:"nowrap"}}>{h}</th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-        }
+                  </thead>
+                  <tbody>
+                    {recentTxs.map((tx,i)=>(
+                      <tr key={tx.id} style={{borderTop:i?"1px solid rgba(17,24,39,.06)":"none"}}>
+                        <td style={{padding:"12px 20px",color:DARK,fontWeight:600}}>{tx.merchant}</td>
+                        <td style={{padding:"12px 20px",color:GRAY}}>{tx.category}</td>
+                        <td style={{padding:"12px 20px",fontFamily:FONT,fontWeight:700,textAlign:"right",whiteSpace:"nowrap",color:tx.amount>0?BLUE:DARK}}>
+                          {tx.amount>0?"+":"−"}{usd(tx.amount)}
+                        </td>
+                        <td style={{padding:"12px 20px",color:GRAY,whiteSpace:"nowrap"}}>{tx.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+          }
+        </div>
+
+        {/* Needs attention */}
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{background:BLUE,color:"#fff",borderRadius:8,padding:"20px 22px"}}>
+            <div style={{fontSize:11.5,fontWeight:700,letterSpacing:".14em",textTransform:"uppercase",color:"rgba(255,255,255,.75)",marginBottom:6}}>Needs attention</div>
+            <div style={{fontFamily:FONT,fontWeight:600,fontSize:28,lineHeight:1.1}}>{pending+frozen}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.75)",marginTop:4}}>items to review</div>
+          </div>
+          <div style={{...CARD,padding:"4px 20px"}}>
+            {attention.map((a,i)=>(
+              <button key={a.label} onClick={()=>onNavigate(a.tab)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",gap:12,padding:"14px 0",background:"none",border:"none",borderTop:i?"1px solid rgba(17,24,39,.08)":"none",cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
+                <div>
+                  <div style={{fontWeight:600,fontSize:13.5,color:DARK}}>{a.label}</div>
+                  <div style={{fontSize:12,color:GRAY,marginTop:2}}>{a.hint}</div>
+                </div>
+                <span style={{minWidth:30,textAlign:"center",fontFamily:FONT,fontWeight:700,fontSize:13,padding:"4px 8px",borderRadius:4,background:a.value?BLUE:"rgba(17,24,39,.06)",color:a.value?"#fff":GRAY}}>{a.value}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Quick links */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12}}>
-        {[
-          {label:"Manage Users",       desc:"View profiles & accounts",    tab:"Users"},
-          {label:"Review Applications",desc:`${pending} waiting for review`, tab:"Applications"},
-          {label:"Send Notification",  desc:"Push alerts to any user",     tab:"Notifications"},
-        ].map(q=>(
-          <div key={q.tab} style={{...CARD,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"default"}}>
-            <div>
-              <div style={{fontWeight:600,fontSize:13.5,color:DARK,marginBottom:3}}>{q.label}</div>
-              <div style={{fontSize:12,color:GRAY}}>{q.desc}</div>
-            </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14}}>
+        {quick.map(q=>(
+          <button key={q.tab} onClick={()=>onNavigate(q.tab)} style={{...CARD,padding:"16px 18px",display:"flex",alignItems:"center",gap:14,cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
+            <span style={{width:38,height:38,borderRadius:8,background:"rgba(8,0,255,.08)",color:BLUE,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={q.icon}/></svg>
+            </span>
+            <span style={{flex:1,minWidth:0}}>
+              <span style={{display:"block",fontWeight:600,fontSize:13.5,color:DARK,marginBottom:2}}>{q.label}</span>
+              <span style={{display:"block",fontSize:12,color:GRAY}}>{q.desc}</span>
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
         ))}
       </div>
     </div>
@@ -353,7 +384,7 @@ function UsersTab({
                   <button onClick={()=>setExpanded(isOpen?null:u.id)} style={{width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr auto auto",alignItems:"center",gap:16,padding:"14px 20px",background:isOpen?"rgba(17,24,39,.02)":"transparent",border:"none",cursor:"pointer",fontFamily:"inherit",textAlign:"left",transition:"background .12s"}}>
                     {/* Name + email */}
                     <div style={{display:"flex",alignItems:"center",gap:12,minWidth:0}}>
-                      <div style={{width:36,height:36,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:"#fff",flexShrink:0}}>
+                      <div style={{width:36,height:36,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:"#fff",flexShrink:0}}>
                         {(u.firstName[0]||"?")+""+(u.lastName[0]||"?")}
                       </div>
                       <div style={{minWidth:0}}>
@@ -432,7 +463,7 @@ function UsersTab({
                                 {/* Credit limit row */}
                                 {isCreditCard&&(
                                   <div style={{marginTop:10,paddingTop:10,borderTop:"1px solid rgba(17,24,39,.06)",display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" style={{flexShrink:0}}><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/></svg>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" style={{flexShrink:0}}><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/></svg>
                                     <span style={{fontSize:12,fontWeight:600,color:GRAY}}>Credit Limit:</span>
                                     {isEditingThis?(
                                       <>
@@ -462,7 +493,7 @@ function UsersTab({
                                     ):(
                                       <>
                                         <span style={{fontSize:13,fontWeight:700,color:DARK}}>{a.creditLimit>0?usd(a.creditLimit):"Not set"}</span>
-                                        <button onClick={()=>{setEditingLimit(a.id);setLimitInput("");setLimitErr("");}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(212,175,55,.08)",border:"1px solid rgba(212,175,55,.3)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:"#92701A",cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                                        <button onClick={()=>{setEditingLimit(a.id);setLimitInput("");setLimitErr("");}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(8,0,255,.08)",border:"1px solid rgba(8,0,255,.3)",borderRadius:7,padding:"4px 10px",fontSize:12,fontWeight:600,color:BLUE,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
                                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                           Adjust Limit
                                         </button>
@@ -509,7 +540,7 @@ function ApplicationsTab({apps, onUpdateStatus}:{apps:AppRow[]; onUpdateStatus:(
       {/* Filter pills */}
       <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
         {FILTERS.map(f=>(
-          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:filter===f?RED:GRAY,border:`1px solid ${filter===f?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>
+          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(8,0,255,.09)":"rgba(17,24,39,.04)",color:filter===f?BLUE:GRAY,border:`1px solid ${filter===f?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>
             {f} {f==="all"?`(${apps.length})`:f==="pending"?`(${apps.filter(a=>a.status==="pending").length})`:f==="approved"?`(${apps.filter(a=>a.status==="approved").length})`:`(${apps.filter(a=>a.status==="rejected").length})`}
           </button>
         ))}
@@ -522,7 +553,7 @@ function ApplicationsTab({apps, onUpdateStatus}:{apps:AppRow[]; onUpdateStatus:(
           : shown.map((app,i)=>(
               <div key={app.id} style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:12,padding:"16px 20px",borderBottom:i<shown.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
                 {/* Reference */}
-                <div style={{width:36,height:36,borderRadius:9,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+                <div style={{width:36,height:36,borderRadius:9,background:"rgba(8,0,255,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:BLUE}}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
                 </div>
                 {/* Info */}
@@ -585,7 +616,7 @@ function NotificationsTab({users}:{users:UserRow[]}){
     setTimeout(()=>{setSent(false);setTitle("");setMessage("");},4000);
   }
 
-  const PREVIEW_COLORS:Record<string,string>={info:"#2563EB",success:"#16A34A",warning:"#D97706",error:"#DC2626"};
+  const PREVIEW_COLORS:Record<string,string>={info:BLUE,success:"#16A34A",warning:"#D97706",error:"#DC2626"};
   const pc=PREVIEW_COLORS[type];
 
   return(
@@ -635,7 +666,7 @@ function NotificationsTab({users}:{users:UserRow[]}){
                 <textarea rows={3} placeholder="Type your notification message…" value={message} onChange={e=>setMessage(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/>
               </div>
               {err&&<div style={{fontSize:13,color:"#DC2626",marginBottom:12,padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{err}</div>}
-              <button disabled={sending} onClick={send} style={{width:"100%",background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:sending?"not-allowed":"pointer",fontFamily:FONT,opacity:sending?.7:1}}>
+              <button disabled={sending} onClick={send} style={{width:"100%",background:BLUE,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:sending?"not-allowed":"pointer",fontFamily:FONT,opacity:sending?.7:1}}>
                 {sending?"Sending…":target==="all"?`Broadcast to all ${users.length} users`:"Send Notification"}
               </button>
             </div>
@@ -672,7 +703,7 @@ function NotificationsTab({users}:{users:UserRow[]}){
 
           {/* Tip */}
           <div style={{...CARD,padding:"14px 16px",marginTop:12,display:"flex",gap:10,alignItems:"flex-start"}}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" style={{flexShrink:0,marginTop:1}}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" style={{flexShrink:0,marginTop:1}}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
             <p style={{margin:0,fontSize:12,color:MID,lineHeight:1.5}}>Notifications appear immediately in the user&apos;s dashboard bell. They can dismiss individual alerts or mark all as read.</p>
           </div>
         </div>
@@ -689,28 +720,28 @@ const ACTION_META:Record<string,{label:string;color:string;bg:string;category:st
   "account.transfer_freeze":  {label:"Transfer Hold",     color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Account"},
   "account.unfreeze":         {label:"Account Unfrozen",  color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Account"},
   "account.credit_limit_set": {label:"Credit Limit Set",  color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Account"},
-  "account.rename":           {label:"Account Renamed",   color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Account"},
+  "account.rename":           {label:"Account Renamed",   color:BLUE, bg:"rgba(8,0,255,.1)",   category:"Account"},
   "transaction.approve":      {label:"Tx Approved",       color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Transaction"},
   "transaction.reject":       {label:"Tx Rejected",       color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Transaction"},
-  "transaction.manual_post":  {label:"Manual Post",       color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Transaction"},
+  "transaction.manual_post":  {label:"Manual Post",       color:BLUE, bg:"rgba(8,0,255,.1)",   category:"Transaction"},
   "application.approve":      {label:"App Approved",      color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Application"},
   "application.reject":       {label:"App Rejected",      color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Application"},
-  "kyc.update":               {label:"KYC Updated",       color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"KYC"},
+  "kyc.update":               {label:"KYC Updated",       color:BLUE, bg:"rgba(8,0,255,.1)",  category:"KYC"},
   "fraud.alert_dismiss":      {label:"Alert Dismissed",   color:GRAY,      bg:"rgba(107,114,128,.1)", category:"Fraud"},
   "fraud.account_freeze":     {label:"Fraud Freeze",      color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Fraud"},
-  "dispute.open":             {label:"Dispute Opened",    color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Dispute"},
+  "dispute.open":             {label:"Dispute Opened",    color:BLUE, bg:"rgba(8,0,255,.1)",   category:"Dispute"},
   "dispute.approve":          {label:"Dispute Approved",  color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Dispute"},
   "dispute.deny":             {label:"Dispute Denied",    color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Dispute"},
-  "dispute.request_info":     {label:"Info Requested",    color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Dispute"},
+  "dispute.request_info":     {label:"Info Requested",    color:BLUE, bg:"rgba(8,0,255,.1)",  category:"Dispute"},
   "dispute.mark_review":      {label:"Under Review",      color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Dispute"},
-  "rate.update":              {label:"Rate Updated",       color:"#0891B2", bg:"rgba(8,145,178,.1)",   category:"Rates"},
-  "fee.update":               {label:"Fee Updated",        color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Rates"},
+  "rate.update":              {label:"Rate Updated",       color:BLUE, bg:"rgba(8,0,255,.1)",   category:"Rates"},
+  "fee.update":               {label:"Fee Updated",        color:BLUE, bg:"rgba(8,0,255,.1)",  category:"Rates"},
   "fee.apply":                {label:"Fee Applied",        color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Rates"},
   "interest.apply":           {label:"Interest Applied",   color:"#16A34A", bg:"rgba(22,163,74,.1)",   category:"Rates"},
   "compliance.sar_file":      {label:"SAR Filed",           color:"#DC2626", bg:"rgba(220,38,38,.1)",   category:"Compliance"},
   "compliance.ctr_file":      {label:"CTR Filed",           color:"#D97706", bg:"rgba(217,119,6,.1)",   category:"Compliance"},
-  "compliance.status_update": {label:"Report Updated",      color:"#2563EB", bg:"rgba(37,99,235,.1)",   category:"Compliance"},
-  "compliance.ofac_review":   {label:"OFAC Reviewed",       color:"#7C3AED", bg:"rgba(124,58,237,.1)",  category:"Compliance"},
+  "compliance.status_update": {label:"Report Updated",      color:BLUE, bg:"rgba(8,0,255,.1)",   category:"Compliance"},
+  "compliance.ofac_review":   {label:"OFAC Reviewed",       color:BLUE, bg:"rgba(8,0,255,.1)",  category:"Compliance"},
 };
 
 const AUDIT_CATEGORIES=["All","Account","Transaction","Application","KYC","Fraud","Dispute","Rates","Compliance"] as const;
@@ -747,7 +778,7 @@ function AuditTab({logs}:{logs:AuditLog[]}){
         </div>
         <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
           {AUDIT_CATEGORIES.map(c=>(
-            <button key={c} onClick={()=>setCat(c)} style={{background:cat===c?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:cat===c?RED:GRAY,border:`1px solid ${cat===c?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 12px",fontSize:12.5,fontWeight:cat===c?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+            <button key={c} onClick={()=>setCat(c)} style={{background:cat===c?"rgba(8,0,255,.09)":"rgba(17,24,39,.04)",color:cat===c?BLUE:GRAY,border:`1px solid ${cat===c?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 12px",fontSize:12.5,fontWeight:cat===c?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
               {c}
             </button>
           ))}
@@ -924,13 +955,13 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
               <label style={LBL}>Statement Period</label>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
                 {STMT_PRESETS.map(p=>(
-                  <button key={p.v} onClick={()=>setPreset(p.v)} style={{padding:"8px 10px",borderRadius:8,border:`1px solid ${preset===p.v?"rgba(140,29,37,.3)":"rgba(17,24,39,.12)"}`,background:preset===p.v?"rgba(140,29,37,.07)":"transparent",fontSize:12.5,fontWeight:preset===p.v?700:400,color:preset===p.v?RED:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                  <button key={p.v} onClick={()=>setPreset(p.v)} style={{padding:"8px 10px",borderRadius:8,border:`1px solid ${preset===p.v?"rgba(8,0,255,.3)":"rgba(17,24,39,.12)"}`,background:preset===p.v?"rgba(8,0,255,.07)":"transparent",fontSize:12.5,fontWeight:preset===p.v?700:400,color:preset===p.v?BLUE:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
                     {p.l}
                   </button>
                 ))}
               </div>
-              <div style={{fontSize:11.5,color:GRAY,padding:"6px 10px",background:"rgba(212,175,55,.07)",border:"1px solid rgba(212,175,55,.25)",borderRadius:7,display:"flex",alignItems:"center",gap:6}}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
+              <div style={{fontSize:11.5,color:GRAY,padding:"6px 10px",background:"rgba(8,0,255,.07)",border:"1px solid rgba(8,0,255,.25)",borderRadius:7,display:"flex",alignItems:"center",gap:6}}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
                 Use <strong style={{margin:"0 3px"}}>Custom Range</strong> to backdate any period — month, quarter, or year
               </div>
             </div>
@@ -941,7 +972,7 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
               </div>
             )}
             {err&&<div style={{fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{err}</div>}
-            <button onClick={generate} disabled={saving} style={{background:saving?"rgba(140,29,37,.55)":RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:saving?"not-allowed":"pointer",fontFamily:FONT,display:"flex",alignItems:"center",justifyContent:"center",gap:8,transition:"background .15s"}}>
+            <button onClick={generate} disabled={saving} style={{background:saving?"rgba(8,0,255,.55)":BLUE,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:saving?"not-allowed":"pointer",fontFamily:FONT,display:"flex",alignItems:"center",justifyContent:"center",gap:8,transition:"background .15s"}}>
               {saving
                 ?<><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{animation:"spin 1s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Saving…</>
                 :<><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>Generate &amp; Post Statement</>
@@ -955,7 +986,7 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
               ["Opens PDF preview","The formatted statement opens in a new tab for review / print."],
             ].map(([title,desc])=>(
               <div key={title} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2" style={{flexShrink:0,marginTop:1}}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2" style={{flexShrink:0,marginTop:1}}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/></svg>
                 <div>
                   <div style={{fontSize:12.5,fontWeight:600,color:DARK}}>{title}</div>
                   <div style={{fontSize:11.5,color:GRAY,marginTop:1}}>{desc}</div>
@@ -986,7 +1017,7 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
             :<div style={{...CARD,overflow:"hidden"}}>
               {savedStmts.map((s,i)=>(
                 <div key={s.id} style={{display:"flex",alignItems:"flex-start",gap:14,padding:"16px 20px",borderBottom:i<savedStmts.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
-                  <div style={{width:38,height:38,borderRadius:9,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+                  <div style={{width:38,height:38,borderRadius:9,background:"rgba(8,0,255,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:BLUE}}>
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
                   </div>
                   <div style={{flex:1,minWidth:0}}>
@@ -998,7 +1029,7 @@ function StatementsTab({ users, accounts }:{ users:UserRow[]; accounts:AcctRow[]
                   </div>
                   <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6,flexShrink:0}}>
                     <span style={{fontSize:10.5,color:GRAY,fontFamily:"monospace"}}>{s.reference_id}</span>
-                    <a href={`/statement?accountId=${s.account_id}&start=${s.period_start}&end=${s.period_end}&print=1`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:5,background:"rgba(140,29,37,.07)",border:"1px solid rgba(140,29,37,.2)",borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:RED,textDecoration:"none"}}>
+                    <a href={`/statement?accountId=${s.account_id}&start=${s.period_start}&end=${s.period_end}&print=1`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:5,background:"rgba(8,0,255,.07)",border:"1px solid rgba(8,0,255,.2)",borderRadius:8,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:BLUE,textDecoration:"none"}}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
                       View PDF
                     </a>
@@ -1033,9 +1064,9 @@ const DISPUTE_TYPES=[
   {v:"other",          l:"Other"},
 ];
 const DISPUTE_STATUS_META:Record<string,{label:string;bg:string;text:string}>={
-  open:             {label:"Open",           bg:"rgba(37,99,235,.1)",   text:"#2563EB"},
+  open:             {label:"Open",           bg:"rgba(8,0,255,.1)",   text:BLUE},
   under_review:     {label:"Under Review",   bg:"rgba(234,179,8,.12)",  text:"#854D0E"},
-  more_info_needed: {label:"More Info Needed",bg:"rgba(124,58,237,.1)", text:"#7C3AED"},
+  more_info_needed: {label:"More Info Needed",bg:"rgba(8,0,255,.1)", text:BLUE},
   approved:         {label:"Approved",       bg:"rgba(22,163,74,.1)",   text:"#16A34A"},
   denied:           {label:"Denied",         bg:"rgba(220,38,38,.1)",   text:"#DC2626"},
 };
@@ -1119,7 +1150,7 @@ function DisputesTab({
       {/* Header */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20,gap:12,flexWrap:"wrap"}}>
         <SectionHead title="Disputes & Chargebacks" sub="Open and manage customer dispute cases"/>
-        <button onClick={()=>{setShowForm(v=>!v);setFDone(null);setFErr("");}} style={{display:"flex",alignItems:"center",gap:7,background:showForm?"rgba(17,24,39,.07)":RED,border:showForm?"1px solid rgba(17,24,39,.15)":"none",borderRadius:9,padding:"9px 18px",fontSize:13,fontWeight:600,color:showForm?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",transition:"all .15s",flexShrink:0}}>
+        <button onClick={()=>{setShowForm(v=>!v);setFDone(null);setFErr("");}} style={{display:"flex",alignItems:"center",gap:7,background:showForm?"rgba(17,24,39,.07)":BLUE,border:showForm?"1px solid rgba(17,24,39,.15)":"none",borderRadius:9,padding:"9px 18px",fontSize:13,fontWeight:600,color:showForm?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",transition:"all .15s",flexShrink:0}}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={showForm?"M18 6 6 18M6 6l12 12":"M12 5v14M5 12h14"}/></svg>
           {showForm?"Cancel":"Open New Dispute"}
         </button>
@@ -1185,7 +1216,7 @@ function DisputesTab({
               </div>
               {fErr&&<div style={{gridColumn:"1/-1",fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{fErr}</div>}
               <div style={{gridColumn:"1/-1"}}>
-                <button disabled={fBusy} onClick={submitOpen} style={{background:RED,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:fBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:fBusy?.7:1}}>
+                <button disabled={fBusy} onClick={submitOpen} style={{background:BLUE,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:fBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:fBusy?.7:1}}>
                   {fBusy?"Opening…":"Open Dispute"}
                 </button>
               </div>
@@ -1197,9 +1228,9 @@ function DisputesTab({
       {/* Stats row */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:10,marginBottom:20}}>
         {([
-          ["Open",             counts.open,             "#2563EB"],
+          ["Open",             counts.open,             BLUE],
           ["Under Review",     counts.under_review,     "#D97706"],
-          ["More Info Needed", counts.more_info_needed, "#7C3AED"],
+          ["More Info Needed", counts.more_info_needed, BLUE],
           ["Approved",         counts.approved,         "#16A34A"],
           ["Denied",           counts.denied,           "#DC2626"],
         ] as const).map(([label,count,color])=>(
@@ -1213,7 +1244,7 @@ function DisputesTab({
       {/* Filter pills */}
       <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
         {FILTERS.map(f=>(
-          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:filter===f?RED:GRAY,border:`1px solid ${filter===f?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(8,0,255,.09)":"rgba(17,24,39,.04)",color:filter===f?BLUE:GRAY,border:`1px solid ${filter===f?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
             {DISPUTE_STATUS_META[f]?.label??f.charAt(0).toUpperCase()+f.slice(1)} ({f==="all"?disputes.length:(counts[f as keyof typeof counts]??0)})
           </button>
         ))}
@@ -1236,7 +1267,7 @@ function DisputesTab({
                 {/* Row */}
                 <button onClick={()=>setExpanded(isOpen?null:d.id)} style={{width:"100%",display:"flex",alignItems:"center",gap:14,padding:"16px 20px",background:isOpen?"rgba(17,24,39,.02)":"transparent",border:"none",cursor:"pointer",fontFamily:"inherit",textAlign:"left",transition:"background .12s",flexWrap:"wrap"}}>
                   {/* Icon */}
-                  <div style={{width:38,height:38,borderRadius:10,background:"rgba(37,99,235,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#2563EB"}}>
+                  <div style={{width:38,height:38,borderRadius:10,background:"rgba(8,0,255,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:BLUE}}>
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/></svg>
                   </div>
                   {/* Info */}
@@ -1299,7 +1330,7 @@ function DisputesTab({
                           <button disabled={isBusy||!notes[d.id]?.trim()} onClick={()=>act(d.id,()=>onDeny(d.id,notes[d.id]||""))} style={{background:"rgba(220,38,38,.07)",border:"1px solid rgba(220,38,38,.2)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:"#DC2626",cursor:(isBusy||!notes[d.id]?.trim())?"not-allowed":"pointer",fontFamily:"inherit",opacity:(isBusy||!notes[d.id]?.trim())?.5:1}}>
                             {isBusy?"…":"✕ Deny"}
                           </button>
-                          <button disabled={isBusy||!notes[d.id]?.trim()} onClick={()=>act(d.id,()=>onRequestInfo(d.id,notes[d.id]||""))} style={{background:"rgba(124,58,237,.07)",border:"1px solid rgba(124,58,237,.2)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:"#7C3AED",cursor:(isBusy||!notes[d.id]?.trim())?"not-allowed":"pointer",fontFamily:"inherit",opacity:(isBusy||!notes[d.id]?.trim())?.5:1}}>
+                          <button disabled={isBusy||!notes[d.id]?.trim()} onClick={()=>act(d.id,()=>onRequestInfo(d.id,notes[d.id]||""))} style={{background:"rgba(8,0,255,.07)",border:"1px solid rgba(8,0,255,.2)",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:BLUE,cursor:(isBusy||!notes[d.id]?.trim())?"not-allowed":"pointer",fontFamily:"inherit",opacity:(isBusy||!notes[d.id]?.trim())?.5:1}}>
                             {isBusy?"…":"? More Info"}
                           </button>
                         </div>
@@ -1332,8 +1363,8 @@ function DisputesTab({
 ═══════════════════════════════════════════════════════ */
 const RULE_META:Record<string,{label:string;color:string;desc:string;severity:string}>={
   large_transaction: {label:"Large Transaction", color:"#DC2626", desc:"Single transaction ≥ £5,000",          severity:"HIGH"},
-  round_amount:      {label:"Round Amount",       color:"#2563EB", desc:"Exact round amount — possible structuring", severity:"MEDIUM"},
-  velocity_24h:      {label:"Velocity (24h)",     color:"#7C3AED", desc:"5+ transactions in 24 hours",          severity:"MEDIUM"},
+  round_amount:      {label:"Round Amount",       color:BLUE, desc:"Exact round amount — possible structuring", severity:"MEDIUM"},
+  velocity_24h:      {label:"Velocity (24h)",     color:BLUE, desc:"5+ transactions in 24 hours",          severity:"MEDIUM"},
   velocity_1h:       {label:"Velocity (1h)",      color:"#D97706", desc:"3+ transactions in 1 hour",            severity:"HIGH"},
 };
 
@@ -1397,7 +1428,7 @@ function FraudTab({
       {/* Header + scan button */}
       <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:20,gap:12,flexWrap:"wrap"}}>
         <SectionHead title="Fraud & Risk" sub="Automated rule-based detection — run a scan to check for new alerts"/>
-        <button disabled={scanning} onClick={scan} style={{display:"flex",alignItems:"center",gap:7,background:scanning?"rgba(140,29,37,.5)":RED,border:"none",borderRadius:9,padding:"9px 18px",fontSize:13,fontWeight:600,color:"#fff",cursor:scanning?"not-allowed":"pointer",fontFamily:"inherit",transition:"all .15s",flexShrink:0}}>
+        <button disabled={scanning} onClick={scan} style={{display:"flex",alignItems:"center",gap:7,background:scanning?"rgba(8,0,255,.5)":BLUE,border:"none",borderRadius:9,padding:"9px 18px",fontSize:13,fontWeight:600,color:"#fff",cursor:scanning?"not-allowed":"pointer",fontFamily:"inherit",transition:"all .15s",flexShrink:0}}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={scanning?{animation:"spin .75s linear infinite"}:{}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
           {scanning?"Scanning…":"Scan for Alerts"}
         </button>
@@ -1424,7 +1455,7 @@ function FraudTab({
       {/* Filter pills */}
       <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
         {(["open","dismissed","actioned","all"] as const).map(f=>(
-          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:filter===f?RED:GRAY,border:`1px solid ${filter===f?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>
+          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(8,0,255,.09)":"rgba(17,24,39,.04)",color:filter===f?BLUE:GRAY,border:`1px solid ${filter===f?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>
             {f} ({f==="all"?alerts.length:counts[f as keyof typeof counts]??0})
           </button>
         ))}
@@ -1620,8 +1651,8 @@ function SecurityReviewQueue({
 
               {/* Held transactions */}
               {q.heldTxs.length>0&&(
-                <div style={{marginBottom:12,background:"rgba(37,99,235,.04)",border:"1px solid rgba(37,99,235,.12)",borderRadius:9,padding:"12px 14px"}}>
-                  <div style={{fontSize:12,fontWeight:700,color:"#1D4ED8",marginBottom:8,letterSpacing:".03em"}}>HELD TRANSACTIONS ({q.heldTxs.length})</div>
+                <div style={{marginBottom:12,background:"rgba(8,0,255,.04)",border:"1px solid rgba(8,0,255,.12)",borderRadius:9,padding:"12px 14px"}}>
+                  <div style={{fontSize:12,fontWeight:700,color:BLUE,marginBottom:8,letterSpacing:".03em"}}>HELD TRANSACTIONS ({q.heldTxs.length})</div>
                   {q.heldTxs.map(tx=>(
                     <div key={tx.id} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
                       <div style={{flex:1,minWidth:0}}>
@@ -1807,8 +1838,8 @@ function TransactionsTab({
                       <div style={{fontSize:12,color:GRAY}}>{tx.accountName} · Submitted {relTime(tx.submittedAt)}</div>
                       {tx.memo&&<div style={{fontSize:12,color:GRAY,marginTop:2,fontStyle:"italic"}}>"{tx.memo}"</div>}
                       {tx.extDetails&&(
-                        <div style={{marginTop:8,background:"rgba(37,99,235,.04)",border:"1px solid rgba(37,99,235,.15)",borderRadius:8,padding:"9px 12px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 16px"}}>
-                          <div style={{gridColumn:"1/-1",fontSize:11.5,fontWeight:700,color:"#1D4ED8",letterSpacing:".05em",marginBottom:4}}>EXTERNAL WIRE DETAILS</div>
+                        <div style={{marginTop:8,background:"rgba(8,0,255,.04)",border:"1px solid rgba(8,0,255,.15)",borderRadius:8,padding:"9px 12px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"4px 16px"}}>
+                          <div style={{gridColumn:"1/-1",fontSize:11.5,fontWeight:700,color:BLUE,letterSpacing:".05em",marginBottom:4}}>EXTERNAL WIRE DETAILS</div>
                           {[["Bank",tx.extDetails.bankName||"—"],["Holder",tx.extDetails.holderName],["Routing #",tx.extDetails.routingNumber],["Account #",tx.extDetails.accountNumber],["Acct Type",tx.extDetails.accountType]].map(([label,val])=>(
                             <div key={label} style={{display:"flex",gap:5,alignItems:"baseline"}}>
                               <span style={{fontSize:11,color:GRAY,fontWeight:600,minWidth:60}}>{label}</span>
@@ -1898,7 +1929,7 @@ function TransactionsTab({
             {icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4",title:"Backdate",desc:"Set any post date when approving or posting manually. The account balance updates immediately."},
           ].map(i=>(
             <div key={i.title} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:14}}>
-              <div style={{width:30,height:30,borderRadius:7,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+              <div style={{width:30,height:30,borderRadius:7,background:"rgba(8,0,255,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:BLUE}}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={i.icon}/></svg>
               </div>
               <div>
@@ -1923,7 +1954,7 @@ function TransactionsTab({
             </div>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:16,color:DARK}}>Transfer Posted</div>
             <div style={{fontSize:13,color:GRAY,marginTop:6}}>Balance{trMode==="internal"?"s":""} updated — user will see it on next refresh.</div>
-            <button onClick={()=>{setTrDone(false);resetTr();}} style={{marginTop:16,background:RED,color:"#fff",border:"none",borderRadius:9,padding:"9px 22px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Post Another</button>
+            <button onClick={()=>{setTrDone(false);resetTr();}} style={{marginTop:16,background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"9px 22px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Post Another</button>
           </div>
         ):(
           <div style={{padding:"20px"}}>
@@ -1932,7 +1963,7 @@ function TransactionsTab({
               <label style={LBL}>Transfer Type</label>
               <div style={{display:"flex",gap:8}}>
                 {(["internal","external"] as const).map(m=>(
-                  <button key={m} onClick={()=>{setTrMode(m);setTrErr("");}} style={{flex:1,padding:"9px 0",borderRadius:8,border:`1px solid ${trMode===m?"rgba(140,29,37,.35)":"rgba(17,24,39,.12)"}`,background:trMode===m?"rgba(140,29,37,.08)":"transparent",fontSize:13,fontWeight:trMode===m?700:400,color:trMode===m?RED:GRAY,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+                  <button key={m} onClick={()=>{setTrMode(m);setTrErr("");}} style={{flex:1,padding:"9px 0",borderRadius:8,border:`1px solid ${trMode===m?"rgba(8,0,255,.35)":"rgba(17,24,39,.12)"}`,background:trMode===m?"rgba(8,0,255,.08)":"transparent",fontSize:13,fontWeight:trMode===m?700:400,color:trMode===m?BLUE:GRAY,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
                     {m==="internal"?"Internal (between accounts)":"External (other bank)"}
                   </button>
                 ))}
@@ -1990,7 +2021,7 @@ function TransactionsTab({
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
                     <span style={{fontSize:12.5,fontWeight:700,color:MID}}>Destination Bank Account</span>
                     {trExtAccts.length>0&&(
-                      <button type="button" onClick={()=>setTrExtPickMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>
+                      <button type="button" onClick={()=>setTrExtPickMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:BLUE,cursor:"pointer",fontFamily:"inherit",padding:0}}>
                         {trExtPickMode==="pick"?"+ Enter New Details":"← Transaction History"}
                       </button>
                     )}
@@ -2000,12 +2031,12 @@ function TransactionsTab({
                   {trExtPickMode==="pick"&&trExtAccts.length>0?(
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
                       {trExtAccts.map(a=>(
-                        <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${trSelExtId===a.id?RED:"rgba(17,24,39,.1)"}`,borderRadius:9,background:trSelExtId===a.id?"rgba(140,29,37,.04)":"#fff",transition:"all .15s"}}>
-                          <input type="radio" name="trExtAcct" checked={trSelExtId===a.id} onChange={()=>setTrSelExtId(a.id)} style={{accentColor:RED,marginTop:2,flexShrink:0}}/>
+                        <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${trSelExtId===a.id?BLUE:"rgba(17,24,39,.1)"}`,borderRadius:9,background:trSelExtId===a.id?"rgba(8,0,255,.04)":"#fff",transition:"all .15s"}}>
+                          <input type="radio" name="trExtAcct" checked={trSelExtId===a.id} onChange={()=>setTrSelExtId(a.id)} style={{accentColor:BLUE,marginTop:2,flexShrink:0}}/>
                           <div style={{minWidth:0,flex:1}}>
                             <div style={{display:"flex",alignItems:"center",gap:7,flexWrap:"wrap"}}>
                               <span style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bank_name||"External Account"}</span>
-                              <span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:4,background:a.source==="saved"?"rgba(22,163,74,.1)":"rgba(37,99,235,.1)",color:a.source==="saved"?"#16A34A":"#1D4ED8",letterSpacing:".03em"}}>{a.source==="saved"?"Saved":"From Transaction"}</span>
+                              <span style={{fontSize:10.5,fontWeight:700,padding:"1px 6px",borderRadius:4,background:a.source==="saved"?"rgba(22,163,74,.1)":"rgba(8,0,255,.1)",color:a.source==="saved"?"#16A34A":BLUE,letterSpacing:".03em"}}>{a.source==="saved"?"Saved":"From Transaction"}</span>
                             </div>
                             <div style={{fontSize:12,color:GRAY,marginTop:2}}>
                               {a.bank_name&&<span style={{marginRight:4}}>{a.bank_name} ·</span>}
@@ -2065,7 +2096,7 @@ function TransactionsTab({
             )}
 
             {trErr&&<div style={{fontSize:13,color:"#DC2626",marginBottom:12,padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{trErr}</div>}
-            <button disabled={trBusy} onClick={submitTransfer} style={{width:"100%",background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:trBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:trBusy?.7:1}}>
+            <button disabled={trBusy} onClick={submitTransfer} style={{width:"100%",background:BLUE,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:trBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:trBusy?.7:1}}>
               {trBusy?"Posting…":trMode==="internal"?"Post Internal Transfer":"Post External Transfer"}
             </button>
           </div>
@@ -2105,7 +2136,7 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
       </div>
       <div style={{display:"flex",gap:8,marginBottom:14,flexWrap:"wrap",alignItems:"center"}}>
         {(["all","pending","verified","rejected"] as const).map(f=>(
-          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:filter===f?RED:GRAY,border:`1px solid ${filter===f?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>{f}</button>
+          <button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(8,0,255,.09)":"rgba(17,24,39,.04)",color:filter===f?BLUE:GRAY,border:`1px solid ${filter===f?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?700:400,cursor:"pointer",fontFamily:"inherit",textTransform:"capitalize",transition:"all .15s"}}>{f}</button>
         ))}
         <div style={{flex:1,minWidth:180,position:"relative"}}>
           <svg style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",pointerEvents:"none"}} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GRAY} strokeWidth="2"><path d="M21 21l-6-6M11 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>
@@ -2117,7 +2148,7 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
           const status=u.kycStatus||"pending";
           return(
             <div key={u.id} style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:12,padding:"14px 20px",borderBottom:i<filtered.length-1?"1px solid rgba(17,24,39,.06)":"none"}}>
-              <div style={{width:38,height:38,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:13,color:"#fff",flexShrink:0}}>{(u.firstName[0]||"?")+""+(u.lastName[0]||"?")}</div>
+              <div style={{width:38,height:38,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:13,color:"#fff",flexShrink:0}}>{(u.firstName[0]||"?")+""+(u.lastName[0]||"?")}</div>
               <div style={{flex:1,minWidth:180}}>
                 <div style={{fontWeight:600,fontSize:13.5,color:DARK}}>{u.firstName} {u.lastName}</div>
                 <div style={{fontSize:12,color:GRAY,marginTop:2}}>{u.email}</div>
@@ -2142,7 +2173,7 @@ function KYCTab({users,onUpdate}:{users:UserRow[];onUpdate:(userId:string,status
 ═══════════════════════════════════════════════════════ */
 const COMPLIANCE_STATUS:Record<string,{label:string;bg:string;text:string}>={
   draft:     {label:"Draft",         bg:"rgba(107,114,128,.1)",  text:GRAY},
-  filed:     {label:"Filed",         bg:"rgba(37,99,235,.1)",    text:"#2563EB"},
+  filed:     {label:"Filed",         bg:"rgba(8,0,255,.1)",    text:BLUE},
   submitted: {label:"Submitted",     bg:"rgba(22,163,74,.1)",    text:"#16A34A"},
   closed:    {label:"Closed",        bg:"rgba(17,24,39,.06)",    text:MID},
 };
@@ -2282,14 +2313,14 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:14,marginBottom:24}}>
         <StatCard label="Total SARs"        value={String(sars.length)}    sub={`${sars.filter(r=>r.status==="draft").length} draft`}          color="#DC2626" icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
         <StatCard label="Total CTRs"        value={String(ctrs.length)}    sub={`${ctrs.filter(r=>r.status==="submitted").length} submitted`}   color="#D97706" icon="M21 12a9 9 0 1 1-6.219-8.56"/>
-        <StatCard label="OFAC Screenings"   value={String(screenings.length)} sub={`${pendingOfac} potential match${pendingOfac!==1?"es":""}`} color={pendingOfac>0?"#DC2626":"#7C3AED"} icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <StatCard label="OFAC Screenings"   value={String(screenings.length)} sub={`${pendingOfac} potential match${pendingOfac!==1?"es":""}`} color={pendingOfac>0?"#DC2626":BLUE} icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         <StatCard label="Unfiled Large Txs" value={String(ctrEligible.length)} sub="scan to detect ≥ £10,000"                                  color={ctrEligible.length>0?"#D97706":GRAY} icon="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
       </div>
 
       {/* Sub-tabs */}
       <div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
         {(["SAR","CTR","OFAC"] as const).map(t=>(
-          <button key={t} onClick={()=>setSubTab(t)} style={{background:subTab===t?"rgba(140,29,37,.09)":"rgba(17,24,39,.04)",color:subTab===t?RED:GRAY,border:`1px solid ${subTab===t?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"6px 20px",fontSize:13,fontWeight:subTab===t?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+          <button key={t} onClick={()=>setSubTab(t)} style={{background:subTab===t?"rgba(8,0,255,.09)":"rgba(17,24,39,.04)",color:subTab===t?BLUE:GRAY,border:`1px solid ${subTab===t?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"6px 20px",fontSize:13,fontWeight:subTab===t?700:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
             {t==="SAR"?"Suspicious Activity (SAR)":t==="CTR"?"Currency Transactions (CTR)":"OFAC / Sanctions Screening"}
           </button>
         ))}
@@ -2300,7 +2331,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
         <div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
             <div style={{fontSize:13,color:GRAY}}>{sars.length} SAR{sars.length!==1?"s":""} filed</div>
-            <button onClick={()=>{setSarOpen(v=>!v);setSarDone(null);setSarErr("");}} style={{display:"flex",alignItems:"center",gap:7,background:sarOpen?"rgba(17,24,39,.07)":RED,border:sarOpen?"1px solid rgba(17,24,39,.15)":"none",borderRadius:9,padding:"8px 18px",fontSize:13,fontWeight:600,color:sarOpen?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>
+            <button onClick={()=>{setSarOpen(v=>!v);setSarDone(null);setSarErr("");}} style={{display:"flex",alignItems:"center",gap:7,background:sarOpen?"rgba(17,24,39,.07)":BLUE,border:sarOpen?"1px solid rgba(17,24,39,.15)":"none",borderRadius:9,padding:"8px 18px",fontSize:13,fontWeight:600,color:sarOpen?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",flexShrink:0}}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={sarOpen?"M18 6 6 18M6 6l12 12":"M12 5v14M5 12h14"}/></svg>
               {sarOpen?"Cancel":"File New SAR"}
             </button>
@@ -2329,7 +2360,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
                   <div><label style={LBL}>Amount Involved <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,pointerEvents:"none"}}>£</span><input type="number" min="0" step="0.01" placeholder="0.00" value={sarAmt} onChange={e=>setSarAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div></div>
                   <div style={{gridColumn:"1/-1"}}><label style={LBL}>Description of Suspicious Activity</label><textarea rows={4} placeholder="Describe the suspicious activity, pattern observed, and reason for filing…" value={sarDesc} onChange={e=>setSarDesc(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/></div>
                   {sarErr&&<div style={{gridColumn:"1/-1",fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{sarErr}</div>}
-                  <div style={{gridColumn:"1/-1"}}><button disabled={sarBusy} onClick={submitSAR} style={{background:RED,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:sarBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:sarBusy?.7:1}}>{sarBusy?"Filing…":"File SAR (Draft)"}</button></div>
+                  <div style={{gridColumn:"1/-1"}}><button disabled={sarBusy} onClick={submitSAR} style={{background:BLUE,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:sarBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:sarBusy?.7:1}}>{sarBusy?"Filing…":"File SAR (Draft)"}</button></div>
                 </div>
               )}
             </div>
@@ -2358,7 +2389,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
                     {nextStatuses.length>0&&(
                       <div style={{display:"flex",gap:6,flexShrink:0}}>
                         {nextStatuses.map(s=>(
-                          <button key={s} disabled={statusBusy===r.id} onClick={()=>updateReportStatus(r.id,s)} style={{background:s==="closed"?"rgba(17,24,39,.05)":s==="submitted"?"rgba(22,163,74,.09)":"rgba(37,99,235,.08)",border:`1px solid ${s==="closed"?"rgba(17,24,39,.12)":s==="submitted"?"rgba(22,163,74,.25)":"rgba(37,99,235,.2)"}`,borderRadius:8,padding:"5px 14px",fontSize:12.5,fontWeight:600,color:s==="closed"?GRAY:s==="submitted"?"#16A34A":"#2563EB",cursor:statusBusy===r.id?"not-allowed":"pointer",fontFamily:"inherit",textTransform:"capitalize",opacity:statusBusy===r.id?.5:1}}>
+                          <button key={s} disabled={statusBusy===r.id} onClick={()=>updateReportStatus(r.id,s)} style={{background:s==="closed"?"rgba(17,24,39,.05)":s==="submitted"?"rgba(22,163,74,.09)":"rgba(8,0,255,.08)",border:`1px solid ${s==="closed"?"rgba(17,24,39,.12)":s==="submitted"?"rgba(22,163,74,.25)":"rgba(8,0,255,.2)"}`,borderRadius:8,padding:"5px 14px",fontSize:12.5,fontWeight:600,color:s==="closed"?GRAY:s==="submitted"?"#16A34A":BLUE,cursor:statusBusy===r.id?"not-allowed":"pointer",fontFamily:"inherit",textTransform:"capitalize",opacity:statusBusy===r.id?.5:1}}>
                             {statusBusy===r.id?"…":s.charAt(0).toUpperCase()+s.slice(1)}
                           </button>
                         ))}
@@ -2377,7 +2408,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
         <div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
             <div style={{fontSize:13,color:GRAY}}>{ctrs.length} CTR{ctrs.length!==1?"s":""} filed{ctrDone&&<span style={{marginLeft:8,color:"#16A34A",fontWeight:600}}>✓ {ctrDone} filed</span>}</div>
-            <button disabled={scanning} onClick={runCtrScan} style={{display:"flex",alignItems:"center",gap:7,background:scanning?"rgba(140,29,37,.5)":RED,border:"none",borderRadius:9,padding:"8px 18px",fontSize:13,fontWeight:600,color:"#fff",cursor:scanning?"not-allowed":"pointer",fontFamily:"inherit",flexShrink:0}}>
+            <button disabled={scanning} onClick={runCtrScan} style={{display:"flex",alignItems:"center",gap:7,background:scanning?"rgba(8,0,255,.5)":BLUE,border:"none",borderRadius:9,padding:"8px 18px",fontSize:13,fontWeight:600,color:"#fff",cursor:scanning?"not-allowed":"pointer",fontFamily:"inherit",flexShrink:0}}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={scanning?{animation:"spin .75s linear infinite"}:{}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
               {scanning?"Scanning…":"Scan for Eligible Transactions"}
             </button>
@@ -2402,7 +2433,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
                         <div style={{fontSize:12,color:GRAY}}>{String(tx.merchant||"")} · {acct?`${acct.accountName} ••••${acct.last4}`:""} · {fmtDate(String(tx.posted_at||""))}</div>
                       </div>
                       <div style={{fontFamily:FONT,fontWeight:800,fontSize:18,color:Number(tx.amount)>0?"#16A34A":"#DC2626",flexShrink:0}}>{Number(tx.amount)>0?"+":"-"}{usd(Number(tx.amount))}</div>
-                      <button onClick={()=>{setCtrTxId(isFilingThis?null:String(tx.id));if(!isFilingThis){const u=users.find(u=>u.id===tx.user_id);setCtrName(u?`${u.firstName} ${u.lastName}`.trim():"");setCtrDesc(`Cash transaction of ${usd(Math.abs(Number(tx.amount)))} on ${fmtDate(String(tx.posted_at||""))}`);setCtrErr("");}}} style={{background:isFilingThis?"rgba(17,24,39,.07)":RED,border:isFilingThis?"1px solid rgba(17,24,39,.15)":"none",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:isFilingThis?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all .15s"}}>
+                      <button onClick={()=>{setCtrTxId(isFilingThis?null:String(tx.id));if(!isFilingThis){const u=users.find(u=>u.id===tx.user_id);setCtrName(u?`${u.firstName} ${u.lastName}`.trim():"");setCtrDesc(`Cash transaction of ${usd(Math.abs(Number(tx.amount)))} on ${fmtDate(String(tx.posted_at||""))}`);setCtrErr("");}}} style={{background:isFilingThis?"rgba(17,24,39,.07)":BLUE,border:isFilingThis?"1px solid rgba(17,24,39,.15)":"none",borderRadius:8,padding:"7px 14px",fontSize:12.5,fontWeight:600,color:isFilingThis?DARK:"#fff",cursor:"pointer",fontFamily:"inherit",flexShrink:0,transition:"all .15s"}}>
                         {isFilingThis?"Cancel":"File CTR"}
                       </button>
                     </div>
@@ -2411,7 +2442,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
                         <div><label style={LBL}>Subject Full Name</label><input type="text" value={ctrName} onChange={e=>setCtrName(e.target.value)} style={INP}/></div>
                         <div style={{gridColumn:"1/-1"}}><label style={LBL}>Description</label><textarea rows={2} value={ctrDesc} onChange={e=>setCtrDesc(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/></div>
                         {ctrErr&&<div style={{gridColumn:"1/-1",fontSize:12.5,color:"#DC2626"}}>{ctrErr}</div>}
-                        <div style={{gridColumn:"1/-1"}}><button disabled={ctrBusy} onClick={()=>submitCTR(tx)} style={{background:RED,border:"none",borderRadius:9,padding:"9px 24px",fontSize:13.5,fontWeight:700,color:"#fff",cursor:ctrBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:ctrBusy?.7:1}}>{ctrBusy?"Filing…":"Confirm & File CTR"}</button></div>
+                        <div style={{gridColumn:"1/-1"}}><button disabled={ctrBusy} onClick={()=>submitCTR(tx)} style={{background:BLUE,border:"none",borderRadius:9,padding:"9px 24px",fontSize:13.5,fontWeight:700,color:"#fff",cursor:ctrBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:ctrBusy?.7:1}}>{ctrBusy?"Filing…":"Confirm & File CTR"}</button></div>
                       </div>
                     )}
                   </div>
@@ -2473,7 +2504,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
                 <input type="text" placeholder="Override or enter manually…" value={ofacName} onChange={e=>setOfacName(e.target.value)} style={INP}/>
               </div>
               <div style={{gridColumn:"1/-1",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-                <button disabled={ofacBusy} onClick={runOfacScreen} style={{background:RED,border:"none",borderRadius:9,padding:"10px 24px",fontSize:13.5,fontWeight:700,color:"#fff",cursor:ofacBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:ofacBusy?.7:1,display:"flex",alignItems:"center",gap:7}}>
+                <button disabled={ofacBusy} onClick={runOfacScreen} style={{background:BLUE,border:"none",borderRadius:9,padding:"10px 24px",fontSize:13.5,fontWeight:700,color:"#fff",cursor:ofacBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:ofacBusy?.7:1,display:"flex",alignItems:"center",gap:7}}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={ofacBusy?{animation:"spin .75s linear infinite"}:{}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                   {ofacBusy?"Screening…":"Run OFAC Screen"}
                 </button>
@@ -2645,9 +2676,9 @@ function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee
       {/* Rate overview row */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:14,marginBottom:24}}>
         <StatCard label="APY Products"   value={String(APY_RATES.length)}  sub={`avg ${(APY_RATES.reduce((s,r)=>s+r.value,0)/Math.max(APY_RATES.length,1)).toFixed(2)}% APY`} color="#16A34A" icon="M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"/>
-        <StatCard label="APR Products"   value={String(APR_RATES.length)}  sub={`avg ${(APR_RATES.reduce((s,r)=>s+r.value,0)/Math.max(APR_RATES.length,1)).toFixed(2)}% APR`} color={RED}     icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
+        <StatCard label="APR Products"   value={String(APR_RATES.length)}  sub={`avg ${(APR_RATES.reduce((s,r)=>s+r.value,0)/Math.max(APR_RATES.length,1)).toFixed(2)}% APR`} color={BLUE}     icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
         <StatCard label="Fee Types"      value={String(activeFees.length)} sub={`${fees.filter(f=>f.waivable).length} waivable`}                                               color="#D97706" icon="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01"/>
-        <StatCard label="Highest Rate"   value={rates.length>0?`${Math.max(...rates.map(r=>r.value)).toFixed(2)}%`:"—"} sub="across all products"                              color="#7C3AED" icon="M5 3l14 9-14 9V3z"/>
+        <StatCard label="Highest Rate"   value={rates.length>0?`${Math.max(...rates.map(r=>r.value)).toFixed(2)}%`:"—"} sub="across all products"                              color={BLUE} icon="M5 3l14 9-14 9V3z"/>
       </div>
 
       {/* Interest Rates */}
@@ -2686,7 +2717,7 @@ function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee
                         </div>
                       </div>
                       <div style={{display:"flex",gap:6}}>
-                        <button disabled={rateBusy} onClick={()=>saveRate(rate.key)} style={{flex:1,background:RED,border:"none",borderRadius:7,padding:"6px 0",fontSize:12.5,fontWeight:700,color:"#fff",cursor:rateBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:rateBusy?.6:1}}>{rateBusy?"…":"Save"}</button>
+                        <button disabled={rateBusy} onClick={()=>saveRate(rate.key)} style={{flex:1,background:BLUE,border:"none",borderRadius:7,padding:"6px 0",fontSize:12.5,fontWeight:700,color:"#fff",cursor:rateBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:rateBusy?.6:1}}>{rateBusy?"…":"Save"}</button>
                         <button onClick={()=>{setEditingRate(null);setRateErr("");}} style={{background:"rgba(17,24,39,.06)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"6px 12px",fontSize:12.5,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
                       </div>
                       {rateErr&&<div style={{fontSize:11.5,color:"#DC2626",marginTop:4}}>{rateErr}</div>}
@@ -2734,7 +2765,7 @@ function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee
                             <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:13,pointerEvents:"none"}}>£</span>
                             <input type="number" min="0" step="0.01" value={feeInput} onChange={e=>setFeeInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")saveFee(fee.key);if(e.key==="Escape")setEditingFee(null);}} autoFocus style={{...INP,width:110,paddingLeft:22,fontSize:13}}/>
                           </div>
-                          <button disabled={feeBusy} onClick={()=>saveFee(fee.key)} style={{background:RED,border:"none",borderRadius:7,padding:"6px 12px",fontSize:12.5,fontWeight:700,color:"#fff",cursor:feeBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:feeBusy?.6:1}}>{feeBusy?"…":"Save"}</button>
+                          <button disabled={feeBusy} onClick={()=>saveFee(fee.key)} style={{background:BLUE,border:"none",borderRadius:7,padding:"6px 12px",fontSize:12.5,fontWeight:700,color:"#fff",cursor:feeBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:feeBusy?.6:1}}>{feeBusy?"…":"Save"}</button>
                           <button onClick={()=>{setEditingFee(null);setFeeErr("");}} style={{background:"rgba(17,24,39,.06)",border:"1px solid rgba(17,24,39,.12)",borderRadius:7,padding:"6px 10px",fontSize:12.5,fontWeight:600,color:GRAY,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
                           {feeErr&&<span style={{fontSize:11.5,color:"#DC2626"}}>{feeErr}</span>}
                         </div>
@@ -2793,7 +2824,7 @@ function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee
                 </div>
               )}
               {fErr&&<div style={{fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{fErr}</div>}
-              <button disabled={fBusy} onClick={submitFee} style={{background:fWaived?"#16A34A":RED,border:"none",borderRadius:10,padding:"11px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:fBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:fBusy?.7:1}}>
+              <button disabled={fBusy} onClick={submitFee} style={{background:fWaived?"#16A34A":BLUE,border:"none",borderRadius:10,padding:"11px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:fBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:fBusy?.7:1}}>
                 {fBusy?"…":fWaived?"Waive Fee":"Apply Fee"}
               </button>
             </div>
@@ -2884,9 +2915,9 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
     business_savings:"Business Savings",business_credit_card:"Business Credit Card",
   };
   const TYPE_COLORS:Record<string,string>={
-    checking:"#2563EB",savings:"#16A34A",credit_card:RED,
-    money_market:"#7C3AED",cd:"#D97706",business_checking:"#0891B2",
-    business_savings:"#059669",business_credit_card:"#4338CA",
+    checking:BLUE,savings:"#16A34A",credit_card:BLUE,
+    money_market:BLUE,cd:"#D97706",business_checking:BLUE,
+    business_savings:"#059669",business_credit_card:BLUE,
   };
 
   const acctByType=accounts.reduce((m,a)=>{
@@ -2915,7 +2946,7 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
   const catItems=Object.entries(catMap)
     .sort((a,b)=>b[1]-a[1])
     .slice(0,8)
-    .map(([label,value])=>({label,value,color:"#2563EB"}));
+    .map(([label,value])=>({label,value,color:BLUE}));
 
   const kycCounts={
     verified:users.filter(u=>u.kycStatus==="verified").length,
@@ -2951,8 +2982,8 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
   function exportDisputes(){ downloadCSV(`sgginv-disputes-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Reference","Type","Amount","Merchant","Status","Description","Opened","Resolved"],...disputes.map(d=>[d.id,d.referenceId,d.disputeType,String(d.amount),d.merchant,d.status,d.description,d.openedAt,d.resolvedAt||""])]); }
 
   const EXPORTS=[
-    {label:"Export Accounts",     desc:`${accounts.length} accounts`,       fn:exportAccounts, color:"#2563EB", icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"},
-    {label:"Export Customers",    desc:`${customerUsers.length} customers`,  fn:exportUsers,    color:"#7C3AED", icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"},
+    {label:"Export Accounts",     desc:`${accounts.length} accounts`,       fn:exportAccounts, color:BLUE, icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"},
+    {label:"Export Customers",    desc:`${customerUsers.length} customers`,  fn:exportUsers,    color:BLUE, icon:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"},
     {label:"Export Transactions", desc:`${txs.length} recent posted`,        fn:exportTxs,      color:"#059669", icon:"M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"},
     {label:"Export Disputes",     desc:`${disputes.length} cases`,           fn:exportDisputes, color:"#D97706", icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"},
   ] as const;
@@ -2964,8 +2995,8 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
       {/* Top stats */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(165px,1fr))",gap:14,marginBottom:24}}>
         <StatCard label="Total Deposits"     value={usd(totalDeposits)}     sub={`${depositAccts.length} deposit accounts`}     color="#059669" icon="M2 20h20M4 20V10M20 20V10M10 20V14h4v6M1 10l11-7 11 7"/>
-        <StatCard label="Credit Outstanding" value={usd(totalOwed)}         sub={`${creditAccts.length} credit accounts`}       color={RED}     icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
-        <StatCard label="Active Customers"   value={String(customerUsers.length)} sub={`${users.length} total registered`}    color="#2563EB" icon="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+        <StatCard label="Credit Outstanding" value={usd(totalOwed)}         sub={`${creditAccts.length} credit accounts`}       color={BLUE}     icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"/>
+        <StatCard label="Active Customers"   value={String(customerUsers.length)} sub={`${users.length} total registered`}    color={BLUE} icon="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
         <StatCard label="Disputes at Risk"   value={usd(openDisputeValue)}  sub={`${openDisputes.length} open cases`}           color="#D97706" icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/>
         <StatCard label="Open Fraud Alerts"  value={String(openFraud)}      sub="requiring action"                              color={openFraud>0?"#DC2626":GRAY} icon="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
         <StatCard label="Pending Apps"       value={String(appCounts.pending)} sub={`${apps.length} total submitted`}          color={appCounts.pending>0?"#D97706":GRAY} icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
@@ -3035,7 +3066,7 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
           <div style={{padding:"16px 18px"}}>
             {Object.keys(fraudByRule).length===0
               ?<Empty msg="No fraud alerts yet."/>
-              :<HBar items={Object.entries(fraudByRule).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value,color:RED}))} fmt={n=>String(n)}/>
+              :<HBar items={Object.entries(fraudByRule).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value,color:BLUE}))} fmt={n=>String(n)}/>
             }
           </div>
         </div>
@@ -3049,7 +3080,7 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
             <div style={{fontSize:12,color:GRAY,marginTop:2}}>Total disputed amount across all cases, grouped by dispute category</div>
           </div>
           <div style={{padding:"20px"}}>
-            <HBar items={Object.entries(disputeByType).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value,color:"#2563EB"}))} fmt={usd}/>
+            <HBar items={Object.entries(disputeByType).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value,color:BLUE}))} fmt={usd}/>
           </div>
         </div>
       )}
@@ -3100,10 +3131,10 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,
           const showBadge=(item.id==="Fraud"&&fraudOpenCount>0)||(item.id==="Disputes"&&disputeOpenCount>0);
           const badgeCount=item.id==="Fraud"?fraudOpenCount:disputeOpenCount;
           return(
-            <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"8px 10px",borderRadius:8,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13,fontWeight:on?600:400,color:on?"#fff":"rgba(255,255,255,.68)",background:on?"rgba(255,255,255,.14)":"transparent",textAlign:"left",marginBottom:1,transition:"all .12s",borderLeft:on?`3px solid ${GOLD}`:"3px solid transparent"}}>
+            <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"8px 10px",borderRadius:8,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13,fontWeight:on?600:400,color:on?"#fff":"rgba(255,255,255,.68)",background:on?"rgba(255,255,255,.16)":"transparent",textAlign:"left",marginBottom:1,transition:"all .12s",borderLeft:on?"3px solid #fff":"3px solid transparent"}}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.2:1.7} style={{flexShrink:0}}><path d={item.icon}/></svg>
               <span style={{flex:1}}>{item.label}</span>
-              {showBadge&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:99,background:GOLD,color:DARK,letterSpacing:".03em",flexShrink:0}}>{badgeCount}</span>}
+              {showBadge&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:99,background:"#fff",color:BLUE,letterSpacing:".03em",flexShrink:0}}>{badgeCount}</span>}
             </button>
           );
         })}
@@ -3121,7 +3152,7 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,
       {/* Admin profile footer */}
       <div style={{borderTop:"1px solid rgba(255,255,255,.1)",padding:"14px 16px",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-          <div style={{width:34,height:34,borderRadius:"50%",background:GOLD,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:DARK,flexShrink:0}}>{initials}</div>
+          <div style={{width:34,height:34,borderRadius:"50%",background:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:BLUE,flexShrink:0}}>{initials}</div>
           <div style={{minWidth:0}}>
             <div style={{fontSize:12.5,fontWeight:600,color:"#fff",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{adminName}</div>
             <div style={{fontSize:10.5,color:"rgba(255,255,255,.48)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{adminEmail}</div>
@@ -3142,6 +3173,8 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,
    PAGE
 ═══════════════════════════════════════════════════════ */
 export default function CpanelPage(){
+  const minLoaderShown=useMinDuration(3200);
+  const [signingOut,setSigningOut]=useState(false);
   const [loading,  setLoading]  = useState(true);
   const [isAdmin,  setIsAdmin]  = useState(false);
   const [tab,      setTab]      = useState("Overview");
@@ -3586,23 +3619,25 @@ export default function CpanelPage(){
   }
 
   async function signOut(){
+    setSigningOut(true);
     const sb=createClient();
-    await sb.auth.signOut();
+    // Keep the sign-out screen up for a moment so it doesn't just flash.
+    await Promise.all([sb.auth.signOut(),new Promise(r=>setTimeout(r,2000))]);
     window.location.href="/login";
   }
 
   /* ── Render ── */
-  if(loading) return <LoadingSpinner/>;
+  if(signingOut) return <BrandLoader message="Signing you out…"/>;
+  if(loading||!minLoaderShown) return <LoadingSpinner/>;
   if(!isAdmin) return <AccessDenied/>;
 
   return(
-    <div style={{height:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif",display:"flex",overflow:"hidden"}}>
+    <div style={{height:"100vh",background:BG,display:"flex",overflow:"hidden"}}>
 
       {/* ── Sidebar — flex child, no position:fixed needed ── */}
       <div style={{
         width:262,flexShrink:0,zIndex:40,
-        background:RED,display:"flex",flexDirection:"column",
-        boxShadow:"3px 0 16px rgba(0,0,0,.18)"
+        background:BLUE,display:"flex",flexDirection:"column"
       }}>
         <AdminSidebar
           active={tab}
@@ -3618,27 +3653,26 @@ export default function CpanelPage(){
       {/* ── Main column — scrolls independently of sidebar ── */}
       <div style={{flex:1,display:"flex",flexDirection:"column",overflowY:"auto",overflowX:"hidden",minWidth:0}}>
 
-        {/* Red topbar — sticky within this scroll container */}
+        {/* Top bar — sticky within this scroll container */}
         <header style={{
           position:"sticky",top:0,zIndex:30,
-          background:RED,
-          boxShadow:"0 2px 10px rgba(140,29,37,.25)",
+          background:"#fff",
+          borderBottom:"1px solid rgba(17,24,39,.1)",
           padding:"0 32px",height:58,
           display:"flex",alignItems:"center",gap:16,flexShrink:0
         }}>
           <div style={{flex:1,display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:2,height:18,background:GOLD,borderRadius:2,flexShrink:0}}/>
-            <span style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:"#fff",letterSpacing:".01em"}}>{tab}</span>
+            <span style={{fontFamily:FONT,fontWeight:600,fontSize:16,color:DARK,letterSpacing:"-.01em"}}>{tab}</span>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:7,padding:"5px 11px 5px 9px",borderRadius:8,background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.18)"}}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span style={{fontSize:12.5,fontWeight:700,color:GOLD,letterSpacing:".04em"}}>ADMIN</span>
+          <div style={{display:"flex",alignItems:"center",gap:7,padding:"5px 11px 5px 9px",borderRadius:4,background:BLUE}}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style={{fontSize:12,fontWeight:700,color:"#fff",letterSpacing:".06em"}}>ADMIN</span>
           </div>
         </header>
 
         {/* Content */}
         <main style={{flex:1,padding:"28px 36px",boxSizing:"border-box"}}>
-          {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps}/>}
+          {tab==="Overview"      && <OverviewTab users={users} accounts={accounts} txs={txs} apps={apps} onNavigate={setTab}/>}
           {tab==="Users"         && <UsersTab    users={users} accounts={accounts} onFreezeToggle={handleFreezeToggle} onCreditLimitUpdate={handleCreditLimitUpdate} onRenameAccount={handleRenameAccount}/>}
           {tab==="Transactions"  && <TransactionsTab users={users} accounts={accounts} pendingTxs={pendingTxs} onApprove={handleApproveTransaction} onReject={handleRejectTransaction} onManual={handleManualTransaction} onInternalTransfer={handleInternalTransfer} onExternalTransfer={handleExternalTransfer} onUnfreeze={handleUnfreezeUser}/>}
           {tab==="KYC"           && <KYCTab users={users} onUpdate={handleKYCUpdate}/>}

@@ -4,17 +4,18 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/Logo";
+import BrandLoader from "@/components/BrandLoader";
+import { useMinDuration } from "@/lib/useMinDuration";
 
 /* ── Design tokens ───────────────────────────────── */
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
-const GOLD = "#D4AF37";
+const BLUE = "#0800FF";
 const DARK = "#111827";
 const MID  = "#374151";
 const GRAY = "#6B7280";
-const BG   = "#F5F7FA";
+const BG   = "#F4F5FB";
 
-const CARD    = { background:"#fff", borderRadius:12, border:"1px solid rgba(17,24,39,.08)", boxShadow:"0 1px 4px rgba(17,24,39,.06)" } as const;
+const CARD    = { background:"#fff", borderRadius:8, border:"1px solid rgba(17,24,39,.1)" } as const;
 const DIVIDER = { height:1, background:"rgba(17,24,39,.07)", margin:"0" } as const;
 
 /* ── Modal form primitives ───────────────────────── */
@@ -29,15 +30,15 @@ const ACC_META: Record<string,{label:string;color:string;grad:string}> = {
   credit_card:       {label:"Credit Card",       color:"#7C3AED", grad:"linear-gradient(135deg,#5B1D8C 0%,#3B1260 60%,#220A40 100%)"},
   money_market:      {label:"Money Market",      color:"#B45309", grad:"linear-gradient(135deg,#78350F 0%,#4D2106 60%,#2D1203 100%)"},
   cd:                {label:"CD",                color:"#0891B2", grad:"linear-gradient(135deg,#164E63 0%,#0C3448 60%,#071E2D 100%)"},
-  business_checking:     {label:"Business Checking",     color:RED,       grad:"linear-gradient(135deg,#7B1020 0%,#5A0C18 60%,#36070E 100%)"},
+  business_checking:     {label:"Business Checking",     color:"#8C1D25",       grad:"linear-gradient(135deg,#7B1020 0%,#5A0C18 60%,#36070E 100%)"},
   business_savings:      {label:"Business Savings",      color:"#047857", grad:"linear-gradient(135deg,#064E3B 0%,#033327 60%,#011F18 100%)"},
   business_credit_card:  {label:"Business Credit Card",  color:"#4338CA", grad:"linear-gradient(135deg,#1E1B4B 0%,#2D1B69 60%,#140C3E 100%)"},
 };
 
 const CAT_COLOR: Record<string,string> = {
   Groceries:"#059669", Income:"#16A34A", "Auto & Gas":"#D97706",
-  Entertainment:"#DB2777", Transfer:"#6B7280",
-  Dining:"#DC2626", Shopping:"#7C3AED", Housing:RED,
+  Entertainment:BLUE, Transfer:"#6B7280",
+  Dining:"#DC2626", Shopping:BLUE, Housing:BLUE,
 };
 
 /* ── Types ───────────────────────────────────────── */
@@ -234,18 +235,18 @@ function QuickBtn({icon,label,onClick}:{icon:string;label:string;onClick?:()=>vo
       onMouseEnter={()=>setPressed(true)} onMouseLeave={()=>setPressed(false)}
       onTouchStart={()=>setPressed(true)} onTouchEnd={()=>setPressed(false)}
       style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,flexShrink:0,
-        background:active?"rgba(140,29,37,.07)":"#fff",
-        border:`1px solid ${active?"rgba(140,29,37,.28)":"rgba(17,24,39,.09)"}`,
+        background:active?"rgba(8,0,255,.07)":"#fff",
+        border:`1px solid ${active?"rgba(8,0,255,.28)":"rgba(17,24,39,.09)"}`,
         borderRadius:12,padding:"12px 16px",cursor:"pointer",fontFamily:"inherit",
         transition:"all .12s",boxShadow:active?"none":"0 1px 3px rgba(17,24,39,.06)",
         WebkitTapHighlightColor:"transparent"}}>
       <div style={{width:36,height:36,borderRadius:10,
-        background:active?"rgba(140,29,37,.12)":"rgba(17,24,39,.05)",
+        background:active?"rgba(8,0,255,.12)":"rgba(17,24,39,.05)",
         display:"flex",alignItems:"center",justifyContent:"center",
-        color:active?RED:MID,transition:"all .12s"}}>
+        color:active?BLUE:MID,transition:"all .12s"}}>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={icon}/></svg>
       </div>
-      <span style={{fontSize:11.5,fontWeight:600,color:active?RED:MID,whiteSpace:"nowrap"}}>{label}</span>
+      <span style={{fontSize:11.5,fontWeight:600,color:active?BLUE:MID,whiteSpace:"nowrap"}}>{label}</span>
     </button>
   );
 }
@@ -271,7 +272,7 @@ function BottomNav({active,set,onMore}:{active:string;set:(t:string)=>void;onMor
         const isMore=t.tab==="__more__";
         const on=isMore?MORE_TABS.has(active):active===t.tab;
         return(
-          <button key={t.label} onClick={(e)=>{if(isMore){e.stopPropagation();onMore();}else set(t.tab);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",padding:"6px 10px",color:on?RED:GRAY,fontFamily:"inherit",flex:1,transition:"color .15s"}}>
+          <button key={t.label} onClick={(e)=>{if(isMore){e.stopPropagation();onMore();}else set(t.tab);}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",cursor:"pointer",padding:"6px 10px",color:on?BLUE:GRAY,fontFamily:"inherit",flex:1,transition:"color .15s"}}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.5:1.8}><path d={t.icon}/></svg>
             <span style={{fontSize:10,fontWeight:on?700:500}}>{t.label}</span>
           </button>
@@ -301,7 +302,7 @@ function MoreSheet({open,onClose,onSelect,onSignOut}:{open:boolean;onClose:()=>v
           </button>
         ))}
         <div style={{margin:"4px 16px 0",borderTop:"1px solid rgba(17,24,39,.07)",paddingTop:4}}>
-          <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:14,width:"100%",background:"none",border:"none",padding:"14px 8px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",color:RED}}>
+          <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:14,width:"100%",background:"none",border:"none",padding:"14px 8px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",color:BLUE}}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
             <span style={{fontSize:15,fontWeight:500}}>Sign out</span>
           </button>
@@ -312,17 +313,7 @@ function MoreSheet({open,onClose,onSelect,onSignOut}:{open:boolean;onClose:()=>v
 }
 
 function PageSkeleton(){
-  return(
-    <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <div style={{textAlign:"center",fontFamily:FONT}}>
-        <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
-          <Logo variant="dark" height={40} />
-        </div>
-        <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading your accounts…</div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-      </div>
-    </div>
-  );
+  return <BrandLoader message="Loading your accounts…"/>;
 }
 
 /* ═════════════════════════════════════════════════════
@@ -353,7 +344,7 @@ function SuccessState({msg,onClose}:{msg:string;onClose:()=>void}){
       </div>
       <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Done!</div>
       <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55,maxWidth:320,margin:"0 auto 24px"}}>{msg}</div>
-      <button onClick={onClose} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 28px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
+      <button onClick={onClose} style={{background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"10px 28px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
     </div>
   );
 }
@@ -365,7 +356,7 @@ function PendingState({msg,onClose}:{msg:string;onClose:()=>void}){
       </div>
       <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Submitted for Review</div>
       <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55,maxWidth:320,margin:"0 auto 24px"}}>{msg}</div>
-      <button onClick={onClose} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 28px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
+      <button onClick={onClose} style={{background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"10px 28px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
     </div>
   );
 }
@@ -501,7 +492,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
               <span style={{fontSize:12.5,fontWeight:700,color:MID}}>External Bank Details</span>
               {extAccts.length>0&&(
-                <button onClick={()=>setExtMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>
+                <button onClick={()=>setExtMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:BLUE,cursor:"pointer",fontFamily:"inherit",padding:0}}>
                   {extMode==="pick"?"+ Add New Account":"← Saved Accounts"}
                 </button>
               )}
@@ -510,8 +501,8 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
             {extMode==="pick"&&extAccts.length>0?(
               <div style={{display:"flex",flexDirection:"column",gap:8}}>
                 {extAccts.map(a=>(
-                  <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${selExtId===a.id?RED:"rgba(17,24,39,.1)"}`,borderRadius:9,background:selExtId===a.id?"rgba(140,29,37,.04)":"#fff",transition:"all .15s"}}>
-                    <input type="radio" name="extAcct" checked={selExtId===a.id} onChange={()=>setSelExtId(a.id)} style={{accentColor:RED,marginTop:2,flexShrink:0}}/>
+                  <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${selExtId===a.id?BLUE:"rgba(17,24,39,.1)"}`,borderRadius:9,background:selExtId===a.id?"rgba(8,0,255,.04)":"#fff",transition:"all .15s"}}>
+                    <input type="radio" name="extAcct" checked={selExtId===a.id} onChange={()=>setSelExtId(a.id)} style={{accentColor:BLUE,marginTop:2,flexShrink:0}}/>
                     <div>
                       <div style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bankName||"External Account"}</div>
                       <div style={{fontSize:12,color:GRAY,marginTop:2}}>
@@ -533,19 +524,19 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                     {EXT_BANKS.map(b=>(
                       <button key={b.key} type="button"
                         onClick={()=>{setSelBank(b.key);upExt("bankName",b.name);}}
-                        style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                        style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?BLUE:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(8,0,255,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <BankIcon />
-                        <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?RED:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
+                        <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?BLUE:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
                       </button>
                     ))}
                     <button type="button"
                       onClick={()=>{setSelBank("other");upExt("bankName","");}}
-                      style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank==="other"?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank==="other"?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                      style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank==="other"?BLUE:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank==="other"?"rgba(8,0,255,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
                       <div style={{height:28,width:28,borderRadius:"50%",background:"rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={selBank==="other"?RED:GRAY} strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={selBank==="other"?BLUE:GRAY} strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
                       </div>
-                      <span style={{fontSize:10,fontWeight:600,color:selBank==="other"?RED:MID,textAlign:"center",lineHeight:1.3}}>Other</span>
+                      <span style={{fontSize:10,fontWeight:600,color:selBank==="other"?BLUE:MID,textAlign:"center",lineHeight:1.3}}>Other</span>
                     </button>
                   </div>
                   {selBank==="other"&&(
@@ -559,12 +550,12 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                 {selBank&&(
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
                     {/* Selected bank banner */}
-                    <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(140,29,37,.04)",border:"1px solid rgba(140,29,37,.16)",borderRadius:8}}>
+                    <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(8,0,255,.04)",border:"1px solid rgba(8,0,255,.16)",borderRadius:8}}>
                       {selBank!=="other"&&EXT_BANKS.find(b=>b.key===selBank)&&(
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <BankIcon size={20} />
                       )}
-                      <span style={{fontSize:13,fontWeight:700,color:RED}}>{extForm.bankName||"Other Bank"}</span>
+                      <span style={{fontSize:13,fontWeight:700,color:BLUE}}>{extForm.bankName||"Other Bank"}</span>
                       <button type="button" onClick={()=>{setSelBank("");upExt("bankName","");}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:"2px 6px",color:GRAY,fontSize:11.5,fontWeight:500,fontFamily:"inherit",borderRadius:5}}>Change</button>
                     </div>
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
@@ -593,7 +584,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
                       </div>
                       <div style={{gridColumn:"1/-1"}}>
                         <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
-                          <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
+                          <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:BLUE,width:15,height:15,cursor:"pointer"}}/>
                           Save this account for future transfers
                         </label>
                       </div>
@@ -614,7 +605,7 @@ function TransferModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct
         <ErrBanner msg={err}/>
         <div style={{display:"flex",gap:10}}>
           <button onClick={onClose} style={{flex:1,background:"rgba(17,24,39,.06)",border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:MID,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
-          <button disabled={busy} style={{flex:2,background:RED,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>
+          <button disabled={busy} style={{flex:2,background:BLUE,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>
             {busy?"Submitting…":isExt?"Send External Transfer":"Transfer Funds"}
           </button>
         </div>
@@ -654,7 +645,7 @@ function PayBillModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct[
         <div style={{marginTop:14}}><ErrBanner msg={err}/></div>
         <div style={{display:"flex",gap:10,marginTop:8}}>
           <button onClick={onClose} style={{flex:1,background:"rgba(17,24,39,.06)",border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:MID,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
-          <button disabled={busy} style={{flex:2,background:RED,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>{busy?"Submitting…":"Schedule Payment"}</button>
+          <button disabled={busy} style={{flex:2,background:BLUE,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>{busy?"Submitting…":"Schedule Payment"}</button>
         </div>
       </div>
     </ModalShell>
@@ -695,7 +686,7 @@ function DepositCheckModal({onClose,accounts,userId}:{onClose:()=>void;accounts:
         <div style={{marginTop:16}}><ErrBanner msg={err}/></div>
         <div style={{display:"flex",gap:10,marginTop:8}}>
           <button onClick={onClose} style={{flex:1,background:"rgba(17,24,39,.06)",border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:MID,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
-          <button disabled={busy} style={{flex:2,background:RED,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>{busy?"Submitting…":"Submit Deposit"}</button>
+          <button disabled={busy} style={{flex:2,background:BLUE,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>{busy?"Submitting…":"Submit Deposit"}</button>
         </div>
       </div>
     </ModalShell>
@@ -725,9 +716,9 @@ function ZelleModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct[];
   return(
     <ModalShell title="Send with Zelle®" onClose={onClose}>
       <div style={{padding:"20px 24px"}}>
-        <div style={{background:"rgba(90,90,215,.06)",border:"1px solid rgba(90,90,215,.18)",borderRadius:10,padding:"10px 14px",marginBottom:16,display:"flex",gap:10,alignItems:"center"}}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A5AD7" strokeWidth="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          <span style={{fontSize:12.5,color:"#4B4BBA",fontWeight:500}}>Powered by Zelle® — money moves typically within minutes.</span>
+        <div style={{background:"rgba(8,0,255,.06)",border:"1px solid rgba(8,0,255,.18)",borderRadius:10,padding:"10px 14px",marginBottom:16,display:"flex",gap:10,alignItems:"center"}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span style={{fontSize:12.5,color:BLUE,fontWeight:500}}>Powered by Zelle® — money moves typically within minutes.</span>
         </div>
         <div style={{marginBottom:14}}><label style={LBL}>From Account</label><select value={from} onChange={e=>setFrom(e.target.value)} style={SEL}>{dep.map(a=><option key={a.id} value={a.id}>{a.label} — {usd(a.balance)}</option>)}</select></div>
         <div style={{marginBottom:14}}><label style={LBL}>Recipient (email or US mobile)</label><input type="text" placeholder="jane@example.com or (555) 867-5309" value={recipient} onChange={e=>setRecipient(e.target.value)} style={INP}/></div>
@@ -736,7 +727,7 @@ function ZelleModal({onClose,accounts,userId}:{onClose:()=>void;accounts:Acct[];
         <ErrBanner msg={err}/>
         <div style={{display:"flex",gap:10}}>
           <button onClick={onClose} style={{flex:1,background:"rgba(17,24,39,.06)",border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:MID,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
-          <button disabled={busy} style={{flex:2,background:"#5A5AD7",border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>{busy?"Submitting…":`Send${amt&&parseFloat(amt)>0?` ${usd(parseFloat(amt))}`:""}`}</button>
+          <button disabled={busy} style={{flex:2,background:BLUE,border:"none",borderRadius:9,padding:"10px 0",fontSize:13.5,fontWeight:600,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:"inherit",opacity:busy?.7:1}} onClick={submit}>{busy?"Submitting…":`Send${amt&&parseFloat(amt)>0?` ${usd(parseFloat(amt))}`:""}`}</button>
         </div>
       </div>
     </ModalShell>
@@ -790,7 +781,7 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
           <h2 style={{margin:"0 0 4px",fontFamily:FONT,fontWeight:800,fontSize:20,color:DARK}}>My Accounts</h2>
           <p style={{margin:0,fontSize:13,color:GRAY}}>{accounts.length} active account{accounts.length!==1?"s":""}</p>
         </div>
-        <button onClick={()=>{window.location.href="/open-account";}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"9px 18px",fontSize:13.5,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
+        <button onClick={()=>{window.location.href="/open-account";}} style={{background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"9px 18px",fontSize:13.5,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
           Open Account
         </button>
@@ -846,12 +837,12 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
                 {label:"Statements",fn:()=>{}},
               ].map(btn=>(
                 <button key={btn.label} onClick={btn.fn} style={{background:"rgba(17,24,39,.04)",border:"1px solid rgba(17,24,39,.1)",borderRadius:7,padding:"6px 14px",fontSize:12.5,fontWeight:600,color:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}
-                  onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=RED;b.style.borderColor="rgba(140,29,37,.3)";}}
+                  onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=BLUE;b.style.borderColor="rgba(8,0,255,.3)";}}
                   onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=MID;b.style.borderColor="rgba(17,24,39,.1)";}}>
                   {btn.label}
                 </button>
               ))}
-              <button onClick={()=>toggleExpand(a.id)} style={{background:isExpanded?"rgba(140,29,37,.07)":"rgba(17,24,39,.04)",border:`1px solid ${isExpanded?"rgba(140,29,37,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"6px 14px",fontSize:12.5,fontWeight:600,color:isExpanded?RED:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",display:"flex",alignItems:"center",gap:5}}>
+              <button onClick={()=>toggleExpand(a.id)} style={{background:isExpanded?"rgba(8,0,255,.07)":"rgba(17,24,39,.04)",border:`1px solid ${isExpanded?"rgba(8,0,255,.25)":"rgba(17,24,39,.1)"}`,borderRadius:7,padding:"6px 14px",fontSize:12.5,fontWeight:600,color:isExpanded?BLUE:MID,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",display:"flex",alignItems:"center",gap:5}}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
                 {isExpanded?"Hide Details":"Account Details"}
               </button>
@@ -871,7 +862,7 @@ function AccountsTab({accounts,onSetModal}:{accounts:Acct[];onSetModal:(m:ModalK
       {accounts.length===0&&(
         <div style={{...CARD,padding:"48px 24px",textAlign:"center",color:GRAY}}>
           <div style={{marginBottom:12}}>No accounts found.</div>
-          <button onClick={()=>{window.location.href="/open-account";}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"9px 20px",fontSize:13.5,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Open Your First Account</button>
+          <button onClick={()=>{window.location.href="/open-account";}} style={{background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"9px 20px",fontSize:13.5,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Open Your First Account</button>
         </div>
       )}
     </div>
@@ -984,7 +975,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
             </div>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Submitted for Review</div>
             <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55}}>Your transfer request is pending admin approval.</div>
-            <button onClick={()=>{setDone(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});setSelBank("");}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
+            <button onClick={()=>{setDone(false);setAmt("");setMemo("");setExtForm({routingNumber:"",accountNumber:"",accountType:"checking",holderName:"",bankName:"",nickname:""});setSelBank("");}} style={{background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>New Transfer</button>
           </div>
         ):(
           <div style={{padding:"24px"}}>
@@ -1003,7 +994,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
                   <span style={{fontSize:12.5,fontWeight:700,color:MID}}>External Bank Details</span>
                   {extAccts.length>0&&(
-                    <button onClick={()=>setExtMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>
+                    <button onClick={()=>setExtMode(m=>m==="pick"?"new":"pick")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:BLUE,cursor:"pointer",fontFamily:"inherit",padding:0}}>
                       {extMode==="pick"?"+ Add New Account":"← Saved Accounts"}
                     </button>
                   )}
@@ -1011,8 +1002,8 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                 {extMode==="pick"&&extAccts.length>0?(
                   <div style={{display:"flex",flexDirection:"column",gap:8}}>
                     {extAccts.map(a=>(
-                      <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${selExtId===a.id?RED:"rgba(17,24,39,.1)"}`,borderRadius:9,background:selExtId===a.id?"rgba(140,29,37,.04)":"#fff",transition:"all .15s"}}>
-                        <input type="radio" name="extAcctTab" checked={selExtId===a.id} onChange={()=>setSelExtId(a.id)} style={{accentColor:RED,marginTop:2,flexShrink:0}}/>
+                      <label key={a.id} style={{display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",padding:"10px 12px",border:`1.5px solid ${selExtId===a.id?BLUE:"rgba(17,24,39,.1)"}`,borderRadius:9,background:selExtId===a.id?"rgba(8,0,255,.04)":"#fff",transition:"all .15s"}}>
+                        <input type="radio" name="extAcctTab" checked={selExtId===a.id} onChange={()=>setSelExtId(a.id)} style={{accentColor:BLUE,marginTop:2,flexShrink:0}}/>
                         <div>
                           <div style={{fontSize:13,fontWeight:600,color:DARK}}>{a.nickname||a.bankName||"External Account"}</div>
                           <div style={{fontSize:12,color:GRAY,marginTop:2}}>
@@ -1034,19 +1025,19 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                         {EXT_BANKS.map(b=>(
                           <button key={b.key} type="button"
                             onClick={()=>{setSelBank(b.key);upExt("bankName",b.name);}}
-                            style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                            style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank===b.key?BLUE:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank===b.key?"rgba(8,0,255,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <BankIcon />
-                            <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?RED:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
+                            <span style={{fontSize:10,fontWeight:600,color:selBank===b.key?BLUE:MID,textAlign:"center",lineHeight:1.3}}>{b.name}</span>
                           </button>
                         ))}
                         <button type="button"
                           onClick={()=>{setSelBank("other");upExt("bankName","");}}
-                          style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank==="other"?RED:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank==="other"?"rgba(140,29,37,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
+                          style={{padding:"10px 6px 8px",border:`1.5px solid ${selBank==="other"?BLUE:"rgba(17,24,39,.12)"}`,borderRadius:9,background:selBank==="other"?"rgba(8,0,255,.04)":"#fff",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:5,transition:"all .15s",fontFamily:"inherit",outline:"none"}}>
                           <div style={{height:28,width:28,borderRadius:"50%",background:"rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={selBank==="other"?RED:GRAY} strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={selBank==="other"?BLUE:GRAY} strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
                           </div>
-                          <span style={{fontSize:10,fontWeight:600,color:selBank==="other"?RED:MID,textAlign:"center",lineHeight:1.3}}>Other</span>
+                          <span style={{fontSize:10,fontWeight:600,color:selBank==="other"?BLUE:MID,textAlign:"center",lineHeight:1.3}}>Other</span>
                         </button>
                       </div>
                       {selBank==="other"&&(
@@ -1060,12 +1051,12 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                     {selBank&&(
                       <div style={{display:"flex",flexDirection:"column",gap:10}}>
                         {/* Selected bank banner */}
-                        <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(140,29,37,.04)",border:"1px solid rgba(140,29,37,.16)",borderRadius:8}}>
+                        <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",background:"rgba(8,0,255,.04)",border:"1px solid rgba(8,0,255,.16)",borderRadius:8}}>
                           {selBank!=="other"&&EXT_BANKS.find(b=>b.key===selBank)&&(
                             /* eslint-disable-next-line @next/next/no-img-element */
                             <BankIcon size={20} />
                           )}
-                          <span style={{fontSize:13,fontWeight:700,color:RED}}>{extForm.bankName||"Other Bank"}</span>
+                          <span style={{fontSize:13,fontWeight:700,color:BLUE}}>{extForm.bankName||"Other Bank"}</span>
                           <button type="button" onClick={()=>{setSelBank("");upExt("bankName","");}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:"2px 6px",color:GRAY,fontSize:11.5,fontWeight:500,fontFamily:"inherit",borderRadius:5}}>Change</button>
                         </div>
                         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
@@ -1094,7 +1085,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
                           </div>
                           <div style={{gridColumn:"1/-1"}}>
                             <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:13,color:MID}}>
-                              <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:RED,width:15,height:15,cursor:"pointer"}}/>
+                              <input type="checkbox" checked={saveAcct} onChange={e=>setSaveAcct(e.target.checked)} style={{accentColor:BLUE,width:15,height:15,cursor:"pointer"}}/>
                               Save this account for future transfers
                             </label>
                           </div>
@@ -1109,7 +1100,7 @@ function TransfersTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:str
             <div style={{marginBottom:16}}><label style={LBL}>Amount</label><AmtInput value={amt} set={setAmt}/></div>
             <div style={{marginBottom:20}}><label style={LBL}>Memo <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><input type="text" placeholder={isExt?"e.g. Rent payment, wire transfer…":"e.g. Monthly savings transfer…"} value={memo} onChange={e=>setMemo(e.target.value)} style={INP}/></div>
             <ErrBanner msg={err}/>
-            <button disabled={busy} style={{width:"100%",background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:FONT,opacity:busy?.7:1}} onClick={submit}>
+            <button disabled={busy} style={{width:"100%",background:BLUE,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:FONT,opacity:busy?.7:1}} onClick={submit}>
               {busy?"Submitting…":isExt?"Send External Transfer":"Transfer Funds"}
             </button>
             <p style={{margin:"12px 0 0",fontSize:12,color:GRAY,textAlign:"center"}}>Transfers are posted once approved by the bank.</p>
@@ -1154,7 +1145,7 @@ function PayBillsTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:stri
             </div>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:17,color:DARK,marginBottom:8}}>Submitted for Review</div>
             <div style={{fontSize:14,color:GRAY,marginBottom:24,lineHeight:1.55}}>Your payment to {payee} is pending admin approval.</div>
-            <button onClick={()=>{setDone(false);setPayee("");setAmt("");}} style={{background:RED,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Pay Another Bill</button>
+            <button onClick={()=>{setDone(false);setPayee("");setAmt("");}} style={{background:BLUE,color:"#fff",border:"none",borderRadius:9,padding:"10px 24px",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Pay Another Bill</button>
           </div>
         ):(
           <div style={{padding:"24px"}}>
@@ -1174,7 +1165,7 @@ function PayBillsTab({accounts,txs,userId}:{accounts:Acct[];txs:Tx[];userId:stri
               <div><label style={LBL}>Payment Date</label><input type="date" value={date} onChange={e=>setDate(e.target.value)} style={INP}/></div>
             </Row2>
             <div style={{marginTop:16}}><ErrBanner msg={err}/></div>
-            <button disabled={busy} style={{width:"100%",marginTop:8,background:RED,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:FONT,opacity:busy?.7:1}} onClick={async()=>{
+            <button disabled={busy} style={{width:"100%",marginTop:8,background:BLUE,border:"none",borderRadius:10,padding:"12px 0",fontSize:14,fontWeight:700,color:"#fff",cursor:busy?"not-allowed":"pointer",fontFamily:FONT,opacity:busy?.7:1}} onClick={async()=>{
               if(!payee.trim()){setErr("Please enter a payee.");return;}
               if(!amt||parseFloat(amt)<=0){setErr("Please enter a valid amount.");return;}
               setBusy(true);
@@ -1262,7 +1253,7 @@ function CardsTab({accounts}:{accounts:Acct[]}){
                     </div>
                   )}
                   <button style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"1px solid rgba(17,24,39,.1)",borderRadius:9,padding:"9px 14px",cursor:"pointer",fontFamily:"inherit",fontSize:13,color:MID,transition:"all .15s",width:"100%"}}
-                    onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=RED;b.style.borderColor="rgba(140,29,37,.3)";}}
+                    onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=BLUE;b.style.borderColor="rgba(8,0,255,.3)";}}
                     onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=MID;b.style.borderColor="rgba(17,24,39,.1)";}}>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></svg>
                     Report Lost or Stolen
@@ -1314,7 +1305,7 @@ function StatementsTab({onClose,accounts}:{onClose:()=>void;accounts:Acct[]}){
         <div style={{...CARD,padding:"40px 24px",textAlign:"center",color:GRAY,fontSize:13.5}}>Loading statements…</div>
       ):stmts.length===0?(
         <div style={{...CARD,padding:"48px 24px",textAlign:"center"}}>
-          <div style={{width:48,height:48,borderRadius:12,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",color:RED}}>
+          <div style={{width:48,height:48,borderRadius:12,background:"rgba(8,0,255,.07)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",color:BLUE}}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
           </div>
           <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:DARK,marginBottom:6}}>No statements yet</div>
@@ -1324,7 +1315,7 @@ function StatementsTab({onClose,accounts}:{onClose:()=>void;accounts:Acct[]}){
         <div style={{...CARD,overflow:"hidden"}}>
           {stmts.map((s,i)=>(
             <div key={s.id} style={{display:"flex",alignItems:"center",gap:14,padding:"16px 22px",borderBottom:i<stmts.length-1?"1px solid rgba(17,24,39,.05)":"none"}}>
-              <div style={{width:40,height:40,borderRadius:10,background:"rgba(140,29,37,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+              <div style={{width:40,height:40,borderRadius:10,background:"rgba(8,0,255,.07)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:BLUE}}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
               </div>
               <div style={{flex:1,minWidth:0}}>
@@ -1337,7 +1328,7 @@ function StatementsTab({onClose,accounts}:{onClose:()=>void;accounts:Acct[]}){
               <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:5,flexShrink:0}}>
                 <span style={{fontSize:10,color:GRAY,fontFamily:"monospace"}}>{s.reference_id}</span>
                 <a href={`/statement?accountId=${s.account_id}&start=${s.period_start}&end=${s.period_end}`} target="_blank" rel="noopener noreferrer"
-                  style={{display:"flex",alignItems:"center",gap:5,background:"none",border:`1px solid rgba(140,29,37,.25)`,borderRadius:8,padding:"6px 13px",fontSize:12.5,fontWeight:600,color:RED,textDecoration:"none",transition:"all .15s"}}>
+                  style={{display:"flex",alignItems:"center",gap:5,background:"none",border:`1px solid rgba(8,0,255,.25)`,borderRadius:8,padding:"6px 13px",fontSize:12.5,fontWeight:600,color:BLUE,textDecoration:"none",transition:"all .15s"}}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
                   View PDF
                 </a>
@@ -1386,8 +1377,8 @@ function ProfileTab({profile,accounts,initials}:{
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
 
           {/* Avatar + name card */}
-          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"28px 28px 24px"}}><div className="db-profile-hero">
-            <div style={{width:72,height:72,borderRadius:"50%",background:`linear-gradient(145deg,${RED},#5a1018)`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:26,color:"#fff",flexShrink:0,boxShadow:"0 4px 16px rgba(140,29,37,.35)"}}>
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",padding:"28px 28px 24px"}}><div className="db-profile-hero">
+            <div style={{width:72,height:72,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:800,fontSize:26,color:"#fff",flexShrink:0}}>
               {initials}
             </div>
             <div>
@@ -1401,7 +1392,7 @@ function ProfileTab({profile,accounts,initials}:{
           </div>
 
           {/* Personal details */}
-          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"20px 24px"}}>
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",padding:"20px 24px"}}>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:4}}>Personal Information</div>
             <div style={{fontSize:12,color:GRAY,marginBottom:16}}>Contact support to update your details.</div>
             <Row label="Full Name"    value={`${profile.firstName} ${profile.lastName}`.trim()}/>
@@ -1411,7 +1402,7 @@ function ProfileTab({profile,accounts,initials}:{
           </div>
 
           {/* Security */}
-          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"20px 24px"}}>
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",padding:"20px 24px"}}>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:16}}>Security</div>
             <Row label="Last Login"  value={profile.lastLogin}/>
             <div style={{padding:"14px 0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1425,11 +1416,11 @@ function ProfileTab({profile,accounts,initials}:{
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
 
           {/* Account summary */}
-          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"20px 24px"}}>
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",padding:"20px 24px"}}>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:16}}>Account Summary</div>
             <div style={{display:"flex",gap:12,marginBottom:16}}>
-              <div style={{flex:1,background:"rgba(140,29,37,.05)",borderRadius:12,padding:"14px 16px",textAlign:"center"}}>
-                <div style={{fontFamily:FONT,fontWeight:800,fontSize:24,color:RED}}>{accounts.length}</div>
+              <div style={{flex:1,background:"rgba(8,0,255,.05)",borderRadius:12,padding:"14px 16px",textAlign:"center"}}>
+                <div style={{fontFamily:FONT,fontWeight:800,fontSize:24,color:BLUE}}>{accounts.length}</div>
                 <div style={{fontSize:11.5,color:GRAY,marginTop:2}}>Active Account{accounts.length!==1?"s":""}</div>
               </div>
               <div style={{flex:1,background:"rgba(22,163,74,.05)",borderRadius:12,padding:"14px 16px",textAlign:"center"}}>
@@ -1453,10 +1444,10 @@ function ProfileTab({profile,accounts,initials}:{
           </div>
 
           {/* Need help */}
-          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",boxShadow:"0 1px 4px rgba(17,24,39,.06)",padding:"18px 20px"}}>
+          <div style={{background:"#fff",borderRadius:16,border:"1px solid rgba(17,24,39,.08)",padding:"18px 20px"}}>
             <div style={{fontFamily:FONT,fontWeight:700,fontSize:13.5,color:DARK,marginBottom:8}}>Need to update your info?</div>
             <p style={{margin:"0 0 14px",fontSize:12.5,color:GRAY,lineHeight:1.55}}>To change your name, address, or other personal details, please contact our support team.</p>
-            <Link href="/about/contact" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:RED,color:"#fff",borderRadius:9,padding:"9px 0",fontSize:13,fontWeight:600,textDecoration:"none",fontFamily:FONT}}>
+            <Link href="/about/contact" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:BLUE,color:"#fff",borderRadius:9,padding:"9px 0",fontSize:13,fontWeight:600,textDecoration:"none",fontFamily:FONT}}>
               Contact Support
             </Link>
           </div>
@@ -1482,7 +1473,7 @@ function HistoryTab({txs}:{txs:Tx[]}){
       <div style={{...CARD,overflow:"hidden"}}>
         <div style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
           {(["all","debits","credits"] as const).map(f=>(
-            <button key={f} onClick={()=>{setFilter(f);setShown(25);}} style={{background:filter===f?"rgba(140,29,37,.08)":"transparent",color:filter===f?RED:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize"}}>
+            <button key={f} onClick={()=>{setFilter(f);setShown(25);}} style={{background:filter===f?"rgba(8,0,255,.08)":"transparent",color:filter===f?BLUE:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:filter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize"}}>
               {f==="all"?"All":f==="debits"?"Debits":"Credits"}
             </button>
           ))}
@@ -1495,7 +1486,7 @@ function HistoryTab({txs}:{txs:Tx[]}){
         {filtered.length>shown&&(
           <div style={{padding:"14px 20px",borderTop:"1px solid rgba(17,24,39,.06)",textAlign:"center"}}>
             <button onClick={()=>setShown(n=>n+25)} style={{background:"none",border:"1px solid rgba(17,24,39,.12)",borderRadius:8,padding:"8px 22px",fontSize:13,color:MID,cursor:"pointer",fontFamily:"inherit"}}
-              onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor=RED;b.style.color=RED;}}
+              onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor=BLUE;b.style.color=BLUE;}}
               onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor="rgba(17,24,39,.12)";b.style.color=MID;}}>
               Load more
             </button>
@@ -1539,7 +1530,7 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
         {NAV_ITEMS.map(item=>{
           const on=active===item.id;
           return(
-            <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:9,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13.5,fontWeight:on?600:400,color:on?RED:MID,background:on?"rgba(140,29,37,.07)":"transparent",textAlign:"left",marginBottom:2,transition:"all .15s",borderLeft:on?`3px solid ${RED}`:"3px solid transparent"}}>
+            <button key={item.id} onClick={()=>set(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:9,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13.5,fontWeight:on?600:400,color:on?BLUE:MID,background:on?"rgba(8,0,255,.07)":"transparent",textAlign:"left",marginBottom:2,transition:"all .15s",borderLeft:on?`3px solid ${BLUE}`:"3px solid transparent"}}>
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={on?2.2:1.8} style={{flexShrink:0}}><path d={item.icon}/></svg>
               {item.label}
             </button>
@@ -1551,7 +1542,7 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
         <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:GRAY,marginBottom:8,paddingLeft:8}}>Quick Actions</div>
         {QUICK_ITEMS.map(item=>(
           <button key={item.id} onClick={()=>onQuickAction(item.id)} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"8px 12px",borderRadius:9,border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:13,fontWeight:400,color:MID,background:"transparent",textAlign:"left",marginBottom:1,transition:"all .15s",borderLeft:"3px solid transparent"}}
-            onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(140,29,37,.05)";b.style.color=RED;b.style.borderLeftColor=RED;}}
+            onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(8,0,255,.05)";b.style.color=BLUE;b.style.borderLeftColor=BLUE;}}
             onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="transparent";b.style.color=MID;b.style.borderLeftColor="transparent";}}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{flexShrink:0}}><path d={item.icon}/></svg>
             {item.label}
@@ -1563,7 +1554,7 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
           <>
             <div style={{height:1,background:"rgba(17,24,39,.07)",margin:"14px 0 12px"}}/>
             <div style={{fontSize:10.5,fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",color:GRAY,marginBottom:8,paddingLeft:8}}>Admin</div>
-            <Link href="/cpanel" style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:9,fontSize:13,fontWeight:600,color:RED,textDecoration:"none",background:"rgba(140,29,37,.06)",border:"1px solid rgba(140,29,37,.15)",marginBottom:2}}>
+            <Link href="/cpanel" style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:9,fontSize:13,fontWeight:600,color:BLUE,textDecoration:"none",background:"rgba(8,0,255,.06)",border:"1px solid rgba(8,0,255,.15)",marginBottom:2}}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{flexShrink:0}}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               Control Panel
             </Link>
@@ -1574,13 +1565,13 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
       {/* ── Bottom: user + sign out ── */}
       <div style={{borderTop:"1px solid rgba(17,24,39,.07)",padding:"16px",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
-          <div style={{width:34,height:34,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:"#fff",flexShrink:0}}>{initials}</div>
+          <div style={{width:34,height:34,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:12,color:"#fff",flexShrink:0}}>{initials}</div>
           <div style={{minWidth:0}}>
             <div style={{fontSize:13.5,fontWeight:600,color:DARK,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{profile.firstName}</div>
           </div>
         </div>
         <button onClick={onSignOut} style={{display:"flex",alignItems:"center",gap:8,width:"100%",background:"none",border:"1px solid rgba(17,24,39,.1)",borderRadius:8,padding:"8px 12px",fontSize:13,color:GRAY,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}
-          onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=RED;b.style.borderColor="rgba(140,29,37,.3)";}}
+          onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=BLUE;b.style.borderColor="rgba(8,0,255,.3)";}}
           onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=GRAY;b.style.borderColor="rgba(17,24,39,.1)";}}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Sign out
@@ -1594,6 +1585,8 @@ function Sidebar({active,set,profile,initials,onSignOut,onQuickAction,isAdmin}:{
    PAGE
 ═════════════════════════════════════════════════════ */
 export default function DashboardPage(){
+  const minLoaderShown=useMinDuration(3200);
+  const [signingOut,setSigningOut]=useState(false);
   const [tab,setTab]           = useState("Overview");
   const [sidebarOpen,setSidebarOpen] = useState(false);
   const [moreOpen,setMoreOpen] = useState(false);
@@ -1672,8 +1665,10 @@ export default function DashboardPage(){
   },[userId,loadDashboard]);
 
   const signOut = useCallback(async()=>{
+    setSigningOut(true);
     const sb=createClient();
-    await sb.auth.signOut();
+    // Keep the sign-out screen up for a moment so it doesn't just flash.
+    await Promise.all([sb.auth.signOut(),new Promise(r=>setTimeout(r,2000))]);
     window.location.replace("/login");
   },[]);
 
@@ -1714,12 +1709,13 @@ export default function DashboardPage(){
   /* ── Countdown tick: auto-logout when countdown reaches 0 ── */
   useEffect(()=>{
     if(!showSessionWarning) return;
-    if(countdown<=0){ signOut(); return; }
+    if(countdown<=0){ const t=setTimeout(()=>signOut(),0); return ()=>clearTimeout(t); }
     const t=setTimeout(()=>setCountdown(c=>c-1),1000);
     return ()=>clearTimeout(t);
   },[showSessionWarning,countdown,signOut]);
 
-  if(loading)return <PageSkeleton/>;
+  if(signingOut)return <BrandLoader message="Signing you out…"/>;
+  if(loading||!minLoaderShown)return <PageSkeleton/>;
 
   const netWorth = accounts.reduce((s,a)=>s+a.balance,0);
   const liquid   = accounts.filter(a=>["Checking","Savings"].includes(a.type)).reduce((s,a)=>s+a.balance,0);
@@ -1730,7 +1726,7 @@ export default function DashboardPage(){
   const shown    = txs.filter(t=>txFilter==="all"||(txFilter==="debits"&&t.amount<0)||(txFilter==="credits"&&t.amount>0));
   const totalSpent=spend.reduce((s,i)=>s+i.amount,0);
 
-  const NCOLOR:Record<string,string>={info:"#2563EB",success:"#16A34A",warning:"#D97706",error:"#DC2626"};
+  const NCOLOR:Record<string,string>={info:BLUE,success:"#16A34A",warning:"#D97706",error:"#DC2626"};
   const NICON:Record<string,string>={
     info:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01",
     success:"M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3",
@@ -1768,7 +1764,7 @@ export default function DashboardPage(){
     <div onClick={()=>{setBellOpen(false);setSidebarOpen(false);setMoreOpen(false);}} className="db-shell" style={{minHeight:"100vh",background:BG,fontFamily:"Inter,system-ui,sans-serif"}}>
 
       {/* ═══ HEADER ═══════════════════════════════════════════ */}
-      <header className="db-header" style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)",boxShadow:"0 1px 4px rgba(17,24,39,.06)"}}>
+      <header className="db-header" style={{position:"sticky",top:0,zIndex:50,background:"#fff",borderBottom:"1px solid rgba(17,24,39,.09)"}}>
         <div className="db-header-inner" style={{maxWidth:"100%",padding:"0 24px",height:60,display:"flex",alignItems:"center",gap:16}}>
 
           <Link href="/" style={{display:"flex",alignItems:"center",textDecoration:"none",flexShrink:0}}>
@@ -1789,13 +1785,13 @@ export default function DashboardPage(){
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
                 </svg>
-                {notifs.length>0&&<span style={{position:"absolute",top:5,right:5,width:7,height:7,borderRadius:"50%",background:RED,border:"1.5px solid #fff"}}/>}
+                {notifs.length>0&&<span style={{position:"absolute",top:5,right:5,width:7,height:7,borderRadius:"50%",background:BLUE,border:"1.5px solid #fff"}}/>}
               </button>
               {bellOpen&&(
                 <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,width:"min(320px, calc(100vw - 16px))",background:"#fff",border:"1px solid rgba(17,24,39,.1)",borderRadius:12,boxShadow:"0 8px 32px rgba(17,24,39,.14)",zIndex:200,overflow:"hidden"}}>
                   <div style={{padding:"13px 16px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                     <span style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK}}>Notifications</span>
-                    {notifs.length>0&&<button onClick={markAllRead} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:RED,cursor:"pointer",fontFamily:"inherit",padding:0}}>Mark all read</button>}
+                    {notifs.length>0&&<button onClick={markAllRead} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:BLUE,cursor:"pointer",fontFamily:"inherit",padding:0}}>Mark all read</button>}
                   </div>
                   {notifs.length===0
                     ?<div style={{padding:"28px 16px",textAlign:"center",color:GRAY,fontSize:13}}>You&apos;re all caught up.</div>
@@ -1824,13 +1820,13 @@ export default function DashboardPage(){
 
             {/* User pill */}
             <div style={{display:"flex",alignItems:"center",gap:8,padding:"5px 10px 5px 5px",borderRadius:8,border:"1px solid rgba(17,24,39,.1)",background:"#FAFAFA",cursor:"default"}}>
-              <div style={{width:27,height:27,borderRadius:"50%",background:RED,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:11,color:"#fff",flexShrink:0}}>{initials}</div>
+              <div style={{width:27,height:27,borderRadius:"50%",background:BLUE,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT,fontWeight:700,fontSize:11,color:"#fff",flexShrink:0}}>{initials}</div>
               <span className="db-user-name" style={{fontSize:13,fontWeight:500,color:DARK}}>{profile.firstName}</span>
             </div>
 
             {/* Sign out — desktop only */}
             <button onClick={signOut} className="db-sign-out" style={{background:"none",border:"1px solid rgba(17,24,39,.1)",borderRadius:8,padding:"6px 12px",fontSize:13,color:GRAY,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:5,transition:"all .15s"}}
-              onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=RED;b.style.borderColor="rgba(140,29,37,.3)";}}
+              onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=BLUE;b.style.borderColor="rgba(8,0,255,.3)";}}
               onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.color=GRAY;b.style.borderColor="rgba(17,24,39,.1)";}}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
               Sign out
@@ -1887,22 +1883,22 @@ export default function DashboardPage(){
               {/* Greeting row */}
               <div className="db-hero-row" style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:20}}>
                 <div>
-                  <h1 className="db-greeting-h1" style={{fontFamily:FONT,fontWeight:800,fontSize:22,color:RED,margin:"0 0 4px",letterSpacing:"-.015em"}}>{greet()}, {profile.firstName}.</h1>
+                  <h1 className="db-greeting-h1" style={{fontFamily:FONT,fontWeight:800,fontSize:22,color:BLUE,margin:"0 0 4px",letterSpacing:"-.015em"}}>{greet()}, {profile.firstName}.</h1>
                   <p className="db-greeting-sub" style={{margin:0,fontSize:12.5,color:GRAY}}>{profile.lastLogin&&<><span className="db-login-hide">{profile.lastLogin} · </span></>}<span style={{color:"#16A34A",fontWeight:500}}>All accounts secure</span></p>
                 </div>
-                <div className="db-net-pill" style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:10,padding:"10px 18px",boxShadow:"0 1px 3px rgba(17,24,39,.05)"}}>
+                <div className="db-net-pill" style={{background:"#fff",border:"1px solid rgba(17,24,39,.08)",borderRadius:10,padding:"10px 18px"}}>
                   <div style={{textAlign:"right"}}>
-                    <div className="db-net-pill-label" style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Net Worth</div>
-                    <div className="db-net-pill-value-lg" style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:RED,letterSpacing:"-.015em"}}>{usd(netWorth)}</div>
+                    <div className="db-net-pill-label" style={{fontSize:11,color:BLUE,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Net Worth</div>
+                    <div className="db-net-pill-value-lg" style={{fontFamily:FONT,fontWeight:800,fontSize:20,color:BLUE,letterSpacing:"-.015em"}}>{usd(netWorth)}</div>
                   </div>
                   <div className="db-net-sep" style={{width:1,...DIVIDER,height:32,margin:"0 4px"}}/>
                   <div>
-                    <div className="db-net-pill-label" style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Liquid</div>
+                    <div className="db-net-pill-label" style={{fontSize:11,color:BLUE,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Liquid</div>
                     <div className="db-net-pill-value-sm" style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:"#16A34A"}}>{usd(liquid)}</div>
                   </div>
                   <div className="db-net-sep" style={{width:1,...DIVIDER,height:32,margin:"0 4px"}}/>
                   <div>
-                    <div className="db-net-pill-label" style={{fontSize:11,color:GOLD,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Credit</div>
+                    <div className="db-net-pill-label" style={{fontSize:11,color:BLUE,letterSpacing:".06em",textTransform:"uppercase",marginBottom:2}}>Credit</div>
                     <div className="db-net-pill-value-sm" style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:utilPct>75?"#DC2626":DARK}}>{utilPct}% used</div>
                   </div>
                 </div>
@@ -1928,12 +1924,12 @@ export default function DashboardPage(){
                     </>
                   ):(
                     <>
-                      <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(140,29,37,.08)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.8"><path d="M4 19V8.5L12 4l8 4.5V19"/><path d="M9 19v-5h6v5"/></svg>
+                      <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(8,0,255,.08)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 18px"}}>
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="1.8"><path d="M4 19V8.5L12 4l8 4.5V19"/><path d="M9 19v-5h6v5"/></svg>
                       </div>
                       <div style={{fontFamily:FONT,fontWeight:700,fontSize:18,color:DARK,marginBottom:8}}>Welcome to SGGINV, {profile.firstName}!</div>
                       <div style={{fontSize:13.5,color:GRAY,lineHeight:1.6,marginBottom:28,maxWidth:400,margin:"0 auto 28px"}}>You don&apos;t have any accounts yet. Open your first account to get started with banking, savings, and more.</div>
-                      <Link href="/open-account" style={{display:"inline-flex",alignItems:"center",gap:8,background:RED,color:"#fff",borderRadius:10,padding:"12px 28px",fontSize:14,fontWeight:700,fontFamily:FONT,textDecoration:"none",boxShadow:"0 4px 14px -2px rgba(140,29,37,.4)"}}>
+                      <Link href="/open-account" style={{display:"inline-flex",alignItems:"center",gap:8,background:BLUE,color:"#fff",borderRadius:10,padding:"12px 28px",fontSize:14,fontWeight:700,fontFamily:FONT,textDecoration:"none"}}>
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
                         Open an Account
                       </Link>
@@ -1993,12 +1989,12 @@ export default function DashboardPage(){
                 {/* Transactions */}
                 <div style={{...CARD,overflow:"hidden"}}>
                   <div style={{padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(17,24,39,.07)"}}>
-                    <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
-                    <button onClick={()=>setTab("History")} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:RED,fontFamily:"inherit",padding:0}}>View all</button>
+                    <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:BLUE}}>Recent Activity</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
+                    <button onClick={()=>setTab("History")} style={{background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:BLUE,fontFamily:"inherit",padding:0}}>View all</button>
                   </div>
                   <div className="db-tx-filters" style={{padding:"10px 20px",display:"flex",gap:4,borderBottom:"1px solid rgba(17,24,39,.07)"}}>
                     {(["all","debits","credits"] as const).map(f=>(
-                      <button key={f} onClick={()=>{setTxFilter(f);setTxShown(10);}} style={{background:txFilter===f?"rgba(140,29,37,.08)":"transparent",color:txFilter===f?RED:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:txFilter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize",whiteSpace:"nowrap",flexShrink:0}}>
+                      <button key={f} onClick={()=>{setTxFilter(f);setTxShown(10);}} style={{background:txFilter===f?"rgba(8,0,255,.08)":"transparent",color:txFilter===f?BLUE:GRAY,border:"none",borderRadius:6,padding:"5px 14px",fontSize:12.5,fontWeight:txFilter===f?600:400,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",textTransform:"capitalize",whiteSpace:"nowrap",flexShrink:0}}>
                         {f==="all"?"All transactions":f==="debits"?"Debits":"Credits"}
                       </button>
                     ))}
@@ -2009,7 +2005,7 @@ export default function DashboardPage(){
                   }
                   {shown.length>txShown&&<div style={{padding:"14px 20px",borderTop:"1px solid rgba(17,24,39,.06)",textAlign:"center"}}>
                     <button onClick={()=>setTxShown(n=>n+10)} style={{background:"none",border:"1px solid rgba(17,24,39,.12)",borderRadius:8,padding:"8px 22px",fontSize:13,color:MID,cursor:"pointer",fontFamily:"inherit"}}
-                      onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor=RED;b.style.color=RED;}}
+                      onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor=BLUE;b.style.color=BLUE;}}
                       onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.borderColor="rgba(17,24,39,.12)";b.style.color=MID;}}>
                       Load more transactions
                     </button>
@@ -2021,7 +2017,7 @@ export default function DashboardPage(){
                   {/* Spending */}
                   <div style={{...CARD,overflow:"hidden"}}>
                     <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                      <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Monthly Spending</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
+                      <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:BLUE}}>Monthly Spending</div><div style={{fontSize:12,color:GRAY,marginTop:2}}>{monthLabel}</div></div>
                     </div>
                     <div style={{padding:"4px 20px 0"}}>
                       {spend.length===0
@@ -2038,8 +2034,8 @@ export default function DashboardPage(){
                   {/* Alerts */}
                   <div style={{...CARD,overflow:"hidden"}}>
                     <div style={{padding:"16px 20px",borderBottom:"1px solid rgba(17,24,39,.07)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:RED}}>Alerts</div>
-                      {notifs.length>0&&<span style={{fontSize:11,fontWeight:700,padding:"2px 8px",borderRadius:99,background:"rgba(140,29,37,.1)",color:RED}}>{notifs.length}</span>}
+                      <div style={{fontFamily:FONT,fontWeight:700,fontSize:15,color:BLUE}}>Alerts</div>
+                      {notifs.length>0&&<span style={{fontSize:11,fontWeight:700,padding:"2px 8px",borderRadius:99,background:"rgba(8,0,255,.1)",color:BLUE}}>{notifs.length}</span>}
                     </div>
                     {notifs.length===0
                       ?<div style={{padding:"24px 20px",textAlign:"center",color:GRAY,fontSize:13}}>No alerts.</div>
@@ -2060,13 +2056,13 @@ export default function DashboardPage(){
                   {/* Help */}
                   <div style={{...CARD,padding:"18px 20px"}}>
                     <div style={{display:"flex",alignItems:"flex-start",gap:12,marginBottom:12}}>
-                      <div style={{width:36,height:36,borderRadius:9,background:"rgba(140,29,37,.08)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:RED}}>
+                      <div style={{width:36,height:36,borderRadius:9,background:"rgba(8,0,255,.08)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:BLUE}}>
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.27 6.27l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                       </div>
                       <div><div style={{fontFamily:FONT,fontWeight:700,fontSize:14,color:DARK,marginBottom:3}}>Need help?</div><div style={{fontSize:12.5,color:GRAY,lineHeight:1.5}}>Mon–Fri 9am–5pm · Sat 9am–12pm</div></div>
                     </div>
                     <div style={{display:"flex",gap:8}}>
-                      <Link href="/about/contact" style={{flex:1,textAlign:"center",background:RED,color:"#fff",borderRadius:8,padding:"9px 0",fontSize:13,fontWeight:600,textDecoration:"none"}}>Contact Us</Link>
+                      <Link href="/about/contact" style={{flex:1,textAlign:"center",background:BLUE,color:"#fff",borderRadius:8,padding:"9px 0",fontSize:13,fontWeight:600,textDecoration:"none"}}>Contact Us</Link>
                       <a href="tel:18005552722" style={{flex:1,textAlign:"center",background:"rgba(17,24,39,.05)",color:MID,border:"1px solid rgba(17,24,39,.1)",borderRadius:8,padding:"9px 0",fontSize:13,fontWeight:600,textDecoration:"none"}}>Call Us</a>
                     </div>
                   </div>
@@ -2136,14 +2132,14 @@ export default function DashboardPage(){
             {/* Buttons */}
             <div style={{display:"flex",gap:10,flexDirection:"column"}}>
               <button onClick={continueSession}
-                style={{width:"100%",padding:"12px",background:RED,border:"none",borderRadius:10,fontFamily:FONT,fontWeight:700,fontSize:14,color:"#fff",cursor:"pointer",transition:"opacity .15s"}}
+                style={{width:"100%",padding:"12px",background:BLUE,border:"none",borderRadius:10,fontFamily:FONT,fontWeight:700,fontSize:14,color:"#fff",cursor:"pointer",transition:"opacity .15s"}}
                 onMouseEnter={e=>(e.currentTarget.style.opacity=".88")}
                 onMouseLeave={e=>(e.currentTarget.style.opacity="1")}>
                 Continue Session
               </button>
               <button onClick={()=>signOut()}
                 style={{width:"100%",padding:"12px",background:"none",border:"1px solid rgba(17,24,39,.15)",borderRadius:10,fontFamily:FONT,fontWeight:600,fontSize:14,color:GRAY,cursor:"pointer",transition:"all .15s"}}
-                onMouseEnter={e=>{e.currentTarget.style.color=RED;e.currentTarget.style.borderColor="rgba(140,29,37,.3)";}}
+                onMouseEnter={e=>{e.currentTarget.style.color=BLUE;e.currentTarget.style.borderColor="rgba(8,0,255,.3)";}}
                 onMouseLeave={e=>{e.currentTarget.style.color=GRAY;e.currentTarget.style.borderColor="rgba(17,24,39,.15)";}}>
                 Log Out
               </button>

@@ -10,7 +10,6 @@ const FOOTER_LINKS = [
   { label: "Careers", href: "/about/careers" },
   { label: "Press", href: "/about/news" },
   { label: "Mortgage Intermediaries", href: "/loans/mortgage" },
-  { label: "Developer site", href: "/about" },
   { label: "Accessibility", href: "/accessibility" },
 ];
 

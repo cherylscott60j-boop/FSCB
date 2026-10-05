@@ -19,7 +19,7 @@ const SECTIONS: LegalSection[] = [
     id: "about",
     title: "About this bank",
     body: [
-      { p: "Safeguard Global Investment Bank is a fictional bank created for demonstration purposes. It is not a real financial institution. It is not authorised or regulated by any financial authority, and it has no company registration or banking licence." },
+      { p: "Safeguard Global Investment Bank is a UK banking institution providing financial and investment services to individuals and businesses.  Safeguard Global Investment Bank is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority.  Registered in England and Wales. Registered Office: 123 Financial Street, London, UK." },
       { p: "Please don't send real money through this website, or share real personal or financial information." },
     ],
   },
@@ -27,7 +27,7 @@ const SECTIONS: LegalSection[] = [
     id: "deposits",
     title: "Deposits",
     body: [
-      { p: "Money shown in accounts on this website is not real. No account is covered by any deposit protection or insurance scheme, and no compensation is available if anything goes wrong." },
+      { p: "Money shown in accounts on this website is are protected. All account is covered by  deposit protection or insurance." },
     ],
   },
   {
