@@ -22,9 +22,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "FSCB — First State Community Bank",
+  title: "Safeguard Global Investment Bank",
   description:
-    "Decades of community trust. Banking built for your family, your business, and your future.",
+    "Decades of trust, built for a global future. Banking built for your family, your business, and your portfolio.",
   icons: {
     icon: "/pngfavicon.svg",
     apple: "/pngfavicon.svg",

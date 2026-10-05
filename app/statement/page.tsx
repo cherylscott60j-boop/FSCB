@@ -102,7 +102,7 @@ function StatementInner() {
       {/* Print button — hidden on print */}
       <div className="no-print" style={{ background: "#111827", padding: "12px 24px", display: "flex", alignItems: "center", gap: 16 }}>
         <span style={{ color: "#fff", fontSize: 13, fontWeight: 500 }}>
-          FSCB Account Statement — {fmtDate(period.start + "T12:00:00")} to {fmtDate(period.end + "T12:00:00")}
+          Safeguard Global Account Statement — {fmtDate(period.start + "T12:00:00")} to {fmtDate(period.end + "T12:00:00")}
         </span>
         <button onClick={() => window.print()} style={{ marginLeft: "auto", background: "#8C1D25", border: "none", borderRadius: 8, padding: "8px 20px", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
           Print / Save as PDF
@@ -114,8 +114,8 @@ function StatementInner() {
         {/* ── Header ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32, paddingBottom: 20, borderBottom: "2px solid #8C1D25" }}>
           <div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#8C1D25", letterSpacing: "-.01em", marginBottom: 2 }}>FSCB</div>
-            <div style={{ fontSize: 10.5, color: "#6B7280", letterSpacing: ".12em", textTransform: "uppercase" }}>First State Community Bank</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#8C1D25", letterSpacing: "-.01em", marginBottom: 2 }}>Safeguard Global</div>
+            <div style={{ fontSize: 10.5, color: "#6B7280", letterSpacing: ".12em", textTransform: "uppercase" }}>Safeguard Global Investment Bank</div>
             <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 6, lineHeight: 1.5 }}>
               Member FDIC · Equal Housing Lender
             </div>
@@ -221,8 +221,8 @@ function StatementInner() {
 
         {/* ── Footer ── */}
         <div style={{ marginTop: 40, paddingTop: 16, borderTop: "1px solid #E5E7EB", fontSize: 9.5, color: "#9CA3AF", lineHeight: 1.6 }}>
-          <strong style={{ color: "#6B7280" }}>FSCB — First State Community Bank</strong> · Member FDIC · Equal Housing Lender<br />
-          Questions? Visit fscb.bank or call 1-800-FSCB-BANK · Deposits insured up to $250,000 per depositor<br />
+          <strong style={{ color: "#6B7280" }}>Safeguard Global Investment Bank</strong> · Member FDIC · Equal Housing Lender<br />
+          Questions? Visit safeguardglobal.com or call 1-800-SAFEGRD · Deposits insured up to $250,000 per depositor<br />
           This statement is for informational purposes. Please report any discrepancies within 60 days.
         </div>
 

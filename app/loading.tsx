@@ -73,7 +73,7 @@ export default function Loading() {
           lineHeight: 1,
         }}
       >
-        FSCB
+        Safeguard Global
       </div>
       <div
         style={{
@@ -84,7 +84,7 @@ export default function Loading() {
           fontWeight: 600,
         }}
       >
-        COMMUNITY BANK
+        INVESTMENT BANK
       </div>
 
       {/* Pulsing dots */}

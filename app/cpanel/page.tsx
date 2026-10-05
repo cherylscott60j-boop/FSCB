@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/components/Logo";
 
 /* ── Design tokens (mirrors dashboard) ───────────────── */
 const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
@@ -128,7 +129,7 @@ function LoadingSpinner(){
       <div style={{textAlign:"center",fontFamily:FONT}}>
         <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:40,width:"auto"}} />
+          <Logo height={40} variant="dark" />
         </div>
         <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading control panel…</div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -3090,7 +3091,7 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,
       {/* Logo */}
       <Link href="/" style={{display:"flex",alignItems:"center",textDecoration:"none",padding:"20px 18px 18px",borderBottom:"1px solid rgba(255,255,255,.1)",flexShrink:0}}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/fscb-horizontal-logo.webp" alt="FSCB" style={{height:34,width:"auto",filter:"brightness(0) invert(1)"}} />
+        <Logo height={34} variant="light" />
       </Link>
 
       {/* Nav scroll area */}

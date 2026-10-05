@@ -27,7 +27,7 @@ export default function TopBar() {
               flexShrink: 0,
             }}
           />
-          <span>FDIC Insured &middot; Member FDIC &middot; Backed by the full faith of the U.S. Government</span>
+          <span>Member FDIC &middot; Securities Member SIPC &middot; Deposits backed by the full faith of the U.S. Government</span>
         </div>
 
         {/* Right: quick links */}
@@ -62,7 +62,7 @@ export default function TopBar() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
             </svg>
-            1-800-FSCB-NOW
+            1-800-SAFEGRD
           </a>
         </div>
       </div>

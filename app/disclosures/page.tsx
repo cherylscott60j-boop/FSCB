@@ -35,7 +35,7 @@ export default function DisclosuresPage() {
             Disclosures
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.7)", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 600 }}>
-            Required regulatory disclosures for First State Community Bank. Please review these disclosures carefully as they affect your rights as a depositor, borrower, and consumer.
+            Required regulatory disclosures for Safeguard Global Investment Bank. Please review these disclosures carefully as they affect your rights as a depositor, borrower, and consumer.
           </p>
           <p style={{ fontSize: 13, color: "rgba(255,255,255,.45)", margin: 0 }}>Last updated: January 1, 2026</p>
         </div>
@@ -64,7 +64,7 @@ export default function DisclosuresPage() {
           <div id="fdic">
             <Card title="FDIC Deposit Insurance" badge="Required Notice">
               <p>
-                First State Community Bank is a member of the Federal Deposit Insurance Corporation (FDIC). FDIC deposit insurance protects depositors at FDIC-insured banks in the unlikely event of bank failure. Deposits are insured up to at least <strong>$250,000 per depositor, per insured bank, for each account ownership category</strong>.
+                Safeguard Global Investment Bank is a member of the Federal Deposit Insurance Corporation (FDIC). FDIC deposit insurance protects depositors at FDIC-insured banks in the unlikely event of bank failure. Deposits are insured up to at least <strong>$250,000 per depositor, per insured bank, for each account ownership category</strong>.
               </p>
               <p style={{ marginTop: 12 }}>
                 Coverage is based on the ownership category of the account. Common ownership categories include:
@@ -101,10 +101,10 @@ export default function DisclosuresPage() {
                 </div>
                 <div>
                   <p>
-                    First State Community Bank is an Equal Housing Lender. We make loans without regard to race, color, religion, national origin, sex, handicap, or familial status. As required by law, the federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age (provided the applicant has the capacity to enter into a binding contract), or because the applicant receives income from any public assistance program.
+                    Safeguard Global Investment Bank is an Equal Housing Lender. We make loans without regard to race, color, religion, national origin, sex, handicap, or familial status. As required by law, the federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age (provided the applicant has the capacity to enter into a binding contract), or because the applicant receives income from any public assistance program.
                   </p>
                   <p style={{ marginTop: 12 }}>
-                    If you believe you have been discriminated against in a credit transaction, you may contact your federal or state regulatory agency. For credit extended by FSCB, you may contact the{" "}
+                    If you believe you have been discriminated against in a credit transaction, you may contact your federal or state regulatory agency. For credit extended by Safeguard Global, you may contact the{" "}
                     <strong>Consumer Financial Protection Bureau (CFPB)</strong> at{" "}
                     <a href="https://www.consumerfinance.gov" target="_blank" rel="noopener noreferrer" style={{ color: RED }}>consumerfinance.gov</a>{" "}
                     or 1-855-411-2372.
@@ -118,14 +118,14 @@ export default function DisclosuresPage() {
             <Card title="Investment Products Disclosure" badge="Important">
               <div style={{ background: "#FEF3C7", border: "1.5px solid #F59E0B", borderRadius: 12, padding: "16px 20px", marginBottom: 16 }}>
                 <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 14, color: "#92400E", marginBottom: 6 }}>
-                  Investment products offered through FSCB are:
+                  Investment products offered through Safeguard Global are:
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                   {[
                     "NOT FDIC Insured",
                     "NOT bank guaranteed",
                     "May lose value — including possible loss of the amount invested",
-                    "NOT deposits or obligations of First State Community Bank",
+                    "NOT deposits or obligations of Safeguard Global Investment Bank",
                     "NOT insured by any federal government agency",
                   ].map((item) => (
                     <div key={item} style={{ fontSize: 14, color: "#92400E", display: "flex", gap: 8, alignItems: "center" }}>
@@ -136,7 +136,7 @@ export default function DisclosuresPage() {
                 </div>
               </div>
               <p>
-                Investment and insurance products, including annuities, mutual funds, stocks, bonds, and brokerage accounts, are offered through FSCB Investment Services, which is not a registered broker-dealer. Investment advisory services are provided by registered investment advisers who are not employees of First State Community Bank.
+                Investment and insurance products, including annuities, mutual funds, stocks, bonds, and brokerage accounts, are offered through Safeguard Global Investment Services, which is not a registered broker-dealer. Investment advisory services are provided by registered investment advisers who are not employees of Safeguard Global Investment Bank.
               </p>
               <p style={{ marginTop: 12 }}>
                 Securities accounts are protected by the Securities Investor Protection Corporation (SIPC) up to $500,000 (including $250,000 for cash claims) against broker-dealer failure. SIPC does not protect against market loss. For more information, visit{" "}
@@ -157,7 +157,7 @@ export default function DisclosuresPage() {
                 <li><strong>APR</strong> includes interest and applicable fees. Where no fees apply, APR equals the interest rate.</li>
               </ul>
               <p>
-                All loans are subject to credit approval. FSCB complies with all applicable federal and state lending laws, including the Truth in Lending Act (TILA), the Real Estate Settlement Procedures Act (RESPA), and the Home Mortgage Disclosure Act (HMDA).
+                All loans are subject to credit approval. Safeguard Global complies with all applicable federal and state lending laws, including the Truth in Lending Act (TILA), the Real Estate Settlement Procedures Act (RESPA), and the Home Mortgage Disclosure Act (HMDA).
               </p>
             </Card>
           </div>
@@ -165,15 +165,15 @@ export default function DisclosuresPage() {
           <div id="routing">
             <Card title="Routing Number &amp; Account Information">
               <p style={{ marginBottom: 18 }}>
-                Use the following information when setting up direct deposit, ACH transfers, or wire transfers to your FSCB account.
+                Use the following information when setting up direct deposit, ACH transfers, or wire transfers to your Safeguard Global account.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
                   { label: "ABA Routing Number (ACH / Direct Deposit)", value: "081024376", note: "For electronic transfers and direct deposit" },
-                  { label: "Wire Transfer Routing Number", value: "081024376", note: "Same routing number; include your full account number and FSCB's address" },
-                  { label: "Bank Name", value: "First State Community Bank", note: null },
+                  { label: "Wire Transfer Routing Number", value: "081024376", note: "Same routing number; include your full account number and Safeguard Global's address" },
+                  { label: "Bank Name", value: "Safeguard Global Investment Bank", note: null },
                   { label: "Bank Address (for wire transfers)", value: "102 Main Street, Hometown, ST 00000", note: null },
-                  { label: "SWIFT / BIC Code", value: "FSCBUS33", note: "For international wire transfers only" },
+                  { label: "SWIFT / BIC Code", value: "SGIBUS33", note: "For international wire transfers only" },
                 ].map((row) => (
                   <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 18px", background: "rgba(248,249,250,.8)", borderRadius: 12, border: "1px solid rgba(17,24,39,.07)", gap: 20 }}>
                     <div>
@@ -185,8 +185,8 @@ export default function DisclosuresPage() {
                 ))}
               </div>
               <p style={{ marginTop: 18, fontSize: 13, color: GRAY }}>
-                For your security, FSCB will never ask you to share your full account number by email or text. If you receive a suspicious request, call us at{" "}
-                <a href="tel:18002372669" style={{ color: RED }}>1-800-FSCB-NOW</a> to verify.
+                For your security, Safeguard Global will never ask you to share your full account number by email or text. If you receive a suspicious request, call us at{" "}
+                <a href="tel:18002372669" style={{ color: RED }}>1-800-SAFEGRD</a> to verify.
               </p>
             </Card>
           </div>
@@ -194,13 +194,13 @@ export default function DisclosuresPage() {
           <div id="licensing">
             <Card title="State Licensing &amp; Regulatory Information">
               <p>
-                First State Community Bank is chartered and regulated under state banking law. We are supervised by state and federal banking regulators, including the Federal Deposit Insurance Corporation (FDIC) and the Consumer Financial Protection Bureau (CFPB).
+                Safeguard Global Investment Bank is chartered and regulated under state banking law. We are supervised by state and federal banking regulators, including the Federal Deposit Insurance Corporation (FDIC) and the Consumer Financial Protection Bureau (CFPB).
               </p>
               <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 14 }}>
                 {[
                   { agency: "FDIC", role: "Primary federal deposit insurance regulator", contact: "fdic.gov · 1-877-275-3342" },
                   { agency: "CFPB", role: "Consumer financial protection oversight", contact: "consumerfinance.gov · 1-855-411-2372" },
-                  { agency: "State Banking Department", role: "State charter and examination authority", contact: "Contact FSCB for state-specific regulatory information" },
+                  { agency: "State Banking Department", role: "State charter and examination authority", contact: "Contact Safeguard Global for state-specific regulatory information" },
                 ].map((r) => (
                   <div key={r.agency} style={{ display: "flex", gap: 16, padding: "14px 18px", background: "rgba(248,249,250,.8)", borderRadius: 12, border: "1px solid rgba(17,24,39,.07)" }}>
                     <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 14, color: RED, width: 80, flexShrink: 0 }}>{r.agency}</div>
@@ -212,8 +212,8 @@ export default function DisclosuresPage() {
                 ))}
               </div>
               <p style={{ marginTop: 20 }}>
-                To file a complaint or inquiry with FSCB directly, contact our Customer Service team at{" "}
-                <a href="tel:18002372669" style={{ color: RED }}>1-800-FSCB-NOW</a> or write to us at 102 Main Street, Hometown, ST 00000. We are committed to resolving all concerns promptly and fairly.
+                To file a complaint or inquiry with Safeguard Global directly, contact our Customer Service team at{" "}
+                <a href="tel:18002372669" style={{ color: RED }}>1-800-SAFEGRD</a> or write to us at 102 Main Street, Hometown, ST 00000. We are committed to resolving all concerns promptly and fairly.
               </p>
             </Card>
           </div>

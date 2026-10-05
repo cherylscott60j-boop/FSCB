@@ -13,8 +13,8 @@ const GRAY = "#6B7280";
 
 function StoryPage() {
   const TIMELINE = [
-    { year: "1902", title: "Founded", desc: "A group of community leaders pooled resources to charter First State Community Bank, serving local farmers and tradespeople." },
-    { year: "1935", title: "Through the Depression", desc: "While larger banks closed their doors, FSCB remained open — never missing a single day of service to account holders." },
+    { year: "1902", title: "Founded", desc: "A group of community leaders pooled resources to charter Safeguard Global Investment Bank, serving local farmers and tradespeople." },
+    { year: "1935", title: "Through the Depression", desc: "While larger banks closed their doors, Safeguard Global remained open — never missing a single day of service to account holders." },
     { year: "1968", title: "New Headquarters", desc: "Moved into our landmark Main Street building, which remains our primary branch and community hub to this day." },
     { year: "1997", title: "Online Banking Launched", desc: "Among the first community banks in the region to offer internet banking — a commitment to innovation that continues today." },
     { year: "2010", title: "$500M in Assets", desc: "Crossed half a billion dollars in assets while remaining independently owned and community-focused." },
@@ -30,7 +30,7 @@ function StoryPage() {
       {/* Hero */}
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#2C0A10,#8C1D25)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About FSCB</div>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About Safeguard Global</div>
           <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Our Story</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>Over 120 years of serving our community — built on trust, guided by values, and proud to still be independently owned.</p>
           <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
@@ -51,7 +51,7 @@ function StoryPage() {
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Who We Are</div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 38, lineHeight: 1.12, letterSpacing: "-.02em", margin: "0 0 22px", color: DARK }}>Community banking the way it was meant to be</h2>
             <p style={{ fontSize: 16.5, color: GRAY, lineHeight: 1.78, margin: "0 0 20px" }}>
-              FSCB was founded in 1902 by local community leaders who believed that banking should serve people — not the other way around. More than a century later, that belief hasn&apos;t changed.
+              Safeguard Global was founded in 1902 by local community leaders who believed that banking should serve people — not the other way around. More than a century later, that belief hasn&apos;t changed.
             </p>
             <p style={{ fontSize: 16.5, color: GRAY, lineHeight: 1.78, margin: 0 }}>
               We are independently owned, locally operated, and deeply committed to reinvesting in the families and businesses that make this community thrive. Every loan decision happens here. Every banker knows your name.
@@ -155,21 +155,21 @@ function CommunityPage() {
   const METRICS = [
     { v: "$1M+", l: "Donated locally", sub: "Grants, sponsorships, and direct giving" },
     { v: "200+", l: "Projects funded", sub: "Neighborhood revitalization initiatives" },
-    { v: "17K+", l: "Volunteer hours", sub: "Logged by FSCB staff and partners" },
+    { v: "17K+", l: "Volunteer hours", sub: "Logged by Safeguard Global staff and partners" },
     { v: "5K+", l: "Students reached", sub: "Through financial literacy programs" },
   ];
   const PROGRAMS = [
     { title: "Financial Literacy Initiative", desc: "Free workshops for students, adults, and seniors covering budgeting, credit, homeownership, and retirement — held at schools, libraries, and community centers year-round.", icon: "M3 7l9-4 9 4-9 4-9-4zM21 7v6M7 9v5c0 1.5 2.2 3 5 3s5-1.5 5-3V9" },
     { title: "Small Business Accelerator", desc: "Grants, low-interest starter loans, and mentorship for entrepreneurs overlooked by traditional banks — especially women-owned, minority-owned, and rural businesses.", icon: "M3 7h18M3 11h18M3 15h18" },
     { title: "First-Time Homebuyer Program", desc: "Down payment assistance, below-market mortgage rates, and personalized guidance for families purchasing their first home in our community.", icon: "M4 11l8-6 8 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z" },
-    { title: "Annual Scholarship Program", desc: "Each year, FSCB awards academic scholarships to graduating seniors pursuing higher education — investing in the next generation of community leaders.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
+    { title: "Annual Scholarship Program", desc: "Each year, Safeguard Global awards academic scholarships to graduating seniors pursuing higher education — investing in the next generation of community leaders.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
   ];
   return (
     <SiteLayout>
       {/* Hero */}
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1f0d,#1e4020)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About FSCB</div>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About Safeguard Global</div>
           <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Community Impact</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We measure our success by the strength of the community around us — $1M+ reinvested and counting.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>See Our Impact Report</button>
@@ -249,7 +249,7 @@ function CommunityPage() {
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#0d1f0d,#1e4020)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
           <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Banking that gives back</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>When you bank with FSCB, your money stays in the community and helps it grow.</p>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>When you bank with Safeguard Global, your money stays in the community and helps it grow.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Open an Account</button>
         </div>
       </div>
@@ -262,7 +262,7 @@ function CommunityPage() {
 function CareersPage() {
   const BENEFITS = [
     { title: "Competitive Salary", desc: "Market-rate compensation reviewed annually with performance-based increases.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-    { title: "Health, Dental & Vision", desc: "Comprehensive medical coverage for you and your family, with FSCB covering a majority of premiums.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
+    { title: "Health, Dental & Vision", desc: "Comprehensive medical coverage for you and your family, with Safeguard Global covering a majority of premiums.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
     { title: "401(k) with Match", desc: "Save for retirement with up to 4% employer match — fully vested after just two years.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
     { title: "Paid Volunteer Time", desc: "Dedicated paid hours each year to volunteer with local nonprofits and causes you care about.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
     { title: "Tuition Assistance", desc: "Up to $5,000 per year toward continuing education, certifications, and degree programs.", icon: "M3 7l9-4 9 4-9 4-9-4z" },
@@ -279,8 +279,8 @@ function CareersPage() {
       {/* Hero */}
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1f3c,#1a3a6b)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About FSCB</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Careers at FSCB</h1>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About Safeguard Global</div>
+          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Careers at Safeguard Global</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>Join a team where your work has real impact. We&apos;re looking for people who care about their community as much as they do their career.</p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
             <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>View Open Positions</button>
@@ -289,14 +289,14 @@ function CareersPage() {
         </div>
       </div>
 
-      {/* Why FSCB */}
+      {/* Why Safeguard Global */}
       <div className="mob-section" style={{ background: "#fff", padding: "80px 32px" }}>
         <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Why FSCB</div>
+            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Why Safeguard Global</div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 38, lineHeight: 1.12, letterSpacing: "-.02em", margin: "0 0 22px", color: DARK }}>A career with purpose right here at home</h2>
             <p style={{ fontSize: 16, color: GRAY, lineHeight: 1.78, margin: "0 0 28px" }}>
-              At FSCB, you&apos;re not a number. You&apos;re a banker who knows their customers by name, makes local decisions, and sees the direct impact of their work in the community every single day.
+              At Safeguard Global, you&apos;re not a number. You&apos;re a banker who knows their customers by name, makes local decisions, and sees the direct impact of their work in the community every single day.
             </p>
             <p style={{ fontSize: 16, color: GRAY, lineHeight: 1.78, margin: 0 }}>
               We invest in our team with competitive pay, strong benefits, and real opportunities for growth — because we believe that a great team builds a great community bank.
@@ -392,16 +392,16 @@ function NewsPage() {
   const FEATURED = {
     date: "June 10, 2026",
     tag: "Community",
-    title: "FSCB Awards $120,000 in Small Business Grants to 12 Local Entrepreneurs",
-    excerpt: "In our largest grant cycle to date, FSCB's Community Investment Fund awarded $120,000 to twelve local small businesses — including a family-owned bakery, a minority-owned construction firm, and a nonprofit childcare center serving working families.",
+    title: "Safeguard Global Awards $120,000 in Small Business Grants to 12 Local Entrepreneurs",
+    excerpt: "In our largest grant cycle to date, Safeguard Global's Community Investment Fund awarded $120,000 to twelve local small businesses — including a family-owned bakery, a minority-owned construction firm, and a nonprofit childcare center serving working families.",
   };
   const NEWS = [
-    { date: "May 28, 2026", tag: "Products", title: "FSCB Launches New High-Yield Savings Account with 5.10% APY", excerpt: "Starting June 1st, new and existing FSCB customers can open our new Premium Savings account featuring one of the most competitive yields in the region." },
-    { date: "May 14, 2026", tag: "Community", title: "FSCB Volunteers Log 2,400 Hours During Spring Community Day", excerpt: "Over 180 FSCB employees across all branches participated in our annual community day, partnering with local nonprofits on cleanup, renovation, and food drive projects." },
-    { date: "April 22, 2026", tag: "Awards", title: "FSCB Named Best Community Bank in the Region for 4th Consecutive Year", excerpt: "The regional business journal honored FSCB with the Best Community Bank award, citing customer satisfaction scores, local reinvestment, and digital banking innovation." },
-    { date: "April 5, 2026", tag: "Technology", title: "New Mobile App Update Brings Budgeting Tools and Instant Card Controls", excerpt: "The latest version of the FSCB mobile app includes real-time spending insights, custom budget categories, and the ability to instantly freeze or unfreeze your debit card." },
-    { date: "March 18, 2026", tag: "Lending", title: "FSCB Expands SBA Lending Program Following $50M in Business Loans", excerpt: "After crossing $50 million in SBA loan originations, FSCB has expanded its business lending team and added new SBA 504 program capabilities for commercial real estate." },
-    { date: "February 28, 2026", tag: "Community", title: "Financial Literacy Program Reaches 1,000th Student This Semester", excerpt: "FSCB's school-based financial education program hit a milestone this spring, with volunteer bankers reaching students at 14 local schools across the district." },
+    { date: "May 28, 2026", tag: "Products", title: "Safeguard Global Launches New High-Yield Savings Account with 5.10% APY", excerpt: "Starting June 1st, new and existing Safeguard Global customers can open our new Premium Savings account featuring one of the most competitive yields in the region." },
+    { date: "May 14, 2026", tag: "Community", title: "Safeguard Global Volunteers Log 2,400 Hours During Spring Community Day", excerpt: "Over 180 Safeguard Global employees across all branches participated in our annual community day, partnering with local nonprofits on cleanup, renovation, and food drive projects." },
+    { date: "April 22, 2026", tag: "Awards", title: "Safeguard Global Named Best Community Bank in the Region for 4th Consecutive Year", excerpt: "The regional business journal honored Safeguard Global with the Best Community Bank award, citing customer satisfaction scores, local reinvestment, and digital banking innovation." },
+    { date: "April 5, 2026", tag: "Technology", title: "New Mobile App Update Brings Budgeting Tools and Instant Card Controls", excerpt: "The latest version of the Safeguard Global mobile app includes real-time spending insights, custom budget categories, and the ability to instantly freeze or unfreeze your debit card." },
+    { date: "March 18, 2026", tag: "Lending", title: "Safeguard Global Expands SBA Lending Program Following $50M in Business Loans", excerpt: "After crossing $50 million in SBA loan originations, Safeguard Global has expanded its business lending team and added new SBA 504 program capabilities for commercial real estate." },
+    { date: "February 28, 2026", tag: "Community", title: "Financial Literacy Program Reaches 1,000th Student This Semester", excerpt: "Safeguard Global's school-based financial education program hit a milestone this spring, with volunteer bankers reaching students at 14 local schools across the district." },
   ];
   const tagColor = (tag: string) => {
     const map: Record<string, string> = { Community: "#1e4020", Products: "#0d1f3c", Awards: "#3d2e00", Technology: "#1a1a2e", Lending: "#2d1b4e" };
@@ -412,9 +412,9 @@ function NewsPage() {
       {/* Hero */}
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#1a1a2e,#2d2d4e)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About FSCB</div>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About Safeguard Global</div>
           <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Press &amp; News</h1>
-          <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: 0 }}>Stay up to date with the latest news, announcements, partnerships, and community stories from FSCB.</p>
+          <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: 0 }}>Stay up to date with the latest news, announcements, partnerships, and community stories from Safeguard Global.</p>
         </div>
       </div>
 
@@ -486,7 +486,7 @@ function NewsPage() {
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#1a1a2e,#2d2d4e)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Stay connected with FSCB</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Stay connected with Safeguard Global</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Sign up for our newsletter and be the first to hear about new products, community events, and local news.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Subscribe to Newsletter</button>
         </div>
@@ -506,7 +506,7 @@ function ContactPage() {
   const CHANNELS = [
     { title: "General Banking Support", detail: "(555) 302-1900", sub: "Mon–Fri 8am–7pm · Sat 8am–4pm", icon: "M3 5a2 2 0 0 1 2-2h3.28a1 1 0 0 1 .948.684l1.498 4.493a1 1 0 0 1-.502 1.21l-2.257 1.13a11.042 11.042 0 0 0 5.516 5.516l1.13-2.257a1 1 0 0 1 1.21-.502l4.493 1.498a1 1 0 0 1 .684.949V19a2 2 0 0 1-2 2h-1C9.716 21 3 14.284 3 6V5z" },
     { title: "24/7 Digital Banking Support", detail: "Online chat in the app", sub: "Always available for digital issues", icon: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" },
-    { title: "Email Us", detail: "banking@fscb.com", sub: "Responses within 1 business day", icon: "M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" },
+    { title: "Email Us", detail: "banking@safeguardglobal.com", sub: "Responses within 1 business day", icon: "M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" },
     { title: "Lost or Stolen Card", detail: "(555) 302-1999", sub: "24/7 emergency card line", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
   ];
   return (
@@ -514,7 +514,7 @@ function ContactPage() {
       {/* Hero */}
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About FSCB</div>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About Safeguard Global</div>
           <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Contact Us</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We&apos;re always here to help. Reach a real person by phone, visit any branch, or send us a message.</p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
@@ -592,7 +592,7 @@ function ContactPage() {
           <div>
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Send a Message</div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 36, lineHeight: 1.12, letterSpacing: "-.02em", margin: "0 0 18px", color: DARK }}>We respond within one business day</h2>
-            <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.72, margin: "0 0 32px" }}>Have a question about your account, a loan, or a service? Fill out the form and a local FSCB banker will follow up personally.</p>
+            <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.72, margin: "0 0 32px" }}>Have a question about your account, a loan, or a service? Fill out the form and a local Safeguard Global banker will follow up personally.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {["No call centers — your message goes to a local banker", "Secure, encrypted message delivery", "Loan questions get routed directly to our lending team", "Current customers can also message in-app"].map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>

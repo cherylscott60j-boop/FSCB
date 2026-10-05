@@ -1,7 +1,7 @@
 const TESTIMONIALS = [
   {
     quote:
-      "We went from a small farm to a thriving business. FSCB's local lending team understood our needs when no one else would.",
+      "We went from a small farm to a thriving business. Safeguard Global's lending team understood our needs when no one else would.",
     name: "Marcus & Joan Whitfield",
     role: "Small Business Owners",
     initials: "MW",
@@ -115,15 +115,15 @@ export default function Testimonials() {
                 margin: "0 0 32px",
               }}
             >
-              Real members,<br />real results.
+              Real clients,<br />real results.
             </h2>
 
             {/* Key stats row */}
             <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
               {[
-                { value: "18,000+", label: "Members served" },
-                { value: "120+",    label: "Years in the community" },
-                { value: "12",      label: "Local branches" },
+                { value: "18,000+", label: "Clients served" },
+                { value: "40+",     label: "Countries served" },
+                { value: "12",      label: "Branches nationwide" },
               ].map((s) => (
                 <div key={s.label}>
                   <div

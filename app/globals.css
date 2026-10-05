@@ -137,41 +137,67 @@ img, video, svg, iframe {
 .underline-hover:hover { background-size: 100% 1.5px; }
 
 /* =====================================================
-   HERO SPLIT LAYOUT
+   HERO BANNER (full-bleed, Metro-style)
    ===================================================== */
 
-.hero-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 62vh;
-}
-
-.hero-left {
-  background: linear-gradient(145deg, #2C0A10, #8C1D25);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 56px 52px 56px 32px;
-}
-
-.hero-right {
+.hero-banner {
   position: relative;
-  min-height: 62vh;
+  min-height: 72vh;
+  display: flex;
+  align-items: flex-end;
   overflow: hidden;
 }
 
+.hero-banner-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%;
+}
+
+.hero-banner-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(20,6,9,.86) 0%, rgba(20,6,9,.55) 42%, rgba(20,6,9,.18) 72%, rgba(20,6,9,0) 100%),
+    linear-gradient(0deg, rgba(20,6,9,.55) 0%, rgba(20,6,9,0) 38%);
+}
+
+.hero-banner-inner {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 32px 72px;
+}
+
+.hero-scroll-chevron {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.14);
+  border: 1.5px solid rgba(255,255,255,.4);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  animation: chevron-bounce 2.2s ease-in-out infinite;
+  z-index: 2;
+}
+.hero-scroll-chevron:hover { background: rgba(255,255,255,.24); }
+
+@keyframes chevron-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+
 @media (max-width: 960px) {
-  .hero-split {
-    grid-template-columns: 1fr;
-    min-height: unset;
-  }
-  .hero-left {
-    justify-content: flex-start;
-    padding: 48px 20px;
-  }
-  .hero-right {
-    aspect-ratio: 16/9;
-  }
+  .hero-banner { min-height: 64vh; }
 }
 
 /* =====================================================
@@ -205,6 +231,7 @@ img, video, svg, iframe {
 .g-digital  { display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
 .g-features { display: grid; grid-template-columns: repeat(2,1fr); }
 .g-footer   { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; }
+.g-2col-even { display: grid; grid-template-columns: 1fr 1fr; }
 
 /* Phone mockup in DigitalBanking */
 .phone-wrap { display: flex; justify-content: center; }
@@ -228,6 +255,7 @@ img, video, svg, iframe {
   .g-4col     { grid-template-columns: repeat(2,1fr) !important; }
   .g-2col     { grid-template-columns: 1fr !important; }
   .g-2col-rev { grid-template-columns: 1fr !important; }
+  .g-2col-even { grid-template-columns: 1fr !important; }
   .g-digital  { grid-template-columns: 1fr !important; }
   .g-footer   { grid-template-columns: repeat(2,1fr) !important; }
   .g-features { grid-template-columns: repeat(2,1fr) !important; }

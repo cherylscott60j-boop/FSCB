@@ -1,13 +1,16 @@
 import TopBar from "@/components/TopBar";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import RelationshipBanking from "@/components/RelationshipBanking";
+import InfoStrips from "@/components/InfoStrips";
 import WhySection from "@/components/WhySection";
-import MetricsBanner from "@/components/MetricsBanner";
+import ExtendedHours from "@/components/ExtendedHours";
 import CommunityImpact from "@/components/CommunityImpact";
+import CallUsBanner from "@/components/CallUsBanner";
+import ServiceQuality from "@/components/ServiceQuality";
 import Products from "@/components/Products";
 import DigitalBanking from "@/components/DigitalBanking";
 import Testimonials from "@/components/Testimonials";
-import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import AuthRedirect from "@/components/AuthRedirect";
 
@@ -19,13 +22,16 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <RelationshipBanking />
+        <InfoStrips />
         <WhySection />
-        <MetricsBanner />
+        <ExtendedHours />
         <CommunityImpact />
+        <CallUsBanner />
+        <ServiceQuality />
         <Products />
         <DigitalBanking />
         <Testimonials />
-        <CTASection />
       </main>
       <Footer />
     </>
