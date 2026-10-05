@@ -1,7 +1,8 @@
 import SiteLayout from "@/components/SiteLayout";
 import Link from "next/link";
+import { BANK } from "@/lib/bankConstants";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -31,13 +32,16 @@ export default function DisclosuresPage() {
           <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
             Legal &amp; Regulatory
           </div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
             Disclosures
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.7)", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 600 }}>
-            Required regulatory disclosures for Safeguard Global Investment Bank. Please review these disclosures carefully as they affect your rights as a depositor, borrower, and consumer.
+            Regulatory disclosures for Safeguard Global Investment Bank. The specific figures, agency names, and contact details below are placeholders — this page has not yet been completed or reviewed by legal/compliance and does not describe any real regulatory relationship.
           </p>
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,.45)", margin: 0 }}>Last updated: January 1, 2026</p>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,158,11,.14)", border: "1px solid rgba(245,158,11,.4)", borderRadius: 999, padding: "6px 14px", fontSize: 12.5, fontWeight: 700, color: "#FBBF24" }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 9v4m0 4h.01M12 3l9.5 16.5H2.5L12 3z" /></svg>
+            DRAFT — placeholder content, not legally reviewed
+          </div>
         </div>
       </div>
 
@@ -45,8 +49,8 @@ export default function DisclosuresPage() {
       <div className="mob-px" style={{ background: "rgba(140,29,37,.04)", borderBottom: "1px solid rgba(140,29,37,.1)", padding: "16px 32px" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "flex", gap: 24, flexWrap: "wrap" }}>
           {[
-            ["FDIC Insurance", "#fdic"],
-            ["Equal Housing Lender", "#ehl"],
+            ["Deposit Protection", "#fdic"],
+            ["Fair Lending", "#ehl"],
             ["Investment Products", "#investments"],
             ["Loan Rates", "#loans"],
             ["Routing Number", "#routing"],
@@ -62,21 +66,21 @@ export default function DisclosuresPage() {
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
 
           <div id="fdic">
-            <Card title="FDIC Deposit Insurance" badge="Required Notice">
+            <Card title="Deposit Protection" badge="Placeholder">
               <p>
-                Safeguard Global Investment Bank is a member of the Federal Deposit Insurance Corporation (FDIC). FDIC deposit insurance protects depositors at FDIC-insured banks in the unlikely event of bank failure. Deposits are insured up to at least <strong>$250,000 per depositor, per insured bank, for each account ownership category</strong>.
+                [This section will name the specific deposit protection / insurance scheme Safeguard Global Investment Bank actually participates in, if any, once that is confirmed. Do not rely on the figures below — they are unfilled placeholders.]
               </p>
               <p style={{ marginTop: 12 }}>
-                Coverage is based on the ownership category of the account. Common ownership categories include:
+                Coverage, if any, would typically depend on the ownership category of the account. Illustrative categories:
               </p>
               <div className="mob-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
                 {[
-                  ["Single Accounts", "Up to $250,000 per owner"],
-                  ["Joint Accounts", "Up to $250,000 per co-owner"],
-                  ["Retirement Accounts (IRAs)", "Up to $250,000 per owner"],
-                  ["Trust Accounts", "Up to $250,000 per unique beneficiary"],
-                  ["Business Accounts", "Up to $250,000 per corporation or partnership"],
-                  ["Government Accounts", "Up to $250,000 per official custodian"],
+                  ["Single Accounts", "Up to [$LIMIT] per owner"],
+                  ["Joint Accounts", "Up to [$LIMIT] per co-owner"],
+                  ["Retirement Accounts (IRAs)", "Up to [$LIMIT] per owner"],
+                  ["Trust Accounts", "Up to [$LIMIT] per unique beneficiary"],
+                  ["Business Accounts", "Up to [$LIMIT] per corporation or partnership"],
+                  ["Government Accounts", "Up to [$LIMIT] per official custodian"],
                 ].map(([cat, limit]) => (
                   <div key={cat} style={{ display: "flex", justifyContent: "space-between", padding: "10px 14px", background: "rgba(248,249,250,.8)", borderRadius: 10, border: "1px solid rgba(17,24,39,.07)" }}>
                     <span style={{ color: DARK, fontWeight: 500 }}>{cat}</span>
@@ -85,14 +89,13 @@ export default function DisclosuresPage() {
                 ))}
               </div>
               <p style={{ marginTop: 16 }}>
-                FDIC deposit insurance is automatic — you do not need to apply. There is no cost to you for this coverage. To learn more, visit{" "}
-                <a href="https://www.fdic.gov" target="_blank" rel="noopener noreferrer" style={{ color: RED }}>fdic.gov</a> or call the FDIC at 1-877-275-3342.
+                [Add the real deposit-protection scheme's name, website, and contact number here once confirmed.]
               </p>
             </Card>
           </div>
 
           <div id="ehl">
-            <Card title="Equal Housing Lender" badge="Required Notice">
+            <Card title="Fair Lending" badge="Placeholder">
               <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
                 <div style={{ flexShrink: 0 }}>
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.6">
@@ -101,13 +104,10 @@ export default function DisclosuresPage() {
                 </div>
                 <div>
                   <p>
-                    Safeguard Global Investment Bank is an Equal Housing Lender. We make loans without regard to race, color, religion, national origin, sex, handicap, or familial status. As required by law, the federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age (provided the applicant has the capacity to enter into a binding contract), or because the applicant receives income from any public assistance program.
+                    [Confirm Safeguard Global Investment Bank&apos;s actual fair-lending commitments and any applicable certification — e.g. Equal Housing Lender status — before publishing this section. Until then, treat this as unverified placeholder text.] Lending decisions should never be made on the basis of race, color, religion, national origin, sex, disability, or familial status.
                   </p>
                   <p style={{ marginTop: 12 }}>
-                    If you believe you have been discriminated against in a credit transaction, you may contact your federal or state regulatory agency. For credit extended by Safeguard Global, you may contact the{" "}
-                    <strong>Consumer Financial Protection Bureau (CFPB)</strong> at{" "}
-                    <a href="https://www.consumerfinance.gov" target="_blank" rel="noopener noreferrer" style={{ color: RED }}>consumerfinance.gov</a>{" "}
-                    or 1-855-411-2372.
+                    [Add the real complaint/escalation contact — your own compliance team and/or the applicable regulator in your jurisdiction — once confirmed.]
                   </p>
                 </div>
               </div>
@@ -118,11 +118,11 @@ export default function DisclosuresPage() {
             <Card title="Investment Products Disclosure" badge="Important">
               <div style={{ background: "#FEF3C7", border: "1.5px solid #F59E0B", borderRadius: 12, padding: "16px 20px", marginBottom: 16 }}>
                 <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 14, color: "#92400E", marginBottom: 6 }}>
-                  Investment products offered through Safeguard Global are:
+                  Investment products offered through SGGINV are:
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                   {[
-                    "NOT FDIC Insured",
+                    "NOT [Deposit Protection]",
                     "NOT bank guaranteed",
                     "May lose value — including possible loss of the amount invested",
                     "NOT deposits or obligations of Safeguard Global Investment Bank",
@@ -136,11 +136,10 @@ export default function DisclosuresPage() {
                 </div>
               </div>
               <p>
-                Investment and insurance products, including annuities, mutual funds, stocks, bonds, and brokerage accounts, are offered through Safeguard Global Investment Services, which is not a registered broker-dealer. Investment advisory services are provided by registered investment advisers who are not employees of Safeguard Global Investment Bank.
+                [Name the actual entity through which investment and insurance products are offered, and confirm it is properly registered/licensed to do so, before publishing this section.]
               </p>
               <p style={{ marginTop: 12 }}>
-                Securities accounts are protected by the Securities Investor Protection Corporation (SIPC) up to $500,000 (including $250,000 for cash claims) against broker-dealer failure. SIPC does not protect against market loss. For more information, visit{" "}
-                <a href="https://www.sipc.org" target="_blank" rel="noopener noreferrer" style={{ color: RED }}>sipc.org</a>.
+                [If securities accounts are genuinely protected by a real investor-protection scheme (e.g. SIPC in the US), name it and its real coverage limits here. Do not state a specific scheme or dollar limit until that membership is confirmed.]
               </p>
             </Card>
           </div>
@@ -157,7 +156,7 @@ export default function DisclosuresPage() {
                 <li><strong>APR</strong> includes interest and applicable fees. Where no fees apply, APR equals the interest rate.</li>
               </ul>
               <p>
-                All loans are subject to credit approval. Safeguard Global complies with all applicable federal and state lending laws, including the Truth in Lending Act (TILA), the Real Estate Settlement Procedures Act (RESPA), and the Home Mortgage Disclosure Act (HMDA).
+                All loans are subject to credit approval. [Confirm and list the specific lending laws and regulations Safeguard Global Investment Bank is actually subject to in its operating jurisdiction before publishing this claim.]
               </p>
             </Card>
           </div>
@@ -165,15 +164,15 @@ export default function DisclosuresPage() {
           <div id="routing">
             <Card title="Routing Number &amp; Account Information">
               <p style={{ marginBottom: 18 }}>
-                Use the following information when setting up direct deposit, ACH transfers, or wire transfers to your Safeguard Global account.
+                Use the following information when setting up direct deposit, ACH transfers, or wire transfers to your SGGINV account.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
-                  { label: "ABA Routing Number (ACH / Direct Deposit)", value: "081024376", note: "For electronic transfers and direct deposit" },
-                  { label: "Wire Transfer Routing Number", value: "081024376", note: "Same routing number; include your full account number and Safeguard Global's address" },
-                  { label: "Bank Name", value: "Safeguard Global Investment Bank", note: null },
-                  { label: "Bank Address (for wire transfers)", value: "102 Main Street, Hometown, ST 00000", note: null },
-                  { label: "SWIFT / BIC Code", value: "SGIBUS33", note: "For international wire transfers only" },
+                  { label: "ABA Routing Number (ACH / Direct Deposit)", value: BANK.achRouting, note: "For electronic transfers and direct deposit" },
+                  { label: "Wire Transfer Routing Number", value: BANK.wireRouting, note: "Include your full account number and the bank's address" },
+                  { label: "Bank Name", value: BANK.name, note: null },
+                  { label: "Bank Address (for wire transfers)", value: BANK.address, note: null },
+                  { label: "SWIFT / BIC Code", value: BANK.swiftCode, note: "For international wire transfers only" },
                 ].map((row) => (
                   <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 18px", background: "rgba(248,249,250,.8)", borderRadius: 12, border: "1px solid rgba(17,24,39,.07)", gap: 20 }}>
                     <div>
@@ -185,8 +184,8 @@ export default function DisclosuresPage() {
                 ))}
               </div>
               <p style={{ marginTop: 18, fontSize: 13, color: GRAY }}>
-                For your security, Safeguard Global will never ask you to share your full account number by email or text. If you receive a suspicious request, call us at{" "}
-                <a href="tel:18002372669" style={{ color: RED }}>1-800-SAFEGRD</a> to verify.
+                For your security, SGGINV will never ask you to share your full account number by email or text. If you receive a suspicious request, call us at{" "}
+                <a href="tel:18002372669" style={{ color: RED }}>1-800-SGGINV-NOW</a> to verify.
               </p>
             </Card>
           </div>
@@ -194,15 +193,15 @@ export default function DisclosuresPage() {
           <div id="licensing">
             <Card title="State Licensing &amp; Regulatory Information">
               <p>
-                Safeguard Global Investment Bank is chartered and regulated under state banking law. We are supervised by state and federal banking regulators, including the Federal Deposit Insurance Corporation (FDIC) and the Consumer Financial Protection Bureau (CFPB).
+                [This section must name Safeguard Global Investment Bank&apos;s actual charter type, licensing jurisdiction, and real supervising regulator(s) before publishing — none of that is confirmed yet. The rows below are unfilled placeholders, not real regulatory relationships.]
               </p>
               <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 14 }}>
                 {[
-                  { agency: "FDIC", role: "Primary federal deposit insurance regulator", contact: "fdic.gov · 1-877-275-3342" },
-                  { agency: "CFPB", role: "Consumer financial protection oversight", contact: "consumerfinance.gov · 1-855-411-2372" },
-                  { agency: "State Banking Department", role: "State charter and examination authority", contact: "Contact Safeguard Global for state-specific regulatory information" },
-                ].map((r) => (
-                  <div key={r.agency} style={{ display: "flex", gap: 16, padding: "14px 18px", background: "rgba(248,249,250,.8)", borderRadius: 12, border: "1px solid rgba(17,24,39,.07)" }}>
+                  { agency: "[Regulator]", role: "[Role / jurisdiction to confirm]", contact: "[website · phone]" },
+                  { agency: "[Regulator]", role: "[Role / jurisdiction to confirm]", contact: "[website · phone]" },
+                  { agency: "[Regulator]", role: "[Role / jurisdiction to confirm]", contact: "[website · phone]" },
+                ].map((r, i) => (
+                  <div key={i} style={{ display: "flex", gap: 16, padding: "14px 18px", background: "rgba(248,249,250,.8)", borderRadius: 12, border: "1px solid rgba(17,24,39,.07)" }}>
                     <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 14, color: RED, width: 80, flexShrink: 0 }}>{r.agency}</div>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: DARK }}>{r.role}</div>
@@ -212,8 +211,7 @@ export default function DisclosuresPage() {
                 ))}
               </div>
               <p style={{ marginTop: 20 }}>
-                To file a complaint or inquiry with Safeguard Global directly, contact our Customer Service team at{" "}
-                <a href="tel:18002372669" style={{ color: RED }}>1-800-SAFEGRD</a> or write to us at 102 Main Street, Hometown, ST 00000. We are committed to resolving all concerns promptly and fairly.
+                [Add a real customer-service contact channel here once one exists.]
               </p>
             </Card>
           </div>

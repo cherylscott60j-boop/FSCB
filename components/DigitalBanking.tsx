@@ -53,7 +53,7 @@ export default function DigitalBanking() {
           </span>
           <h2
             style={{
-              fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+              fontFamily: "var(--font-poppins), sans-serif",
               fontWeight: 800,
               fontSize: "clamp(22px, 4vw, 40px)",
               lineHeight: 1.1,
@@ -61,7 +61,7 @@ export default function DigitalBanking() {
               margin: "14px 0 18px",
             }}
           >
-            Bank from anywhere with Safeguard Global&apos;s digital tools
+            Bank from anywhere with SGGINV&apos;s digital banking tools
           </h2>
           <p
             style={{
@@ -125,7 +125,7 @@ export default function DigitalBanking() {
               </svg>
               <div style={{ textAlign: "left", lineHeight: 1.1 }}>
                 <div style={{ fontSize: 9, fontWeight: 500 }}>Download on the</div>
-                <div style={{ fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 15 }}>App Store</div>
+                <div style={{ fontFamily: "var(--font-poppins), sans-serif", fontWeight: 700, fontSize: 15 }}>App Store</div>
               </div>
             </button>
             {/* Google Play */}
@@ -151,7 +151,7 @@ export default function DigitalBanking() {
               </svg>
               <div style={{ textAlign: "left", lineHeight: 1.1 }}>
                 <div style={{ fontSize: 9, fontWeight: 500 }}>Get it on</div>
-                <div style={{ fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 15 }}>Google Play</div>
+                <div style={{ fontFamily: "var(--font-poppins), sans-serif", fontWeight: 700, fontSize: 15 }}>Google Play</div>
               </div>
             </button>
           </div>
@@ -212,12 +212,12 @@ export default function DigitalBanking() {
                 >
                   <div>
                     <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Good morning,</div>
-                    <div style={{ fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 17 }}>Sarah</div>
+                    <div style={{ fontFamily: "var(--font-poppins), sans-serif", fontWeight: 700, fontSize: 17 }}>Sarah</div>
                   </div>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,.18)" }} />
                 </div>
                 <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.72)" }}>Available balance</div>
-                <div style={{ fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif", fontWeight: 800, fontSize: 32, margin: "4px 0 16px" }}>
+                <div style={{ fontFamily: "var(--font-poppins), sans-serif", fontWeight: 800, fontSize: 32, margin: "4px 0 16px" }}>
                   $12,840<span style={{ fontSize: 18, color: "rgba(255,255,255,.7)" }}>.20</span>
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>

@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     const { error: acctErr } = await admin.from("accounts").insert({
       user_id:              appRow.user_id,
       account_type:         dbType,
-      account_name:         isBusiness ? displayName : `Safeguard Global ${displayName}`,
+      account_name:         isBusiness ? displayName : `SGGINV ${displayName}`,
       account_number:       accountNumber,
       account_number_last4: last4,
       balance:              0,

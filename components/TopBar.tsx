@@ -2,70 +2,88 @@
 
 import Link from "next/link";
 
+const BLUE = "#0800FF";
+const RED = "#E31E24";
+
+const UTILITY_LINKS = [
+  { label: "Personal", href: "/" },
+  { label: "Business", href: "/business" },
+  { label: "Investing", href: "/financial" },
+  { label: "About", href: "/about" },
+  { label: "Service status", href: "/accessibility" },
+  { label: "Extra support for customers", href: "/accessibility" },
+];
+
 export default function TopBar() {
   return (
-    <div style={{ background: "#6B151C", color: "rgba(255,255,255,.85)", fontSize: "12.5px", letterSpacing: ".01em" }}>
+    <div className="sg-topbar" style={{ background: BLUE, color: "rgba(255,255,255,.88)", fontSize: "13px", position: "sticky", top: 0, zIndex: 101 }}>
       <div
         style={{
-          maxWidth: 1240,
+          maxWidth: 1280,
           margin: "0 auto",
           padding: "0 32px",
-          height: 38,
+          height: 42,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        {/* Left: trust signal */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              width: 7, height: 7, borderRadius: "50%",
-              background: "#D4AF37",
-              boxShadow: "0 0 0 3px rgba(212,175,55,.25)",
-              display: "inline-block",
-              flexShrink: 0,
-            }}
-          />
-          <span>Member FDIC &middot; Securities Member SIPC &middot; Deposits backed by the full faith of the U.S. Government</span>
+        {/* Left: utility nav */}
+        <div style={{ display: "flex", alignItems: "center", gap: 22, overflow: "hidden" }} className="sg-topbar-utility">
+          {UTILITY_LINKS.map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              style={{ color: "rgba(255,255,255,.82)", textDecoration: "none", transition: "color .15s", whiteSpace: "nowrap" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#fff"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,.82)"; }}
+            >
+              {l.label}
+            </Link>
+          ))}
         </div>
 
         {/* Right: quick links */}
-        <div className="topbar-right">
+        <div style={{ display: "flex", alignItems: "center", gap: 20, flexShrink: 0 }}>
           <Link
             href="/about/contact"
-            style={{
-              display: "flex", alignItems: "center", gap: 6,
-              color: "rgba(255,255,255,.85)", textDecoration: "none",
-              transition: "color .15s",
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#D4AF37"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,.85)"; }}
+            className="sg-topbar-link"
+            style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,.82)", textDecoration: "none" }}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z" />
               <circle cx="12" cy="10" r="2.5" />
             </svg>
-            Find a Branch
+            Find a Store
           </Link>
-
-          <a
-            href="tel:18002372669"
+          <Link href="/accessibility" className="sg-topbar-link" style={{ color: "rgba(255,255,255,.82)", textDecoration: "none" }}>
+            Help
+          </Link>
+          <Link
+            href="/login"
+            className="sg-topbar-link"
             style={{
-              display: "flex", alignItems: "center", gap: 6,
-              color: "rgba(255,255,255,.85)", textDecoration: "none",
-              transition: "color .15s",
+              background: RED,
+              color: "#fff",
+              fontWeight: 700,
+              padding: "7px 18px",
+              borderRadius: 4,
+              textDecoration: "none",
+              fontSize: 12.5,
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#D4AF37"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,.85)"; }}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            1-800-SAFEGRD
-          </a>
+            Log in
+          </Link>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 860px) {
+          .sg-topbar { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

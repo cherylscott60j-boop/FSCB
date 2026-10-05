@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 const CARDS = [
   {
-    title: "Deep-Rooted Heritage",
-    body: "Founded in 1902, now serving clients in 40+ countries — built on trust, guided by values that never changed.",
+    title: "Strong Local Roots",
+    body: "Serving our community since 1902 — built on trust, guided by values, and always close to home.",
     cta: "Learn about us",
     iconBg: "rgba(140,29,37,.09)",
     iconColor: "#8C1D25",
@@ -29,8 +29,8 @@ const CARDS = [
     ),
   },
   {
-    title: "Global Reach, Personal Touch",
-    body: "From Main Street to global markets — supporting families, businesses, and causes every day.",
+    title: "Community-Local Banking",
+    body: "We're proud to be part of this community — supporting local families, businesses, and causes every day.",
     cta: "See our impact",
     iconBg: "rgba(16,185,129,.1)",
     iconColor: "#059669",
@@ -74,11 +74,11 @@ export default function WhySection() {
             fontWeight: 700,
           }}
         >
-          Why Bank with Safeguard Global?
+          Why Bank with SGGINV?
         </span>
         <h2
           style={{
-            fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+            fontFamily: "var(--font-poppins), sans-serif",
             fontWeight: 800,
             fontSize: "clamp(22px, 4vw, 40px)",
             lineHeight: 1.1,
@@ -137,7 +137,7 @@ export default function WhySection() {
             </div>
             <h3
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontWeight: 700,
                 fontSize: 21,
                 margin: "0 0 11px",

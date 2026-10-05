@@ -14,7 +14,7 @@
   --color-background: #F8F9FA;
   --color-foreground: #111827;
 
-  /* FSCB Primary Maroon Palette */
+  /* SGGINV Primary Maroon Palette */
   --color-primary:   #8C1D25;
   --color-primary-dark: #6B151C;
   --color-primary-darker: #4A0E14;
@@ -137,67 +137,41 @@ img, video, svg, iframe {
 .underline-hover:hover { background-size: 100% 1.5px; }
 
 /* =====================================================
-   HERO BANNER (full-bleed, Metro-style)
+   HERO SPLIT LAYOUT
    ===================================================== */
 
-.hero-banner {
-  position: relative;
-  min-height: 72vh;
+.hero-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 62vh;
+}
+
+.hero-left {
+  background: linear-gradient(145deg, #2C0A10, #8C1D25);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 56px 52px 56px 32px;
+}
+
+.hero-right {
+  position: relative;
+  min-height: 62vh;
   overflow: hidden;
 }
 
-.hero-banner-bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center 30%;
-}
-
-.hero-banner-scrim {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(20,6,9,.86) 0%, rgba(20,6,9,.55) 42%, rgba(20,6,9,.18) 72%, rgba(20,6,9,0) 100%),
-    linear-gradient(0deg, rgba(20,6,9,.55) 0%, rgba(20,6,9,0) 38%);
-}
-
-.hero-banner-inner {
-  position: relative;
-  max-width: 1240px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 32px 72px;
-}
-
-.hero-scroll-chevron {
-  position: absolute;
-  left: 50%;
-  bottom: 22px;
-  transform: translateX(-50%);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.14);
-  border: 1.5px solid rgba(255,255,255,.4);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  animation: chevron-bounce 2.2s ease-in-out infinite;
-  z-index: 2;
-}
-.hero-scroll-chevron:hover { background: rgba(255,255,255,.24); }
-
-@keyframes chevron-bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(6px); }
-}
-
 @media (max-width: 960px) {
-  .hero-banner { min-height: 64vh; }
+  .hero-split {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+  .hero-left {
+    justify-content: flex-start;
+    padding: 48px 20px;
+  }
+  .hero-right {
+    aspect-ratio: 16/9;
+  }
 }
 
 /* =====================================================
@@ -231,7 +205,6 @@ img, video, svg, iframe {
 .g-digital  { display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
 .g-features { display: grid; grid-template-columns: repeat(2,1fr); }
 .g-footer   { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; }
-.g-2col-even { display: grid; grid-template-columns: 1fr 1fr; }
 
 /* Phone mockup in DigitalBanking */
 .phone-wrap { display: flex; justify-content: center; }
@@ -255,7 +228,6 @@ img, video, svg, iframe {
   .g-4col     { grid-template-columns: repeat(2,1fr) !important; }
   .g-2col     { grid-template-columns: 1fr !important; }
   .g-2col-rev { grid-template-columns: 1fr !important; }
-  .g-2col-even { grid-template-columns: 1fr !important; }
   .g-digital  { grid-template-columns: 1fr !important; }
   .g-footer   { grid-template-columns: repeat(2,1fr) !important; }
   .g-features { grid-template-columns: repeat(2,1fr) !important; }
@@ -303,6 +275,16 @@ img, video, svg, iframe {
   .mob-stack {
     grid-template-columns: 1fr !important;
     gap: 24px !important;
+  }
+  /* Hero stat list: inline row instead of stacked on mobile */
+  .mob-hero-stats {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 20px 28px !important;
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid rgba(255,255,255,.14) !important;
+    padding-top: 24px !important;
   }
   /* Side padding only (for sections that only need horizontal compression) */
   .mob-px {
@@ -372,6 +354,13 @@ img, video, svg, iframe {
   /* 3-col grid in skeleton: collapse */
   .mob-grid-3 {
     grid-template-columns: 1fr 1fr !important;
+  }
+  /* Open-account split layout: drop the side image panel on mobile */
+  .oa-split {
+    grid-template-columns: 1fr !important;
+  }
+  .oa-split-img {
+    display: none !important;
   }
 }
 
@@ -633,49 +622,49 @@ img, video, svg, iframe {
   .db-profile-hero { flex-direction: column; align-items: flex-start; gap: 14px; }
 }
 
-@keyframes fscb-progress {
+@keyframes sgginv-progress {
   0%   { transform: translateX(-100%); }
   60%  { transform: translateX(20%); }
   100% { transform: translateX(110%); }
 }
 
-@keyframes fscb-dot {
+@keyframes sgginv-dot {
   0%, 100% { opacity: 0.2; transform: scale(0.75); }
   50%       { opacity: 1;   transform: scale(1); }
 }
 
-@keyframes fscb-shimmer {
+@keyframes sgginv-shimmer {
   0%   { background-position: -800px 0; }
   100% { background-position:  800px 0; }
 }
 
-.fscb-progress-bar {
+.sgginv-progress-bar {
   height: 100%;
   background: linear-gradient(90deg, transparent 0%, #8C1D25 35%, #D4AF37 50%, #8C1D25 65%, transparent 100%);
-  animation: fscb-progress 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: sgginv-progress 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-.fscb-dot {
+.sgginv-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
   background: #8C1D25;
-  animation: fscb-dot 1.2s ease-in-out infinite;
+  animation: sgginv-dot 1.2s ease-in-out infinite;
   display: inline-block;
 }
-.fscb-dot:nth-child(2) { animation-delay: 0.18s; }
-.fscb-dot:nth-child(3) { animation-delay: 0.36s; }
+.sgginv-dot:nth-child(2) { animation-delay: 0.18s; }
+.sgginv-dot:nth-child(3) { animation-delay: 0.36s; }
 
-.fscb-skeleton {
+.sgginv-skeleton {
   background: linear-gradient(90deg, #ebebeb 25%, #d8d8d8 50%, #ebebeb 75%);
   background-size: 800px 100%;
-  animation: fscb-shimmer 1.5s ease-in-out infinite;
+  animation: sgginv-shimmer 1.5s ease-in-out infinite;
   border-radius: 6px;
 }
 
-.fscb-skeleton-dark {
+.sgginv-skeleton-dark {
   background: linear-gradient(90deg, rgba(255,255,255,.07) 25%, rgba(255,255,255,.14) 50%, rgba(255,255,255,.07) 75%);
   background-size: 800px 100%;
-  animation: fscb-shimmer 1.5s ease-in-out infinite;
+  animation: sgginv-shimmer 1.5s ease-in-out infinite;
   border-radius: 6px;
 }
 

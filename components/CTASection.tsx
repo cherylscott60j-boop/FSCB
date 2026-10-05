@@ -29,7 +29,7 @@ export default function CTASection() {
         <div style={{ position: "relative", maxWidth: 620, margin: "0 auto" }}>
           <h2
             style={{
-              fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+              fontFamily: "var(--font-poppins), sans-serif",
               fontWeight: 800,
               fontSize: "clamp(22px, 4vw, 42px)",
               lineHeight: 1.1,

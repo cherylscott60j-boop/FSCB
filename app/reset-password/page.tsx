@@ -10,7 +10,7 @@ const GOLD = "#D4AF37";
 const DARK = "#111827";
 const MID  = "#374151";
 const GRAY = "#6B7280";
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const INP: React.CSSProperties = { width:"100%", padding:"11px 14px", border:"1px solid rgba(17,24,39,.18)", borderRadius:9, fontSize:14, fontFamily:"inherit", color:DARK, outline:"none", boxSizing:"border-box" };
 
 type Status = "waiting" | "ready" | "success" | "error";
@@ -73,8 +73,7 @@ export default function ResetPasswordPage() {
 
         {/* Logo */}
         <div style={{ marginBottom: 28 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <Logo height={36} variant="dark" />
+          <Logo variant="dark" height={36} />
         </div>
 
         {/* ── Success ── */}
@@ -86,7 +85,7 @@ export default function ResetPasswordPage() {
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 20, color: DARK, margin: "0 0 10px" }}>Password Updated!</h2>
             <p style={{ color: GRAY, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>Your password has been changed successfully. Redirecting you to your dashboard…</p>
             <div style={{ height: 3, background: "rgba(17,24,39,.06)", borderRadius: 99, overflow: "hidden" }}>
-              <div style={{ height: "100%", background: RED, borderRadius: 99, animation: "fscb-progress 3s linear forwards" }}/>
+              <div style={{ height: "100%", background: RED, borderRadius: 99, animation: "sgginv-progress 3s linear forwards" }}/>
             </div>
           </div>
         )}
@@ -114,7 +113,7 @@ export default function ResetPasswordPage() {
         {status === "ready" && (
           <>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 6px" }}>Set New Password</h2>
-            <p style={{ color: GRAY, fontSize: 13.5, margin: "0 0 24px", lineHeight: 1.5 }}>Choose a strong password for your Safeguard Global account.</p>
+            <p style={{ color: GRAY, fontSize: 13.5, margin: "0 0 24px", lineHeight: 1.5 }}>Choose a strong password for your SGGINV account.</p>
 
             <form onSubmit={handleSubmit}>
               {/* New password */}

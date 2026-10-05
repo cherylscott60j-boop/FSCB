@@ -24,7 +24,7 @@ export default function Loading() {
           overflow: "hidden",
         }}
       >
-        <div className="fscb-progress-bar" />
+        <div className="sgginv-progress-bar" />
       </div>
 
       {/* Subtle radial glow */}
@@ -65,7 +65,7 @@ export default function Loading() {
       {/* Wordmark */}
       <div
         style={{
-          fontFamily: "var(--font-montserrat),'Libre Franklin',sans-serif",
+          fontFamily: "var(--font-poppins), sans-serif",
           fontWeight: 900,
           fontSize: 26,
           color: "#111827",
@@ -73,7 +73,7 @@ export default function Loading() {
           lineHeight: 1,
         }}
       >
-        Safeguard Global
+        SGGINV
       </div>
       <div
         style={{
@@ -84,14 +84,14 @@ export default function Loading() {
           fontWeight: 600,
         }}
       >
-        INVESTMENT BANK
+        COMMUNITY BANK
       </div>
 
       {/* Pulsing dots */}
       <div style={{ display: "flex", gap: 8, marginTop: 36 }}>
-        <span className="fscb-dot" />
-        <span className="fscb-dot" />
-        <span className="fscb-dot" />
+        <span className="sgginv-dot" />
+        <span className="sgginv-dot" />
+        <span className="sgginv-dot" />
       </div>
     </div>
   );

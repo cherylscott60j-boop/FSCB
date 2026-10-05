@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/Logo";
 
 /* ── Design tokens (mirrors dashboard) ───────────────── */
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -128,8 +128,7 @@ function LoadingSpinner(){
     <div style={{minHeight:"100vh",background:BG,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center",fontFamily:FONT}}>
         <div style={{margin:"0 auto 18px",display:"flex",justifyContent:"center"}}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <Logo height={40} variant="dark" />
+          <Logo variant="dark" height={40} />
         </div>
         <div style={{fontWeight:700,fontSize:16,color:DARK,marginBottom:12}}>Loading control panel…</div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -2946,10 +2945,10 @@ function ReportsTab({users,accounts,txs,apps,disputes,fraudAlerts}:{users:UserRo
     URL.revokeObjectURL(url);
   }
 
-  function exportAccounts(){ downloadCSV(`fscb-accounts-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Name","Type","Last4","Balance","Status","User ID","Credit Limit"],...accounts.map(a=>[a.id,a.accountName,a.accountType,a.last4,String(a.balance),a.status,a.userId,String(a.creditLimit||"")])]); }
-  function exportUsers(){    downloadCSV(`fscb-users-${new Date().toISOString().slice(0,10)}.csv`,[["ID","First","Last","Email","Phone","Since","KYC","Role","Accts","Balance"],...users.map(u=>[u.id,u.firstName,u.lastName,u.email,u.phone,u.memberSince,u.kycStatus,u.role,String(u.accountCount),String(u.totalBalance)])]); }
-  function exportTxs(){      downloadCSV(`fscb-transactions-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Merchant","Category","Amount","Date","User ID","Account ID"],...txs.map(t=>[t.id,t.merchant,t.category,String(t.amount),t.date,t.userId,t.accountId])]); }
-  function exportDisputes(){ downloadCSV(`fscb-disputes-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Reference","Type","Amount","Merchant","Status","Description","Opened","Resolved"],...disputes.map(d=>[d.id,d.referenceId,d.disputeType,String(d.amount),d.merchant,d.status,d.description,d.openedAt,d.resolvedAt||""])]); }
+  function exportAccounts(){ downloadCSV(`sgginv-accounts-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Name","Type","Last4","Balance","Status","User ID","Credit Limit"],...accounts.map(a=>[a.id,a.accountName,a.accountType,a.last4,String(a.balance),a.status,a.userId,String(a.creditLimit||"")])]); }
+  function exportUsers(){    downloadCSV(`sgginv-users-${new Date().toISOString().slice(0,10)}.csv`,[["ID","First","Last","Email","Phone","Since","KYC","Role","Accts","Balance"],...users.map(u=>[u.id,u.firstName,u.lastName,u.email,u.phone,u.memberSince,u.kycStatus,u.role,String(u.accountCount),String(u.totalBalance)])]); }
+  function exportTxs(){      downloadCSV(`sgginv-transactions-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Merchant","Category","Amount","Date","User ID","Account ID"],...txs.map(t=>[t.id,t.merchant,t.category,String(t.amount),t.date,t.userId,t.accountId])]); }
+  function exportDisputes(){ downloadCSV(`sgginv-disputes-${new Date().toISOString().slice(0,10)}.csv`,[["ID","Reference","Type","Amount","Merchant","Status","Description","Opened","Resolved"],...disputes.map(d=>[d.id,d.referenceId,d.disputeType,String(d.amount),d.merchant,d.status,d.description,d.openedAt,d.resolvedAt||""])]); }
 
   const EXPORTS=[
     {label:"Export Accounts",     desc:`${accounts.length} accounts`,       fn:exportAccounts, color:"#2563EB", icon:"M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z"},
@@ -3090,8 +3089,7 @@ function AdminSidebar({active,set,adminName,adminEmail,onSignOut,fraudOpenCount,
 
       {/* Logo */}
       <Link href="/" style={{display:"flex",alignItems:"center",textDecoration:"none",padding:"20px 18px 18px",borderBottom:"1px solid rgba(255,255,255,.1)",flexShrink:0}}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <Logo height={34} variant="light" />
+        <Logo variant="light" height={34} />
       </Link>
 
       {/* Nav scroll area */}

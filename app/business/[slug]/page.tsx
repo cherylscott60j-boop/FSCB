@@ -2,7 +2,7 @@ import Link from "next/link";
 import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -16,7 +16,7 @@ const PAGES = {
     label: "Business Banking",
     ctaHref: "/open-account",
     stats: [{ v: "$0", l: "Monthly fees*" }, { v: "Unlimited", l: "Transactions" }, { v: "Same-day", l: "ACH payments" }],
-    overview: "Running a business means your bank should work as hard as you do. Safeguard Global Business Checking accounts give you the flexibility to handle high transaction volumes, the tools to manage your team's access, and a dedicated advisor who understands local business.",
+    overview: "Running a business means your bank should work as hard as you do. SGGINV Business Checking accounts give you the flexibility to handle high transaction volumes, the tools to manage your team's access, and a dedicated advisor who understands local business.",
     features: [
       { title: "No Monthly Maintenance Fees", desc: "Keep more of your business revenue. Qualifying accounts pay zero monthly maintenance charges.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
       { title: "Unlimited Transactions", desc: "Process as many deposits, withdrawals, and transfers as your business needs — no per-item fees.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
@@ -39,7 +39,7 @@ const PAGES = {
       { q: "What documents do I need to open a business account?", a: "You'll need your EIN, business formation documents (Articles of Incorporation or LLC agreement), a valid photo ID for each owner, and your business address." },
       { q: "Can I have multiple signers on the account?", a: "Yes — you can add authorized signers, set role-based permissions, and grant view-only access to your bookkeeper." },
       { q: "Do you offer accounts for sole proprietors?", a: "Absolutely. Sole proprietors can open a business checking account using their SSN and business name (DBA)." },
-      { q: "Is my business deposit FDIC insured?", a: "Yes. Business deposits are FDIC insured up to $250,000 per depositor, per insured bank, per ownership category." },
+      { q: "Is my business deposit [deposit-protected]?", a: "Yes. Business deposits are [deposit-protected] up to $250,000 per depositor, per insured bank, per ownership category." },
     ],
     cta: "Open a Business Account",
   },
@@ -50,14 +50,14 @@ const PAGES = {
     hero: "linear-gradient(145deg,#0f1f0f,#1e4020)",
     label: "Business Banking",
     ctaHref: "/open-account",
-    stats: [{ v: "High APY", l: "Competitive yield" }, { v: "Same-day", l: "Transfers to checking" }, { v: "$250K", l: "FDIC insured" }],
-    overview: "Your idle business cash should earn more than nothing. Safeguard Global Business Savings and Money Market accounts deliver competitive yields on your reserves, with the flexibility to transfer funds to checking the same day when you need to deploy capital.",
+    stats: [{ v: "High APY", l: "Competitive yield" }, { v: "Same-day", l: "Transfers to checking" }, { v: "$250K", l: "[deposit-protected]" }],
+    overview: "Your idle business cash should earn more than nothing. SGGINV Business Savings and Money Market accounts deliver competitive yields on your reserves, with the flexibility to transfer funds to checking the same day when you need to deploy capital.",
     features: [
       { title: "Competitive Business APY", desc: "Earn above-average yields on your business reserves — rates are reviewed regularly to stay competitive.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "Same-Day Transfers", desc: "Move funds between your business savings and checking accounts instantly through online banking.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
       { title: "Treasury Management", desc: "Sweep excess daily balances into higher-yield accounts automatically — maximize every dollar overnight.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
       { title: "No Lock-In Periods", desc: "Unlike CDs, your funds remain accessible. No penalties for moving money when business needs shift.", icon: "M8 11V7a4 4 0 0 1 8 0m-4 8v-4m-6 8h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2z" },
-      { title: "FDIC Insured to $250,000", desc: "Your business reserves are fully insured by the FDIC — protected at every balance level.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
+      { title: "CASS PROTECTED up to £120,000", desc: "Eligible business reserves may be protected under [DEPOSIT INSURANCE SCHEME], subject to scheme limits.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
       { title: "Multiple Account Options", desc: "Choose from Business Savings, Money Market, or CDs based on your liquidity needs and yield goals.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2" },
     ],
     accounts: [
@@ -68,13 +68,13 @@ const PAGES = {
     steps: [
       { n: "1", t: "Open Alongside Checking", d: "Add a savings account when you open business checking or at any time through online banking." },
       { n: "2", t: "Set Up Automatic Transfers", d: "Schedule weekly or monthly transfers from checking to savings to build reserves effortlessly." },
-      { n: "3", t: "Monitor and Grow", d: "Track your balance and interest earned in real time through Safeguard Global Business Online Banking." },
+      { n: "3", t: "Monitor and Grow", d: "Track your balance and interest earned in real time through SGGINV Business Online Banking." },
     ],
     faqs: [
       { q: "How often is interest paid?", a: "Interest is compounded daily and credited to your account monthly." },
       { q: "Can I open multiple business savings accounts?", a: "Yes — many businesses open separate accounts for payroll reserves, tax savings, and capital expenditures." },
       { q: "Are there withdrawal limits?", a: "Business Savings is limited to 6 withdrawals per statement cycle under Regulation D. Money Market accounts offer greater flexibility." },
-      { q: "Can I link to an external business account?", a: "Yes — you can link external accounts for ACH transfers through Safeguard Global Business Online Banking." },
+      { q: "Can I link to an external business account?", a: "Yes — you can link external accounts for ACH transfers through SGGINV Business Online Banking." },
     ],
     cta: "Open a Business Savings Account",
   },
@@ -86,7 +86,7 @@ const PAGES = {
     label: "Business Banking",
     ctaHref: "/about/contact",
     stats: [{ v: "$10K–$5M", l: "Loan range" }, { v: "SBA", l: "Programs available" }, { v: "Local", l: "Underwriting" }],
-    overview: "Growing a business takes capital — and capital decisions shouldn't be made by an algorithm in another state. Safeguard Global business loans are underwritten locally by bankers who know your market, your industry, and your potential.",
+    overview: "Growing a business takes capital — and capital decisions shouldn't be made by an algorithm in another state. SGGINV business loans are underwritten locally by bankers who know your market, your industry, and your potential.",
     features: [
       { title: "SBA 7(a) & 504 Loans", desc: "Access SBA-backed financing with lower down payments and longer repayment terms for qualified businesses.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
       { title: "Commercial Real Estate", desc: "Purchase or refinance owner-occupied or investment commercial properties with local expertise.", icon: "M3 21h18M5 21V9l7-6 7 6v12" },
@@ -121,10 +121,10 @@ const PAGES = {
     label: "Business Banking",
     ctaHref: "/about/contact",
     stats: [{ v: "Next-day", l: "Funding" }, { v: "All major", l: "Cards accepted" }, { v: "24/7", l: "Merchant support" }],
-    overview: "Getting paid should be the easy part of running a business. Safeguard Global Merchant Services gives you everything you need to accept credit, debit, and contactless payments — with next-day funding directly to your Safeguard Global business account and around-the-clock support.",
+    overview: "Getting paid should be the easy part of running a business. SGGINV Merchant Services gives you everything you need to accept credit, debit, and contactless payments — with next-day funding directly to your SGGINV business account and around-the-clock support.",
     features: [
       { title: "Accept All Payment Types", desc: "Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay, Samsung Pay, and tap-to-pay cards.", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
-      { title: "Next-Day Funding", desc: "Sales processed before 10 PM are funded to your Safeguard Global business account by the next business morning.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+      { title: "Next-Day Funding", desc: "Sales processed before 10 PM are funded to your SGGINV business account by the next business morning.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
       { title: "Point-of-Sale Systems", desc: "From countertop terminals to full iPad POS systems — we match the hardware to your business type.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
       { title: "Mobile Card Readers", desc: "Accept payments on your phone or tablet with a Bluetooth card reader — perfect for markets, pop-ups, and delivery.", icon: "M12 18h.01M8 21h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z" },
       { title: "Online Payment Gateway", desc: "Integrate secure payment processing into your e-commerce website or booking platform.", icon: "M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" },
@@ -136,12 +136,12 @@ const PAGES = {
     ],
     note: "Rates vary based on business type, volume, and card mix. A merchant services advisor will provide a free rate analysis and comparison.",
     steps: [
-      { n: "1", t: "Request a Free Rate Analysis", d: "Share your current processing statements and we'll show you exactly what you'd save by switching to Safeguard Global." },
+      { n: "1", t: "Request a Free Rate Analysis", d: "Share your current processing statements and we'll show you exactly what you'd save by switching to SGGINV." },
       { n: "2", t: "Choose Your Equipment", d: "We help you select the right terminals, POS systems, or mobile readers for your business environment." },
       { n: "3", t: "Start Accepting Payments", d: "Setup and training are included. You're fully operational within 3–5 business days." },
     ],
     faqs: [
-      { q: "Do I need a Safeguard Global business account to use merchant services?", a: "It's strongly recommended — next-day funding works fastest when deposits go directly to your Safeguard Global business checking account." },
+      { q: "Do I need an SGGINV business account to use merchant services?", a: "It's strongly recommended — next-day funding works fastest when deposits go directly to your SGGINV business checking account." },
       { q: "What if I need help after hours?", a: "Our 24/7 merchant support line is always available for terminal issues, charge disputes, or urgent processing questions." },
       { q: "Can I accept tips and split payments?", a: "Yes — our POS systems support tipping, split payments, and itemized receipts out of the box." },
       { q: "What if a customer disputes a charge?", a: "We guide you through the chargeback process and help you respond with the documentation needed to protect your revenue." },
@@ -156,7 +156,7 @@ const PAGES = {
     label: "Business Banking",
     ctaHref: "/about/contact",
     stats: [{ v: "Up to 2%", l: "Cashback on all purchases" }, { v: "$0", l: "Annual fee" }, { v: "Free", l: "Employee cards" }],
-    overview: "Your business spending should work for you. Safeguard Global Business Credit Cards earn cashback on every purchase, give you tools to manage employee spending, and integrate with your accounting software to simplify reconciliation at month's end.",
+    overview: "Your business spending should work for you. SGGINV Business Credit Cards earn cashback on every purchase, give you tools to manage employee spending, and integrate with your accounting software to simplify reconciliation at month's end.",
     features: [
       { title: "Up to 2% Cashback Everywhere", desc: "Earn 2% on all business purchases — office supplies, travel, utilities, vendors, advertising, and more.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
       { title: "Free Employee Cards", desc: "Issue cards to employees with individual spending limits. Monitor usage in real time from your dashboard.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857" },
@@ -208,7 +208,7 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
       <div className="mob-hero" style={{ background: page.hero, padding: "88px 32px 0", overflow: "hidden" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>{page.label}</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>{page.subtitle}</p>
           <Link href={(page as { ctaHref: string }).ctaHref} style={{ background: GOLD, color: "#4A0E14", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, boxShadow: "0 6px 24px rgba(212,175,55,.4)", marginBottom: 56, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
           <div style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 32, paddingBottom: 40, flexWrap: "wrap" }}>
@@ -303,8 +303,8 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
       {/* CTA */}
       <div className="mob-section" style={{ background: page.hero, padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 40, color: "#fff", margin: "0 0 16px", letterSpacing: "-.02em" }}>Ready to get started?</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Speak with a local Safeguard Global business banking advisor — no obligation, no pressure.</p>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: 40, color: "#fff", margin: "0 0 16px", letterSpacing: "-.02em" }}>Ready to get started?</h2>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Speak with a local SGGINV business banking advisor — no obligation, no pressure.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href={(page as { ctaHref: string }).ctaHref} style={{ background: GOLD, color: "#4A0E14", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
             <Link href="/about/contact" style={{ background: "rgba(255,255,255,.1)", color: "#fff", border: "1.5px solid rgba(255,255,255,.25)", fontFamily: "inherit", fontSize: 15, fontWeight: 600, padding: "15px 28px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>Schedule a call</Link>

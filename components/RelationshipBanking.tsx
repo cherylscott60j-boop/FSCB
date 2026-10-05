@@ -1,136 +1,190 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import Link from "next/link";
 
-const FONT = "var(--font-montserrat), 'Libre Franklin', sans-serif";
+const NAVY = "#0D1B4C";
+const RED = "#E31E24";
+const BLUE = "#1D3FAE";
+const DARK = "#111827";
+const GRAY = "#6B7280";
+const FONT = "var(--font-poppins), sans-serif";
 
-const CARDS = [
-  {
-    title: "Personal & Private Banking",
-    body: "From everyday checking to private wealth management, our personal accounts are designed to cover everything you need.",
-    cta: "Get started",
-    href: "/personal/checking",
-    icon: (
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-        <rect x="3" y="6" width="18" height="12" rx="2" />
-        <path d="M3 10h18M7 15h3" />
-      </svg>
-    ),
-  },
-  {
-    title: "Business & Institutional Banking",
-    body: "From straightforward business accounts to institutional finance, we know how to help your organization grow.",
-    cta: "Take a look",
-    href: "/business/checking",
-    icon: (
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-        <path d="M3 21h18M6 21V9l6-5 6 5v12M10 21v-6h4v6" />
-      </svg>
-    ),
-  },
-];
+function PillButton({ href, children, color = BLUE }: { href: string; children: React.ReactNode; color?: string }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        display: "inline-block",
+        background: color,
+        color: "#fff",
+        fontWeight: 700,
+        fontSize: 13.5,
+        padding: "10px 20px",
+        borderRadius: 999,
+        textDecoration: "none",
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        border: "1px solid rgba(17,24,39,.08)",
+        borderRadius: 16,
+        padding: "26px 28px",
+        boxShadow: "0 2px 10px rgba(17,24,39,.04)",
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function RelationshipBanking() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const els = ref.current?.querySelectorAll(".reveal");
-    if (!els) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <section style={{ background: "#F8F9FA" }} ref={ref}>
-      <div className="resp-pad mob-section" style={{ maxWidth: 1240, margin: "0 auto", padding: "84px 32px" }}>
-        <div className="reveal" style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 52px" }}>
+    <section style={{ background: "#F4F5F7", padding: "72px 32px", fontFamily: FONT }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        {/* Intro */}
+        <div style={{ textAlign: "center", marginBottom: 44 }}>
           <h2
             style={{
               fontFamily: FONT,
               fontWeight: 800,
-              fontSize: "clamp(24px, 4vw, 40px)",
-              lineHeight: 1.12,
-              letterSpacing: "-.02em",
-              margin: "0 0 18px",
+              fontSize: "clamp(24px, 3.4vw, 32px)",
+              color: NAVY,
+              margin: "0 0 14px",
+              letterSpacing: "-.01em",
             }}
           >
-            This is Global Investment Banking
+            This is Relationship Banking
           </h2>
-          <p style={{ fontSize: 17, color: "#6B7280", lineHeight: 1.65, margin: 0 }}>
-            We believe real relationships drive real results. Our service is built on human
-            connection — whether you bank with us in person, over the phone, online, or in our app.
+          <p style={{ fontSize: 15.5, lineHeight: 1.7, color: GRAY, maxWidth: 620, margin: "0 auto" }}>
+            We believe great banking starts with people. Whether you&apos;re saving, borrowing, or
+            investing, our service is built on real, long-standing relationships — face to face,
+            over the phone, online, or in our app.
           </p>
         </div>
 
-        <div className="g-2col-even reveal" style={{ gap: 24 }}>
-          {CARDS.map((card) => (
-            <div
-              key={card.title}
-              style={{
-                background: "#fff",
-                border: "1px solid rgba(17,24,39,.07)",
-                borderRadius: 22,
-                padding: "34px 32px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
-                <h3 style={{ fontFamily: FONT, fontWeight: 700, fontSize: 21, margin: 0, flex: 1, minWidth: 180 }}>
-                  {card.title}
+        {/* Two account cards */}
+        <div
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}
+          className="sg-2col"
+        >
+          <Card>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+              <div>
+                <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 17, color: NAVY, margin: "0 0 8px" }}>
+                  Personal accounts
                 </h3>
-                <div
-                  style={{
-                    flex: "none",
-                    width: 62,
-                    height: 62,
-                    borderRadius: "50%",
-                    background: "#8C1D25",
-                    color: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {card.icon}
-                </div>
+                <p style={{ fontSize: 13.5, color: GRAY, lineHeight: 1.6, margin: "0 0 18px" }}>
+                  From current accounts to savings and mortgages, our personal banking range is
+                  designed to cover everything you need.
+                </p>
+                <PillButton href="/open-account">Get started</PillButton>
               </div>
-              <p style={{ fontSize: 15.5, color: "#6B7280", lineHeight: 1.6, margin: "0 0 8px", flexGrow: 1 }}>
-                {card.body}
-              </p>
-              <Link
-                href={card.href}
-                style={{
-                  alignSelf: "flex-start",
-                  background: "#8C1D25",
-                  color: "#fff",
-                  fontFamily: "inherit",
-                  fontSize: 14.5,
-                  fontWeight: 600,
-                  padding: "12px 24px",
-                  borderRadius: 999,
-                  textDecoration: "none",
-                  transition: "all .2s ease",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#6B151C"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#8C1D25"; }}
-              >
-                {card.cta}
-              </Link>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/bank-account-icon-1.webp"
+                alt=""
+                style={{ width: 80, height: 80, borderRadius: 16, flexShrink: 0, objectFit: "contain" }}
+              />
             </div>
-          ))}
+          </Card>
+
+          <Card>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+              <div>
+                <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 17, color: NAVY, margin: "0 0 8px" }}>
+                  Investing accounts
+                </h3>
+                <p style={{ fontSize: 13.5, color: GRAY, lineHeight: 1.6, margin: "0 0 18px" }}>
+                  Brokerage, ready-made portfolios, and retirement accounts — linked straight to
+                  your everyday banking.
+                </p>
+                <PillButton href="/financial/retirement">Start investing</PillButton>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/business-bank-account-icon.webp"
+                alt=""
+                style={{ width: 80, height: 80, borderRadius: 16, flexShrink: 0, objectFit: "contain" }}
+              />
+            </div>
+          </Card>
         </div>
+
+        {/* Switch banks banner */}
+        <Card style={{ background: BLUE, border: "none" }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ maxWidth: 480, margin: "0 auto" }}>
+              <h3 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 16, color: "#fff", margin: "0 0 6px" }}>
+                Ready to switch banks?
+              </h3>
+              <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.85)", lineHeight: 1.6, margin: "0 0 14px" }}>
+                Switching to us is quick and easy. Open your account, fill in our switching form,
+                and we&apos;ll take care of moving your payments and direct deposits for you.
+              </p>
+              <PillButton href="/open-account" color={RED}>Switch your account</PillButton>
+            </div>
+          </div>
+        </Card>
+        <div style={{ height: 20 }} />
+
+        {/* Protecting your money */}
+        <Card>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+            <div style={{ maxWidth: 480 }}>
+              <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 16, color: NAVY, margin: "0 0 6px" }}>
+                Protecting your money
+              </h3>
+              <p style={{ fontSize: 13.5, color: GRAY, lineHeight: 1.6, margin: 0 }}>
+                Your eligible deposits with Safeguard Global Investment Bank are protected. Investments are not deposits and can go
+                down in value.
+              </p>
+            </div>
+            <PillButton href="/disclosures">How your money is protected →</PillButton>
+          </div>
+        </Card>
+        <div style={{ height: 20 }} />
+
+        {/* Scam checker */}
+        <Card>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+            <div style={{ maxWidth: 480 }}>
+              <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 16, color: NAVY, margin: "0 0 6px" }}>
+                Safeguard Scam Checker
+              </h3>
+              <p style={{ fontSize: 13.5, color: GRAY, lineHeight: 1.6, margin: "0 0 10px" }}>
+                Not sure about a text, call, or investment offer? Send it to our Scam Checker and
+                get a fast answer before you act — free for all customers.
+              </p>
+              <p style={{ fontSize: 11.5, color: "#9CA3AF", lineHeight: 1.5, margin: "0 0 14px" }}>
+                *Availability and limitations apply. We will never ask you to move money to a
+                &quot;safe account.&quot;
+              </p>
+              <PillButton href="/about/contact">Discover more</PillButton>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/communication-icon.webp"
+              alt=""
+              style={{ width: 80, height: 80, borderRadius: 16, flexShrink: 0, objectFit: "contain" }}
+            />
+          </div>
+        </Card>
       </div>
+
+      <style>{`
+        @media (max-width: 760px) {
+          .sg-2col { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

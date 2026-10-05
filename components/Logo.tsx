@@ -1,30 +1,60 @@
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const NAVY = "#0D1B4C";
+const RED = "#E31E24";
 
 export default function Logo({
-  height = 36,
   variant = "dark",
+  height = 38,
 }: {
-  height?: number;
   variant?: "dark" | "light";
+  height?: number;
 }) {
-  const light = variant === "light";
-  const mark = light ? "#fff" : "#8C1D25";
-  const word = light ? "#fff" : "#111827";
-  const sub = light ? "rgba(255,255,255,.6)" : "#6B7280";
-  const accent = light ? "#D4AF37" : "#8C1D25";
+  const textColor = variant === "light" ? "#fff" : NAVY;
+  const subColor = variant === "light" ? "rgba(255,255,255,.72)" : "#6B7280";
+  const iconSize = height * 0.84;
 
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: Math.round(height * 0.22), height, flexShrink: 0 }}>
-      <svg width={height} height={height} viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
-        <path d="M20 3l14 5v10c0 9-6 15.5-14 19-8-3.5-14-10-14-19V8l14-5z" stroke={mark} strokeWidth="2.2" />
-        <path d="M13 20.5l4.8 4.8L28 14.5" stroke={accent} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: height * 0.26 }}>
+      <svg width={iconSize} height={iconSize} viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
+        <rect width="40" height="40" rx="10" fill={RED} />
+        <path
+          d="M9 24c3-5 7-5 10 0s7 5 10 0"
+          stroke="#fff"
+          strokeWidth="3.2"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path
+          d="M9 16c3-5 7-5 10 0s7 5 10 0"
+          stroke="#fff"
+          strokeOpacity=".55"
+          strokeWidth="3.2"
+          strokeLinecap="round"
+          fill="none"
+        />
       </svg>
-      <span style={{ display: "flex", flexDirection: "column", justifyContent: "center", lineHeight: 1 }}>
-        <span style={{ fontFamily: FONT, fontWeight: 800, fontSize: Math.round(height * 0.4), letterSpacing: "-.01em", color: word, whiteSpace: "nowrap" }}>
-          SAFEGUARD <span style={{ color: accent }}>GLOBAL</span>
+      <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
+        <span
+          style={{
+            fontFamily: "var(--font-poppins), sans-serif",
+            fontWeight: 800,
+            fontSize: height * 0.4,
+            color: textColor,
+            letterSpacing: "-.01em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          SAFEGUARD GLOBAL
         </span>
-        <span style={{ fontFamily: FONT, fontWeight: 600, fontSize: Math.max(9, Math.round(height * 0.185)), letterSpacing: ".16em", textTransform: "uppercase", color: sub, marginTop: 1, whiteSpace: "nowrap" }}>
-          Investment Bank
+        <span
+          style={{
+            fontSize: height * 0.19,
+            fontWeight: 600,
+            letterSpacing: ".12em",
+            color: subColor,
+            whiteSpace: "nowrap",
+          }}
+        >
+          INVESTMENT BANK
         </span>
       </span>
     </span>

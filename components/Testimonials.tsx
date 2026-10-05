@@ -1,7 +1,7 @@
 const TESTIMONIALS = [
   {
     quote:
-      "We went from a small farm to a thriving business. Safeguard Global's lending team understood our needs when no one else would.",
+      "We went from a small farm to a thriving business. SGGINV's local lending team understood our needs when no one else would.",
     name: "Marcus & Joan Whitfield",
     role: "Small Business Owners",
     initials: "MW",
@@ -68,7 +68,7 @@ export default function Testimonials() {
             </p>
             <div
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontSize: "clamp(64px, 9vw, 96px)",
                 fontWeight: 900,
                 color: "#fff",
@@ -106,7 +106,7 @@ export default function Testimonials() {
           <div style={{ flex: 1, minWidth: 220 }}>
             <h2
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(26px, 3.5vw, 44px)",
                 lineHeight: 1.08,
@@ -115,20 +115,20 @@ export default function Testimonials() {
                 margin: "0 0 32px",
               }}
             >
-              Real clients,<br />real results.
+              Real members,<br />real results.
             </h2>
 
             {/* Key stats row */}
             <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
               {[
-                { value: "18,000+", label: "Clients served" },
-                { value: "40+",     label: "Countries served" },
-                { value: "12",      label: "Branches nationwide" },
+                { value: "18,000+", label: "Members served" },
+                { value: "120+",    label: "Years in the community" },
+                { value: "12",      label: "Local branches" },
               ].map((s) => (
                 <div key={s.label}>
                   <div
                     style={{
-                      fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                      fontFamily: "var(--font-poppins), sans-serif",
                       fontWeight: 800,
                       fontSize: "clamp(22px, 2.5vw, 30px)",
                       color: "#D4AF37",
@@ -202,7 +202,7 @@ export default function Testimonials() {
                     color: "#fff",
                     fontWeight: 700,
                     fontSize: 14,
-                    fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                    fontFamily: "var(--font-poppins), sans-serif",
                     flexShrink: 0,
                   }}
                 >

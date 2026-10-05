@@ -1,7 +1,7 @@
 import SiteLayout from "@/components/SiteLayout";
 import Link from "next/link";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -15,7 +15,7 @@ export default function AccessibilityPage() {
           <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
             Legal &amp; Accessibility
           </div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
             Accessibility Statement
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.7)", lineHeight: 1.65, margin: "0 0 20px" }}>
@@ -35,7 +35,7 @@ export default function AccessibilityPage() {
               Our Commitment to Accessibility
             </h2>
             <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.78, margin: "0 0 16px" }}>
-              At Safeguard Global, we believe that banking should be accessible to everyone. We are committed to making our website, mobile application, and in-branch services usable by all people, including those with visual, hearing, motor, or cognitive disabilities.
+              At SGGINV, we believe that banking should be accessible to everyone. We are committed to making our website, mobile application, and in-branch services usable by all people, including those with visual, hearing, motor, or cognitive disabilities.
             </p>
             <p style={{ fontSize: 15.5, color: GRAY, lineHeight: 1.78, margin: 0 }}>
               This statement reflects our ongoing effort to conform to the{" "}
@@ -55,7 +55,7 @@ export default function AccessibilityPage() {
                 { title: "Keyboard navigation", body: "All interactive elements on our website — including forms, menus, and buttons — are fully operable using a keyboard alone, without requiring a mouse." },
                 { title: "Forms and error handling", body: "Account applications and contact forms include clearly labeled fields, error messages that identify the issue specifically, and helpful instructions for completing the form." },
                 { title: "Mobile accessibility", body: "Our mobile application is designed to work with iOS VoiceOver and Android TalkBack. We follow platform-specific accessibility guidelines for both operating systems." },
-                { title: "In-branch accommodations", body: "All Safeguard Global branch locations are accessible in accordance with ADA requirements, including accessible parking, ramps, wide doorways, and accessible countertop heights. Large-print documents, alternative formats, and sign language interpretation are available by request." },
+                { title: "In-branch accommodations", body: "All SGGINV branch locations are accessible in accordance with ADA requirements, including accessible parking, ramps, wide doorways, and accessible countertop heights. Large-print documents, alternative formats, and sign language interpretation are available by request." },
                 { title: "Ongoing review", body: "We conduct periodic accessibility audits of our website and digital tools. When issues are identified, we prioritize their resolution based on impact to users." },
               ].map((item, i) => (
                 <div key={i} style={{ display: "flex", gap: 16, padding: "18px 20px", border: "1px solid rgba(17,24,39,.07)", borderRadius: 14 }}>
@@ -95,7 +95,7 @@ export default function AccessibilityPage() {
               Requesting Accommodations
             </h2>
             <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.78, margin: "0 0 14px" }}>
-              If you need a specific accommodation to access our services — including large-print account statements, Braille correspondence, sign language interpretation for branch visits, or an alternative format for any Safeguard Global document — please contact us. We will respond within two business days and provide the accommodation at no charge.
+              If you need a specific accommodation to access our services — including large-print account statements, Braille correspondence, sign language interpretation for branch visits, or an alternative format for any SGGINV document — please contact us. We will respond within two business days and provide the accommodation at no charge.
             </p>
             <div style={{ background: "rgba(140,29,37,.04)", border: "1.5px solid rgba(140,29,37,.12)", borderRadius: 16, padding: "26px 30px" }}>
               <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 17, color: DARK, marginBottom: 18 }}>
@@ -108,7 +108,7 @@ export default function AccessibilityPage() {
                   </svg>
                   <div>
                     <div style={{ fontWeight: 600, color: DARK }}>Phone</div>
-                    <a href="tel:18002372669" style={{ color: RED, textDecoration: "none" }}>1-800-SAFEGRD</a>
+                    <a href="tel:18002372669" style={{ color: RED, textDecoration: "none" }}>1-800-SGGINV-NOW</a>
                     <span style={{ color: GRAY }}> · Mon–Fri 8am–7pm, Sat 8am–4pm</span>
                     <div style={{ fontSize: 13, color: GRAY, marginTop: 3 }}>TTY users: dial 711 (Telecommunications Relay Service)</div>
                   </div>
@@ -119,7 +119,7 @@ export default function AccessibilityPage() {
                   </svg>
                   <div>
                     <div style={{ fontWeight: 600, color: DARK }}>Email</div>
-                    <a href="mailto:accessibility@safeguardglobal.com" style={{ color: RED, textDecoration: "none" }}>accessibility@safeguardglobal.com</a>
+                    <a href="mailto:accessibility@sgginv.com" style={{ color: RED, textDecoration: "none" }}>accessibility@sgginv.com</a>
                     <div style={{ fontSize: 13, color: GRAY, marginTop: 3 }}>We respond within 2 business days</div>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export default function AccessibilityPage() {
                   </svg>
                   <div>
                     <div style={{ fontWeight: 600, color: DARK }}>In person</div>
-                    <span style={{ color: GRAY }}>Visit any Safeguard Global branch. Staff are trained to assist customers with accessibility needs.</span>
+                    <span style={{ color: GRAY }}>Visit any SGGINV branch. Staff are trained to assist customers with accessibility needs.</span>
                   </div>
                 </div>
               </div>

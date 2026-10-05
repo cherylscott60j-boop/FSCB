@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -75,7 +75,7 @@ export default function ContactForm() {
         </div>
         <h3 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, margin: "0 0 10px" }}>Message Sent!</h3>
         <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.6, margin: "0 0 24px" }}>
-          Thanks, <strong style={{ color: DARK }}>{form.name.split(" ")[0]}</strong>. A local Safeguard Global banker will follow up at{" "}
+          Thanks, <strong style={{ color: DARK }}>{form.name.split(" ")[0]}</strong>. A local SGGINV banker will follow up at{" "}
           <strong style={{ color: DARK }}>{form.email}</strong> within one business day.
         </p>
         <button

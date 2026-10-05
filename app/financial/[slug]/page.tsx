@@ -1,7 +1,7 @@
 import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -13,7 +13,7 @@ const PAGES = {
     subtitle: "Personalized strategies to grow, protect, and transfer your wealth across generations.",
     hero: "linear-gradient(145deg,#1a1a2e,#3a2060)",
     stats: [{ v: "Personalized", l: "Investment strategies" }, { v: "Local", l: "Advisors" }, { v: "Holistic", l: "Approach" }],
-    overview: "Wealth management at Safeguard Global goes beyond investment portfolios. We take a comprehensive view of your financial life — income, taxes, estate plan, insurance, and charitable giving — and build a coordinated strategy designed to help you achieve what matters most.",
+    overview: "Wealth management at SGGINV goes beyond investment portfolios. We take a comprehensive view of your financial life — income, taxes, estate plan, insurance, and charitable giving — and build a coordinated strategy designed to help you achieve what matters most.",
     services: [
       { name: "Investment Portfolio Management", desc: "Customized portfolios built around your goals, timeline, and risk tolerance — actively monitored and rebalanced." },
       { name: "Tax-Efficient Investing", desc: "Strategies that minimize your tax burden, including tax-loss harvesting, asset location, and Roth conversion planning." },
@@ -28,8 +28,8 @@ const PAGES = {
       { n: "4", t: "Ongoing Review", d: "Regular quarterly reviews and proactive outreach ensure your plan evolves with your life and market conditions." },
     ],
     faqs: [
-      { q: "What is the minimum investment to work with Safeguard Global Wealth Management?", a: "We serve clients with investable assets starting from $250,000. For smaller balances, we can refer you to our financial planning services." },
-      { q: "How are Safeguard Global wealth advisors compensated?", a: "Our advisors are fee-based — we charge a percentage of assets under management. We do not earn commissions on product sales, so our advice is aligned with your interests." },
+      { q: "What is the minimum investment to work with SGGINV Wealth Management?", a: "We serve clients with investable assets starting from $250,000. For smaller balances, we can refer you to our financial planning services." },
+      { q: "How are SGGINV wealth advisors compensated?", a: "Our advisors are fee-based — we charge a percentage of assets under management. We do not earn commissions on product sales, so our advice is aligned with your interests." },
       { q: "Do you manage retirement accounts like IRAs and 401(k)s?", a: "Yes — we manage a wide range of account types including IRAs, Roth IRAs, trusts, taxable brokerage accounts, and inherited accounts." },
       { q: "How often will I meet with my advisor?", a: "You'll have formal quarterly reviews and can schedule additional meetings at any time. We also reach out proactively when market events or life changes warrant a conversation." },
     ],
@@ -41,7 +41,7 @@ const PAGES = {
     subtitle: "Build the retirement you deserve — guided by advisors who understand your goals.",
     hero: "linear-gradient(145deg,#0d2020,#1a4040)",
     stats: [{ v: "All ages", l: "We plan for any stage" }, { v: "IRA / 401(k)", l: "All account types" }, { v: "Tax-smart", l: "Withdrawal strategies" }],
-    overview: "Retirement planning is about more than accumulating a number — it's about designing the life you want and building a financial foundation that supports it for decades. Whether you're 30 years from retirement or already there, Safeguard Global retirement planners create personalized roadmaps that account for every variable.",
+    overview: "Retirement planning is about more than accumulating a number — it's about designing the life you want and building a financial foundation that supports it for decades. Whether you're 30 years from retirement or already there, SGGINV retirement planners create personalized roadmaps that account for every variable.",
     services: [
       { name: "Retirement Income Planning", desc: "Map out exactly how much you need, where it will come from, and how long it will last — with built-in inflation protection." },
       { name: "Social Security Optimization", desc: "Strategic timing of Social Security benefits to maximize your lifetime payout — often worth tens of thousands of dollars." },
@@ -59,7 +59,7 @@ const PAGES = {
       { q: "What is the contribution limit for IRAs in 2025?", a: "For 2025, the contribution limit is $7,000 per year ($8,000 if you're 50 or older). Income limits apply for Roth IRA contributions." },
       { q: "When should I start taking Social Security?", a: "This depends on your health, other income sources, and marital status. Delaying from age 62 to 70 can increase your monthly benefit by up to 77%. We can run a personalized breakeven analysis." },
       { q: "What is a Required Minimum Distribution?", a: "The IRS requires you to withdraw a minimum amount from traditional IRAs and most employer plans beginning at age 73 (as of 2023). Failing to take RMDs results in significant penalties." },
-      { q: "Is my retirement account protected if the bank fails?", a: "IRA deposits held at Safeguard Global are FDIC insured up to $250,000. Securities held in brokerage accounts are protected by SIPC up to $500,000." },
+      { q: "Is my retirement account protected if the bank fails?", a: "IRA deposits held at SGGINV are [deposit-protected] up to $250,000. Securities held in brokerage accounts are protected by SIPC up to $500,000." },
     ],
     cta: "Start Retirement Planning",
   },
@@ -69,13 +69,13 @@ const PAGES = {
     subtitle: "Professionally managed and self-directed portfolios built for every financial goal.",
     hero: "linear-gradient(145deg,#1a0a2e,#35185a)",
     stats: [{ v: "Stocks, ETFs", l: "Bonds & mutual funds" }, { v: "Managed or", l: "Self-directed" }, { v: "No hidden", l: "Commissions" }],
-    overview: "Whether you want a professionally managed portfolio or the freedom to choose your own investments, Safeguard Global Investment Accounts give you access to a full range of investment vehicles — with transparent pricing, local guidance, and the tools to stay informed.",
+    overview: "Whether you want a professionally managed portfolio or the freedom to choose your own investments, SGGINV Investment Accounts give you access to a full range of investment vehicles — with transparent pricing, local guidance, and the tools to stay informed.",
     services: [
       { name: "Managed Portfolios", desc: "Our investment team builds and manages a diversified portfolio matched to your risk tolerance and time horizon." },
       { name: "Self-Directed Brokerage", desc: "Trade stocks, ETFs, mutual funds, and bonds independently through our online brokerage platform." },
       { name: "ESG Investing", desc: "Align your portfolio with your values by investing in companies with strong environmental, social, and governance practices." },
       { name: "Dividend Income Portfolios", desc: "Target steady income through portfolios weighted toward dividend-paying stocks and bond ladders." },
-      { name: "Taxable and Tax-Advantaged Accounts", desc: "Open brokerage accounts, traditional IRAs, Roth IRAs, and SEP IRAs all under one Safeguard Global relationship." },
+      { name: "Taxable and Tax-Advantaged Accounts", desc: "Open brokerage accounts, traditional IRAs, Roth IRAs, and SEP IRAs all under one SGGINV relationship." },
     ],
     process: [
       { n: "1", t: "Risk Assessment", d: "Complete a short questionnaire to determine your risk tolerance, time horizon, and investment goals." },
@@ -86,8 +86,8 @@ const PAGES = {
     faqs: [
       { q: "What is the minimum to open an investment account?", a: "Managed portfolios start at $10,000. Self-directed brokerage accounts can be opened with any amount." },
       { q: "What fees do you charge?", a: "Managed account fees range from 0.25% to 1.00% annually depending on account size. Self-directed brokerage trades are commission-free for stocks and ETFs." },
-      { q: "Are my investments insured?", a: "Investment accounts are not FDIC insured, but are protected by SIPC up to $500,000 (including $250,000 for cash claims) against broker failure. Market losses are not covered by SIPC." },
-      { q: "Can I transfer my existing brokerage account to Safeguard Global?", a: "Yes — Safeguard Global accepts in-kind transfers from most brokerage firms. The process takes 5–10 business days and can typically be done without liquidating your positions." },
+      { q: "Are my investments insured?", a: "Investment accounts are not deposit-protected, but are protected by SIPC up to $500,000 (including $250,000 for cash claims) against broker failure. Market losses are not covered by SIPC." },
+      { q: "Can I transfer my existing brokerage account to SGGINV?", a: "Yes — SGGINV accepts in-kind transfers from most brokerage firms. The process takes 5–10 business days and can typically be done without liquidating your positions." },
     ],
     cta: "Open an Investment Account",
   },
@@ -97,7 +97,7 @@ const PAGES = {
     subtitle: "A clear, personalized roadmap from where you are today to where you want to be.",
     hero: "linear-gradient(145deg,#0d1f10,#1a3d20)",
     stats: [{ v: "Comprehensive", l: "All areas of finance" }, { v: "Ongoing", l: "Annual reviews" }, { v: "Fee-only", l: "Unbiased advice" }],
-    overview: "A financial plan is more than a spreadsheet — it's a dynamic, living document that connects every part of your financial life. Safeguard Global financial planners take a holistic approach, addressing cash flow, debt, insurance, taxes, investments, and estate planning in one coordinated strategy.",
+    overview: "A financial plan is more than a spreadsheet — it's a dynamic, living document that connects every part of your financial life. SGGINV financial planners take a holistic approach, addressing cash flow, debt, insurance, taxes, investments, and estate planning in one coordinated strategy.",
     services: [
       { name: "Cash Flow and Budget Analysis", desc: "Understand exactly where your money is going and identify opportunities to save more and pay down debt faster." },
       { name: "Debt Elimination Planning", desc: "Strategically prioritize debt payoff — avalanche vs. snowball, refinancing opportunities, and mortgage acceleration." },
@@ -112,10 +112,10 @@ const PAGES = {
       { n: "4", t: "Annual Review", d: "Your plan is updated annually — or whenever a major life event occurs — to keep it relevant and on track." },
     ],
     faqs: [
-      { q: "How much does financial planning cost?", a: "Safeguard Global financial planning is available on a flat-fee basis for comprehensive plans or hourly consulting for specific questions. Contact us for current pricing." },
-      { q: "Do I need to invest through Safeguard Global to get a financial plan?", a: "No — financial planning is available as a stand-alone service. Many clients keep existing accounts elsewhere and use Safeguard Global purely for planning advice." },
+      { q: "How much does financial planning cost?", a: "SGGINV financial planning is available on a flat-fee basis for comprehensive plans or hourly consulting for specific questions. Contact us for current pricing." },
+      { q: "Do I need to invest through SGGINV to get a financial plan?", a: "No — financial planning is available as a stand-alone service. Many clients keep existing accounts elsewhere and use SGGINV purely for planning advice." },
       { q: "How long does it take to develop a financial plan?", a: "A comprehensive financial plan typically takes 2–4 weeks from initial data gathering to final plan delivery." },
-      { q: "What qualifications do Safeguard Global financial planners have?", a: "Our lead financial planners hold the CFP® (Certified Financial Planner) designation, which requires extensive education, experience, and adherence to a fiduciary standard." },
+      { q: "What qualifications do SGGINV financial planners have?", a: "Our lead financial planners hold the CFP® (Certified Financial Planner) designation, which requires extensive education, experience, and adherence to a fiduciary standard." },
     ],
     cta: "Get Your Financial Plan",
   },
@@ -125,10 +125,10 @@ const PAGES = {
     subtitle: "Protect your legacy, reduce taxes, and ensure your wishes are honored.",
     hero: "linear-gradient(145deg,#1a1200,#3d2e00)",
     stats: [{ v: "Coordinated", l: "With your attorney" }, { v: "Trust services", l: "Available" }, { v: "Legacy", l: "Planning focus" }],
-    overview: "Estate planning is one of the most important — and most overlooked — components of a sound financial plan. Safeguard Global estate planning advisors work alongside your estate attorney to ensure your assets are titled correctly, beneficiaries are current, and your wishes will be carried out exactly as intended.",
+    overview: "Estate planning is one of the most important — and most overlooked — components of a sound financial plan. SGGINV estate planning advisors work alongside your estate attorney to ensure your assets are titled correctly, beneficiaries are current, and your wishes will be carried out exactly as intended.",
     services: [
       { name: "Beneficiary Designation Review", desc: "Outdated beneficiaries are one of the most common estate planning mistakes. We audit every account and policy you own." },
-      { name: "Trust Account Management", desc: "Safeguard Global provides trustee and custodial services for revocable living trusts, irrevocable trusts, and testamentary trusts." },
+      { name: "Trust Account Management", desc: "SGGINV provides trustee and custodial services for revocable living trusts, irrevocable trusts, and testamentary trusts." },
       { name: "Estate Tax Minimization", desc: "Gifting strategies, irrevocable life insurance trusts (ILITs), and family limited partnerships to reduce taxable estate size." },
       { name: "Power of Attorney Coordination", desc: "Ensure your financial power of attorney is on file and that the right people have the access they need in an emergency." },
       { name: "Business Succession Planning", desc: "If you own a business, we help design buy-sell agreements and funding strategies to ensure a smooth ownership transition." },
@@ -174,7 +174,7 @@ export default async function FinancialPage({ params }: { params: Promise<{ slug
       <div className="mob-hero" style={{ background: page.hero, padding: "88px 32px 0", overflow: "hidden" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>Financial Management</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 56px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 56px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>{page.subtitle}</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 24px rgba(212,175,55,.4)", marginBottom: 56 }}>{page.cta}</button>
           <div style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 32, paddingBottom: 40, flexWrap: "wrap" }}>
@@ -244,7 +244,7 @@ export default async function FinancialPage({ params }: { params: Promise<{ slug
           </div>
           <div style={{ background: page.hero, borderRadius: 24, padding: "48px 40px" }}>
             <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 24, color: "#fff", marginBottom: 12 }}>Ready to take the next step?</div>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,.75)", lineHeight: 1.7, marginBottom: 32 }}>Schedule a no-obligation conversation with a local Safeguard Global advisor. We'll listen first and advise second.</p>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,.75)", lineHeight: 1.7, marginBottom: 32 }}>Schedule a no-obligation conversation with a local SGGINV advisor. We'll listen first and advise second.</p>
             <button style={{ width: "100%", background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: 16, borderRadius: 12, cursor: "pointer", marginBottom: 12 }}>{page.cta}</button>
             <button style={{ width: "100%", background: "rgba(255,255,255,.1)", color: "#fff", border: "1.5px solid rgba(255,255,255,.22)", fontFamily: "inherit", fontSize: 14.5, fontWeight: 600, padding: 14, borderRadius: 12, cursor: "pointer" }}>Call us today</button>
           </div>
@@ -272,8 +272,8 @@ export default async function FinancialPage({ params }: { params: Promise<{ slug
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: page.hero, padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Your financial future starts here</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Speak with a local Safeguard Global advisor who puts your interests first — always.</p>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Your financial future starts here</h2>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Speak with a local SGGINV advisor who puts your interests first — always.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "16px 40px", borderRadius: 12, cursor: "pointer" }}>{page.cta}</button>
         </div>
       </div>

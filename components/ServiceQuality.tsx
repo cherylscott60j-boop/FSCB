@@ -1,153 +1,138 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Link from "next/link";
 
-const FONT = "var(--font-montserrat), 'Libre Franklin', sans-serif";
+const NAVY = "#0D1B4C";
+const RED = "#E31E24";
+const BLUE = "#3B5BDB";
+const GRAY = "#6B7280";
+const FONT = "var(--font-poppins), sans-serif";
 
-interface Result {
-  name: string;
-  pct: number;
-  ours?: boolean;
-}
+type Row = { label?: string; pct: number; highlight?: boolean };
 
-const PERSONAL_RESULTS: Result[] = [
-  { name: "Safeguard Global", pct: 83, ours: true },
-  { name: "Meridian Trust", pct: 79 },
-  { name: "Kestrel Financial", pct: 76 },
-  { name: "Union Federal", pct: 75 },
-  { name: "Heritage National", pct: 68 },
-  { name: "Cascade Bank", pct: 60 },
+const PERSONAL_ROWS: Row[] = [
+  { pct: 82 },
+  { pct: 78 },
+  { pct: 75 },
+  { pct: 70 },
+  { pct: 66 },
+  { label: "Safeguard", pct: 48, highlight: true },
 ];
 
-const BUSINESS_RESULTS: Result[] = [
-  { name: "Safeguard Global", pct: 85, ours: true },
-  { name: "Meridian Trust", pct: 83 },
-  { name: "Union Federal", pct: 79 },
-  { name: "Kestrel Financial", pct: 70 },
-  { name: "Heritage National", pct: 69 },
-  { name: "Cascade Bank", pct: 63 },
+const BUSINESS_ROWS: Row[] = [
+  { pct: 85 },
+  { pct: 80 },
+  { pct: 74 },
+  { pct: 69 },
+  { label: "Safeguard", pct: 55, highlight: true },
 ];
 
-function Panel({ title, blurb, results }: { title: string; blurb: string; results: Result[] }) {
-  const max = Math.max(...results.map((r) => r.pct));
+
+
+function BarPanel({
+  description,
+  rows,
+  resultsLabel,
+  citation,
+}: {
+  title?: string;
+  description: string;
+  rows: Row[];
+  resultsLabel: string;
+  citation?: string;
+}) {
+  const max = Math.max(...rows.map((r) => r.pct));
   return (
-    <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 22, padding: "30px 30px 26px" }}>
-      <h3 style={{ fontFamily: FONT, fontWeight: 700, fontSize: 18, margin: "0 0 6px" }}>{title}</h3>
-      <p style={{ fontSize: 13.5, color: "#6B7280", lineHeight: 1.55, margin: "0 0 24px", maxWidth: 440 }}>{blurb}</p>
+    <div
+      style={{
+        background: "#fff", border: "1px solid rgba(17,24,39,.08)", borderRadius: 16,
+        padding: "26px 26px 22px",
+      }}
+    >
+      
 
-      <div role="table" aria-label={title} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {results.map((r, i) => (
-          <div role="row" key={r.name} style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div
-              role="cell"
+      <p style={{ fontSize: 13, color: GRAY, lineHeight: 1.65, margin: "0 0 20px" }}>{description}</p>
+
+      <div style={{ fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 10 }}>Overall service quality</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {rows.map((r, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ width: 14, fontSize: 11.5, color: GRAY, fontWeight: 600, flexShrink: 0 }}>{i + 1}</span>
+            <span
               style={{
-                flex: "none",
-                width: 148,
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 13.5,
-                fontWeight: r.ours ? 700 : 500,
-                color: r.ours ? "#111827" : "#374151",
+                width: 84, fontSize: 12.5, fontWeight: r.highlight ? 800 : 500,
+                color: r.highlight ? RED : GRAY, flexShrink: 0,
               }}
             >
-              <span style={{ color: "#9CA3AF", fontWeight: 600, fontSize: 12, width: 14, flexShrink: 0 }}>{i + 1}</span>
-              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.name}</span>
-              {r.ours && (
-                <span
-                  style={{
-                    flexShrink: 0,
-                    fontSize: 9.5,
-                    fontWeight: 800,
-                    letterSpacing: ".04em",
-                    color: "#8C1D25",
-                    background: "rgba(140,29,37,.1)",
-                    borderRadius: 5,
-                    padding: "2px 5px",
-                  }}
-                >
-                  YOU
-                </span>
-              )}
-            </div>
-
-            <div role="cell" style={{ flex: 1, height: 18, borderRadius: 9, background: "rgba(17,24,39,.055)", overflow: "hidden" }}>
+              {r.label ?? ""}
+            </span>
+            <div style={{ flex: 1, background: "rgba(17,24,39,.06)", borderRadius: 4, height: 14, position: "relative" }}>
               <div
-                className="svcq-bar"
-                data-width={`${(r.pct / max) * 100}%`}
                 style={{
-                  width: 0,
-                  height: "100%",
-                  background: r.ours ? "#8C1D25" : "#9CA3AF",
-                  borderRadius: "0 4px 4px 0",
+                  width: `${(r.pct / max) * 100}%`, height: "100%", borderRadius: 4,
+                  background: r.highlight ? RED : BLUE,
                 }}
               />
             </div>
-
-            <div role="cell" style={{ flex: "none", width: 38, textAlign: "right", fontSize: 13.5, fontWeight: r.ours ? 800 : 600, color: r.ours ? "#8C1D25" : "#374151" }}>
+            <span style={{ width: 34, fontSize: 11.5, color: GRAY, textAlign: "right", flexShrink: 0 }}>
               {r.pct}%
-            </div>
+            </span>
           </div>
         ))}
       </div>
+
+      <Link
+        href="/disclosures"
+        style={{ display: "inline-block", fontSize: 12.5, fontWeight: 700, color: BLUE, textDecoration: "none", margin: "18px 0 10px" }}
+      >
+        {resultsLabel} →
+      </Link>
+
+      <p style={{ fontSize: 11, color: "#9CA3AF", lineHeight: 1.6, margin: "0 0 10px" }}>{citation}</p>
+
+      <p style={{ fontSize: 11, color: "#9CA3AF", lineHeight: 1.6, margin: 0 }}>
+      
+      </p>
     </div>
   );
 }
 
 export default function ServiceQuality() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const bars = el.querySelectorAll<HTMLElement>(".svcq-bar");
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            bars.forEach((b, i) => {
-              setTimeout(() => { b.style.transition = "width .7s cubic-bezier(.16,.84,.44,1)"; b.style.width = b.dataset.width || "0%"; }, i * 40);
-            });
-            io.disconnect();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <section style={{ background: "#F8F9FA", borderTop: "1px solid rgba(17,24,39,.05)", borderBottom: "1px solid rgba(17,24,39,.05)" }}>
-      <div className="resp-pad mob-section" style={{ maxWidth: 1240, margin: "0 auto", padding: "80px 32px" }} ref={ref}>
-        <div style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 48px" }}>
-          <span style={{ fontSize: 13, letterSpacing: ".14em", textTransform: "uppercase", color: "#8C1D25", fontWeight: 700 }}>
-            Our Service Quality
-          </span>
-          <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 4vw, 38px)", lineHeight: 1.1, letterSpacing: "-.02em", margin: "14px 0 0" }}>
-            Independent survey results
-          </h2>
-        </div>
+    <section style={{ background: "#F4F5F7", padding: "32px 32px 72px", fontFamily: FONT }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <h2
+          style={{
+            fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3vw, 28px)", color: NAVY,
+            textAlign: "center", margin: "0 0 32px", letterSpacing: "-.01em",
+          }}
+        >
+          Our service quality
+        </h2>
 
-        <div className="g-2col-even" style={{ gap: 24 }}>
-          <Panel
-            title="Personal & Wealth Banking"
-            blurb="Share of customers who said they would recommend their provider to friends and family."
-            results={PERSONAL_RESULTS}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="sg-2col">
+          <BarPanel
+            title="Independent service quality survey results | Personal"
+            description="As part of a regulatory requirement, an independent survey was conducted to ask approximately 2000 customers of each of the 17 largest personal current account providers whether they would recommend their provider to friends and family. The results represent the view of customers who took part in the survey."
+            rows={PERSONAL_ROWS}
+            resultsLabel="See the full personal service quality survey results"
+           
           />
-          <Panel
-            title="Business & Institutional Banking"
-            blurb="Share of small and mid-sized business clients who said they would recommend their provider."
-            results={BUSINESS_RESULTS}
+          <BarPanel
+            title="Independent service quality survey results | Business"
+            description="As part of a regulatory requirement, an independent survey was conducted to ask approximately 2100 customers of each of the 17 largest business current account providers whether they would recommend their provider to other small and medium-sized enterprises (SMEs*). The results represent the view of customers who took part in the survey."
+            rows={BUSINESS_ROWS}
+            resultsLabel="See the full business service quality survey results"
+            
           />
         </div>
-
-        <p style={{ fontSize: 12, color: "#9CA3AF", lineHeight: 1.6, margin: "28px auto 0", maxWidth: 760, textAlign: "center" }}>
-          Independent customer survey conducted January–June 2026 among clients of the largest providers in each
-          category. Results reflect overall satisfaction with service quality.
-        </p>
       </div>
+
+      <style>{`
+        @media (max-width: 760px) {
+          .sg-2col { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

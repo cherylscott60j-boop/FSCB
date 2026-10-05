@@ -96,7 +96,7 @@ export default function MetricsBanner() {
         >
           <h2
             style={{
-              fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+              fontFamily: "var(--font-poppins), sans-serif",
               fontWeight: 800,
               fontSize: "clamp(20px, 3.5vw, 34px)",
               letterSpacing: "-.02em",
@@ -120,7 +120,7 @@ export default function MetricsBanner() {
                 data-suffix={m.suffix}
                 data-decimals={m.decimals}
                 style={{
-                  fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                  fontFamily: "var(--font-poppins), sans-serif",
                   fontWeight: 800,
                   fontSize: "clamp(30px, 6vw, 46px)",
                   lineHeight: 1,

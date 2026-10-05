@@ -1,9 +1,11 @@
 export const BANK = {
   name:        "Safeguard Global Investment Bank",
-  achRouting:  "083000137",
-  wireRouting: "026073150",
-  swiftCode:   "SGIBUS33",
-  address:     "1 Harbor Point Plaza, New York, NY 10004",
+  // Placeholders — not a real ACH/wire routing number. Replace with your
+  // actual assigned routing number(s) before any real-money use.
+  achRouting:  "[ACH ROUTING NUMBER]",
+  wireRouting: "[WIRE ROUTING NUMBER]",
+  swiftCode:   "[SWIFT / BIC CODE]",
+  address:     "[REGISTERED ADDRESS]",
 } as const;
 
 export const CREDIT = {
