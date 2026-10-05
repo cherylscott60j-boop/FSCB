@@ -131,7 +131,7 @@ export default function Footer() {
           }}
         >
           <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
-            Safeguard Global Investment Bank is a fictional bank built as a demonstration project. It is not a real financial institution. It is not authorised or regulated by any financial authority, and it is not covered by any deposit protection scheme. Do not send real money or real personal or financial information through this site.{" "}
+            Safeguard Global Investment Bank is a fictional bank built as a . It is not a real financial institution. It is not authorised or regulated by any financial authority, and it is not covered by any deposit protection scheme. Do not send real money or real personal or financial information through this site.{" "}
             <Link href="/disclosures" style={{ color: "#fff", textDecoration: "underline" }}>
               Full disclosures →
             </Link>
