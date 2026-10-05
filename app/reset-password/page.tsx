@@ -10,7 +10,7 @@ const GOLD = "#D4AF37";
 const DARK = "#111827";
 const MID  = "#374151";
 const GRAY = "#6B7280";
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const INP: React.CSSProperties = { width:"100%", padding:"11px 14px", border:"1px solid rgba(17,24,39,.18)", borderRadius:9, fontSize:14, fontFamily:"inherit", color:DARK, outline:"none", boxSizing:"border-box" };
 
 type Status = "waiting" | "ready" | "success" | "error";

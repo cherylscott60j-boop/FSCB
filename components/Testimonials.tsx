@@ -68,7 +68,7 @@ export default function Testimonials() {
             </p>
             <div
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontSize: "clamp(64px, 9vw, 96px)",
                 fontWeight: 900,
                 color: "#fff",
@@ -106,7 +106,7 @@ export default function Testimonials() {
           <div style={{ flex: 1, minWidth: 220 }}>
             <h2
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontWeight: 800,
                 fontSize: "clamp(26px, 3.5vw, 44px)",
                 lineHeight: 1.08,
@@ -128,7 +128,7 @@ export default function Testimonials() {
                 <div key={s.label}>
                   <div
                     style={{
-                      fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                      fontFamily: "var(--font-poppins), sans-serif",
                       fontWeight: 800,
                       fontSize: "clamp(22px, 2.5vw, 30px)",
                       color: "#D4AF37",
@@ -202,7 +202,7 @@ export default function Testimonials() {
                     color: "#fff",
                     fontWeight: 700,
                     fontSize: 14,
-                    fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                    fontFamily: "var(--font-poppins), sans-serif",
                     flexShrink: 0,
                   }}
                 >

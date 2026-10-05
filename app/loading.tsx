@@ -65,7 +65,7 @@ export default function Loading() {
       {/* Wordmark */}
       <div
         style={{
-          fontFamily: "var(--font-montserrat),'Libre Franklin',sans-serif",
+          fontFamily: "var(--font-poppins), sans-serif",
           fontWeight: 900,
           fontSize: 26,
           color: "#111827",

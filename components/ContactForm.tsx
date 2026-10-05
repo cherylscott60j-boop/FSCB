@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const DARK = "#111827";
 const GRAY = "#6B7280";

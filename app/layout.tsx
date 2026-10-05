@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Libre_Franklin } from "next/font/google";
+import { Inter, Libre_Franklin, Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
@@ -13,6 +13,13 @@ const montserrat = Libre_Franklin({
   subsets: ["latin"],
   variable: "--font-montserrat",
   weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -35,7 +42,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${montserrat.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${montserrat.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
         <NextTopLoader color="#8C1D25" shadow="0 0 10px #8C1D25,0 0 5px #D4AF37" height={3} showSpinner={false}/>
         <div className="page-clip">

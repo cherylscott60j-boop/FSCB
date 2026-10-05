@@ -1,7 +1,7 @@
 import SiteLayout from "@/components/SiteLayout";
 import Link from "next/link";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -27,7 +27,7 @@ export default function TermsPage() {
           <div style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 14 }}>
             Legal &amp; Privacy
           </div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(28px, 5vw, 46px)", color: "#fff", margin: "0 0 16px", lineHeight: 1.06, letterSpacing: "-.02em" }}>
             Terms of Use
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.7)", lineHeight: 1.65, margin: "0 0 20px" }}>

@@ -131,13 +131,12 @@ export default function Footer() {
           }}
         >
           <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
-            [DEPOSIT PROTECTION DISCLOSURE — name the real scheme, coverage limit, and where to find
-            more information, once confirmed.]
+            Your eligible deposits with Metro Bank PLC are protected up to a total of £120,000 by the Financial Services Compensation Scheme, the UK's deposit guarantee scheme. Any deposits you hold above the limit are unlikely to be covered. For further information visit{" "} <a href="https://www.fscs.org.uk" target="_blank" rel="noopener noreferrer" style={{ color: "#fff", textDecoration: "underline" }}>
+              www.fscs.org.uk
+            </a>.
           </p>
           <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
-            [LEGAL ENTITY DISCLOSURE — registered name, registration number, registered office,
-            regulators, and authorisation details, once confirmed.] Investment products are not
-            deposits, are not insured, and may lose value.{" "}
+            Safeguard Global Investment Bank PLC. Registered in England and Wales. Company number: 959578. We are authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and Prudential Regulation Authority. Safeguard Global Investment Bank PLC is an independent UK Bank - it is not affiliated with any other bank or organisation (including the Bulionsafe newspaper or its publishers) anywhere in the world. "Safeguard Global Investment" is the registered trademark of Safeguard Global Investment Bank PLC.{" "}
             <Link href="/disclosures" style={{ color: "#fff", textDecoration: "underline" }}>
               Full disclosures →
             </Link>

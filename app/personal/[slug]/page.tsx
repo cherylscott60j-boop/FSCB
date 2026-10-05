@@ -1,11 +1,11 @@
 import SiteLayout from "@/components/SiteLayout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import FAQAccordion from "@/components/FAQAccordion";
 
 /* ─── Shared style tokens ───────────────────────────────────────────────── */
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
-const RED  = "#8C1D25";
-const GOLD = "#D4AF37";
+const FONT = "var(--font-poppins), sans-serif";
+const RED  = "#E31E24";
 const DARK = "#111827";
 const GRAY = "#6B7280";
 
@@ -14,7 +14,7 @@ const PAGES = {
   checking: {
     title: "Checking Accounts",
     subtitle: "No-fee everyday banking with early direct deposit and 55,000+ surcharge-free ATMs.",
-    stats: [{ v: "$0", l: "Monthly fees" }, { v: "55K+", l: "Fee-free ATMs" }, { v: "2 Days", l: "Early direct deposit" }],
+    stats: [{ v: "£0", l: "Monthly fees" }, { v: "55K+", l: "Fee-free ATMs" }, { v: "2 Days", l: "Early direct deposit" }],
     overview: "Our personal checking accounts are built for real life — no minimum balance, no hidden charges, and tools that actually help you stay on top of your money. Whether you're depositing a paycheck, sending money to a friend, or checking your balance at midnight, SGGINV is right there with you.",
     features: [
       { title: "No Monthly Fees", desc: "Keep every dollar you earn. No maintenance fees, no minimum balance requirements — ever.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 14C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z" },
@@ -25,20 +25,24 @@ const PAGES = {
       { title: "Overdraft Protection", desc: "Optional overdraft protection links your savings account so you're covered when it matters.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
     ],
     accounts: [
-      { name: "SGGINV Free Checking", monthly: "$0", min: "None", atm: "55,000+ free", dd: "Yes (+2 days)", zelle: "Yes", highlight: false, startHref: "/open-account?account=free-checking" },
-      { name: "SGGINV Premium Checking", monthly: "$0*", min: "$500 avg daily", atm: "55,000+ free + rebates", dd: "Yes (+2 days)", zelle: "Yes", highlight: true, startHref: "/open-account?account=premium-checking" },
+      { name: "SGGINV Free Checking", monthly: "£0", min: "None", atm: "55,000+ free", dd: "Yes (+2 days)", zelle: "Yes", highlight: false, startHref: "/open-account?account=free-checking" },
+      { name: "SGGINV Premium Checking", monthly: "£0*", min: "£500 avg daily", atm: "55,000+ free + rebates", dd: "Yes (+2 days)", zelle: "Yes", highlight: true, startHref: "/open-account?account=premium-checking" },
     ],
-    accountNote: "* Monthly fee waived with $500 average daily balance or $1,500 in monthly direct deposits.",
+    accountNote: "* Monthly fee waived with £500 average daily balance or £1,500 in monthly direct deposits.",
     steps: [
       { n: "1", t: "Apply Online", d: "Complete your application in under 5 minutes. Just your ID and Social Security number." },
       { n: "2", t: "Fund Your Account", d: "Transfer money from another bank or deposit a check through the mobile app." },
       { n: "3", t: "Start Banking", d: "Your debit card arrives in 5–7 days. Digital access is instant." },
     ],
     faqs: [
-      { q: "Is there a minimum opening deposit?", a: "No — you can open a Free Checking account with any amount. Premium Checking requires $25 to open." },
+      { q: "Is there a minimum opening deposit?", a: "No — you can open a Free Checking account with any amount. Premium Checking requires £25 to open." },
       { q: "How does early direct deposit work?", a: "When your employer sends your paycheck electronically, we release the funds up to 2 business days before your actual payday." },
       { q: "What if I overdraw my account?", a: "With optional overdraft protection, we transfer funds from your linked savings account automatically. Without it, transactions over your balance are declined to prevent fees." },
       { q: "Can I open an account if I've had banking issues before?", a: "We review each application individually. Contact a local banker — we work with you, not against you." },
+      { q: "Can I use my debit card internationally?", a: "Yes — your SGGINV debit card works anywhere Visa® or Mastercard® is accepted. We'll waive the first two foreign transaction fees each month on Premium Checking." },
+      { q: "Is there a daily ATM withdrawal limit?", a: "Standard accounts have a £500 daily ATM withdrawal limit. You can request a higher limit through the mobile app or by speaking with a banker." },
+      { q: "How do I set up direct deposit?", a: "Download a pre-filled direct deposit form from the mobile app or online banking, and give it to your employer's payroll department. Most deposits start within 1–2 pay cycles." },
+      { q: "Can I add someone as a joint owner on my account?", a: "Yes — joint owners can be added when you open the account or anytime afterward in-branch. Both owners have full access to the account." },
     ],
     cta: "Open a Checking Account",
     ctaHref: "/open-account",
@@ -47,21 +51,21 @@ const PAGES = {
   savings: {
     title: "Savings Accounts",
     subtitle: "High-yield savings with automatic goal tracking and round-up tools that build real wealth.",
-    stats: [{ v: "High", l: "Competitive APY" }, { v: "$0", l: "Monthly fees" }, { v: "$250K", l: "[deposit-protected]" }],
+    stats: [{ v: "High", l: "Competitive APY" }, { v: "£0", l: "Monthly fees" }, { v: "£250K", l: "[deposit-protected]" }],
     overview: "A great savings account does more than hold your money — it grows it. SGGINV savings accounts come with goal-tracking tools, automatic round-ups on every debit card purchase, and competitive yields that put your money to work every single day.",
     features: [
       { title: "Competitive High-Yield APY", desc: "Earn more than the national average with rates that are reviewed regularly to stay competitive.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "Automatic Round-Ups", desc: "Every debit card purchase rounds up to the nearest dollar and sweeps the difference into savings.", icon: "M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" },
       { title: "Savings Goals", desc: "Set goals for anything — a car, vacation, emergency fund — and track your progress in real time.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" },
       { title: "No Minimum Balance", desc: "Start saving with whatever you have. There's no minimum balance requirement to earn your full APY.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "[Deposit Protection] up to [$LIMIT]", desc: "Eligible deposits may be protected under [DEPOSIT INSURANCE SCHEME], up to [$LIMIT] per depositor, per category.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
+      { title: "CASS PROTECTED up to £120,000", desc: "Eligible deposits may be protected under DEPOSIT INSURANCE, up to [£LIMIT] per depositor, per category.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
       { title: "Instant Transfers", desc: "Move money between your SGGINV checking and savings accounts instantly, any time of day.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
     ],
     accounts: [
-      { name: "Regular Savings", monthly: "$0", min: "None", apy: "Competitive", transfers: "6/month", highlight: false, startHref: "/open-account?account=regular-savings" },
-      { name: "Money Market", monthly: "$0*", min: "$2,500", apy: "Higher yield", transfers: "Unlimited", highlight: true, startHref: "/open-account?account=money-market" },
+      { name: "Regular Savings", monthly: "£0", min: "None", apy: "Competitive", transfers: "6/month", highlight: false, startHref: "/open-account?account=regular-savings" },
+      { name: "Money Market", monthly: "£0*", min: "£2,500", apy: "Higher yield", transfers: "Unlimited", highlight: true, startHref: "/open-account?account=money-market" },
     ],
-    accountNote: "* Money Market fee waived with $2,500 minimum balance.",
+    accountNote: "* Money Market fee waived with £2,500 minimum balance.",
     steps: [
       { n: "1", t: "Choose Your Account", d: "Pick Regular Savings for flexibility or Money Market for higher yields on larger balances." },
       { n: "2", t: "Set Your Goals", d: "Use the app to create and name savings goals — emergency fund, vacation, down payment." },
@@ -71,7 +75,7 @@ const PAGES = {
       { q: "How often is interest calculated?", a: "Interest is compounded daily and credited to your account monthly." },
       { q: "Is there a limit on how many times I can withdraw?", a: "Federal Regulation D limits savings withdrawals to 6 per month. Money Market accounts offer more flexibility." },
       { q: "Can I have multiple savings accounts?", a: "Yes — you can open multiple accounts and dedicate each one to a specific goal." },
-      { q: "Are my savings [deposit-protected]?", a: "Yes. All SGGINV deposits are [deposit-protected] up to $250,000 per depositor per ownership category." },
+      { q: "Are my savings CASS PROTECTED?", a: "Yes. All SGGINV deposits are CASS PROTECTED up to £120,000 per depositor per ownership category." },
     ],
     cta: "Open a Savings Account",
     ctaHref: "/open-account",
@@ -80,7 +84,7 @@ const PAGES = {
   "credit-cards": {
     title: "Credit Cards",
     subtitle: "Earn rewards and cashback on every purchase with cards built for community members.",
-    stats: [{ v: "Up to 3%", l: "Cashback" }, { v: "$0", l: "Annual fee" }, { v: "0% APR", l: "12-month intro" }],
+    stats: [{ v: "Up to 3%", l: "Cashback" }, { v: "£0", l: "Annual fee" }, { v: "0% APR", l: "12-month intro" }],
     overview: "SGGINV credit cards are designed to reward the way you actually spend — groceries, gas, dining, and everyday purchases. With no annual fees, competitive rates, and rewards that never expire, our cards are a smart choice for every wallet.",
     features: [
       { title: "Up to 3% Cashback", desc: "Earn 3% on groceries and gas, 2% on dining, and 1% on all other purchases — automatically.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
@@ -91,8 +95,8 @@ const PAGES = {
       { title: "Contactless & Digital Wallet", desc: "Tap to pay with your physical card or add to Apple Pay, Google Pay, or Samsung Pay.", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
     ],
     accounts: [
-      { name: "Community Card", monthly: "$0/yr", min: "Good credit", apy: "1% on all purchases", transfers: "No foreign txn fee", highlight: false, startHref: "/open-account?account=community-card" },
-      { name: "Rewards Card", monthly: "$0/yr", min: "Good–Excellent", apy: "Up to 3% cashback", transfers: "No foreign txn fee", highlight: true, startHref: "/open-account?account=rewards-card" },
+      { name: "Community Card", monthly: "£0/yr", min: "Good credit", apy: "1% on all purchases", transfers: "No foreign txn fee", highlight: false, startHref: "/open-account?account=community-card" },
+      { name: "Rewards Card", monthly: "£0/yr", min: "Good–Excellent", apy: "Up to 3% cashback", transfers: "No foreign txn fee", highlight: true, startHref: "/open-account?account=rewards-card" },
     ],
     accountNote: "APR varies based on creditworthiness. See card agreement for full details.",
     steps: [
@@ -113,19 +117,19 @@ const PAGES = {
   loans: {
     title: "Personal Loans",
     subtitle: "Fast local decisions, transparent rates, and no hidden fees for any purpose.",
-    stats: [{ v: "$1K–$50K", l: "Loan amounts" }, { v: "1 Day", l: "Decision time" }, { v: "$0", l: "Origination fee" }],
+    stats: [{ v: "£1K–£50K", l: "Loan amounts" }, { v: "1 Day", l: "Decision time" }, { v: "£0", l: "Origination fee" }],
     overview: "Life doesn't always wait for the perfect moment — and neither should your financing. SGGINV personal loans give you access to the funds you need quickly, with fixed monthly payments, no prepayment penalties, and a local team that actually reviews your application.",
     features: [
       { title: "Fixed Rates, No Surprises", desc: "Your interest rate and monthly payment stay the same from day one to your last payment.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
       { title: "No Origination Fees", desc: "We don't charge origination fees or prepayment penalties. What we quote is what you pay.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "Borrow $1,000–$50,000", desc: "Whether it's a small expense or a major purchase, we have the right loan size for you.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
+      { title: "Borrow £1,000–£50,000", desc: "Whether it's a small expense or a major purchase, we have the right loan size for you.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "Terms from 12 to 84 Months", desc: "Choose a repayment timeline that fits your budget, from 1 to 7 years.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
       { title: "Same-Day Funding Available", desc: "Approved by noon? Funds could hit your SGGINV account the same business day.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
       { title: "Local Underwriting", desc: "Your application is reviewed by a real person here in the community — not an algorithm.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0" },
     ],
     accounts: [
-      { name: "Standard Personal Loan", monthly: "Fixed rate", min: "$1,000–$25,000", apy: "12–60 months", transfers: "Good credit", highlight: false, startHref: "/about/contact" },
-      { name: "Premier Personal Loan", monthly: "Lower fixed rate", min: "$5,000–$50,000", apy: "12–84 months", transfers: "Excellent credit", highlight: true, startHref: "/about/contact" },
+      { name: "Standard Personal Loan", monthly: "Fixed rate", min: "£1,000–£25,000", apy: "12–60 months", transfers: "Good credit", highlight: false, startHref: "/about/contact" },
+      { name: "Premier Personal Loan", monthly: "Lower fixed rate", min: "£5,000–£50,000", apy: "12–84 months", transfers: "Excellent credit", highlight: true, startHref: "/about/contact" },
     ],
     accountNote: "Rates are based on creditworthiness and loan term. Contact a banker for your personalized rate.",
     steps: [
@@ -182,7 +186,7 @@ const PAGES = {
 function FeatureCard({ title, desc, icon }: { title: string; desc: string; icon: string }) {
   return (
     <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 18, padding: "28px 26px" }}>
-      <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 18 }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 18 }}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d={icon} />
         </svg>
@@ -215,18 +219,21 @@ export default async function PersonalPage({ params }: { params: Promise<{ slug:
   return (
     <SiteLayout>
       {/* Hero */}
-      <div className="mob-hero" style={{ background: "linear-gradient(145deg,#2C0A10,#8C1D25)", padding: "88px 32px 0", overflow: "hidden" }}>
-        <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>Personal Banking</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
-          <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>{page.subtitle}</p>
-          <Link href={page.ctaHref} style={{ background: GOLD, color: "#4A0E14", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 24px rgba(212,175,55,.4)", marginBottom: 56, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
+      <div className="mob-hero" style={{ background: "linear-gradient(135deg,#0D1B4C 0%,#0800FF 60%,#E31E24 100%)", padding: "88px 32px", overflow: "hidden" }}>
+        <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 260px", gap: 48, alignItems: "start" }}>
+          {/* Left: copy */}
+          <div>
+            <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(255,255,255,.75)", fontWeight: 700, marginBottom: 16 }}>Personal Banking</div>
+            <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 4.4vw, 46px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
+            <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 32px" }}>{page.subtitle}</p>
+            <Link href={page.ctaHref} style={{ background: RED, color: "#fff", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 24px rgba(227,30,36,.4)", textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
+          </div>
 
-          {/* Stat bar */}
-          <div style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 32, paddingBottom: 40, flexWrap: "wrap" }}>
+          {/* Right: stats, stacked on desktop / inline row on mobile */}
+          <div className="mob-hero-stats" style={{ display: "flex", flexDirection: "column", gap: 24, borderLeft: "1px solid rgba(255,255,255,.14)", paddingLeft: 32 }}>
             {page.stats.map((s, i) => (
-              <div key={i} style={{ flex: "1 1 140px", paddingRight: 40, borderRight: i < page.stats.length - 1 ? "1px solid rgba(255,255,255,.12)" : "none", marginRight: i < page.stats.length - 1 ? 40 : 0, marginBottom: 16 }}>
-                <div style={{ fontFamily: FONT, fontWeight: 900, fontSize: 36, color: "#fff", lineHeight: 1 }}>{s.v}</div>
+              <div key={i}>
+                <div style={{ fontFamily: FONT, fontWeight: 900, fontSize: 32, color: "#fff", lineHeight: 1 }}>{s.v}</div>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,.6)", marginTop: 6, fontWeight: 500 }}>{s.l}</div>
               </div>
             ))}
@@ -236,28 +243,10 @@ export default async function PersonalPage({ params }: { params: Promise<{ slug:
 
       {/* Overview */}
       <div className="mob-section" style={{ background: "#fff", padding: "72px 32px" }}>
-        <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
-          <div>
-            <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Overview</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 36, lineHeight: 1.12, letterSpacing: "-.02em", margin: "0 0 20px", color: DARK }}>{page.title}</h2>
-            <p style={{ fontSize: 16.5, color: GRAY, lineHeight: 1.75, margin: 0 }}>{page.overview}</p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {[{ icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", t: "[Deposit Protection] up to [$LIMIT]", d: "Your deposits are federally insured for complete peace of mind." },
-              { icon: "M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z", t: "Bank-Grade Security", d: "256-bit encryption and multi-factor authentication on every login." },
-              { icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0", t: "Local Human Support", d: "Real bankers available by phone, in-branch, or online chat." },
-            ].map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 16, padding: "18px 20px", background: "rgba(140,29,37,.04)", borderRadius: 14 }}>
-                <div style={{ flex: "none", width: 38, height: 38, borderRadius: 10, background: "rgba(140,29,37,.1)", display: "flex", alignItems: "center", justifyContent: "center", color: RED }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={item.icon} /></svg>
-                </div>
-                <div>
-                  <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 14.5, color: DARK, marginBottom: 3 }}>{item.t}</div>
-                  <div style={{ fontSize: 13.5, color: GRAY }}>{item.d}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
+          <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 14 }}>Overview</div>
+          <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(22px, 3vw, 28px)", lineHeight: 1.12, letterSpacing: "-.02em", margin: "0 0 20px", color: DARK }}>{page.title}</h2>
+          <p style={{ fontSize: 16.5, color: GRAY, lineHeight: 1.75, margin: 0 }}>{page.overview}</p>
         </div>
       </div>
 
@@ -266,7 +255,7 @@ export default async function PersonalPage({ params }: { params: Promise<{ slug:
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Features</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 36px)", letterSpacing: "-.02em", margin: "0 0 14px", color: DARK }}>Everything you need, nothing you don&apos;t</h2>
+            <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(22px, 3vw, 28px)", letterSpacing: "-.02em", margin: "0 0 14px", color: DARK }}>Everything you need, nothing you don&apos;t</h2>
           </div>
           <div className="g-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
             {page.features.map((f, i) => <FeatureCard key={i} {...f} />)}
@@ -278,19 +267,19 @@ export default async function PersonalPage({ params }: { params: Promise<{ slug:
       <div className="mob-section" style={{ background: "#fff", padding: "72px 32px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Account Options</div>
-          <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 36px)", letterSpacing: "-.02em", margin: "0 0 36px", color: DARK }}>Choose the right account for you</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(22px, 3vw, 28px)", letterSpacing: "-.02em", margin: "0 0 36px", color: DARK }}>Choose the right account for you</h2>
           <div className="mob-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
             {page.accounts.map((a, i) => (
-              <div key={i} style={{ border: `2px solid ${a.highlight ? RED : "rgba(17,24,39,.08)"}`, borderRadius: 20, padding: "32px 30px", position: "relative", background: a.highlight ? "rgba(140,29,37,.02)" : "#fff" }}>
+              <div key={i} style={{ border: `2px solid ${a.highlight ? RED : "rgba(17,24,39,.08)"}`, borderRadius: 20, padding: "32px 30px", position: "relative", background: a.highlight ? "rgba(227,30,36,.02)" : "#fff" }}>
                 {a.highlight && <div style={{ position: "absolute", top: -13, left: 28, background: RED, color: "#fff", fontSize: 11, fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", padding: "4px 14px", borderRadius: 999 }}>Most Popular</div>}
-                <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, marginBottom: 24 }}>{a.name}</div>
+                <div style={{ fontFamily: FONT, fontWeight: 600, fontSize: 22, color: DARK, marginBottom: 24 }}>{a.name}</div>
                 {Object.entries({ "Monthly Fee": a.monthly, "Minimum": a.min, "Yield / Rate": (a as unknown as Record<string,string>).apy, "Included": (a as unknown as Record<string,string>).transfers }).map(([k, v]) => (
                   <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid rgba(17,24,39,.06)", fontSize: 14.5 }}>
                     <span style={{ color: GRAY }}>{k}</span>
                     <span style={{ fontWeight: 600, color: DARK }}>{v}</span>
                   </div>
                 ))}
-                <Link href={a.startHref} style={{ marginTop: 24, display: "block", textAlign: "center", width: "100%", background: a.highlight ? RED : "transparent", color: a.highlight ? "#fff" : RED, border: `1.5px solid ${a.highlight ? RED : "rgba(140,29,37,.3)"}`, fontFamily: "inherit", fontSize: 14.5, fontWeight: 700, padding: "13px", borderRadius: 12, cursor: "pointer", textDecoration: "none", boxSizing: "border-box" }}>Get Started</Link>
+                <Link href={a.startHref} style={{ marginTop: 24, display: "block", textAlign: "center", width: "100%", background: a.highlight ? RED : "transparent", color: a.highlight ? "#fff" : RED, border: `1.5px solid ${a.highlight ? RED : "rgba(227,30,36,.3)"}`, fontFamily: "inherit", fontSize: 14.5, fontWeight: 700, padding: "13px", borderRadius: 12, cursor: "pointer", textDecoration: "none", boxSizing: "border-box" }}>Get Started</Link>
               </div>
             ))}
           </div>
@@ -299,17 +288,17 @@ export default async function PersonalPage({ params }: { params: Promise<{ slug:
       </div>
 
       {/* How it works */}
-      <div className="mob-section" style={{ background: "rgba(140,29,37,.03)", padding: "72px 32px" }}>
+      <div className="mob-section" style={{ background: "rgba(227,30,36,.03)", padding: "72px 32px" }}>
         <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
           <div>
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>How It Works</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 36, letterSpacing: "-.02em", margin: "0 0 40px", color: DARK }}>Get started in 3 simple steps</h2>
+            <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(22px, 3vw, 28px)", letterSpacing: "-.02em", margin: "0 0 40px", color: DARK }}>Get started in 3 simple steps</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
               {page.steps.map((s) => <Step key={s.n} {...s} />)}
             </div>
           </div>
-          <div style={{ background: "#fff", borderRadius: 24, padding: "40px 36px", boxShadow: "0 20px 60px -20px rgba(140,29,37,.15)" }}>
-            <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, marginBottom: 8 }}>Ready to open your account?</div>
+          <div style={{ background: "#fff", borderRadius: 24, padding: "40px 36px", boxShadow: "0 20px 60px -20px rgba(227,30,36,.15)" }}>
+            <div style={{ fontFamily: FONT, fontWeight: 600, fontSize: 22, color: DARK, marginBottom: 8 }}>Ready to open your account?</div>
             <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.65, marginBottom: 28 }}>Join 17,000+ community members who trust SGGINV for their everyday banking needs.</p>
             <Link href={page.ctaHref} style={{ display: "block", textAlign: "center", width: "100%", background: RED, color: "#fff", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: 16, borderRadius: 12, cursor: "pointer", marginBottom: 12, textDecoration: "none", boxSizing: "border-box" }}>{page.cta}</Link>
             <Link href="/about/contact" style={{ display: "block", textAlign: "center", width: "100%", background: "none", color: GRAY, border: "1.5px solid rgba(17,24,39,.14)", fontFamily: "inherit", fontSize: 14.5, fontWeight: 600, padding: 14, borderRadius: 12, cursor: "pointer", textDecoration: "none", boxSizing: "border-box" }}>Talk to a banker</Link>
@@ -322,27 +311,20 @@ export default async function PersonalPage({ params }: { params: Promise<{ slug:
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>FAQ</div>
-            <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 34, letterSpacing: "-.02em", margin: 0, color: DARK }}>Common questions</h2>
+            <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(22px, 3vw, 28px)", letterSpacing: "-.02em", margin: 0, color: DARK }}>Common questions</h2>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {page.faqs.map((f, i) => (
-              <div key={i} style={{ border: "1px solid rgba(17,24,39,.08)", borderRadius: 16, padding: "22px 24px" }}>
-                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 16, color: DARK, marginBottom: 10 }}>{f.q}</div>
-                <div style={{ fontSize: 14.5, color: GRAY, lineHeight: 1.65 }}>{f.a}</div>
-              </div>
-            ))}
-          </div>
+          <FAQAccordion faqs={page.faqs} />
         </div>
       </div>
 
       {/* Footer CTA */}
-      <div className="mob-section" style={{ background: "linear-gradient(145deg,#2C0A10,#8C1D25)", padding: "72px 32px", textAlign: "center" }}>
+      <div className="mob-section" style={{ background: "#F4F5F7", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 40, color: "#fff", margin: "0 0 16px", letterSpacing: "-.02em" }}>Start banking smarter today</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Open your account online in minutes or visit any SGGINV branch to speak with a local banker.</p>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3vw, 28px)", color: DARK, margin: "0 0 16px", letterSpacing: "-.02em" }}>Start banking smarter today</h2>
+          <p style={{ fontSize: 17, color: GRAY, lineHeight: 1.65, margin: "0 0 36px" }}>Open your account online in minutes or visit any SGGINV branch to speak with a local banker.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href={page.ctaHref} style={{ background: GOLD, color: "#4A0E14", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
-            <Link href="/about/contact" style={{ background: "rgba(255,255,255,.1)", color: "#fff", border: "1.5px solid rgba(255,255,255,.25)", fontFamily: "inherit", fontSize: 15, fontWeight: 600, padding: "15px 28px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>Find a branch</Link>
+            <Link href={page.ctaHref} style={{ background: RED, color: "#fff", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
+            <Link href="/about/contact" style={{ background: "#fff", color: DARK, border: "1.5px solid rgba(17,24,39,.14)", fontFamily: "inherit", fontSize: 15, fontWeight: 600, padding: "15px 28px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>Find a branch</Link>
           </div>
         </div>
       </div>

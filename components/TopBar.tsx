@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-const NAVY = "#0D1B4C";
+const BLUE = "#0800FF";
 const RED = "#E31E24";
 
 const UTILITY_LINKS = [
@@ -16,7 +16,7 @@ const UTILITY_LINKS = [
 
 export default function TopBar() {
   return (
-    <div style={{ background: NAVY, color: "rgba(255,255,255,.88)", fontSize: "13px" }}>
+    <div className="sg-topbar" style={{ background: BLUE, color: "rgba(255,255,255,.88)", fontSize: "13px", position: "sticky", top: 0, zIndex: 101 }}>
       <div
         style={{
           maxWidth: 1280,
@@ -29,7 +29,7 @@ export default function TopBar() {
         }}
       >
         {/* Left: utility nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: 22 }} className="topbar-utility">
+        <div style={{ display: "flex", alignItems: "center", gap: 22, overflow: "hidden" }} className="sg-topbar-utility">
           {UTILITY_LINKS.map((l) => (
             <Link
               key={l.label}
@@ -47,33 +47,43 @@ export default function TopBar() {
         <div style={{ display: "flex", alignItems: "center", gap: 20, flexShrink: 0 }}>
           <Link
             href="/about/contact"
+            className="sg-topbar-link"
             style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,.82)", textDecoration: "none" }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z" />
               <circle cx="12" cy="10" r="2.5" />
             </svg>
-            Find a Branch
+            Find a Store
           </Link>
-          <Link href="/accessibility" style={{ color: "rgba(255,255,255,.82)", textDecoration: "none" }}>
+          <Link href="/accessibility" className="sg-topbar-link" style={{ color: "rgba(255,255,255,.82)", textDecoration: "none" }}>
             Help
           </Link>
           <Link
             href="/login"
+            className="sg-topbar-link"
             style={{
               background: RED,
               color: "#fff",
               fontWeight: 700,
               padding: "7px 18px",
-              borderRadius: 999,
+              borderRadius: 4,
               textDecoration: "none",
               fontSize: 12.5,
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
           >
             Log in
           </Link>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 860px) {
+          .sg-topbar { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

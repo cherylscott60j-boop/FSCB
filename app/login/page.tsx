@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import Logo from "@/components/Logo";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -88,7 +88,7 @@ export default function LoginPage() {
               <Logo variant="light" height={40} />
             </Link>
 
-            <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 42, color: "#fff", margin: "0 0 18px", lineHeight: 1.08, letterSpacing: "-.03em" }}>
+            <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: 42, color: "#fff", margin: "0 0 18px", lineHeight: 1.08, letterSpacing: "-.03em" }}>
               Banking built<br />for your community.
             </h2>
             <p style={{ fontSize: 16, color: "rgba(255,255,255,.6)", lineHeight: 1.65, margin: "0 0 44px", maxWidth: 380 }}>
@@ -131,7 +131,7 @@ export default function LoginPage() {
               <div className="login-card-body" style={{ padding: "36px 32px 32px" }}>
                 {/* Heading */}
                 <div style={{ marginBottom: 32 }}>
-                  <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 30, color: DARK, margin: "0 0 6px", letterSpacing: "-.03em" }}>Welcome back</h1>
+                  <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: 30, color: DARK, margin: "0 0 6px", letterSpacing: "-.03em" }}>Welcome back</h1>
                   <p style={{ fontSize: 14.5, color: GRAY, margin: 0, lineHeight: 1.5 }}>Sign in to your SGGINV account</p>
                 </div>
 

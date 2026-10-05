@@ -35,7 +35,7 @@ export default function Logo({
       <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
         <span
           style={{
-            fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+            fontFamily: "var(--font-poppins), sans-serif",
             fontWeight: 800,
             fontSize: height * 0.4,
             color: textColor,

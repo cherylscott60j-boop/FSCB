@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ContactForm from "@/components/ContactForm";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -31,7 +31,7 @@ function StoryPage() {
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#2C0A10,#8C1D25)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Our Story</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Our Story</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>Over 120 years of serving our community — built on trust, guided by values, and proud to still be independently owned.</p>
           <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
             {[{ v: "1902", l: "Founded" }, { v: "120+", l: "Years of service" }, { v: "17K+", l: "Account holders" }].map((s, i) => (
@@ -137,7 +137,7 @@ function StoryPage() {
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#2C0A10,#8C1D25)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Bank with people who know you</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Bank with people who know you</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Open an account today or visit any branch to meet the team in person.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Open an Account</button>
@@ -170,7 +170,7 @@ function CommunityPage() {
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1f0d,#1e4020)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Community Impact</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Community Impact</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We measure our success by the strength of the community around us — $1M+ reinvested and counting.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>See Our Impact Report</button>
         </div>
@@ -248,7 +248,7 @@ function CommunityPage() {
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#0d1f0d,#1e4020)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Banking that gives back</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Banking that gives back</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>When you bank with SGGINV, your money stays in the community and helps it grow.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Open an Account</button>
         </div>
@@ -280,7 +280,7 @@ function CareersPage() {
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1f3c,#1a3a6b)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Careers at SGGINV</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Careers at SGGINV</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>Join a team where your work has real impact. We&apos;re looking for people who care about their community as much as they do their career.</p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
             <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>View Open Positions</button>
@@ -374,7 +374,7 @@ function CareersPage() {
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#0d1f3c,#1a3a6b)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Ready to make a difference?</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Ready to make a difference?</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Explore open roles or send your resume to our HR team — we&apos;d love to meet you.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>View Open Positions</button>
@@ -413,7 +413,7 @@ function NewsPage() {
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#1a1a2e,#2d2d4e)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Press &amp; News</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Press &amp; News</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: 0 }}>Stay up to date with the latest news, announcements, partnerships, and community stories from SGGINV.</p>
         </div>
       </div>
@@ -486,7 +486,7 @@ function NewsPage() {
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#1a1a2e,#2d2d4e)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Stay connected with SGGINV</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Stay connected with SGGINV</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Sign up for our newsletter and be the first to hear about new products, community events, and local news.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Subscribe to Newsletter</button>
         </div>
@@ -515,7 +515,7 @@ function ContactPage() {
       <div className="mob-hero" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "88px 32px 80px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>About SGGINV</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Contact Us</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 20px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>Contact Us</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 40px" }}>We&apos;re always here to help. Reach a real person by phone, visit any branch, or send us a message.</p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
             <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Find a Branch</button>
@@ -611,7 +611,7 @@ function ContactPage() {
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: "linear-gradient(145deg,#0d1a1a,#1a3333)", padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>We&apos;re your neighbors</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 38px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>We&apos;re your neighbors</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Stop by any branch and meet the team in person. No appointment needed for most services.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>Find Your Branch</button>
         </div>

@@ -93,7 +93,7 @@ export default function CommunityImpact() {
           >
             <div
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontWeight: 800,
                 fontSize: 30,
                 lineHeight: 1,
@@ -120,7 +120,7 @@ export default function CommunityImpact() {
           </span>
           <h2
             style={{
-              fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+              fontFamily: "var(--font-poppins), sans-serif",
               fontWeight: 800,
               fontSize: "clamp(22px, 4vw, 38px)",
               lineHeight: 1.12,
@@ -156,7 +156,7 @@ export default function CommunityImpact() {
                 <div>
                   <div
                     style={{
-                      fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                      fontFamily: "var(--font-poppins), sans-serif",
                       fontWeight: 700,
                       fontSize: 16.5,
                       marginBottom: 3,

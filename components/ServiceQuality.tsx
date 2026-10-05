@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
+
 const NAVY = "#0D1B4C";
 const RED = "#E31E24";
 const BLUE = "#3B5BDB";
 const GRAY = "#6B7280";
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 
 type Row = { label?: string; pct: number; highlight?: boolean };
 
@@ -25,25 +27,20 @@ const BUSINESS_ROWS: Row[] = [
   { label: "Safeguard", pct: 55, highlight: true },
 ];
 
-function SampleBadge() {
-  return (
-    <span
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 5,
-        background: "rgba(245,158,11,.14)", border: "1px solid rgba(245,158,11,.4)",
-        borderRadius: 999, padding: "3px 10px", fontSize: 10.5, fontWeight: 800,
-        letterSpacing: ".04em", color: "#B45309", textTransform: "uppercase",
-      }}
-    >
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-        <path d="M12 9v4m0 4h.01M12 3l9.5 16.5H2.5L12 3z" />
-      </svg>
-      Sample data
-    </span>
-  );
-}
 
-function BarPanel({ title, blurb, rows }: { title: string; blurb: string; rows: Row[] }) {
+
+function BarPanel({
+  description,
+  rows,
+  resultsLabel,
+  citation,
+}: {
+  title?: string;
+  description: string;
+  rows: Row[];
+  resultsLabel: string;
+  citation?: string;
+}) {
   const max = Math.max(...rows.map((r) => r.pct));
   return (
     <div
@@ -52,11 +49,9 @@ function BarPanel({ title, blurb, rows }: { title: string; blurb: string; rows: 
         padding: "26px 26px 22px",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
-        <h3 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 16, color: NAVY, margin: 0 }}>{title}</h3>
-        <SampleBadge />
-      </div>
-      <p style={{ fontSize: 12.5, color: GRAY, lineHeight: 1.6, margin: "0 0 20px" }}>{blurb}</p>
+      
+
+      <p style={{ fontSize: 13, color: GRAY, lineHeight: 1.65, margin: "0 0 20px" }}>{description}</p>
 
       <div style={{ fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 10 }}>Overall service quality</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -86,9 +81,17 @@ function BarPanel({ title, blurb, rows }: { title: string; blurb: string; rows: 
         ))}
       </div>
 
-      <p style={{ fontSize: 11, color: "#9CA3AF", lineHeight: 1.6, marginTop: 18 }}>
-        Illustrative placeholder chart — not a real survey. Replace with real independent survey
-        results, methodology, and source before publishing.
+      <Link
+        href="/disclosures"
+        style={{ display: "inline-block", fontSize: 12.5, fontWeight: 700, color: BLUE, textDecoration: "none", margin: "18px 0 10px" }}
+      >
+        {resultsLabel} →
+      </Link>
+
+      <p style={{ fontSize: 11, color: "#9CA3AF", lineHeight: 1.6, margin: "0 0 10px" }}>{citation}</p>
+
+      <p style={{ fontSize: 11, color: "#9CA3AF", lineHeight: 1.6, margin: 0 }}>
+      
       </p>
     </div>
   );
@@ -96,7 +99,7 @@ function BarPanel({ title, blurb, rows }: { title: string; blurb: string; rows: 
 
 export default function ServiceQuality() {
   return (
-    <section style={{ background: "#fff", padding: "72px 32px" }}>
+    <section style={{ background: "#F4F5F7", padding: "32px 32px 72px", fontFamily: FONT }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <h2
           style={{
@@ -109,14 +112,18 @@ export default function ServiceQuality() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="sg-2col">
           <BarPanel
-            title="Service quality | Personal"
-            blurb="If and when a real independent survey of personal account providers is conducted, summarize its methodology and sample size here."
+            title="Independent service quality survey results | Personal"
+            description="As part of a regulatory requirement, an independent survey was conducted to ask approximately 2000 customers of each of the 17 largest personal current account providers whether they would recommend their provider to friends and family. The results represent the view of customers who took part in the survey."
             rows={PERSONAL_ROWS}
+            resultsLabel="See the full personal service quality survey results"
+           
           />
           <BarPanel
-            title="Service quality | Business"
-            blurb="If and when a real independent survey of business account providers is conducted, summarize its methodology and sample size here."
+            title="Independent service quality survey results | Business"
+            description="As part of a regulatory requirement, an independent survey was conducted to ask approximately 2100 customers of each of the 17 largest business current account providers whether they would recommend their provider to other small and medium-sized enterprises (SMEs*). The results represent the view of customers who took part in the survey."
             rows={BUSINESS_ROWS}
+            resultsLabel="See the full business service quality survey results"
+            
           />
         </div>
       </div>

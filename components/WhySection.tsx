@@ -78,7 +78,7 @@ export default function WhySection() {
         </span>
         <h2
           style={{
-            fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+            fontFamily: "var(--font-poppins), sans-serif",
             fontWeight: 800,
             fontSize: "clamp(22px, 4vw, 40px)",
             lineHeight: 1.1,
@@ -137,7 +137,7 @@ export default function WhySection() {
             </div>
             <h3
               style={{
-                fontFamily: "var(--font-montserrat), 'Libre Franklin', sans-serif",
+                fontFamily: "var(--font-poppins), sans-serif",
                 fontWeight: 700,
                 fontSize: 21,
                 margin: "0 0 11px",

@@ -276,6 +276,16 @@ img, video, svg, iframe {
     grid-template-columns: 1fr !important;
     gap: 24px !important;
   }
+  /* Hero stat list: inline row instead of stacked on mobile */
+  .mob-hero-stats {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 20px 28px !important;
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid rgba(255,255,255,.14) !important;
+    padding-top: 24px !important;
+  }
   /* Side padding only (for sections that only need horizontal compression) */
   .mob-px {
     padding-left: 20px !important;
@@ -344,6 +354,13 @@ img, video, svg, iframe {
   /* 3-col grid in skeleton: collapse */
   .mob-grid-3 {
     grid-template-columns: 1fr 1fr !important;
+  }
+  /* Open-account split layout: drop the side image panel on mobile */
+  .oa-split {
+    grid-template-columns: 1fr !important;
+  }
+  .oa-split-img {
+    display: none !important;
   }
 }
 

@@ -1,7 +1,7 @@
 import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -86,7 +86,7 @@ const PAGES = {
     faqs: [
       { q: "What is the minimum to open an investment account?", a: "Managed portfolios start at $10,000. Self-directed brokerage accounts can be opened with any amount." },
       { q: "What fees do you charge?", a: "Managed account fees range from 0.25% to 1.00% annually depending on account size. Self-directed brokerage trades are commission-free for stocks and ETFs." },
-      { q: "Are my investments insured?", a: "Investment accounts are not [deposit-protected], but are protected by SIPC up to $500,000 (including $250,000 for cash claims) against broker failure. Market losses are not covered by SIPC." },
+      { q: "Are my investments insured?", a: "Investment accounts are not deposit-protected, but are protected by SIPC up to $500,000 (including $250,000 for cash claims) against broker failure. Market losses are not covered by SIPC." },
       { q: "Can I transfer my existing brokerage account to SGGINV?", a: "Yes — SGGINV accepts in-kind transfers from most brokerage firms. The process takes 5–10 business days and can typically be done without liquidating your positions." },
     ],
     cta: "Open an Investment Account",
@@ -174,7 +174,7 @@ export default async function FinancialPage({ params }: { params: Promise<{ slug
       <div className="mob-hero" style={{ background: page.hero, padding: "88px 32px 0", overflow: "hidden" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>Financial Management</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 56px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 56px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>{page.subtitle}</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer", boxShadow: "0 6px 24px rgba(212,175,55,.4)", marginBottom: 56 }}>{page.cta}</button>
           <div style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 32, paddingBottom: 40, flexWrap: "wrap" }}>
@@ -272,7 +272,7 @@ export default async function FinancialPage({ params }: { params: Promise<{ slug
       {/* Footer CTA */}
       <div className="mob-section" style={{ background: page.hero, padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 580, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Your financial future starts here</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Your financial future starts here</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Speak with a local SGGINV advisor who puts your interests first — always.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "16px 40px", borderRadius: 12, cursor: "pointer" }}>{page.cta}</button>
         </div>

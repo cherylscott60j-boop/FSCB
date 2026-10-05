@@ -1,0 +1,15 @@
+▲ Next.js 16.2.9 (webpack)
+- Local:         http://localhost:4100
+- Network:       http://192.168.8.182:4100
+- Environments: .env.local
+✓ Ready in 232ms
+
+ GET / 200 in 1210ms (next.js: 958ms, proxy.ts: 123ms, application-code: 129ms)
+ GET /personal/checking 200 in 1471ms (next.js: 1238ms, proxy.ts: 123ms, application-code: 110ms)
+ GET /personal/checking 200 in 115ms (next.js: 4ms, proxy.ts: 64ms, application-code: 47ms)
+ GET /personal/savings 200 in 43ms (next.js: 1865µs, proxy.ts: 2ms, application-code: 39ms)
+ GET /personal/checking 200 in 226ms (next.js: 12ms, proxy.ts: 61ms, application-code: 153ms)
+ GET / 200 in 43ms (next.js: 4ms, proxy.ts: 17ms, application-code: 22ms)
+ GET / 200 in 31ms (next.js: 4ms, proxy.ts: 9ms, application-code: 18ms)
+ GET /open-account 200 in 369ms (next.js: 348ms, proxy.ts: 8ms, application-code: 13ms)
+ GET /personal/checking 200 in 78ms (next.js: 27ms, proxy.ts: 10ms, application-code: 41ms)

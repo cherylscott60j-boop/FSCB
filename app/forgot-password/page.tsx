@@ -5,7 +5,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/Logo";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                     <path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" />
                   </svg>
                 </div>
-                <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 28, color: DARK, margin: "0 0 10px", letterSpacing: "-.02em" }}>Check your inbox</h1>
+                <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: 28, color: DARK, margin: "0 0 10px", letterSpacing: "-.02em" }}>Check your inbox</h1>
                 <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.65, margin: "0 0 8px" }}>
                   We sent a password reset link to
                 </p>
@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
                     Back to sign in
                   </Link>
-                  <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 32, color: DARK, margin: "0 0 8px", letterSpacing: "-.025em" }}>Reset your password</h1>
+                  <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: 32, color: DARK, margin: "0 0 8px", letterSpacing: "-.025em" }}>Reset your password</h1>
                   <p style={{ fontSize: 15, color: GRAY, margin: 0, lineHeight: 1.55 }}>
                     Enter the email address on your SGGINV account and we&apos;ll send a reset link.
                   </p>

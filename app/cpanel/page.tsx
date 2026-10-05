@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/Logo";
 
 /* ── Design tokens (mirrors dashboard) ───────────────── */
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";

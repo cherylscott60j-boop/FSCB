@@ -1,7 +1,7 @@
 import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -172,7 +172,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
       <div className="mob-hero" style={{ background: page.hero, padding: "88px 32px 56px" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>Insurance</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 56px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 680 }}>{page.title}</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 56px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 680 }}>{page.title}</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 540, margin: "0 0 40px" }}>{page.subtitle}</p>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
             <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, cursor: "pointer" }}>{page.cta}</button>
@@ -273,7 +273,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
       {/* CTA */}
       <div className="mob-section" style={{ background: page.hero, padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Get covered today</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(22px, 3.5vw, 40px)", color: "#fff", margin: "0 0 14px", letterSpacing: "-.02em" }}>Get covered today</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Talk to a local SGGINV insurance advisor — no obligation, just honest guidance.</p>
           <button style={{ background: GOLD, color: "#4A0E14", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "16px 40px", borderRadius: 12, cursor: "pointer" }}>{page.cta}</button>
         </div>

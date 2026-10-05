@@ -2,7 +2,7 @@ import Link from "next/link";
 import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
-const FONT = "var(--font-montserrat),'Libre Franklin',sans-serif";
+const FONT = "var(--font-poppins), sans-serif";
 const RED  = "#8C1D25";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
@@ -203,7 +203,7 @@ export default async function LoansPage({ params }: { params: Promise<{ slug: st
       <div className="mob-hero" style={{ background: page.hero, padding: "88px 32px 0", overflow: "hidden" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(212,175,55,.9)", fontWeight: 700, marginBottom: 16 }}>Loans</div>
-          <h1 style={{ fontFamily: FONT, fontWeight: 900, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
+          <h1 style={{ fontFamily: FONT, fontWeight:600, fontSize: "clamp(30px, 5.5vw, 58px)", color: "#fff", margin: "0 0 18px", lineHeight: 1.04, letterSpacing: "-.025em", maxWidth: 700 }}>{page.title}</h1>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,.78)", lineHeight: 1.65, maxWidth: 560, margin: "0 0 44px" }}>{page.subtitle}</p>
           <Link href="/about/contact" style={{ background: GOLD, color: "#4A0E14", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, boxShadow: "0 6px 24px rgba(212,175,55,.4)", marginBottom: 56, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
           <div style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(255,255,255,.12)", paddingTop: 32, paddingBottom: 40, flexWrap: "wrap" }}>
@@ -316,7 +316,7 @@ export default async function LoansPage({ params }: { params: Promise<{ slug: st
       {/* CTA */}
       <div className="mob-section" style={{ background: page.hero, padding: "72px 32px", textAlign: "center" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: FONT, fontWeight: 900, fontSize: 40, color: "#fff", margin: "0 0 16px", letterSpacing: "-.02em" }}>Ready to apply?</h2>
+          <h2 style={{ fontFamily: FONT, fontWeight:600, fontSize: 40, color: "#fff", margin: "0 0 16px", letterSpacing: "-.02em" }}>Ready to apply?</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", lineHeight: 1.65, margin: "0 0 36px" }}>Local decisions from people who know your community and want you to succeed.</p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/about/contact" style={{ background: GOLD, color: "#4A0E14", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: "15px 34px", borderRadius: 12, textDecoration: "none", display: "inline-block" }}>{page.cta}</Link>
