@@ -442,6 +442,36 @@ img, video, svg, iframe {
 }
 
 /* ── Dashboard ──────────────────────────────────────── */
+
+/* Theme tokens. --db-ink is an RGB triplet (not a color) so every
+   rgba(var(--db-ink), X) border/tint in the dashboard flips from
+   near-black-on-light to near-white-on-dark via one variable. */
+.db-shell {
+  --db-ink: 17,24,39;
+  --db-bg: #F4F5FB;
+  --db-card: #fff;
+  --db-input-bg: #FAFAFA;
+  --db-hover-row: 249,250,251;
+  --db-text-primary: #111827;
+  --db-text-mid: #374151;
+  --db-text-gray: #6B7280;
+  transition: background-color .2s ease;
+}
+.db-shell[data-theme="dark"] {
+  --db-ink: 255,255,255;
+  --db-bg: #0B0F19;
+  --db-card: #161B28;
+  --db-input-bg: #1E2432;
+  --db-hover-row: 30,36,50;
+  --db-text-primary: #F3F4F6;
+  --db-text-mid: #CBD5E1;
+  --db-text-gray: #94A3B8;
+}
+.db-shell[data-theme="dark"] input,
+.db-shell[data-theme="dark"] select {
+  color-scheme: dark;
+}
+
 .db-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -468,8 +498,8 @@ img, video, svg, iframe {
   bottom: 0; left: 0; right: 0;
   height: calc(60px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
-  background: #fff;
-  border-top: 1px solid rgba(17,24,39,.09);
+  background: var(--db-card, #fff);
+  border-top: 1px solid rgba(var(--db-ink, 17,24,39),.09);
   z-index: 100;
   justify-content: space-around;
   align-items: center;
@@ -482,7 +512,7 @@ img, video, svg, iframe {
 .db-layout   { display: flex; align-items: flex-start; }
 .db-sidebar  {
   width: 240px; flex-shrink: 0;
-  background: #fff; border-right: 1px solid rgba(17,24,39,.08);
+  background: var(--db-card, #fff); border-right: 1px solid rgba(var(--db-ink, 17,24,39),.08);
   position: sticky; top: 60px;
   height: calc(100dvh - 60px); overflow-y: auto;
   display: flex; flex-direction: column; z-index: 30;
@@ -492,7 +522,7 @@ img, video, svg, iframe {
 .db-user-name { display: inline; }
 .db-tab-title { display: none; }
 .db-net-pill  { display: flex; align-items: center; gap: 16px; }
-.db-nav-mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: #6B7280; }
+.db-nav-mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--db-text-gray, #6B7280); }
 
 @media (max-width: 1080px) {
   .db-cards { grid-template-columns: repeat(3, 1fr); }
@@ -578,7 +608,7 @@ img, video, svg, iframe {
   position: sticky;
   top: 60px;
   z-index: 10;
-  background: #F5F7FA;
+  background: var(--db-bg, #F5F7FA);
   padding-bottom: 8px;
 }
 

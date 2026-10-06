@@ -151,13 +151,7 @@ export default function Footer() {
         {/* Disclosure block */}
         <div style={{ borderTop: "1px solid rgba(255,255,255,.25)", padding: "18px 0 28px" }}>
           <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
-                        Safeguard Global Investment Bank provides secure banking and financial services designed to support individuals, businesses, and investors.
-                        We are committed to maintaining high standards of security, transparency, regulatory compliance, and responsible financial service.
-
-                        Eligible deposits are insured by the Federal Deposit Insurance Corporation (FDIC), subject to applicable coverage limits, ownership categories, terms, and federal regulations.
-
-                        Banking products and services are subject to eligibility requirements, account terms, applicable laws, and regulatory requirements.
-                        Member FDIC. Deposits are insured by the Federal Deposit Insurance Corporation up to $250,000 USD{" "}
+                        Safeguard Global Investment Bank provides secure banking and financial services designed to support individuals, businesses, and investors. We are committed to maintaining high standards of security, transparency, regulatory compliance, and responsible financial service. Eligible deposits are insured by the Federal Deposit Insurance Corporation (FDIC), subject to applicable coverage limits, ownership categories, terms, and federal regulations. Banking products and services are subject to eligibility requirements, account terms, applicable laws, and regulatory requirements. Member FDIC. Deposits are insured by the Federal Deposit Insurance Corporation up to $250,000 USD{" "}
             <Link href="/disclosures" style={{ color: "#fff", textDecoration: "underline" }}>
               Full disclosures →
             </Link>
