@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "SGGINV — Safeguard Global Investment Bank",
+  title: "SGGINV — SGGINV Investment Bank",
   description:
     "Decades of community trust. Banking built for your family, your business, and your future.",
   icons: {
