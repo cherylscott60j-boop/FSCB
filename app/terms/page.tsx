@@ -28,7 +28,6 @@ const SECTIONS: LegalSection[] = [
     title: "Who we are",
     body: [
       { p: "Safeguard Global Investment Bank provides secure banking and financial services designed to support individuals, businesses, and investors.We are committed to maintaining high standards of security, transparency, regulatory compliance, and responsible financial service." },
-      { p: "Eligible deposits are insured by the Federal Deposit Insurance Corporation (FDIC), subject to applicable coverage limits, ownership categories, terms, and federal regulations.Banking products and services are subject to eligibility requirements, account terms, applicable laws, and regulatory requirements." },
     ],
   },
   {
@@ -82,7 +81,7 @@ const SECTIONS: LegalSection[] = [
     id: "links",
     title: "Links to other websites",
     body: [
-      { p: "Our website may link to websites run by other organisations. We don't control those websites and aren't responsible for their content or how they use your information. Please read their own terms and privacy notices." },
+      { p: "Our website may link to websites run by other organizations. We don't control those websites and aren't responsible for their content or how they use your information. Please read their own terms and privacy notices." },
     ],
   },
   {
@@ -118,14 +117,14 @@ const SECTIONS: LegalSection[] = [
     id: "law",
     title: "Law and disputes",
     body: [
-      { p: "These terms are governed by the laws of England and Wales. If you have a complaint, please contact us first so we can try to put things right." },
+      { p: "These terms are governed by the laws of the State of Delaware and applicable U.S. federal law. If you have a complaint, please contact us first so we can try to put things right." },
     ],
   },
 ];
 
 const FAQS = [
   { q: "Do these terms replace my account terms?", a: "No. These terms cover using our website and app. Each product you hold has its own terms and conditions, which apply alongside these." },
-  { q: "What should I do if I think someone has accessed my account?", a: "Call us straight away on (555) 302-1911, any time of day. We'll secure your account and help you check for anything you don't recognise." },
+  { q: "What should I do if I think someone has accessed my account?", a: "Call us straight away on (555) 302-1911, any time of day. We'll secure your account and help you check for anything you don't recognize." },
   { q: "Can I use your calculators to make decisions?", a: "Our calculators give illustrative figures only. The actual rate and terms you're offered will depend on your circumstances." },
   { q: "How will I know if these terms change?", a: "We'll update the date at the top of this page and tell you about any important changes before they take effect." },
 ];
@@ -172,7 +171,7 @@ export default function TermsPage() {
             {[
               ["Phone", "(555) 302-1900"],
               ["Email", "help@sgginv.com"],
-              ["Post", "Customer Care, 102 Main Street, Downtown, ST 00001"],
+              ["Mail", "Customer Care, 102 Main Street, Downtown, ST 00001"],
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "13px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15 }}>
                 <span style={{ color: "rgba(255,255,255,.72)" }}>{k}</span>
@@ -209,7 +208,7 @@ export default function TermsPage() {
 
       <ClosingCTA
         title="Need help with online banking?"
-        text="Our team is here to help, by phone, chat or in branch."
+        text="Our team is here to help, by phone, chat or at a branch."
         primary={{ label: "Contact us", href: "/about/contact" }}
         secondary={{ label: "Online banking help", href: "/personal/online-banking" }}
       />

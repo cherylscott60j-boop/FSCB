@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { label: "Savings", href: "/personal/savings" },
   { label: "Borrowing", href: "/loans/personal" },
   { label: "Mortgages", href: "/loans/mortgage" },
+  { label: "Credit cards", href: "/personal/credit-cards" },
   { label: "Safe deposit boxes", href: "/personal/safe-deposit-boxes" },
   { label: "Ways to bank", href: "/personal/online-banking" },
   { label: "Private banking", href: "/financial/retirement" },

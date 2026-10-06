@@ -80,6 +80,7 @@ export default function CheckingPage() {
           { v: "2 days", l: "Early pay" },
           { v: "5 min", l: "To apply online" },
         ]}
+        image={{ src: "/checking-hero.jpg", alt: "A smiling customer talking with one of our bankers", position: "28% 35%" }}
       />
 
       <OverlapSection id="accounts">

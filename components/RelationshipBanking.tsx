@@ -144,8 +144,7 @@ export default function RelationshipBanking() {
                 Protecting your money
               </h3>
               <p style={{ fontSize: 13.5, color: GRAY, lineHeight: 1.6, margin: 0 }}>
-                Your eligible deposits with Safeguard Global Investment Bank are protected. Investments are not deposits and can go
-                down in value.
+                Investments are not deposits and can go down in value.
               </p>
             </div>
             <PillButton href="/disclosures">How your money is protected →</PillButton>

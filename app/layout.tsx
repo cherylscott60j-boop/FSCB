@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Libre_Franklin, Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
+import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
 
 const inter = Inter({
@@ -58,6 +59,7 @@ export default function RootLayout({
         <div className="page-clip">
           {children}
         </div>
+        <CookieConsent />
       </body>
     </html>
   );

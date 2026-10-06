@@ -56,7 +56,7 @@ const STEPS = [
 
 const FIRST_TIME = [
   { t: "From 3% down", d: "On a $350,000 home, that's a down payment of $10,500." },
-  { t: "Up to $5,000 towards closing costs", d: "A credit for eligible first-time buyers, applied at closing." },
+  { t: "Up to $5,000 toward closing costs", d: "A credit for eligible first-time buyers, applied at closing." },
   { t: "Free homebuyer course", d: "A short online course covering budgets, offers, inspections and closing." },
 ];
 
@@ -109,6 +109,7 @@ export default function MortgagePage() {
           { v: "15–30 yrs", l: "Fixed-rate terms" },
           { v: "~30 days", l: "Typical closing" },
         ]}
+        image={{ src: "/mortgage-hero.jpg", alt: "A model house and keys on a table as a couple signs their mortgage", position: "58% 62%" }}
       />
 
       <OverlapSection id="calculator">

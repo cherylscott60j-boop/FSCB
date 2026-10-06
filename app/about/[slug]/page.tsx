@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
+const RED  = "#E31E24";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -60,7 +60,7 @@ function StoryPage() {
             style={{
               borderRadius: 22,
               overflow: "hidden",
-              boxShadow: "0 26px 56px -24px rgba(140,29,37,.28)",
+              boxShadow: "0 26px 56px -24px rgba(227,30,36,.28)",
               aspectRatio: "5/4",
               backgroundImage: "url('/31-RibbonCuttingConfetti.jpeg')",
               backgroundSize: "cover",
@@ -78,7 +78,7 @@ function StoryPage() {
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: "clamp(22px, 3.5vw, 38px)", letterSpacing: "-.02em", margin: 0, color: DARK }}>120 years of milestones</h2>
           </div>
           <div className="mob-tl-wrap" style={{ position: "relative" }}>
-            <div className="mob-tl-line" style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: "rgba(140,29,37,.12)", transform: "translateX(-50%)" }} />
+            <div className="mob-tl-line" style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: "rgba(227,30,36,.12)", transform: "translateX(-50%)" }} />
             <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
               {TIMELINE.map((item, i) => (
                 <div key={i} className="mob-tl-item" style={{ display: "grid", gridTemplateColumns: "1fr 48px 1fr", gap: 24, alignItems: "flex-start" }}>
@@ -122,7 +122,7 @@ function StoryPage() {
           <div className="g-3col" style={{ gap: 24 }}>
             {VALUES.map((v, i) => (
               <div key={i} style={{ border: "1px solid rgba(17,24,39,.07)", borderRadius: 20, padding: "36px 32px" }}>
-                <div style={{ width: 52, height: 52, borderRadius: 15, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 22 }}>
+                <div style={{ width: 52, height: 52, borderRadius: 15, background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 22 }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={v.icon} /></svg>
                 </div>
                 <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 20, color: DARK, marginBottom: 12 }}>{v.title}</div>
@@ -204,7 +204,7 @@ function CommunityPage() {
           <div className="mob-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
             {PROGRAMS.map((p, i) => (
               <div key={i} style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 20, padding: "32px 30px" }}>
-                <div style={{ width: 50, height: 50, borderRadius: 14, background: "rgba(140,29,37,.09)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 20 }}>
+                <div style={{ width: 50, height: 50, borderRadius: 14, background: "rgba(227,30,36,.09)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 20 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={p.icon} /></svg>
                 </div>
                 <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 19, color: DARK, marginBottom: 12 }}>{p.title}</div>
@@ -227,7 +227,7 @@ function CommunityPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {["Sponsor a community event", "Nominate a scholarship recipient", "Partner with our financial literacy team", "Apply for a small business grant"].map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12l5 5L20 7" /></svg>
                   </div>
                   <span style={{ fontSize: 15, color: DARK, fontWeight: 500 }}>{item}</span>
@@ -235,7 +235,7 @@ function CommunityPage() {
               ))}
             </div>
           </div>
-          <div style={{ background: "rgba(140,29,37,.04)", borderRadius: 22, padding: "44px 40px" }}>
+          <div style={{ background: "rgba(227,30,36,.04)", borderRadius: 22, padding: "44px 40px" }}>
             <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 22, color: DARK, marginBottom: 10 }}>Request our Impact Report</div>
             <p style={{ fontSize: 15, color: GRAY, lineHeight: 1.65, margin: "0 0 30px" }}>Get a full breakdown of our community investments, volunteer hours, and program outcomes over the past year.</p>
             <button style={{ width: "100%", background: RED, color: "#fff", border: "none", fontFamily: "inherit", fontSize: 15, fontWeight: 700, padding: 16, borderRadius: 12, cursor: "pointer", marginBottom: 12 }}>Download Impact Report</button>
@@ -307,8 +307,8 @@ function CareersPage() {
               { icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6", t: "Career advancement paths", d: "Many of our senior leaders started as tellers. We promote from within whenever possible." },
               { icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7", t: "A team that feels like family", d: "Low turnover, strong culture, and colleagues who genuinely support each other." },
             ].map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 16, padding: "18px 20px", background: "rgba(140,29,37,.04)", borderRadius: 14 }}>
-                <div style={{ flex: "none", width: 38, height: 38, borderRadius: 10, background: "rgba(140,29,37,.1)", display: "flex", alignItems: "center", justifyContent: "center", color: RED }}>
+              <div key={i} style={{ display: "flex", gap: 16, padding: "18px 20px", background: "rgba(227,30,36,.04)", borderRadius: 14 }}>
+                <div style={{ flex: "none", width: 38, height: 38, borderRadius: 10, background: "rgba(227,30,36,.1)", display: "flex", alignItems: "center", justifyContent: "center", color: RED }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={item.icon} /></svg>
                 </div>
                 <div>
@@ -331,7 +331,7 @@ function CareersPage() {
           <div className="g-3col" style={{ gap: 20 }}>
             {BENEFITS.map((b, i) => (
               <div key={i} style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 18, padding: "28px 26px" }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 18 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 18 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={b.icon} /></svg>
                 </div>
                 <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 16, color: DARK, marginBottom: 8 }}>{b.title}</div>
@@ -464,7 +464,7 @@ function NewsPage() {
             ))}
           </div>
           <div style={{ textAlign: "center", marginTop: 44 }}>
-            <button style={{ background: "none", border: "1.5px solid rgba(140,29,37,.3)", color: RED, fontFamily: "inherit", fontSize: 14.5, fontWeight: 700, padding: "13px 32px", borderRadius: 12, cursor: "pointer" }}>Load More Stories</button>
+            <button style={{ background: "none", border: "1.5px solid rgba(227,30,36,.3)", color: RED, fontFamily: "inherit", fontSize: 14.5, fontWeight: 700, padding: "13px 32px", borderRadius: 12, cursor: "pointer" }}>Load More Stories</button>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import Logo from "@/components/Logo";
 
-const RED  = "#8C1D25";
+const RED  = "#E31E24";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
 const MID  = "#374151";
@@ -93,7 +93,7 @@ export default function ResetPasswordPage() {
         {/* ── Waiting for recovery event ── */}
         {status === "waiting" && (
           <div style={{ textAlign: "center", padding: "8px 0 16px" }}>
-            <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", color: RED }}>
+            <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", color: RED }}>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"/></svg>
             </div>
             <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 20, color: DARK, margin: "0 0 10px" }}>Waiting for link…</h2>
@@ -174,7 +174,7 @@ export default function ResetPasswordPage() {
 
               {err && <div style={{ fontSize: 13, color: "#DC2626", background: "rgba(220,38,38,.06)", border: "1px solid rgba(220,38,38,.15)", borderRadius: 8, padding: "10px 12px", marginBottom: 14 }}>{err}</div>}
 
-              <button type="submit" disabled={loading} style={{ width: "100%", background: loading ? "rgba(140,29,37,.5)" : RED, color: "#fff", border: "none", borderRadius: 10, padding: "13px 0", fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: FONT, transition: "opacity .15s" }}>
+              <button type="submit" disabled={loading} style={{ width: "100%", background: loading ? "rgba(227,30,36,.5)" : RED, color: "#fff", border: "none", borderRadius: 10, padding: "13px 0", fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: FONT, transition: "opacity .15s" }}>
                 {loading ? "Updating password…" : "Set New Password"}
               </button>
             </form>

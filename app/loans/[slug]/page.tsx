@@ -3,7 +3,7 @@ import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
+const RED  = "#E31E24";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -115,7 +115,7 @@ const PAGES = {
 function FeatureCard({ title, desc, icon }: { title: string; desc: string; icon: string }) {
   return (
     <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 18, padding: "28px 26px" }}>
-      <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 18 }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 18 }}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={icon} /></svg>
       </div>
       <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 16, color: DARK, marginBottom: 8 }}>{title}</div>
@@ -209,7 +209,7 @@ export default async function LoansPage({ params }: { params: Promise<{ slug: st
       </div>
 
       {/* Steps */}
-      <div className="mob-section" style={{ background: "rgba(140,29,37,.04)", padding: "72px 32px" }}>
+      <div className="mob-section" style={{ background: "rgba(227,30,36,.04)", padding: "72px 32px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Process</div>
           <h2 style={{ fontFamily: FONT, fontWeight: 800, fontSize: 36, letterSpacing: "-.02em", margin: "0 0 44px", color: DARK }}>How to apply</h2>

@@ -29,7 +29,7 @@ const ACCOUNTS = [
       ["Monthly fee", "$0 for 12 months"],
       ["Electronic payments", "Unlimited, free"],
       ["Cash deposits", "$1,000 / month free"],
-      ["Cheques paid in", "50p each"],
+      ["Checks deposited", "$0.50 each"],
       ["Invoicing tools", "Included"],
     ] as [string, string][],
     href: "/open-account?account=business-startup",
@@ -43,7 +43,7 @@ const ACCOUNTS = [
       ["Monthly fee", "$6"],
       ["Electronic payments", "Unlimited, free"],
       ["Cash deposits", "$3,000 / month free"],
-      ["Cheques paid in", "Free"],
+      ["Checks deposited", "Free"],
       ["Users with access", "Up to 5"],
     ] as [string, string][],
     href: "/open-account?account=business-everyday",
@@ -65,7 +65,7 @@ const ACCOUNTS = [
 ];
 
 const SIZES = [
-  { name: "Sole traders & start-ups", desc: "Simple accounts and tools to get you up and running.", points: ["Free banking for 12 months", "Invoicing and expense tracking in the app", "Start-up loans from $1,000"] },
+  { name: "Sole proprietors & start-ups", desc: "Simple accounts and tools to get you up and running.", points: ["Free banking for 12 months", "Invoicing and expense tracking in the app", "Start-up loans from $1,000"] },
   { name: "Small & growing businesses", desc: "Room to grow, with lending and payments that scale with you.", points: ["Multi-user access with permissions", "Overdrafts and loans up to $250,000", "Card payments from 1.39% per transaction"] },
   { name: "Established businesses", desc: "A dedicated relationship team for more complex needs.", points: ["A named business manager", "Commercial mortgages and asset finance", "International payments and currency accounts"] },
 ];
@@ -75,12 +75,12 @@ const TOOLS = [
   { t: "Bulk payments & payroll", d: "Pay staff and suppliers in one go by uploading a payment file.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" },
   { t: "Multi-user access", d: "Give your team access with their own logins and set who can view, create or approve payments.", icon: "M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z" },
   { t: "Expense cards", d: "Issue debit cards to employees with individual spending limits.", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
-  { t: "Tax pots", d: "Set money aside automatically for VAT and your tax bill.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
+  { t: "Tax pots", d: "Set money aside automatically for sales tax and your tax bill.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
   { t: "Cash flow insights", d: "See money coming in and going out, and forecast the weeks ahead.", icon: "M11 3.055A9.001 9.001 0 1 0 20.945 13H11V3.055zM20.488 9H15V3.512A9.025 9.025 0 0 1 20.488 9z" },
 ];
 
 const LENDING = [
-  { type: "Business overdraft", amount: "$500 – $50,000", term: "Reviewed yearly", rate: "From 9.9% EAR" },
+  { type: "Business overdraft", amount: "$500 – $50,000", term: "Reviewed yearly", rate: "From 9.9% APR" },
   { type: "Small business loan", amount: "$1,000 – $50,000", term: "1 – 7 years", rate: "From 7.4% APR" },
   { type: "Growth loan", amount: "$50,000 – $250,000", term: "1 – 10 years", rate: "From 6.5% APR" },
   { type: "Commercial mortgage", amount: "$100,000 – $2m", term: "Up to 25 years", rate: "Ask us" },
@@ -103,46 +103,46 @@ const INDUSTRIES = [
 
 const SWITCH = [
   { t: "We do the work", d: "We move your balance, direct debits and standing orders for you." },
-  { t: "Pick your switch date", d: "Choose a date that suits your business. It takes 7 working days." },
+  { t: "Pick your switch date", d: "Choose a date that suits your business. It takes 7 business days." },
   { t: "Payments redirected", d: "Payments made to your old account are redirected for 3 years." },
   { t: "12 months' free banking", d: "No monthly fee for your first year when you switch to us." },
 ];
 
 const DOCUMENTS = [
   { t: "Business details", d: "Your business name, address, what you do and expected annual turnover." },
-  { t: "Company number", d: "If you're a limited company or LLP, your registered company number." },
+  { t: "Employer Identification Number", d: "Your business's EIN, if you're a corporation, partnership or LLC." },
   { t: "Owners and directors", d: "Names, dates of birth and home addresses for directors and anyone owning 25% or more." },
-  { t: "Photo ID", d: "A passport or driving licence for each director, uploaded through the app." },
+  { t: "Photo ID", d: "A passport or driver's license for each director, uploaded through the app." },
 ];
 
 const FRAUD = [
   { t: "Payment approval rules", d: "Require two people to approve payments over a set amount." },
-  { t: "Confirmation of payee", d: "We check the account name matches before you send a payment to a new supplier." },
+  { t: "Payee name check", d: "We check the account name matches before you send a payment to a new supplier." },
   { t: "Invoice fraud warnings", d: "If a supplier emails to say their bank details have changed, call them on a number you trust before paying." },
-  { t: "24/7 fraud team", d: "Call (555) 302-1911 any time if you spot a payment you don't recognise." },
+  { t: "24/7 fraud team", d: "Call (555) 302-1911 any time if you spot a payment you don't recognize." },
 ];
 
 const BENEFITS = [
-  { t: "Real people who understand business", d: "Our business team is available by phone Monday to Saturday, and in branch." },
+  { t: "Real people who understand business", d: "Our business team is available by phone Monday to Saturday, and at a branch." },
   { t: "Transparent pricing", d: "Clear monthly fees with no hidden charges. See exactly what you pay before you sign up." },
   { t: "Fast lending decisions", d: "Most loan decisions within 3 business days of a complete application." },
   { t: "Business app and online banking", d: "Pay suppliers, approve payments and check balances from anywhere." },
 ];
 
 const STEPS = [
-  { t: "Check you're eligible", d: "You'll need to be a UK-registered business or sole trader, and aged 18 or over." },
+  { t: "Check you're eligible", d: "You'll need to be a U.S.-registered business or sole proprietor, and aged 18 or over." },
   { t: "Apply online", d: "Tell us about your business and the people who run it. It takes about 10 minutes." },
   { t: "Start banking", d: "Once approved, your account details are available straight away in the app." },
 ];
 
 const FAQS = [
-  { q: "What do I need to open a business account?", a: "Details of your business, including its registered address and company number if it has one, plus ID and home addresses for all directors and anyone owning 25% or more." },
+  { q: "What do I need to open a business account?", a: "Details of your business, including its registered address and EIN if it has one, plus ID and home addresses for all directors and anyone owning 25% or more." },
   { q: "How long does it take to open an account?", a: "Most applications are approved within 2 business days. Some need extra checks, and we'll let you know if we need more information." },
-  { q: "Can I switch my business account to you?", a: "Yes. We'll move your balance and payments across for you in 7 working days, and redirect payments made to your old account for 3 years." },
+  { q: "Can I switch my business account to you?", a: "Yes. We'll move your balance and payments across for you in 7 business days, and redirect payments made to your old account for 3 years." },
   { q: "Are there fees for business banking?", a: "New businesses and switchers get 12 months of free everyday banking. After that, Business Everyday is $6 a month including unlimited electronic payments." },
-  { q: "Can I open an account as a sole trader?", a: "Yes. Sole traders can open any of our business accounts. Keeping business and personal money separate makes your tax return much easier." },
+  { q: "Can I open an account as a sole proprietor?", a: "Yes. Sole proprietors can open any of our business accounts. Keeping business and personal money separate makes your tax return much easier." },
   { q: "Can my accountant access my account?", a: "Yes. You can give your accountant or bookkeeper view-only access with their own login, and connect your account to popular accounting software." },
-  { q: "Can I pay in cash and cheques?", a: "Yes, at any of our branches. Each account includes a free monthly cash deposit allowance, shown in the account comparison above." },
+  { q: "Can I deposit cash and checks?", a: "Yes, at any of our branches. Each account includes a free monthly cash deposit allowance, shown in the account comparison above." },
   { q: "How do I apply for a loan or overdraft?", a: "Existing customers can apply in the app or online banking. For loans over $50,000, your business manager will talk through your plans and what you need." },
 ];
 
@@ -160,7 +160,7 @@ export default function BusinessPage() {
       <ProductHero
         eyebrow="Business banking"
         title="Banking that helps your business grow"
-        subtitle="Accounts, lending, card payments and support for sole traders, small businesses and established companies."
+        subtitle="Accounts, lending, card payments and support for sole proprietors, small businesses and established companies."
         primary={{ label: "Open a business account", href: "/open-account" }}
         secondary={{ label: "Compare accounts", href: "#accounts" }}
         highlights={[
@@ -168,6 +168,7 @@ export default function BusinessPage() {
           { v: "3 days", l: "Typical loan decision" },
           { v: "10 min", l: "To apply online" },
         ]}
+        image={{ src: "/business-hero.jpg", alt: "A business owner signing an agreement with one of our business bankers", position: "55% 62%" }}
       />
 
       <OverlapSection maxWidth={1240}>

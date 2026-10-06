@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 
 const FONT = "var(--font-poppins), sans-serif";
 const BLUE = "#0800FF";
+const RED  = "#E31E24";
 const DARK = "#111827";
 const MID  = "#374151";
 const GRAY = "#6B7280";
@@ -182,7 +183,7 @@ function BackBtn({ onClick }:{ onClick:()=>void }) {
 }
 function NextBtn({ onClick,disabled=false,label="Continue",loading=false }:{ onClick:()=>void;disabled?:boolean;label?:string;loading?:boolean }) {
   return (
-    <button onClick={onClick} disabled={disabled} style={{background:loading?BLUE:disabled?"rgba(17,24,39,.1)":BLUE,color:loading?"#fff":disabled?GRAY:"#fff",border:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"13px 34px",borderRadius:4,cursor:loading?"wait":disabled?"not-allowed":"pointer",display:"inline-flex",alignItems:"center",gap:9,transition:"all .2s"}}>
+    <button onClick={onClick} disabled={disabled} style={{background:loading?RED:disabled?"rgba(17,24,39,.1)":RED,color:loading?"#fff":disabled?GRAY:"#fff",border:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"13px 34px",borderRadius:4,cursor:loading?"wait":disabled?"not-allowed":"pointer",display:"inline-flex",alignItems:"center",gap:9,transition:"all .2s"}}>
       {loading&&<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{animation:"spin .75s linear infinite"}}><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>}
       {loading?"Submitting…":label}
       {!loading&&!disabled&&<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>}
@@ -517,7 +518,7 @@ export default function OpenAccountPage() {
             <Section title="Required Disclosures">
               <p style={{fontSize:13.5,color:GRAY,margin:"0 0 18px",lineHeight:1.55}}>Please read and acknowledge each of the following before submitting.</p>
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                <DiscCheck checked={form.discFDIC} onChange={v=>update("discFDIC",v)}>I understand my deposits are <strong>not covered by any deposit protection scheme</strong>. <Link href="/disclosures#deposits" style={{color:BLUE}}>View notice →</Link></DiscCheck>
+                <DiscCheck checked={form.discFDIC} onChange={v=>update("discFDIC",v)}>I understand my deposits are <strong>not covered by any deposit protection scheme</strong>. <Link href="/disclosures" style={{color:BLUE}}>View notice →</Link></DiscCheck>
                 <DiscCheck checked={form.discPrivacy} onChange={v=>update("discPrivacy",v)}>I have received and read SGGINV&apos;s <strong>Privacy Notice</strong>. <Link href="/privacy" style={{color:BLUE}}>View notice →</Link></DiscCheck>
                 <DiscCheck checked={form.discTerms} onChange={v=>update("discTerms",v)}>I agree to the <strong>Account Terms &amp; Conditions</strong> and <strong>Terms of Use</strong>. <Link href="/terms" style={{color:BLUE}}>View terms →</Link></DiscCheck>
                 <DiscCheck checked={form.discEStatements} onChange={v=>update("discEStatements",v)}>I consent to receive <strong>electronic statements and disclosures</strong> via email. I may opt out at any time by contacting SGGINV.</DiscCheck>
@@ -606,7 +607,7 @@ export default function OpenAccountPage() {
             <div style={{display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap"}}>
               {isGuest?(
                 <>
-                  <Link href="/login" style={{background:BLUE,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:4,display:"inline-flex",alignItems:"center",gap:8}}>
+                  <Link href="/login" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:4,display:"inline-flex",alignItems:"center",gap:8}}>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
                     Enroll in Online Banking
                   </Link>
@@ -615,7 +616,7 @@ export default function OpenAccountPage() {
                   </Link>
                 </>
               ):(
-                <Link href="/dashboard" style={{background:BLUE,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:4,display:"inline-flex",alignItems:"center",gap:8}}>
+                <Link href="/dashboard" style={{background:RED,color:"#fff",textDecoration:"none",fontFamily:FONT,fontSize:15,fontWeight:700,padding:"14px 30px",borderRadius:4,display:"inline-flex",alignItems:"center",gap:8}}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                   Return to Dashboard
                 </Link>

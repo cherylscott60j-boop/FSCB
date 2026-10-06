@@ -17,8 +17,8 @@ const SITUATIONS = [
 const ACCESSIBILITY = [
   { t: "Statements in other formats", d: "Large print, braille or audio statements and letters, free of charge." },
   { t: "Sign language video calls", d: "Talk to us through a sign language interpreter by video, Monday to Friday." },
-  { t: "Text relay", d: "Contact us through a text relay service if you're deaf or have a speech impairment." },
-  { t: "Talking cash machines", d: "All our cash machines have headphone sockets and audio guidance." },
+  { t: "TTY and 711 relay", d: "Dial 711 to reach us through a relay service if you're deaf, hard of hearing or have a speech impairment." },
+  { t: "Talking ATMs", d: "All our ATMs have headphone sockets and audio guidance." },
   { t: "Quieter branch appointments", d: "Book a time when the branch is quieter, or ask for a private room." },
   { t: "Accessible app and website", d: "Built to work with screen readers, magnifiers and voice control." },
 ];

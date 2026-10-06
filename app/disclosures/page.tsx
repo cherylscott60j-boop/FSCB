@@ -16,21 +16,6 @@ const KEY_POINTS = [
 
 const SECTIONS: LegalSection[] = [
   {
-    id: "about",
-    title: "About this bank",
-    body: [
-      { p: "Safeguard Global Investment Bank is a U.S. banking institution providing financial and investment services to individuals and businesses.  Safeguard Global Investment Bank is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority.  Registered in England and Wales. Registered Office: 143 Financial Street, London, UK." },
-      { p: "All transactions, or share real personal or financial information are protected." },
-    ],
-  },
-  {
-    id: "deposits",
-    title: "Deposits",
-    body: [
-      { p: "Money shown in accounts on this website is are protected. All account is covered by  deposit protection or insurance." },
-    ],
-  },
-  {
     id: "investments",
     title: "Investments",
     body: [
@@ -54,8 +39,7 @@ const SECTIONS: LegalSection[] = [
       {
         list: [
           { t: "APR (annual percentage rate)", d: "The yearly cost of borrowing, including interest and any compulsory fees. Use it to compare loans." },
-          { t: "AER (annual equivalent rate)", d: "What a savings rate would be if interest were paid and compounded once a year. Use it to compare savings accounts." },
-          { t: "EAR (effective annual rate)", d: "The yearly interest rate on an overdraft, including the effect of compounding." },
+          { t: "APY (annual percentage yield)", d: "What you earn on savings in a year, including the effect of compound interest. Use it to compare savings accounts." },
         ],
       },
       { p: "Representative example for a personal loan:" },
@@ -101,7 +85,7 @@ const SECTIONS: LegalSection[] = [
     id: "details",
     title: "Your account details",
     body: [
-      { p: "Your sort code and account number are shown in the app and in online banking. Only share them with people you want to receive payments from." },
+      { p: "Your account number is shown in the app and in online banking. Only share it with people you want to receive payments from." },
       {
         list: [
           { t: "We'll never ask you to move money", d: "Not to a 'safe account', and not to protect it from fraud." },
@@ -115,16 +99,15 @@ const SECTIONS: LegalSection[] = [
     id: "complaints",
     title: "Complaints",
     body: [
-      { p: "If you're unhappy with any part of our service, please tell us by phone, in branch, through our contact form or by post. We'll acknowledge your complaint within 2 business days and aim to resolve it within 15." },
+      { p: "If you're unhappy with any part of our service, please tell us by phone, at a branch, through our contact form or by mail. We'll acknowledge your complaint within 2 business days and aim to resolve it within 15." },
     ],
   },
 ];
 
 const FAQS = [
-  { q: "Is my money protected?", a: "YES. Safeguard Global Investment Bank is a FDIC INSURED bank and your account is covered by FDIC." },
   { q: "Are the rates on this website real?", a: "No. All rates, fees and calculator results are illustrative ." },
-  { q: "What's the difference between APR and AER?", a: "APR shows the yearly cost of borrowing, including fees. AER shows what a savings rate would be if interest were paid once a year. Use APR to compare loans and AER to compare savings." },
-  { q: "How do I make a complaint?", a: "Contact us by phone on (555) 302-1900, in any branch, through our contact form or by post. We'll acknowledge it within 2 business days." },
+  { q: "What's the difference between APR and APY?", a: "APR shows the yearly cost of borrowing, including fees. APY shows what you earn on savings in a year, including compound interest. Use APR to compare loans and APY to compare savings." },
+  { q: "How do I make a complaint?", a: "Contact us by phone on (555) 302-1900, in any branch, through our contact form or by mail. We'll acknowledge it within 2 business days." },
 ];
 
 export default function DisclosuresPage() {

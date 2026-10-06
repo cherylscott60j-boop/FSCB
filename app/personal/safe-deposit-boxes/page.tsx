@@ -85,6 +85,7 @@ export default function SafeDepositBoxesPage() {
           { v: "5 sizes", l: "To choose from" },
           { v: "2 keys", l: "Needed to open" },
         ]}
+        image={{ src: "/safe-deposit-hero.jpg", alt: "Keys in the lock of a safe deposit box in our vault", position: "38% 55%" }}
       />
 
       {/* Sizes */}

@@ -89,6 +89,7 @@ export default function PrivateBankingPage() {
           { v: "$250K+", l: "To qualify" },
           { v: "Annual", l: "Planning reviews" },
         ]}
+        image={{ src: "/private-banking-hero.jpg", alt: "A relationship manager meeting with a private banking client", position: "56% 40%" }}
       />
 
       {/* Pillars */}

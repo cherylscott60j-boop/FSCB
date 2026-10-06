@@ -54,7 +54,7 @@ const HABITS = [
 
 const STEPS = [
   { t: "Choose your account", d: "Everyday Savings for flexibility, or a Money Market for a higher rate on bigger balances." },
-  { t: "Set your goals", d: "Name your goals in the app and choose how much to save towards each one." },
+  { t: "Set your goals", d: "Name your goals in the app and choose how much to save toward each one." },
   { t: "Automate it", d: "Turn on round-ups and scheduled transfers and watch your savings grow." },
 ];
 
@@ -80,6 +80,7 @@ export default function SavingsPage() {
           { v: "$0", l: "Monthly fees" },
           { v: "Any amount", l: "To get started" },
         ]}
+        image={{ src: "/savings-hero.webp", alt: "A couple saving money in a piggy bank at home", position: "72% 45%" }}
       />
 
       <OverlapSection id="calculator">

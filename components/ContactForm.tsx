@@ -185,7 +185,7 @@ export default function ContactForm() {
           type="submit"
           disabled={loading}
           style={{
-            background: loading ? "rgba(8,0,255,.6)" : BLUE,
+            background: loading ? "rgba(227,30,36,.6)" : "#E31E24",
             color: "#fff", border: "none", fontFamily: "inherit",
             fontSize: 15, fontWeight: 700, padding: 16, borderRadius: 4,
             cursor: loading ? "not-allowed" : "pointer",

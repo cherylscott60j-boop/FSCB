@@ -54,6 +54,7 @@ export default function InvestingPage() {
           { v: "3", l: "Ways to invest" },
           { v: "From 0.45%", l: "Annual fee" },
         ]}
+        image={{ src: "/investing-hero.webp", alt: "A rising bar chart illustrating long-term growth", position: "62% 55%" }}
       />
 
       <OverlapSection id="ways" maxWidth={1240}>

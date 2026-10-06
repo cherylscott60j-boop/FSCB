@@ -7,15 +7,15 @@ const SERVICES = [
   ["Mobile app", "Working normally"],
   ["Online banking", "Working normally"],
   ["Card payments", "Working normally"],
-  ["Cash machines", "Working normally"],
+  ["ATMs", "Working normally"],
   ["Bank transfers", "Working normally"],
-  ["Telephone banking", "Working normally"],
+  ["Phone banking", "Working normally"],
   ["Branches", "Working normally"],
   ["Business online banking", "Working normally"],
 ];
 
 const MAINTENANCE = [
-  { when: "Sunday 1am – 4am", what: "Mobile app and online banking", detail: "You may not be able to log in. Card payments and cash machines won't be affected." },
+  { when: "Sunday 1am – 4am", what: "Mobile app and online banking", detail: "You may not be able to log in. Card payments and ATMs won't be affected." },
   { when: "Sunday 2am – 3am", what: "Bank transfers", detail: "Transfers made during this time will be processed once the work is complete." },
 ];
 
@@ -26,7 +26,7 @@ const HISTORY = [
 ];
 
 const TIPS = [
-  { t: "If the app isn't working", d: "Try online banking, or call telephone banking on (555) 302-1900. Your card will still work in shops and cash machines." },
+  { t: "If the app isn't working", d: "Try online banking, or call phone banking on (555) 302-1900. Your card will still work in shops and ATMs." },
   { t: "If a payment fails", d: "Check your balance before trying again so you don't pay twice. Failed payments won't leave your account." },
   { t: "Beware of scams during outages", d: "We'll never call to ask you to move money or share a code because of a technical problem." },
 ];

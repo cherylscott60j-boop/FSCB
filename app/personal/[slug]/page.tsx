@@ -11,39 +11,6 @@ const GRAY = "#6B7280";
 
 /* ─── Page data ─────────────────────────────────────────────────────────── */
 const PAGES = {
-  "credit-cards": {
-    title: "Credit Cards",
-    subtitle: "Earn rewards and cashback on every purchase with cards built for community members.",
-    stats: [{ v: "Up to 3%", l: "Cashback" }, { v: "$0", l: "Annual fee" }, { v: "0% APR", l: "12-month intro" }],
-    overview: "SGGINV credit cards are designed to reward the way you actually spend — groceries, gas, dining, and everyday purchases. With no annual fees, competitive rates, and rewards that never expire, our cards are a smart choice for every wallet.",
-    features: [
-      { title: "Up to 3% Cashback", desc: "Earn 3% on groceries and gas, 2% on dining, and 1% on all other purchases — automatically.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
-      { title: "No Annual Fee", desc: "Our Community Rewards Card comes with zero annual fee. Keep the rewards, ditch the cost.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "0% Intro APR — 12 Months", desc: "Pay no interest on purchases for the first 12 months. Great for large purchases or balance transfers.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
-      { title: "Free Credit Score Monitoring", desc: "Check your credit score for free anytime in the mobile app — no impact to your credit.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
-      { title: "Fraud Protection", desc: "24/7 fraud monitoring with real-time alerts. Zero liability on unauthorized purchases.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
-      { title: "Contactless & Digital Wallet", desc: "Tap to pay with your physical card or add to Apple Pay, Google Pay, or Samsung Pay.", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
-    ],
-    accounts: [
-      { name: "Community Card", monthly: "$0/yr", min: "Good credit", apy: "1% on all purchases", transfers: "No foreign txn fee", highlight: false, startHref: "/open-account?account=community-card" },
-      { name: "Rewards Card", monthly: "$0/yr", min: "Good–Excellent", apy: "Up to 3% cashback", transfers: "No foreign txn fee", highlight: true, startHref: "/open-account?account=rewards-card" },
-    ],
-    accountNote: "APR varies based on creditworthiness. See card agreement for full details.",
-    steps: [
-      { n: "1", t: "Apply in Minutes", d: "Complete your application online or in-branch. Get a decision in seconds in most cases." },
-      { n: "2", t: "Receive Your Card", d: "Your card arrives in 7–10 business days. Activate instantly and start earning rewards." },
-      { n: "3", t: "Earn and Redeem", d: "Cashback is credited to your statement automatically each month. No redemption hoops." },
-    ],
-    faqs: [
-      { q: "Do my rewards expire?", a: "No — your cashback rewards never expire as long as your account is open and in good standing." },
-      { q: "Can I use my card internationally?", a: "Yes. Both cards carry no foreign transaction fees, so you're free to spend abroad without surcharges." },
-      { q: "How do I report a lost or stolen card?", a: "Lock your card instantly in the SGGINV mobile app, then call our 24/7 card services line to request a replacement." },
-      { q: "How long does a balance transfer take?", a: "Balance transfers typically post within 5–7 business days after your application is approved." },
-    ],
-    cta: "Apply for a Credit Card",
-    ctaHref: "/open-account",
-  },
-
   loans: {
     title: "Personal Loans",
     subtitle: "Fast local decisions, transparent rates, and no hidden fees for any purpose.",

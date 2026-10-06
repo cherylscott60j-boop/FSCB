@@ -90,8 +90,8 @@ const FAQS = [
   { q: "What's the fastest way to reach you?", a: "For account questions, secure messaging in the app is quickest and available 24/7. For urgent issues like a lost card or suspected fraud, call our 24/7 lines." },
   { q: "I think someone has used my card. What should I do?", a: "Freeze your card straight away in the app, then call our fraud team on (555) 302-1911. We'll cancel the card, send a replacement and look into any transactions you don't recognize." },
   { q: "Do I need an appointment to visit a branch?", a: "No appointment is needed for everyday banking. For mortgages, loans or investment advice, booking ahead means a specialist will be ready to see you." },
-  { q: "How do I make a complaint?", a: "Tell us by phone, in branch, through the form on this page or by writing to us. We'll acknowledge your complaint within 2 business days and aim to resolve it within 15." },
-  { q: "Where should I send post?", a: "Write to Customer Care, Safeguard Global Investment Bank, 102 Main Street, Downtown, ST 00001." },
+  { q: "How do I make a complaint?", a: "Tell us by phone, at a branch, through the form on this page or by writing to us. We'll acknowledge your complaint within 2 business days and aim to resolve it within 15." },
+  { q: "Where should I send mail?", a: "Write to Customer Care, Safeguard Global Investment Bank, 102 Main Street, Downtown, ST 00001." },
   { q: "Can someone else contact you on my behalf?", a: "Yes, as long as you've added them as an authorized contact or they hold power of attorney. Visit a branch or call us to set this up." },
 ];
 

@@ -68,6 +68,7 @@ export default function OnlineBankingPage() {
           { v: "$0", l: "To use" },
           { v: "2 min", l: "To sign up" },
         ]}
+        image={{ src: "/online-banking-hero.jpg", alt: "A customer paying a bill in our mobile app", position: "58% 45%" }}
       />
 
       {/* Top tasks */}

@@ -742,12 +742,23 @@ img, video, svg, iframe {
   .home-overlap { margin-top: -14px !important; padding-top: 0 !important; }
 }
 
-/* Steps: the connector line only makes sense when steps sit side by side. */
+/* Steps panel: stack the steps on narrow screens. */
 @media (max-width: 960px) {
-  .step-connector { display: none; }
+  .steps-panel { grid-template-columns: 1fr !important; }
+  .steps-item { border-left: none !important; border-top: 1px solid rgba(255,255,255,.18); padding: 28px 24px 30px !important; }
+  .steps-item:first-child { border-top: none; }
+  .steps-arrow { display: none !important; }
 }
 
 /* Admin overview: stack the transactions and attention panels on narrow screens. */
 @media (max-width: 1100px) {
   .cp-overview-grid { grid-template-columns: 1fr !important; }
 }
+
+/* Homepage photo + blue panel section: stack on small screens. */
+@media (max-width: 860px) {
+  .home-split { grid-template-columns: 1fr !important; }
+  .home-split-photo { min-height: 0 !important; aspect-ratio: 4 / 3; }
+  .home-split-copy { padding: 44px 20px !important; }
+}
+

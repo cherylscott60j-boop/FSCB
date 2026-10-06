@@ -2,7 +2,7 @@ import SiteLayout from "@/components/SiteLayout";
 import { notFound } from "next/navigation";
 
 const FONT = "var(--font-poppins), sans-serif";
-const RED  = "#8C1D25";
+const RED  = "#E31E24";
 const GOLD = "#D4AF37";
 const DARK = "#111827";
 const GRAY = "#6B7280";
@@ -92,34 +92,6 @@ const PAGES = {
     cta: "Get a Life Insurance Quote",
   },
 
-  business: {
-    title: "Business Insurance",
-    subtitle: "Protect your business from unexpected events with comprehensive commercial coverage.",
-    hero: "linear-gradient(145deg,#1a1a0d,#3d3d00)",
-    coverages: [
-      { name: "General Liability (GL)", desc: "Covers third-party bodily injury, property damage, and advertising injury claims against your business." },
-      { name: "Commercial Property", desc: "Protects your building, equipment, inventory, and other business property against fire, theft, and other perils." },
-      { name: "Business Interruption", desc: "Replaces lost income and covers operating expenses if your business is temporarily shut down by a covered loss." },
-      { name: "Workers' Compensation", desc: "Required in most states — covers medical bills and lost wages for employees injured on the job." },
-      { name: "Professional Liability (E&O)", desc: "Protects service businesses from claims of negligence, errors, or inadequate work." },
-    ],
-    addons: ["Cyber liability insurance", "Commercial umbrella policy", "Directors & officers (D&O)", "Employment practices liability", "Commercial auto insurance", "Product liability coverage"],
-    features: [
-      { title: "Business Owner's Policy (BOP)", desc: "Bundle GL and commercial property into one affordable policy — perfect for small to mid-size businesses.", icon: "M3 7h18M3 11h18M3 15h18" },
-      { title: "Industry-Specific Programs", desc: "Specialized coverage for restaurants, contractors, healthcare, retail, and professional service firms.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" },
-      { title: "Risk Assessment", desc: "Our commercial insurance advisors conduct a thorough risk assessment to identify gaps in your coverage.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
-      { title: "Claims Advocacy", desc: "We advocate on your behalf through the claims process to help you get the fastest, fairest resolution.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
-    ],
-    discounts: ["Claims-free discount", "Multi-policy bundle", "Safety program discount", "New business discount", "Annual pay discount"],
-    faqs: [
-      { q: "What is the difference between a BOP and separate policies?", a: "A Business Owner's Policy bundles GL and commercial property at a lower combined rate. Businesses with unique risks may need separate policies for more customized coverage." },
-      { q: "Is workers' compensation required?", a: "In most states, yes — if you have employees. Requirements vary by state and business type. An SGGINV advisor can confirm your state's requirements." },
-      { q: "What is cyber liability insurance?", a: "Cyber liability covers the costs of data breaches, ransomware attacks, and regulatory fines. With cyber threats rising, it's increasingly essential for businesses of all sizes." },
-      { q: "How is my business insurance premium calculated?", a: "Key factors include business type, annual revenue, number of employees, claims history, location, and coverage limits." },
-    ],
-    cta: "Get a Business Insurance Quote",
-  },
-
   health: {
     title: "Health Insurance",
     subtitle: "Quality health coverage for individuals, families, and your entire workforce.",
@@ -152,7 +124,7 @@ const PAGES = {
 function FeatureCard({ title, desc, icon }: { title: string; desc: string; icon: string }) {
   return (
     <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 18, padding: "26px 24px" }}>
-      <div style={{ width: 46, height: 46, borderRadius: 13, background: "rgba(140,29,37,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 16 }}>
+      <div style={{ width: 46, height: 46, borderRadius: 13, background: "rgba(227,30,36,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: RED, marginBottom: 16 }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={icon} /></svg>
       </div>
       <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 15.5, color: DARK, marginBottom: 7 }}>{title}</div>
@@ -189,7 +161,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
           <div className="mob-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             {page.coverages.map((c, i) => (
               <div key={i} style={{ display: "flex", gap: 16, padding: "22px 24px", border: "1px solid rgba(17,24,39,.07)", borderRadius: 16 }}>
-                <div style={{ flex: "none", width: 36, height: 36, borderRadius: 10, background: "rgba(140,29,37,.09)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ flex: "none", width: 36, height: 36, borderRadius: 10, background: "rgba(227,30,36,.09)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12l5 5L20 7" /></svg>
                 </div>
                 <div>
@@ -232,7 +204,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
       </div>
 
       {/* Discounts */}
-      <div className="mob-section" style={{ background: "rgba(140,29,37,.04)", padding: "60px 32px" }}>
+      <div className="mob-section" style={{ background: "rgba(227,30,36,.04)", padding: "60px 32px" }}>
         <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
           <div>
             <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: RED, fontWeight: 700, marginBottom: 12 }}>Save More</div>
@@ -242,7 +214,7 @@ export default async function InsurancePage({ params }: { params: Promise<{ slug
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {page.discounts.map((d, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", background: "#fff", border: "1px solid rgba(17,24,39,.07)", borderRadius: 12 }}>
-                <div style={{ flex: "none", width: 28, height: 28, borderRadius: 8, background: "rgba(140,29,37,.09)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ flex: "none", width: 28, height: 28, borderRadius: 8, background: "rgba(227,30,36,.09)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="2.5"><path d="M5 12l5 5L20 7" /></svg>
                 </div>
                 <span style={{ fontSize: 14.5, fontWeight: 600, color: DARK }}>{d}</span>

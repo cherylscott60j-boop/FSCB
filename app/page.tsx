@@ -25,7 +25,7 @@ const OPEN_ACCOUNT = [
   },
   {
     name: "Open a business account",
-    tagline: "Banking for sole traders, start-ups and growing companies.",
+    tagline: "Banking for sole proprietors, start-ups and growing companies.",
     featured: true,
     rows: [
       ["Monthly fee", "$0 for 12 months"],
@@ -43,7 +43,8 @@ const PRODUCTS = [
   { t: "Checking accounts", d: "Fee-free everyday banking with early pay and instant card controls.", href: "/personal/checking", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
   { t: "Savings", d: "Earn interest every month and save automatically with round-ups.", href: "/personal/savings", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
   { t: "Personal loans", d: "Borrow $1,000 to $50,000 with a fixed rate and fixed payments.", href: "/loans/personal", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
-  { t: "Mortgages", d: "Buy your first home, move or remortgage with options from 3% deposit.", href: "/loans/mortgage", icon: "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
+  { t: "Mortgages", d: "Buy your first home, move or refinance with options from 3% down.", href: "/loans/mortgage", icon: "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
+  { t: "Credit cards", d: "Earn up to 3% cashback with no annual fee and a 12-month 0% intro APR.", href: "/personal/credit-cards", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
   { t: "Safe deposit boxes", d: "Keep documents and valuables in our secure vault from $60 a year.", href: "/personal/safe-deposit-boxes", icon: "M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z" },
   { t: "Private banking", d: "A dedicated relationship manager, investments and retirement planning.", href: "/financial/retirement", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0" },
 ];
@@ -78,7 +79,7 @@ const ACCOUNTS = [
     name: "Everyday Savings",
     tagline: "Flexible savings you can dip into whenever you need.",
     rows: [
-      ["Example rate", "3.25% AER"],
+      ["Example rate", "3.25% APY"],
       ["Monthly fee", "$0"],
       ["Minimum to open", "Any amount"],
       ["Round-ups & goals", "Included"],
@@ -97,7 +98,7 @@ const APP = [
 
 const SWITCH = [
   { t: "We move everything for you", d: "Your balance, direct debits and standing orders come across automatically." },
-  { t: "Pick your switch date", d: "It takes 7 working days, on a date that suits you." },
+  { t: "Pick your switch date", d: "It takes 7 business days, on a date that suits you." },
   { t: "Nothing gets missed", d: "Payments made to your old account are redirected for 3 years." },
 ];
 
@@ -114,9 +115,9 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "How do I open an account?", a: "Apply online or in the app in about 5 minutes. You'll need to be 18 or over, live in the UK and have a valid photo ID." },
+  { q: "How do I open an account?", a: "Apply online or in the app in about 5 minutes. You'll need to be 18 or over, live in the U.S. and have a valid photo ID." },
   { q: "Are there any monthly fees?", a: "Everyday Checking and Everyday Savings have no monthly fees. Premium Checking is free when you keep a qualifying balance." },
-  { q: "Can I switch my current account to you?", a: "Yes. We'll move your balance and regular payments for you in 7 working days, and redirect any payments to your old account." },
+  { q: "Can I switch my checking account to you?", a: "Yes. We'll move your balance and regular payments for you in 7 business days, and redirect any payments to your old account." },
   { q: "How do I contact you?", a: "Call us on (555) 302-1900, chat in the app 24/7, email us or visit one of our branches. Our card and fraud lines are open 24 hours a day." },
   { q: "What should I do if I lose my card?", a: "Freeze it straight away in the app, then call (555) 302-1999 to cancel it and order a replacement." },
   { q: "Is online and mobile banking free?", a: "Yes. Online banking, the app, bill payments and transfers between your accounts are all free." },
@@ -158,6 +159,49 @@ export default function Home() {
           Rates are examples and can change. Premium Checking fee waived with a $500 average daily balance or $1,500 paid in each month; otherwise $9 a month.
         </p>
       </Section>
+
+      {/* Bank from anywhere: photo left, blue panel right */}
+      <section className="home-split" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 520, background: BLUE }}>
+        <div className="home-split-photo" style={{ position: "relative", minHeight: 320 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/online-banking-photo.webp"
+            alt="A customer managing her accounts on a laptop"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "45% 40%" }}
+          />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", padding: "72px 64px" }} className="home-split-copy">
+          <div style={{ maxWidth: 500, color: "#fff" }}>
+            <div style={{ fontSize: 12.5, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.75)", marginBottom: 12 }}>
+              Online banking
+            </div>
+            <h2 style={{ fontFamily: FONT, fontWeight: 600, fontSize: "clamp(26px, 3vw, 38px)", lineHeight: 1.2, letterSpacing: "-.02em", margin: "0 0 16px" }}>
+              Manage your money from anywhere
+            </h2>
+            <p style={{ fontSize: 16.5, lineHeight: 1.7, color: "rgba(255,255,255,.85)", margin: "0 0 26px" }}>
+              Check balances, pay bills, move money and open new accounts online, whenever it suits you. No branch visit needed.
+            </p>
+            {[
+              "Open an account online in about 5 minutes",
+              "Pay bills and send money in a few taps",
+              "Statements and documents whenever you need them",
+            ].map((t) => (
+              <div key={t} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "10px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.8" style={{ flex: "none", marginTop: 2 }}><path d="M5 12l5 5L20 7" /></svg>
+                {t}
+              </div>
+            ))}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
+              <Link href="/open-account" style={{ background: "#E31E24", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 28px", borderRadius: 4, textDecoration: "none" }}>
+                Open an account
+              </Link>
+              <Link href="/personal/online-banking" style={{ color: "#fff", fontWeight: 600, fontSize: 15, padding: "12px 24px", borderRadius: 4, border: "1.5px solid rgba(255,255,255,.5)", textDecoration: "none" }}>
+                About online banking
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Savings calculator */}
       <Section bg="#fff">
@@ -225,13 +269,13 @@ export default function Home() {
                 <div style={{ fontSize: 14.5, color: "rgba(255,255,255,.75)", lineHeight: 1.6 }}>{s.d}</div>
               </div>
             ))}
-            <Link href="/open-account" style={{ marginTop: 22, display: "inline-block", background: "#fff", color: BLUE, fontWeight: 700, fontSize: 15, padding: "13px 28px", borderRadius: 4, textDecoration: "none" }}>
+            <Link href="/open-account" style={{ marginTop: 22, display: "inline-block", background: "#E31E24", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 28px", borderRadius: 4, textDecoration: "none" }}>
               Switch to us
             </Link>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {[
-              { e: "Business banking", t: "Banking that helps your business grow", d: "Accounts, lending and card payments for sole traders through to established companies.", href: "/business", cta: "Explore business banking" },
+              { e: "Business banking", t: "Banking that helps your business grow", d: "Accounts, lending and card payments for sole proprietors through to established companies.", href: "/business", cta: "Explore business banking" },
               { e: "Investing", t: "Grow your money for the future", d: "Invest yourself, let us manage it, or work with our private banking team. Capital at risk.", href: "/financial", cta: "Explore investing" },
             ].map((c) => (
               <Link key={c.href} href={c.href} style={{ flex: 1, border: "1px solid rgba(17,24,39,.1)", borderRadius: 8, padding: "30px 30px", textDecoration: "none", display: "flex", flexDirection: "column" }}>

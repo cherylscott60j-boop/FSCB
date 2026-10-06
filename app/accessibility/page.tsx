@@ -15,15 +15,15 @@ const ICONS = {
 
 const CONTACT = [
   { title: "Accessibility team", detail: "(555) 302-1975", sub: "Mon–Fri 8am–8pm · Sat 9am–4pm", icon: ICONS.phone },
-  { title: "Text relay", detail: "(555) 302-1975", sub: "Add your relay service code before our number", icon: ICONS.chat },
+  { title: "TTY / relay", detail: "Dial 711", sub: "Then ask for (555) 302-1975", icon: ICONS.chat },
   { title: "Email", detail: "accessibility@sgginv.com", sub: "We reply within 2 business days", icon: ICONS.mail },
-  { title: "In branch", detail: "Any of our branches", sub: "Staff trained to help with access needs", icon: ICONS.pin },
+  { title: "At a branch", detail: "Any of our branches", sub: "Staff trained to help with access needs", icon: ICONS.pin },
 ];
 
 const WEBSITE = [
   { t: "Screen reader friendly", d: "Clear headings, landmarks and text descriptions for meaningful images so screen readers can navigate easily.", icon: "M15.536 8.464a5 5 0 0 1 0 7.072M18.364 5.636a9 9 0 0 1 0 12.728M11 5L6 9H2v6h4l5 4V5z" },
   { t: "Keyboard navigation", d: "Menus, forms and buttons work with a keyboard alone, with a visible focus outline.", icon: "M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm3 4h.01M11 10h.01M15 10h.01M7 14h10" },
-  { t: "Readable colours", d: "Text and buttons are designed with strong colour contrast for people with low vision or colour blindness.", icon: "M12 3a9 9 0 1 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" },
+  { t: "Readable colors", d: "Text and buttons are designed with strong color contrast for people with low vision or color blindness.", icon: "M12 3a9 9 0 1 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" },
   { t: "Zoom and resize", d: "Pages reflow when you zoom up to 400%, so you don't need to scroll sideways.", icon: "M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0zM10 7v6m-3-3h6" },
   { t: "Clear forms", d: "Every field has a label, and error messages explain exactly what needs fixing.", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" },
   { t: "Accessible app", d: "Our app works with VoiceOver on iPhone and TalkBack on Android, and supports larger text settings.", icon: "M12 18h.01M8 21h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z" },
@@ -32,7 +32,7 @@ const WEBSITE = [
 const SERVICES = [
   { t: "Statements and letters in other formats", d: "Large print, braille, audio or accessible PDF, free of charge." },
   { t: "Sign language video calls", d: "Talk to us through a sign language interpreter, Monday to Friday." },
-  { t: "Talking cash machines", d: "Headphone sockets and spoken instructions at all our cash machines." },
+  { t: "Talking ATMs", d: "Headphone sockets and spoken instructions at all our ATMs." },
   { t: "Accessible branches", d: "Step-free access, hearing loops and quieter appointment times on request." },
   { t: "Assistance dogs welcome", d: "In all our branches, at any time." },
   { t: "Signature alternatives", d: "If signing is difficult, we can agree another way to confirm it's you." },
@@ -41,7 +41,7 @@ const SERVICES = [
 const TIPS = [
   { t: "Make text bigger", d: "Hold Ctrl (or Cmd on a Mac) and press + to zoom in, or − to zoom out." },
   { t: "Have pages read aloud", d: "Use your device's built-in screen reader: Narrator on Windows, VoiceOver on Apple devices or TalkBack on Android." },
-  { t: "Change colours", d: "Turn on high contrast or dark mode in your device's display settings." },
+  { t: "Change colors", d: "Turn on high contrast or dark mode in your device's display settings." },
   { t: "Control with your voice", d: "Voice Access on Android, Voice Control on Apple devices and Voice Access on Windows let you navigate by speaking." },
 ];
 
@@ -59,18 +59,18 @@ const FEEDBACK = [
 ];
 
 const NEEDS = [
-  { t: "Vision", points: ["Large print, braille and audio statements", "Notched debit cards to tell them apart by touch", "Screen reader support on our website and app", "Talking cash machines with headphone sockets"] },
-  { t: "Hearing", points: ["Hearing loops in every branch", "Sign language video calls", "Text relay calls", "Contact by email, chat or letter instead of phone"] },
+  { t: "Vision", points: ["Large print, braille and audio statements", "Notched debit cards to tell them apart by touch", "Screen reader support on our website and app", "Talking ATMs with headphone sockets"] },
+  { t: "Hearing", points: ["Hearing loops in every branch", "Sign language video calls", "TTY and 711 relay calls", "Contact by email, chat or letter instead of phone"] },
   { t: "Mobility and dexterity", points: ["Step-free access and lowered counters", "Home visits for customers who can't get to a branch", "Signature alternatives", "Voice control support in the app"] },
   { t: "Cognitive and learning", points: ["Plain-English letters and statements", "Extra time in appointments", "Written summaries after calls", "A named contact so you don't have to repeat yourself"] },
   { t: "Mental health", points: ["Specially trained extra support team", "Choose when and how we contact you", "Spending controls and gambling blocks in the app", "Breathing space on repayments when you need it"] },
-  { t: "Speech", points: ["Contact us in writing by email, chat or letter", "Text relay calls", "Take the time you need on calls", "Nominate a trusted person to speak for you"] },
+  { t: "Speech", points: ["Contact us in writing by email, chat or letter", "TTY and 711 relay calls", "Take the time you need on calls", "Nominate a trusted person to speak for you"] },
 ];
 
 const CARDS = [
   { t: "Notched debit cards", d: "A notch on the short edge helps you put your card in the right way round." },
   { t: "Large-print PIN reminders", d: "Your PIN letter in large print, braille or as an audio message." },
-  { t: "Choose an easier PIN", d: "Change your PIN at any of our cash machines to one you can remember." },
+  { t: "Choose an easier PIN", d: "Change your PIN at any of our ATMs to one you can remember." },
   { t: "Contactless and phone payments", d: "Pay without entering a PIN for everyday amounts, or with your phone." },
 ];
 
@@ -163,7 +163,7 @@ export default function AccessibilityPage() {
       <section id="services" className="mob-section" style={{ background: "#fff", padding: "80px 32px" }}>
         <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
           <div>
-            <SectionTitle eyebrow="Services" title="Support in branch, by phone and by post" mb={28} />
+            <SectionTitle eyebrow="Services" title="Support at a branch, by phone and by mail" mb={28} />
             <CheckList items={SERVICES} />
           </div>
           <div style={{ background: TINT, borderRadius: 8, padding: "34px 32px" }}>
@@ -257,7 +257,7 @@ export default function AccessibilityPage() {
             <p style={{ fontSize: 15.5, color: "rgba(255,255,255,.8)", lineHeight: 1.7, margin: "0 0 24px" }}>
               Tell us and we&apos;ll fix it. We&apos;ll reply within 2 business days and help you do what you need in the meantime.
             </p>
-            <Link href="/about/contact#message" style={{ display: "inline-block", background: "#fff", color: BLUE, fontWeight: 700, fontSize: 15, padding: "13px 28px", borderRadius: 4, textDecoration: "none" }}>
+            <Link href="/about/contact#message" style={{ display: "inline-block", background: "#E31E24", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 28px", borderRadius: 4, textDecoration: "none" }}>
               Send us feedback
             </Link>
           </div>

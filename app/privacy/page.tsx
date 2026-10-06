@@ -71,9 +71,9 @@ const SECURITY = [
 ];
 
 const FAQS = [
-  { q: "How do I get a copy of my data?", a: "Contact our privacy team by email, by post or in any branch. We'll respond within one month, and there's no charge for most requests." },
+  { q: "How do I get a copy of my data?", a: "Contact our privacy team by email, by mail or in any branch. We'll respond within one month, and there's no charge for most requests." },
   { q: "How do I stop marketing messages?", a: "Change your preferences in the app or online banking, use the unsubscribe link in any email, or contact us. We'll still send messages we need to about your accounts." },
-  { q: "Do you transfer my data outside the UK?", a: "Some of our service providers process data in other countries. When they do, we make sure your information is protected to the same standard, using approved contract terms." },
+  { q: "Do you transfer my data outside the U.S.?", a: "Some of our service providers process data in other countries. When they do, we make sure your information is protected to the same standard, using approved contract terms." },
   { q: "Do you use automated decisions?", a: "Some decisions, like fraud alerts and initial credit checks, use automated systems. You can ask for a person to review any automated decision that affects you." },
   { q: "What if I'm not happy with how you've used my data?", a: "Tell our privacy team and we'll look into it. If you're still not satisfied, you can complain to the data protection regulator." },
 ];
@@ -170,7 +170,7 @@ export default function PrivacyPage() {
           <div>
             <SectionTitle eyebrow="Keeping your data" title="How long we keep your information" mb={18} />
             <p style={{ fontSize: 16, color: GRAY, lineHeight: 1.7, margin: 0 }}>
-              We keep your information only for as long as we need it, or as long as the law requires. After that, we securely delete or anonymise it.
+              We keep your information only for as long as we need it, or as long as the law requires. After that, we securely delete or anonymize it.
             </p>
           </div>
           <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,.1)", borderRadius: 8, padding: "8px 28px" }}>
@@ -196,13 +196,13 @@ export default function PrivacyPage() {
       </section>
 
       {/* Cookies + security */}
-      <section className="mob-section" style={{ background: TINT, padding: "80px 32px" }}>
+      <section id="cookies" className="mob-section" style={{ background: TINT, padding: "80px 32px" }}>
         <div className="mob-stack" style={{ maxWidth: 1240, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
           <div>
             <SectionTitle eyebrow="Cookies" title="How we use cookies" mb={28} />
             <CheckList items={COOKIES} />
             <p style={{ fontSize: 14.5, color: GRAY, lineHeight: 1.6, margin: "22px 0 0" }}>
-              You can change your cookie choices at any time in your browser settings.
+              You can change your cookie choices at any time by clearing your cookie preferences in your browser, which brings back the cookie banner.
             </p>
           </div>
           <div>
@@ -221,7 +221,7 @@ export default function PrivacyPage() {
             {[
               ["Email", "privacy@sgginv.com"],
               ["Phone", "(555) 302-1900"],
-              ["Post", "Privacy Team, 102 Main Street, Downtown, ST 00001"],
+              ["Mail", "Privacy Team, 102 Main Street, Downtown, ST 00001"],
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "13px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15 }}>
                 <span style={{ color: "rgba(255,255,255,.72)" }}>{k}</span>

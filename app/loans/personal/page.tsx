@@ -56,6 +56,7 @@ export default function PersonalLoansPage() {
         primary={{ label: "Check your rate", href: "/about/contact" }}
         secondary={{ label: "Work out your payments", href: "#calculator" }}
         highlights={HIGHLIGHTS}
+        cutout={{ src: "/loans-hero.webp", alt: "A couple reviewing their loan options at home" }}
       />
 
       <OverlapSection id="calculator">
