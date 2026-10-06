@@ -10,7 +10,7 @@ const ACCOUNTS = [
     name: "Everyday Checking",
     tagline: "Simple, fee-free banking for day-to-day spending.",
     rows: [
-      ["Monthly fee", "£0"],
+      ["Monthly fee", "$0"],
       ["Minimum balance", "None"],
       ["Opening deposit", "Any amount"],
       ["Early pay", "Up to 2 days"],
@@ -24,10 +24,10 @@ const ACCOUNTS = [
     tagline: "Extra perks for people who bank with us for everything.",
     featured: true,
     rows: [
-      ["Monthly fee", "£0 with qualifying balance*"],
-      ["Minimum balance", "£500 average daily"],
-      ["Opening deposit", "£25"],
-      ["ATM fee refunds", "Up to £15 / month"],
+      ["Monthly fee", "$0 with qualifying balance*"],
+      ["Minimum balance", "$500 average daily"],
+      ["Opening deposit", "$25"],
+      ["ATM fee refunds", "Up to $15 / month"],
       ["Foreign card fees", "2 free each month"],
     ] as [string, string][],
     href: "/open-account?account=premium-checking",
@@ -58,10 +58,10 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "Is there a minimum opening deposit?", a: "You can open Everyday Checking with any amount. Premium Checking needs £25 to open." },
+  { q: "Is there a minimum opening deposit?", a: "You can open Everyday Checking with any amount. Premium Checking needs $25 to open." },
   { q: "How does early pay work?", a: "When your employer sends pay electronically, we make it available as soon as we receive notice, up to 2 business days before payday." },
   { q: "What happens if I go overdrawn?", a: "If you've linked a savings account, we move money across automatically. Without it, payments that would overdraw your account are declined, so you're never charged an overdraft fee." },
-  { q: "How is the Premium Checking fee waived?", a: "The monthly fee is waived when you keep a £500 average daily balance or receive £1,500 in direct deposits that month." },
+  { q: "How is the Premium Checking fee waived?", a: "The monthly fee is waived when you keep a $500 average daily balance or receive $1,500 in direct deposits that month." },
   { q: "Can I use my debit card abroad?", a: "Yes, your card works wherever card payments are accepted. Premium Checking customers get two foreign transaction fees waived each month." },
   { q: "Can I open a joint account?", a: "Yes. You can add a joint owner when you apply or at any time afterwards. Both owners have full access to the account." },
 ];
@@ -76,7 +76,7 @@ export default function CheckingPage() {
         primary={{ label: "Open an account", href: "/open-account" }}
         secondary={{ label: "Compare accounts", href: "#accounts" }}
         highlights={[
-          { v: "£0", l: "Monthly fees" },
+          { v: "$0", l: "Monthly fees" },
           { v: "2 days", l: "Early pay" },
           { v: "5 min", l: "To apply online" },
         ]}
@@ -85,7 +85,7 @@ export default function CheckingPage() {
       <OverlapSection id="accounts">
         <AccountCards accounts={ACCOUNTS} />
         <p style={{ fontSize: 12, color: GRAY, lineHeight: 1.6, marginTop: 12 }}>
-          * Monthly fee waived with a £500 average daily balance or £1,500 in monthly direct deposits. Otherwise £9.
+          * Monthly fee waived with a $500 average daily balance or $1,500 in monthly direct deposits. Otherwise $9.
         </p>
       </OverlapSection>
 
@@ -109,15 +109,15 @@ export default function CheckingPage() {
             <div style={{ width: 280, background: "#fff", borderRadius: 28, padding: 14, border: "1px solid rgba(17,24,39,.06)" }}>
               <div style={{ background: BLUE, color: "#fff", borderRadius: 18, padding: "22px 20px" }}>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Everyday Checking</div>
-                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 30, margin: "4px 0 2px" }}>£2,418.60</div>
+                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 30, margin: "4px 0 2px" }}>$2,418.60</div>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Available balance</div>
               </div>
               <div style={{ padding: "16px 8px 6px" }}>
                 {[
-                  ["Payroll deposit", "+£1,850.00", "Today"],
-                  ["Grocery store", "−£64.21", "Yesterday"],
-                  ["Coffee shop", "−£4.75", "Yesterday"],
-                  ["Electric bill", "−£92.40", "Mon"],
+                  ["Payroll deposit", "+$1,850.00", "Today"],
+                  ["Grocery store", "−$64.21", "Yesterday"],
+                  ["Coffee shop", "−$4.75", "Yesterday"],
+                  ["Electric bill", "−$92.40", "Mon"],
                 ].map(([n, a, d]) => (
                   <div key={n} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid rgba(17,24,39,.06)" }}>
                     <div>

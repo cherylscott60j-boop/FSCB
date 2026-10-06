@@ -15,9 +15,9 @@ const SERVICES = [
 ];
 
 const WAYS = [
-  { name: "Invest yourself", desc: "Choose from our range of ready-made portfolios and manage them in the app.", from: "From £50 a month", fee: "0.45% a year" },
-  { name: "Managed for you", desc: "Tell us your goals and attitude to risk. Our team builds and manages your portfolio.", from: "From £10,000", fee: "0.75% a year" },
-  { name: "Private banking", desc: "A relationship manager and a team of specialists across your whole financial life.", from: "From £250,000", fee: "Tiered from 1.00%" },
+  { name: "Invest yourself", desc: "Choose from our range of ready-made portfolios and manage them in the app.", from: "From $50 a month", fee: "0.45% a year" },
+  { name: "Managed for you", desc: "Tell us your goals and attitude to risk. Our team builds and manages your portfolio.", from: "From $10,000", fee: "0.75% a year" },
+  { name: "Private banking", desc: "A relationship manager and a team of specialists across your whole financial life.", from: "From $250,000", fee: "Tiered from 1.00%" },
 ];
 
 const BEFORE = [
@@ -34,7 +34,7 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "How much do I need to start investing?", a: "You can start with £50 a month or a £500 lump sum in a ready-made portfolio. Managed portfolios start at £10,000." },
+  { q: "How much do I need to start investing?", a: "You can start with $50 a month or a $500 lump sum in a ready-made portfolio. Managed portfolios start at $10,000." },
   { q: "What's the difference between saving and investing?", a: "Savings earn interest and your balance doesn't fall. Investing puts your money into things like shares and bonds. It has the potential for higher returns over time, but the value can go down as well as up." },
   { q: "Can I take my money out?", a: "Yes. You can sell some or all of your investments at any time. It usually takes 3 to 5 business days for the money to reach your account." },
   { q: "What fees will I pay?", a: "You pay an annual management fee, shown for each option above, plus the costs of the underlying funds. We'll show you the total cost before you invest." },
@@ -46,11 +46,11 @@ export default function InvestingPage() {
       <ProductHero
         eyebrow="Investing"
         title="Grow your money for the future you want"
-        subtitle="Invest on your own, have us manage it for you, or work with a private banking team. Start from just £50 a month."
+        subtitle="Invest on your own, have us manage it for you, or work with a private banking team. Start from just $50 a month."
         primary={{ label: "Start investing", href: "/about/contact" }}
         secondary={{ label: "Ways to invest", href: "#ways" }}
         highlights={[
-          { v: "£50", l: "Minimum monthly investment" },
+          { v: "$50", l: "Minimum monthly investment" },
           { v: "3", l: "Ways to invest" },
           { v: "From 0.45%", l: "Annual fee" },
         ]}

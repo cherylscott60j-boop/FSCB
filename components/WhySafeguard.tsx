@@ -27,7 +27,7 @@ const WHY_CARDS: WhyCard[] = [
   },
   {
     title: "Investing made simple",
-    desc: "Start from £100,000, choose a ready-made portfolio, and review with a financial advisor for free in branch.",
+    desc: "Start from $100,000, choose a ready-made portfolio, and review with a financial advisor for free in branch.",
     cta: "Find out more",
     href: "/financial/retirement",
     image: "/opening-hours-icon.webp",

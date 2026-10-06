@@ -28,7 +28,7 @@ const PAGES = {
       { n: "4", t: "Ongoing Review", d: "Regular quarterly reviews and proactive outreach ensure your plan evolves with your life and market conditions." },
     ],
     faqs: [
-      { q: "What is the minimum investment to work with SGGINV Wealth Management?", a: "We serve clients with investable assets starting from £250,000. For smaller balances, we can refer you to our financial planning services." },
+      { q: "What is the minimum investment to work with SGGINV Wealth Management?", a: "We serve clients with investable assets starting from $250,000. For smaller balances, we can refer you to our financial planning services." },
       { q: "How are SGGINV wealth advisors compensated?", a: "Our advisors are fee-based — we charge a percentage of assets under management. We do not earn commissions on product sales, so our advice is aligned with your interests." },
       { q: "Do you manage retirement accounts like IRAs and 401(k)s?", a: "Yes — we manage a wide range of account types including IRAs, Roth IRAs, trusts, taxable brokerage accounts, and inherited accounts." },
       { q: "How often will I meet with my advisor?", a: "You'll have formal quarterly reviews and can schedule additional meetings at any time. We also reach out proactively when market events or life changes warrant a conversation." },
@@ -56,7 +56,7 @@ const PAGES = {
       { n: "4", t: "Performance Reporting", d: "Review detailed performance reports and meet with your advisor quarterly to assess progress toward your goals." },
     ],
     faqs: [
-      { q: "What is the minimum to open an investment account?", a: "Managed portfolios start at £10,000. Self-directed brokerage accounts can be opened with any amount." },
+      { q: "What is the minimum to open an investment account?", a: "Managed portfolios start at $10,000. Self-directed brokerage accounts can be opened with any amount." },
       { q: "What fees do you charge?", a: "Managed account fees range from 0.25% to 1.00% annually depending on account size. Self-directed brokerage trades are commission-free for stocks and ETFs." },
       { q: "Can I transfer my existing brokerage account to SGGINV?", a: "Yes — SGGINV accepts in-kind transfers from most brokerage firms. The process takes 5–10 business days and can typically be done without liquidating your positions." },
     ],
@@ -114,7 +114,7 @@ const PAGES = {
       { q: "Do I need a trust, or is a will enough?", a: "It depends on your situation. A will alone goes through probate — a public, sometimes slow process. A revocable living trust avoids probate, enables faster asset transfer, and provides privacy. For most people with meaningful assets, a trust is recommended." },
       { q: "What happens to my accounts if I die without a will?", a: "Your state's intestacy laws determine who inherits — which may not match your intentions. Accounts with named beneficiaries pass outside probate, but all other assets are distributed by the court." },
       { q: "How often should I update my estate plan?", a: "Review it every 3–5 years and after major life events: marriage, divorce, birth of a child or grandchild, death of a beneficiary, or significant change in financial status." },
-      { q: "What is the federal estate tax exemption?", a: "For 2025, the federal estate tax exemption is approximately £13.6 million per individual (£27.2M for married couples). Assets above this threshold may be subject to federal estate tax up to 40%." },
+      { q: "What is the federal estate tax exemption?", a: "For 2025, the federal estate tax exemption is approximately $13.6 million per individual ($27.2M for married couples). Assets above this threshold may be subject to federal estate tax up to 40%." },
     ],
     cta: "Start Estate Planning",
   },

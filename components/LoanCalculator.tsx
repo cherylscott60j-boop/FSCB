@@ -11,7 +11,7 @@ const TERMS = [12, 24, 36, 48, 60, 72, 84];
 const EXAMPLE_APR = 9.9;
 
 const money = (n: number, cents = false) =>
-  n.toLocaleString("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: cents ? 2 : 0 });
+  n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: cents ? 2 : 0 });
 
 export default function LoanCalculator() {
   const [amount, setAmount] = useState(15000);
@@ -39,8 +39,8 @@ export default function LoanCalculator() {
           style={{ width: "100%", accentColor: NAVY }}
         />
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: GRAY, marginTop: 4 }}>
-          <span>£1,000</span>
-          <span>£50,000</span>
+          <span>$1,000</span>
+          <span>$50,000</span>
         </div>
 
         <div style={{ fontSize: 13, fontWeight: 600, color: DARK, margin: "28px 0 10px" }}>Over how long?</div>

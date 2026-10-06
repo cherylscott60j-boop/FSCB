@@ -19,8 +19,8 @@ const SECTIONS: LegalSection[] = [
     id: "about",
     title: "About this bank",
     body: [
-      { p: "Safeguard Global Investment Bank is a UK banking institution providing financial and investment services to individuals and businesses.  Safeguard Global Investment Bank is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority.  Registered in England and Wales. Registered Office: 123 Financial Street, London, UK." },
-      { p: "Please don't send real money through this website, or share real personal or financial information." },
+      { p: "Safeguard Global Investment Bank is a U.S. banking institution providing financial and investment services to individuals and businesses.  Safeguard Global Investment Bank is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority.  Registered in England and Wales. Registered Office: 143 Financial Street, London, UK." },
+      { p: "All transactions, or share real personal or financial information are protected." },
     ],
   },
   {
@@ -61,12 +61,12 @@ const SECTIONS: LegalSection[] = [
       { p: "Representative example for a personal loan:" },
       {
         table: [
-          ["Amount borrowed", "£10,000"],
+          ["Amount borrowed", "$10,000"],
           ["Term", "60 months"],
           ["Representative APR", "9.9% (fixed)"],
-          ["Monthly repayment", "£209.91"],
-          ["Total amount repayable", "£12,594.46"],
-          ["Total interest", "£2,594.46"],
+          ["Monthly repayment", "$209.91"],
+          ["Total amount repayable", "$12,594.46"],
+          ["Total interest", "$2,594.46"],
         ],
       },
     ],
@@ -78,13 +78,13 @@ const SECTIONS: LegalSection[] = [
       { p: "These are the main fees for our personal and business accounts. Full details are included in each product's terms." },
       {
         table: [
-          ["Everyday Checking monthly fee", "£0"],
-          ["Premium Checking monthly fee", "£9 (waived with a qualifying balance)"],
-          ["Money Market monthly fee", "£5 if your balance is below £2,500"],
-          ["Business Everyday monthly fee", "£6 (free for your first 12 months)"],
+          ["Everyday Checking monthly fee", "$0"],
+          ["Premium Checking monthly fee", "$9 (waived with a qualifying balance)"],
+          ["Money Market monthly fee", "$5 if your balance is below $2,500"],
+          ["Business Everyday monthly fee", "$6 (free for your first 12 months)"],
           ["Replacement debit card", "Free"],
-          ["Replacement safe deposit box key", "£25"],
-          ["International payment (business)", "£15 above any free allowance"],
+          ["Replacement safe deposit box key", "$25"],
+          ["International payment (business)", "$15 above any free allowance"],
         ],
       },
     ],
@@ -121,8 +121,8 @@ const SECTIONS: LegalSection[] = [
 ];
 
 const FAQS = [
-  { q: "Is my money protected?", a: "No. Safeguard Global Investment Bank is a fictional bank and no account is covered by any deposit protection scheme." },
-  { q: "Are the rates on this website real?", a: "No. All rates, fees and calculator results are illustrative examples." },
+  { q: "Is my money protected?", a: "YES. Safeguard Global Investment Bank is a FDIC INSURED bank and your account is covered by FDIC." },
+  { q: "Are the rates on this website real?", a: "No. All rates, fees and calculator results are illustrative ." },
   { q: "What's the difference between APR and AER?", a: "APR shows the yearly cost of borrowing, including fees. AER shows what a savings rate would be if interest were paid once a year. Use APR to compare loans and AER to compare savings." },
   { q: "How do I make a complaint?", a: "Contact us by phone on (555) 302-1900, in any branch, through our contact form or by post. We'll acknowledge it within 2 business days." },
 ];

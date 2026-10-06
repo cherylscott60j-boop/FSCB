@@ -7,9 +7,9 @@ import {
 } from "@/components/product/ui";
 
 const HIGHLIGHTS = [
-  { v: "£1K–£50K", l: "Borrow between" },
+  { v: "$1K–$50K", l: "Borrow between" },
   { v: "1–7 years", l: "Repayment terms" },
-  { v: "£0", l: "Arrangement fees" },
+  { v: "$0", l: "Arrangement fees" },
 ];
 
 const USES = [
@@ -27,9 +27,9 @@ const BENEFITS = [
 ];
 
 const RATES = [
-  { term: "1–2 years", apr: "7.99% – 14.99%", amount: "£1,000 – £15,000" },
-  { term: "3–5 years", apr: "9.49% – 18.99%", amount: "£5,000 – £35,000" },
-  { term: "6–7 years", apr: "11.99% – 21.99%", amount: "£15,000 – £50,000" },
+  { term: "1–2 years", apr: "7.99% – 14.99%", amount: "$1,000 – $15,000" },
+  { term: "3–5 years", apr: "9.49% – 18.99%", amount: "$5,000 – $35,000" },
+  { term: "6–7 years", apr: "11.99% – 21.99%", amount: "$15,000 – $50,000" },
 ];
 
 const STEPS = [
@@ -52,7 +52,7 @@ export default function PersonalLoansPage() {
       <ProductHero
         eyebrow="Personal loans"
         title="Borrow with a fixed rate and a payment that never changes"
-        subtitle="Loans from £1,000 to £50,000 over 1 to 7 years. Check your rate in minutes without affecting your credit score."
+        subtitle="Loans from $1,000 to $50,000 over 1 to 7 years. Check your rate in minutes without affecting your credit score."
         primary={{ label: "Check your rate", href: "/about/contact" }}
         secondary={{ label: "Work out your payments", href: "#calculator" }}
         highlights={HIGHLIGHTS}

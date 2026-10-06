@@ -14,7 +14,7 @@ const PAGES = {
   "credit-cards": {
     title: "Credit Cards",
     subtitle: "Earn rewards and cashback on every purchase with cards built for community members.",
-    stats: [{ v: "Up to 3%", l: "Cashback" }, { v: "£0", l: "Annual fee" }, { v: "0% APR", l: "12-month intro" }],
+    stats: [{ v: "Up to 3%", l: "Cashback" }, { v: "$0", l: "Annual fee" }, { v: "0% APR", l: "12-month intro" }],
     overview: "SGGINV credit cards are designed to reward the way you actually spend — groceries, gas, dining, and everyday purchases. With no annual fees, competitive rates, and rewards that never expire, our cards are a smart choice for every wallet.",
     features: [
       { title: "Up to 3% Cashback", desc: "Earn 3% on groceries and gas, 2% on dining, and 1% on all other purchases — automatically.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
@@ -25,8 +25,8 @@ const PAGES = {
       { title: "Contactless & Digital Wallet", desc: "Tap to pay with your physical card or add to Apple Pay, Google Pay, or Samsung Pay.", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
     ],
     accounts: [
-      { name: "Community Card", monthly: "£0/yr", min: "Good credit", apy: "1% on all purchases", transfers: "No foreign txn fee", highlight: false, startHref: "/open-account?account=community-card" },
-      { name: "Rewards Card", monthly: "£0/yr", min: "Good–Excellent", apy: "Up to 3% cashback", transfers: "No foreign txn fee", highlight: true, startHref: "/open-account?account=rewards-card" },
+      { name: "Community Card", monthly: "$0/yr", min: "Good credit", apy: "1% on all purchases", transfers: "No foreign txn fee", highlight: false, startHref: "/open-account?account=community-card" },
+      { name: "Rewards Card", monthly: "$0/yr", min: "Good–Excellent", apy: "Up to 3% cashback", transfers: "No foreign txn fee", highlight: true, startHref: "/open-account?account=rewards-card" },
     ],
     accountNote: "APR varies based on creditworthiness. See card agreement for full details.",
     steps: [
@@ -47,19 +47,19 @@ const PAGES = {
   loans: {
     title: "Personal Loans",
     subtitle: "Fast local decisions, transparent rates, and no hidden fees for any purpose.",
-    stats: [{ v: "£1K–£50K", l: "Loan amounts" }, { v: "1 Day", l: "Decision time" }, { v: "£0", l: "Origination fee" }],
+    stats: [{ v: "$1K–$50K", l: "Loan amounts" }, { v: "1 Day", l: "Decision time" }, { v: "$0", l: "Origination fee" }],
     overview: "Life doesn't always wait for the perfect moment — and neither should your financing. SGGINV personal loans give you access to the funds you need quickly, with fixed monthly payments, no prepayment penalties, and a local team that actually reviews your application.",
     features: [
       { title: "Fixed Rates, No Surprises", desc: "Your interest rate and monthly payment stay the same from day one to your last payment.", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
       { title: "No Origination Fees", desc: "We don't charge origination fees or prepayment penalties. What we quote is what you pay.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
-      { title: "Borrow £1,000–£50,000", desc: "Whether it's a small expense or a major purchase, we have the right loan size for you.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
+      { title: "Borrow $1,000–$50,000", desc: "Whether it's a small expense or a major purchase, we have the right loan size for you.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "Terms from 12 to 84 Months", desc: "Choose a repayment timeline that fits your budget, from 1 to 7 years.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
       { title: "Same-Day Funding Available", desc: "Approved by noon? Funds could hit your SGGINV account the same business day.", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
       { title: "Local Underwriting", desc: "Your application is reviewed by a real person here in the community — not an algorithm.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0" },
     ],
     accounts: [
-      { name: "Standard Personal Loan", monthly: "Fixed rate", min: "£1,000–£25,000", apy: "12–60 months", transfers: "Good credit", highlight: false, startHref: "/about/contact" },
-      { name: "Premier Personal Loan", monthly: "Lower fixed rate", min: "£5,000–£50,000", apy: "12–84 months", transfers: "Excellent credit", highlight: true, startHref: "/about/contact" },
+      { name: "Standard Personal Loan", monthly: "Fixed rate", min: "$1,000–$25,000", apy: "12–60 months", transfers: "Good credit", highlight: false, startHref: "/about/contact" },
+      { name: "Premier Personal Loan", monthly: "Lower fixed rate", min: "$5,000–$50,000", apy: "12–84 months", transfers: "Excellent credit", highlight: true, startHref: "/about/contact" },
     ],
     accountNote: "Rates are based on creditworthiness and loan term. Contact a banker for your personalized rate.",
     steps: [

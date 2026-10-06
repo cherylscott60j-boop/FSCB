@@ -10,7 +10,7 @@ const LOAN_TYPES = [
   { t: "Fixed-rate mortgage", d: "Lock your rate for 15, 20 or 30 years so your principal and interest payment never changes.", icon: "M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z" },
   { t: "Adjustable-rate mortgage", d: "A lower starting rate fixed for 5, 7 or 10 years, then adjusting once a year within set limits.", icon: "M4 4v5h.6M20 20v-5h-.6M5 9a8 8 0 0 1 14.4-2M19 15a8 8 0 0 1-14.4 2" },
   { t: "First-time buyer", d: "Buy with as little as 3% down, with reduced mortgage insurance and help with closing costs.", icon: "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
-  { t: "Jumbo loans", d: "Financing up to £3 million for higher-value homes, with fixed and adjustable options.", icon: "M3 21h18M5 21V9l7-6 7 6v12M9 21v-6h6v6" },
+  { t: "Jumbo loans", d: "Financing up to $3 million for higher-value homes, with fixed and adjustable options.", icon: "M3 21h18M5 21V9l7-6 7 6v12M9 21v-6h6v6" },
   { t: "Refinance", d: "Lower your rate, shorten your term or switch from adjustable to fixed.", icon: "M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4" },
   { t: "Construction to permanent", d: "One loan, one closing. Fund the build in stages, then convert to a regular mortgage.", icon: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" },
 ];
@@ -40,10 +40,10 @@ const DOCUMENTS = [
 ];
 
 const CLOSING_COSTS = [
-  ["Appraisal", "£500 – £700"],
-  ["Title search & insurance", "£1,000 – £2,500"],
-  ["Origination", "£0 on most loans"],
-  ["Recording fees", "£100 – £250"],
+  ["Appraisal", "$500 – $700"],
+  ["Title search & insurance", "$1,000 – $2,500"],
+  ["Origination", "$0 on most loans"],
+  ["Recording fees", "$100 – $250"],
   ["Prepaid taxes & insurance", "Varies"],
 ];
 
@@ -55,8 +55,8 @@ const STEPS = [
 ];
 
 const FIRST_TIME = [
-  { t: "From 3% down", d: "On a £350,000 home, that's a down payment of £10,500." },
-  { t: "Up to £5,000 towards closing costs", d: "A credit for eligible first-time buyers, applied at closing." },
+  { t: "From 3% down", d: "On a $350,000 home, that's a down payment of $10,500." },
+  { t: "Up to $5,000 towards closing costs", d: "A credit for eligible first-time buyers, applied at closing." },
   { t: "Free homebuyer course", d: "A short online course covering budgets, offers, inspections and closing." },
 ];
 
@@ -71,7 +71,7 @@ const GLOSSARY = [
   ["Points", "An optional upfront fee to lower your rate. One point costs 1% of the loan amount."],
   ["Escrow", "An account we manage to pay your property tax and home insurance from your monthly payment."],
   ["Mortgage insurance (PMI)", "Usually required when you put down less than 20%. It can be removed once you reach 20% equity."],
-  ["Loan-to-value (LTV)", "Your loan amount divided by the home's value. A £320,000 loan on a £400,000 home is 80% LTV."],
+  ["Loan-to-value (LTV)", "Your loan amount divided by the home's value. A $320,000 loan on a $400,000 home is 80% LTV."],
   ["Rate lock", "A guarantee that your rate won't change between application and closing, for a set period."],
 ];
 
@@ -147,7 +147,7 @@ export default function MortgagePage() {
               </div>
             </div>
             <p style={{ fontSize: 12, color: GRAY, lineHeight: 1.6, marginTop: 12 }}>
-              Illustrative rates only, based on a £320,000 loan for a primary home with 20% down and a 740+ credit score. Your rate will depend on your circumstances.
+              Illustrative rates only, based on a $320,000 loan for a primary home with 20% down and a 740+ credit score. Your rate will depend on your circumstances.
             </p>
           </div>
 

@@ -8,7 +8,7 @@ const DARK = "#111827";
 
 const RETURNS = [3, 5, 7];
 
-const money = (n: number) => n.toLocaleString("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 });
+const money = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export default function RetirementCalculator() {
   const [age, setAge] = useState(45);

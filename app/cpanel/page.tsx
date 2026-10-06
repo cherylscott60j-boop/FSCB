@@ -20,7 +20,7 @@ const INP:React.CSSProperties  = {width:"100%",padding:"9px 12px",border:"1px so
 const SEL:React.CSSProperties  = {...INP,cursor:"pointer",appearance:"auto"};
 
 /* ── Helpers ─────────────────────────────────────────── */
-const usd = (n:number) => new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(Math.abs(n));
+const usd = (n:number) => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Math.abs(n));
 function relTime(iso:string){
   const d=Math.floor((Date.now()-new Date(iso).getTime())/86400000);
   if(d===0)return "Today"; if(d===1)return "Yesterday";
@@ -352,8 +352,8 @@ function UsersTab({
     if(isNaN(val)||val<=0){setLimitErr("Enter a valid positive amount.");return;}
     const current=acct.creditLimit??0;
     const newLimit=mode==="credit"?current+val:current-val;
-    if(newLimit<0){setLimitErr("Cannot reduce limit below £0.");return;}
-    if(newLimit>50000){setLimitErr("Maximum limit is £50,000.");return;}
+    if(newLimit<0){setLimitErr("Cannot reduce limit below $0.");return;}
+    if(newLimit>50000){setLimitErr("Maximum limit is $50,000.");return;}
     setLimitBusy(true);setLimitErr("");
     const err=await onCreditLimitUpdate(acct.id,newLimit);
     setLimitBusy(false);
@@ -468,7 +468,7 @@ function UsersTab({
                                     {isEditingThis?(
                                       <>
                                         <div style={{position:"relative",display:"flex",alignItems:"center"}}>
-                                          <span style={{position:"absolute",left:9,fontSize:13,color:GRAY,pointerEvents:"none"}}>£</span>
+                                          <span style={{position:"absolute",left:9,fontSize:13,color:GRAY,pointerEvents:"none"}}>$</span>
                                           <input
                                             type="number" min="0.01" step="100"
                                             placeholder="Amount"
@@ -1202,7 +1202,7 @@ function DisputesTab({
               <div>
                 <label style={LBL}>Disputed Amount</label>
                 <div style={{position:"relative"}}>
-                  <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>£</span>
+                  <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span>
                   <input type="number" min="0.01" step="0.01" placeholder="0.00" value={fAmt} onChange={e=>setFAmt(e.target.value)} style={{...INP,paddingLeft:24}}/>
                 </div>
               </div>
@@ -1362,7 +1362,7 @@ function DisputesTab({
    TAB: FRAUD & RISK
 ═══════════════════════════════════════════════════════ */
 const RULE_META:Record<string,{label:string;color:string;desc:string;severity:string}>={
-  large_transaction: {label:"Large Transaction", color:"#DC2626", desc:"Single transaction ≥ £5,000",          severity:"HIGH"},
+  large_transaction: {label:"Large Transaction", color:"#DC2626", desc:"Single transaction ≥ $5,000",          severity:"HIGH"},
   round_amount:      {label:"Round Amount",       color:BLUE, desc:"Exact round amount — possible structuring", severity:"MEDIUM"},
   velocity_24h:      {label:"Velocity (24h)",     color:BLUE, desc:"5+ transactions in 24 hours",          severity:"MEDIUM"},
   velocity_1h:       {label:"Velocity (1h)",      color:"#D97706", desc:"3+ transactions in 1 hour",            severity:"HIGH"},
@@ -1905,7 +1905,7 @@ function TransactionsTab({
                 <div>
                   <label style={LBL}>Amount</label>
                   <div style={{position:"relative"}}>
-                    <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>£</span>
+                    <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span>
                     <input type="number" min="0.01" step="0.01" placeholder="0.00" value={amount} onChange={e=>setAmount(e.target.value)} style={{...INP,paddingLeft:24}}/>
                   </div>
                 </div>
@@ -2005,7 +2005,7 @@ function TransactionsTab({
                 </div>
                 <div style={{marginBottom:14}}>
                   <label style={LBL}>Amount</label>
-                  <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>£</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
+                  <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
                 </div>
                 <div style={{marginBottom:18}}>
                   <label style={LBL}>Memo <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
@@ -2085,7 +2085,7 @@ function TransactionsTab({
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                   <div>
                     <label style={LBL}>Amount</label>
-                    <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>£</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
+                    <div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:14,pointerEvents:"none"}}>$</span><input type="number" min="0.01" step="0.01" placeholder="0.00" value={trAmt} onChange={e=>setTrAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div>
                   </div>
                   <div>
                     <label style={LBL}>Note <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label>
@@ -2241,7 +2241,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
       const res=await fetch("/api/cpanel/compliance/ctr-scan");
       const json=await res.json() as {eligible:Record<string,unknown>[];count:number};
       setCtrEligible(json.eligible??[]);
-      setScanMsg({text:`Found ${json.count} transaction${json.count!==1?"s":""} ≥ £10,000 without a CTR.`, ok:true});
+      setScanMsg({text:`Found ${json.count} transaction${json.count!==1?"s":""} ≥ $10,000 without a CTR.`, ok:true});
     }catch{setScanMsg({text:"Scan failed — try again.",ok:false});}
     finally{setScanning(false);}
   }
@@ -2314,7 +2314,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
         <StatCard label="Total SARs"        value={String(sars.length)}    sub={`${sars.filter(r=>r.status==="draft").length} draft`}          color="#DC2626" icon="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
         <StatCard label="Total CTRs"        value={String(ctrs.length)}    sub={`${ctrs.filter(r=>r.status==="submitted").length} submitted`}   color="#D97706" icon="M21 12a9 9 0 1 1-6.219-8.56"/>
         <StatCard label="OFAC Screenings"   value={String(screenings.length)} sub={`${pendingOfac} potential match${pendingOfac!==1?"es":""}`} color={pendingOfac>0?"#DC2626":BLUE} icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        <StatCard label="Unfiled Large Txs" value={String(ctrEligible.length)} sub="scan to detect ≥ £10,000"                                  color={ctrEligible.length>0?"#D97706":GRAY} icon="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
+        <StatCard label="Unfiled Large Txs" value={String(ctrEligible.length)} sub="scan to detect ≥ $10,000"                                  color={ctrEligible.length>0?"#D97706":GRAY} icon="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
       </div>
 
       {/* Sub-tabs */}
@@ -2357,7 +2357,7 @@ function ComplianceTab({reports,screenings,users,accounts,txs,onFileSAR,onFileCT
                   <div><label style={LBL}>Account <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><select value={sarAcct} onChange={e=>{setSarAcct(e.target.value);setSarTx("");}} style={SEL}><option value="">No specific account</option>{sarUserAccts.map(a=><option key={a.id} value={a.id}>{a.accountName} ••••{a.last4}</option>)}</select></div>
                   <div><label style={LBL}>Linked Transaction <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><select value={sarTx} onChange={e=>{setSarTx(e.target.value);if(e.target.value){const t=sarAcctTxs.find(t=>t.id===e.target.value);if(t)setSarAmt(String(Math.abs(t.amount)));} }} style={SEL}><option value="">No specific transaction</option>{sarAcctTxs.map(t=><option key={t.id} value={t.id}>{t.date} — {t.merchant} ({t.amount>0?"+":""}{usd(t.amount)})</option>)}</select></div>
                   <div><label style={LBL}>Subject Full Name</label><input type="text" placeholder="Full legal name" value={sarName} onChange={e=>setSarName(e.target.value)} style={INP}/></div>
-                  <div><label style={LBL}>Amount Involved <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,pointerEvents:"none"}}>£</span><input type="number" min="0" step="0.01" placeholder="0.00" value={sarAmt} onChange={e=>setSarAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div></div>
+                  <div><label style={LBL}>Amount Involved <span style={{fontWeight:400,color:GRAY}}>(optional)</span></label><div style={{position:"relative"}}><span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:GRAY,pointerEvents:"none"}}>$</span><input type="number" min="0" step="0.01" placeholder="0.00" value={sarAmt} onChange={e=>setSarAmt(e.target.value)} style={{...INP,paddingLeft:24}}/></div></div>
                   <div style={{gridColumn:"1/-1"}}><label style={LBL}>Description of Suspicious Activity</label><textarea rows={4} placeholder="Describe the suspicious activity, pattern observed, and reason for filing…" value={sarDesc} onChange={e=>setSarDesc(e.target.value)} style={{...INP,resize:"vertical",height:"auto"}}/></div>
                   {sarErr&&<div style={{gridColumn:"1/-1",fontSize:13,color:"#DC2626",padding:"8px 12px",background:"rgba(220,38,38,.06)",borderRadius:7}}>{sarErr}</div>}
                   <div style={{gridColumn:"1/-1"}}><button disabled={sarBusy} onClick={submitSAR} style={{background:BLUE,border:"none",borderRadius:10,padding:"11px 32px",fontSize:14,fontWeight:700,color:"#fff",cursor:sarBusy?"not-allowed":"pointer",fontFamily:FONT,opacity:sarBusy?.7:1}}>{sarBusy?"Filing…":"File SAR (Draft)"}</button></div>
@@ -2762,7 +2762,7 @@ function RatesTab({rates,fees,users,accounts,onUpdateRate,onUpdateFee,onApplyFee
                       {isEditing?(
                         <div style={{display:"flex",alignItems:"center",gap:6}}>
                           <div style={{position:"relative"}}>
-                            <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:13,pointerEvents:"none"}}>£</span>
+                            <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",color:GRAY,fontSize:13,pointerEvents:"none"}}>$</span>
                             <input type="number" min="0" step="0.01" value={feeInput} onChange={e=>setFeeInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")saveFee(fee.key);if(e.key==="Escape")setEditingFee(null);}} autoFocus style={{...INP,width:110,paddingLeft:22,fontSize:13}}/>
                           </div>
                           <button disabled={feeBusy} onClick={()=>saveFee(fee.key)} style={{background:BLUE,border:"none",borderRadius:7,padding:"6px 12px",fontSize:12.5,fontWeight:700,color:"#fff",cursor:feeBusy?"not-allowed":"pointer",fontFamily:"inherit",opacity:feeBusy?.6:1}}>{feeBusy?"…":"Save"}</button>

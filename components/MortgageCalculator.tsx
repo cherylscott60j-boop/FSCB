@@ -15,7 +15,7 @@ const TERMS = [
 const TAX_RATE = 0.011; // example annual property tax, % of price
 const INSURANCE_PER_YEAR = 1500; // example homeowners insurance
 
-const money = (n: number) => n.toLocaleString("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 });
+const money = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export default function MortgageCalculator() {
   const [price, setPrice] = useState(400000);
@@ -102,7 +102,7 @@ export default function MortgageCalculator() {
           ))}
         </div>
         <p style={{ fontSize: 11.5, color: "rgba(255,255,255,.6)", lineHeight: 1.6, margin: "14px 0 0" }}>
-          Illustrative estimate only. Assumes example rates, 1.1% annual property tax and £1,500 a year home insurance. Not a loan offer.
+          Illustrative estimate only. Assumes example rates, 1.1% annual property tax and $1,500 a year home insurance. Not a loan offer.
         </p>
       </div>
     </div>

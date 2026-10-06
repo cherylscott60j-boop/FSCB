@@ -15,7 +15,7 @@ const PAGES = {
     hero: "linear-gradient(145deg,#1a0a2e,#2d1b4e)",
     label: "Business Banking",
     ctaHref: "/open-account",
-    stats: [{ v: "£0", l: "Monthly fees*" }, { v: "Unlimited", l: "Transactions" }, { v: "Same-day", l: "ACH payments" }],
+    stats: [{ v: "$0", l: "Monthly fees*" }, { v: "Unlimited", l: "Transactions" }, { v: "Same-day", l: "ACH payments" }],
     overview: "Running a business means your bank should work as hard as you do. SGGINV Business Checking accounts give you the flexibility to handle high transaction volumes, the tools to manage your team's access, and a dedicated advisor who understands local business.",
     features: [
       { title: "No Monthly Maintenance Fees", desc: "Keep more of your business revenue. Qualifying accounts pay zero monthly maintenance charges.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3" },
@@ -26,10 +26,10 @@ const PAGES = {
       { title: "Dedicated Business Advisor", desc: "A local banking expert assigned to your account — available for questions, strategy, and growth planning.", icon: "M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z" },
     ],
     accounts: [
-      { name: "Business Basic Checking", fee: "£0/month", min: "£0 to open", txn: "200 items/month", extras: "Online & mobile banking", highlight: false, startHref: "/open-account?account=biz-basic-checking" },
-      { name: "Business Premium Checking", fee: "£0/month*", min: "£500 avg balance", txn: "Unlimited", extras: "+ ACH, wire discounts", highlight: true, startHref: "/open-account?account=biz-premium-checking" },
+      { name: "Business Basic Checking", fee: "$0/month", min: "$0 to open", txn: "200 items/month", extras: "Online & mobile banking", highlight: false, startHref: "/open-account?account=biz-basic-checking" },
+      { name: "Business Premium Checking", fee: "$0/month*", min: "$500 avg balance", txn: "Unlimited", extras: "+ ACH, wire discounts", highlight: true, startHref: "/open-account?account=biz-premium-checking" },
     ],
-    note: "* Fee waived with £500 average daily balance or £2,500 monthly deposits.",
+    note: "* Fee waived with $500 average daily balance or $2,500 monthly deposits.",
     steps: [
       { n: "1", t: "Gather Your Documents", d: "Business formation documents, EIN, and owner identification — we'll tell you exactly what you need." },
       { n: "2", t: "Meet with an Advisor", d: "Open in-branch or start online. A banker reviews your needs and recommends the right account." },
@@ -49,20 +49,20 @@ const PAGES = {
     hero: "linear-gradient(145deg,#0f1f0f,#1e4020)",
     label: "Business Banking",
     ctaHref: "/open-account",
-    stats: [{ v: "High APY", l: "Competitive yield" }, { v: "Same-day", l: "Transfers to checking" }, { v: "£0", l: "Monthly fees" }],
+    stats: [{ v: "High APY", l: "Competitive yield" }, { v: "Same-day", l: "Transfers to checking" }, { v: "$0", l: "Monthly fees" }],
     overview: "Your idle business cash should earn more than nothing. SGGINV Business Savings and Money Market accounts deliver competitive yields on your reserves, with the flexibility to transfer funds to checking the same day when you need to deploy capital.",
     features: [
       { title: "Competitive Business APY", desc: "Earn above-average yields on your business reserves — rates are reviewed regularly to stay competitive.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "Same-Day Transfers", desc: "Move funds between your business savings and checking accounts instantly through online banking.", icon: "M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01" },
-      { title: "Treasury Management", desc: "Sweep excess daily balances into higher-yield accounts automatically — make every pound count overnight.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
+      { title: "Treasury Management", desc: "Sweep excess daily balances into higher-yield accounts automatically — make every dollar count overnight.", icon: "M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" },
       { title: "No Lock-In Periods", desc: "Unlike CDs, your funds remain accessible. No penalties for moving money when business needs shift.", icon: "M8 11V7a4 4 0 0 1 8 0m-4 8v-4m-6 8h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2z" },
       { title: "Multiple Account Options", desc: "Choose from Business Savings, Money Market, or CDs based on your liquidity needs and yield goals.", icon: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2" },
     ],
     accounts: [
-      { name: "Business Savings", fee: "£0/month", min: "£100 to open", txn: "Competitive APY", extras: "6 withdrawals/month", highlight: false, startHref: "/open-account?account=biz-savings" },
-      { name: "Business Money Market", fee: "£0/month*", min: "£2,500 avg balance", txn: "Higher yield tier", extras: "Unlimited transfers", highlight: true, startHref: "/open-account?account=biz-money-market" },
+      { name: "Business Savings", fee: "$0/month", min: "$100 to open", txn: "Competitive APY", extras: "6 withdrawals/month", highlight: false, startHref: "/open-account?account=biz-savings" },
+      { name: "Business Money Market", fee: "$0/month*", min: "$2,500 avg balance", txn: "Higher yield tier", extras: "Unlimited transfers", highlight: true, startHref: "/open-account?account=biz-money-market" },
     ],
-    note: "* Money Market fee waived with £2,500 minimum balance maintained.",
+    note: "* Money Market fee waived with $2,500 minimum balance maintained.",
     steps: [
       { n: "1", t: "Open Alongside Checking", d: "Add a savings account when you open business checking or at any time through online banking." },
       { n: "2", t: "Set Up Automatic Transfers", d: "Schedule weekly or monthly transfers from checking to savings to build reserves effortlessly." },
@@ -83,7 +83,7 @@ const PAGES = {
     hero: "linear-gradient(145deg,#0d2137,#1a4a6b)",
     label: "Business Banking",
     ctaHref: "/about/contact",
-    stats: [{ v: "£10K–£5M", l: "Loan range" }, { v: "SBA", l: "Programs available" }, { v: "Local", l: "Underwriting" }],
+    stats: [{ v: "$10K–$5M", l: "Loan range" }, { v: "SBA", l: "Programs available" }, { v: "Local", l: "Underwriting" }],
     overview: "Growing a business takes capital — and capital decisions shouldn't be made by an algorithm in another state. SGGINV business loans are underwritten locally by bankers who know your market, your industry, and your potential.",
     features: [
       { title: "SBA 7(a) & 504 Loans", desc: "Access SBA-backed financing with lower down payments and longer repayment terms for qualified businesses.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
@@ -94,8 +94,8 @@ const PAGES = {
       { title: "Agricultural Lending", desc: "Specialized loan programs for farms, ranches, and agribusiness operations.", icon: "M3.055 11H5a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2 2 2 0 0 1 2 2v2.945" },
     ],
     accounts: [
-      { name: "Business Term Loan", fee: "Fixed or variable rate", min: "£10,000–£1M", txn: "12–120 months", extras: "Equipment, expansion", highlight: false, startHref: "/about/contact" },
-      { name: "SBA Loan Program", fee: "SBA-backed rate", min: "£50,000–£5M", txn: "Up to 300 months", extras: "Lower down payment", highlight: true, startHref: "/about/contact" },
+      { name: "Business Term Loan", fee: "Fixed or variable rate", min: "$10,000–$1M", txn: "12–120 months", extras: "Equipment, expansion", highlight: false, startHref: "/about/contact" },
+      { name: "SBA Loan Program", fee: "SBA-backed rate", min: "$50,000–$5M", txn: "Up to 300 months", extras: "Lower down payment", highlight: true, startHref: "/about/contact" },
     ],
     note: "Rates and terms are based on business financials, collateral, and creditworthiness. Contact a business banker for a detailed proposal.",
     steps: [
@@ -153,7 +153,7 @@ const PAGES = {
     hero: "linear-gradient(145deg,#2e1a00,#5a3600)",
     label: "Business Banking",
     ctaHref: "/about/contact",
-    stats: [{ v: "Up to 2%", l: "Cashback on all purchases" }, { v: "£0", l: "Annual fee" }, { v: "Free", l: "Employee cards" }],
+    stats: [{ v: "Up to 2%", l: "Cashback on all purchases" }, { v: "$0", l: "Annual fee" }, { v: "Free", l: "Employee cards" }],
     overview: "Your business spending should work for you. SGGINV Business Credit Cards earn cashback on every purchase, give you tools to manage employee spending, and integrate with your accounting software to simplify reconciliation at month's end.",
     features: [
       { title: "Up to 2% Cashback Everywhere", desc: "Earn 2% on all business purchases — office supplies, travel, utilities, vendors, advertising, and more.", icon: "M12 2l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 15.4 6.8 18.1l1-5.8L3.5 8.2l5.9-.9L12 2z" },
@@ -164,8 +164,8 @@ const PAGES = {
       { title: "Fraud Liability Protection", desc: "Zero liability on unauthorized business purchases. Real-time fraud alerts keep you informed.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
     ],
     accounts: [
-      { name: "Business Cash Card", fee: "£0/year", min: "Good credit", txn: "1.5% all purchases", extras: "Free employee cards", highlight: false, startHref: "/about/contact" },
-      { name: "Business Rewards Card", fee: "£0/year", min: "Good–Excellent credit", txn: "2% all purchases", extras: "+ travel rewards, no FX", highlight: true, startHref: "/about/contact" },
+      { name: "Business Cash Card", fee: "$0/year", min: "Good credit", txn: "1.5% all purchases", extras: "Free employee cards", highlight: false, startHref: "/about/contact" },
+      { name: "Business Rewards Card", fee: "$0/year", min: "Good–Excellent credit", txn: "2% all purchases", extras: "+ travel rewards, no FX", highlight: true, startHref: "/about/contact" },
     ],
     note: "APR is based on business and personal creditworthiness. See cardholder agreement for complete terms.",
     steps: [

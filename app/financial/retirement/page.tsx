@@ -52,10 +52,10 @@ const PORTFOLIOS = [
 ] as const;
 
 const FEES = [
-  ["First £1 million", "1.00%"],
-  ["£1 million – £3 million", "0.80%"],
-  ["£3 million – £10 million", "0.60%"],
-  ["Over £10 million", "Ask us"],
+  ["First $1 million", "1.00%"],
+  ["$1 million – $3 million", "0.80%"],
+  ["$3 million – $10 million", "0.60%"],
+  ["Over $10 million", "Ask us"],
 ];
 
 const STEPS = [
@@ -66,9 +66,9 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "Who is private banking for?", a: "Private banking is for clients with £250,000 or more in savings and investments with us, or a household income of £300,000 or more. If you're close to these levels, talk to us. We look at your whole situation." },
+  { q: "Who is private banking for?", a: "Private banking is for clients with $250,000 or more in savings and investments with us, or a household income of $300,000 or more. If you're close to these levels, talk to us. We look at your whole situation." },
   { q: "Is there a fee for private banking?", a: "Private banking accounts and everyday banking services are free. If you choose investment management, you pay an annual advisory fee based on the value of your portfolio. You'll see every fee in writing before you commit." },
-  { q: "What are the IRA contribution limits for 2025?", a: "For 2025 you can contribute up to £7,000 a year to IRAs, or £8,000 if you're 50 or older. Income limits apply to Roth IRA contributions." },
+  { q: "What are the IRA contribution limits for 2025?", a: "For 2025 you can contribute up to $7,000 a year to IRAs, or $8,000 if you're 50 or older. Income limits apply to Roth IRA contributions." },
   { q: "When should I start taking Social Security?", a: "It depends on your health, other income and whether you're married. Delaying from 62 to 70 can increase your monthly benefit significantly. Your retirement planner can run the numbers for you." },
   { q: "What is a required minimum distribution?", a: "Once you reach 73, you must withdraw a minimum amount each year from traditional IRAs and most workplace plans. Missing an RMD can lead to a tax penalty." },
   { q: "Can I still use my existing financial adviser or accountant?", a: "Yes. Many clients ask us to work alongside their accountant or attorney, and we're happy to coordinate with them." },
@@ -86,7 +86,7 @@ export default function PrivateBankingPage() {
         secondary={{ label: "Plan your retirement", href: "#retirement" }}
         highlights={[
           { v: "1", l: "Dedicated relationship manager" },
-          { v: "£250K+", l: "To qualify" },
+          { v: "$250K+", l: "To qualify" },
           { v: "Annual", l: "Planning reviews" },
         ]}
       />
@@ -113,7 +113,7 @@ export default function PrivateBankingPage() {
             <div style={{ fontSize: 12.5, letterSpacing: ".14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(255,255,255,.75)", marginBottom: 12 }}>Who it&apos;s for</div>
             <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 26, margin: "0 0 16px", letterSpacing: "-.01em" }}>Is private banking right for you?</h3>
             <p style={{ fontSize: 15.5, color: "rgba(255,255,255,.8)", lineHeight: 1.7, margin: "0 0 20px" }}>You can join private banking if you have either:</p>
-            {["£250,000 or more in savings and investments with us", "A household income of £300,000 or more"].map((t) => (
+            {["$250,000 or more in savings and investments with us", "A household income of $300,000 or more"].map((t) => (
               <div key={t} style={{ display: "flex", gap: 12, padding: "12px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15.5, fontWeight: 600 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.6" style={{ flex: "none", marginTop: 3 }}><path d="M5 12l5 5L20 7" /></svg>
                 {t}

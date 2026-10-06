@@ -49,7 +49,7 @@ const FAQS = [
   { q: "Is online and mobile banking free?", a: "Yes. There's no charge to use online banking or the app, and no fee for bill pay or transfers between your accounts." },
   { q: "Which phones does the app work on?", a: "The app works on iPhones running iOS 16 or later and Android phones running Android 10 or later." },
   { q: "How long do mobile check deposits take?", a: "Checks deposited before 8pm ET on a business day are usually available the next business day. Keep the paper check for 14 days, then destroy it." },
-  { q: "Is there a limit on mobile deposits?", a: "You can deposit up to £5,000 a day and £15,000 over 30 days using the app. Limits may be higher for long-standing customers." },
+  { q: "Is there a limit on mobile deposits?", a: "You can deposit up to $5,000 a day and $15,000 over 30 days using the app. Limits may be higher for long-standing customers." },
   { q: "What should I do if I forget my password?", a: "Tap 'Forgot password' on the login screen. We'll verify your identity and let you set a new password in a few minutes." },
   { q: "What if I lose my phone?", a: "Call us on (555) 302-1920 and we'll block app access from that device. Your accounts are still protected by your password and two-step verification." },
 ];
@@ -65,7 +65,7 @@ export default function OnlineBankingPage() {
         secondary={{ label: "See what you can do", href: "#features" }}
         highlights={[
           { v: "24/7", l: "Access to your accounts" },
-          { v: "£0", l: "To use" },
+          { v: "$0", l: "To use" },
           { v: "2 min", l: "To sign up" },
         ]}
       />
@@ -103,8 +103,8 @@ export default function OnlineBankingPage() {
                 <div style={{ width: 30, height: 30, borderRadius: "50%", background: BLUE, color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>A</div>
               </div>
               {[
-                ["Everyday Checking", "£2,418.60"],
-                ["Everyday Savings", "£8,205.12"],
+                ["Everyday Checking", "$2,418.60"],
+                ["Everyday Savings", "$8,205.12"],
               ].map(([n, v], i) => (
                 <div key={n} style={{ background: i ? TINT : BLUE, color: i ? DARK : "#fff", borderRadius: 14, padding: "16px 16px", marginBottom: 10 }}>
                   <div style={{ fontSize: 12, opacity: 0.75 }}>{n}</div>
@@ -113,9 +113,9 @@ export default function OnlineBankingPage() {
               ))}
               <div style={{ fontSize: 12, fontWeight: 700, color: GRAY, textTransform: "uppercase", letterSpacing: ".06em", margin: "14px 8px 4px" }}>Notifications</div>
               {[
-                ["Card used at Grocery store", "£64.21 · 2 min ago"],
-                ["Paycheck received", "£1,850.00 · Today"],
-                ["Electric bill paid", "£92.40 · Mon"],
+                ["Card used at Grocery store", "$64.21 · 2 min ago"],
+                ["Paycheck received", "$1,850.00 · Today"],
+                ["Electric bill paid", "$92.40 · Mon"],
               ].map(([t, s]) => (
                 <div key={t} style={{ display: "flex", gap: 10, alignItems: "center", padding: "10px 8px", borderTop: "1px solid rgba(17,24,39,.06)" }}>
                   <div style={{ width: 8, height: 8, borderRadius: "50%", background: BLUE, flex: "none" }} />

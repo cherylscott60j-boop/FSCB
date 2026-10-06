@@ -77,7 +77,7 @@ const PAGES = {
     ],
     addons: ["Accelerated death benefit rider", "Waiver of premium rider", "Children's term rider", "Long-term care rider", "Disability income rider", "Return of premium rider"],
     features: [
-      { title: "Coverage from £50K to £5M+", desc: "Right-size your coverage to match your income, debt obligations, and family's specific needs.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
+      { title: "Coverage from $50K to $5M+", desc: "Right-size your coverage to match your income, debt obligations, and family's specific needs.", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
       { title: "No Medical Exam Options", desc: "Qualifying applicants can receive coverage without a physical exam — faster approval, less hassle.", icon: "M9 12l2 2 4-4" },
       { title: "Living Benefits", desc: "Access a portion of your death benefit early if diagnosed with a terminal, chronic, or critical illness.", icon: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" },
       { title: "Local Advisor Guidance", desc: "An SGGINV insurance advisor helps you choose the right policy and coverage amount for your family.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },

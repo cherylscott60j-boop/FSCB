@@ -97,7 +97,7 @@ export default function LoginPage() {
             {[
               { value: "24/7", label: "Account access" },
               { value: "24/7", label: "Fraud support" },
-              { value: "£0", label: "To use online banking" },
+              { value: "$0", label: "To use online banking" },
             ].map((s) => (
               <div key={s.label}>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,.65)", marginBottom: 4 }}>{s.label}</div>

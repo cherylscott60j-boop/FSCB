@@ -36,7 +36,7 @@ const PAGES = {
     ],
     faqs: [
       { q: "Can I finance a private-party purchase?", a: "Yes — SGGINV funds private-party vehicle purchases. We'll need the title and a bill of sale from the seller." },
-      { q: "Is there a minimum loan amount?", a: "We typically finance vehicles of £5,000 or more. Contact a banker for purchases below that amount." },
+      { q: "Is there a minimum loan amount?", a: "We typically finance vehicles of $5,000 or more. Contact a banker for purchases below that amount." },
       { q: "Can I include tax, title, and registration in my loan?", a: "Yes — in most cases, we can roll in tax, title, and registration fees so you owe nothing out of pocket at purchase." },
       { q: "Does my vehicle serve as collateral?", a: "Yes — auto loans are secured by the vehicle. SGGINV holds the title until the loan is paid in full." },
     ],
@@ -59,9 +59,9 @@ const PAGES = {
       { title: "Local Appraisal Team", desc: "SGGINV uses trusted local appraisers for faster turnaround and fair market value assessments.", icon: "M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7" },
     ],
     rates: [
-      { term: "HELOC (variable rate)", range: "Prime + margin", amount: "£10K–£500K", best: "Ongoing projects" },
-      { term: "Home Equity Loan (10 yr)", range: "Fixed — contact us", amount: "£10K–£500K", best: "One-time lump sum" },
-      { term: "Home Equity Loan (20 yr)", range: "Fixed — contact us", amount: "£25K–£500K", best: "Lower monthly payment" },
+      { term: "HELOC (variable rate)", range: "Prime + margin", amount: "$10K–$500K", best: "Ongoing projects" },
+      { term: "Home Equity Loan (10 yr)", range: "Fixed — contact us", amount: "$10K–$500K", best: "One-time lump sum" },
+      { term: "Home Equity Loan (20 yr)", range: "Fixed — contact us", amount: "$25K–$500K", best: "Lower monthly payment" },
     ],
     steps: [
       { n: "1", t: "Apply and Estimate Your Equity", d: "We'll calculate your available equity based on your home's value and existing mortgage balance." },
@@ -81,11 +81,11 @@ const PAGES = {
     title: "Business Loans",
     subtitle: "Capital for growth, expansion, equipment, and commercial real estate — decided locally.",
     hero: "linear-gradient(145deg,#0f0f1e,#1e1e40)",
-    stats: [{ v: "£10K–£5M", l: "Loan range" }, { v: "SBA preferred", l: "Lender" }, { v: "3–5 days", l: "Average decision" }],
+    stats: [{ v: "$10K–$5M", l: "Loan range" }, { v: "SBA preferred", l: "Lender" }, { v: "3–5 days", l: "Average decision" }],
     overview: "The capital you need to grow your business shouldn't require a trip to a distant headquarters. SGGINV business loans are underwritten by local bankers who know your market and your industry — from startups seeking their first credit line to established businesses financing major expansions.",
     uses: ["Equipment purchase", "Working capital", "Commercial RE purchase", "Business acquisition", "Franchise financing", "Inventory purchase", "Tenant improvements", "Partner buyout"],
     features: [
-      { title: "SBA 7(a) Loans", desc: "Up to £5M in SBA-backed financing with lower down payments, longer terms, and more flexible eligibility.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
+      { title: "SBA 7(a) Loans", desc: "Up to $5M in SBA-backed financing with lower down payments, longer terms, and more flexible eligibility.", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944" },
       { title: "SBA 504 Loans", desc: "Long-term, fixed-rate financing for major fixed assets like commercial real estate and large equipment.", icon: "M3 21h18M5 21V9l7-6 7 6v12" },
       { title: "Commercial Real Estate", desc: "Purchase or refinance owner-occupied or investment commercial property with local market expertise.", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 0-1 1h-3" },
       { title: "Equipment Financing", desc: "Finance new or used equipment with terms matched to the asset's useful life — up to 10 years.", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066" },
@@ -93,9 +93,9 @@ const PAGES = {
       { title: "Agricultural Lending", desc: "Farm operating loans, equipment financing, and real estate loans tailored for agricultural operations.", icon: "M3.055 11H5a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2 2 2 0 0 1 2 2v2.945" },
     ],
     rates: [
-      { term: "Business Term Loan", range: "Fixed or variable", amount: "£10,000–£1,000,000", best: "Equipment, expansion" },
-      { term: "SBA 7(a) Loan", range: "Prime + 2.25–4.75%", amount: "Up to £5,000,000", best: "Most business purposes" },
-      { term: "Business Line of Credit", range: "Variable rate", amount: "£25,000–£500,000", best: "Working capital" },
+      { term: "Business Term Loan", range: "Fixed or variable", amount: "$10,000–$1,000,000", best: "Equipment, expansion" },
+      { term: "SBA 7(a) Loan", range: "Prime + 2.25–4.75%", amount: "Up to $5,000,000", best: "Most business purposes" },
+      { term: "Business Line of Credit", range: "Variable rate", amount: "$25,000–$500,000", best: "Working capital" },
     ],
     steps: [
       { n: "1", t: "Initial Consultation", d: "Meet with a business banker to discuss your needs, timeline, and which loan type fits best." },

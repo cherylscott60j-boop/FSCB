@@ -9,7 +9,7 @@ const DARK = "#111827";
 const YEARS = [1, 2, 3, 5, 10];
 const EXAMPLE_APY = 3.75;
 
-const money = (n: number) => n.toLocaleString("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 });
+const money = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export default function SavingsCalculator() {
   const [start, setStart] = useState(1000);

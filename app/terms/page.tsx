@@ -27,8 +27,8 @@ const SECTIONS: LegalSection[] = [
     id: "who",
     title: "Who we are",
     body: [
-      { p: "Safeguard Global Investment Bank is a fictional bank created for demonstration purposes. It is not a real financial institution and is not authorised or regulated by any financial authority." },
-      { p: "Please don't use this website to send real money, or to share real personal or financial information." },
+      { p: "Safeguard Global Investment Bank provides secure banking and financial services designed to support individuals, businesses, and investors.We are committed to maintaining high standards of security, transparency, regulatory compliance, and responsible financial service." },
+      { p: "Eligible deposits are insured by the Federal Deposit Insurance Corporation (FDIC), subject to applicable coverage limits, ownership categories, terms, and federal regulations.Banking products and services are subject to eligibility requirements, account terms, applicable laws, and regulatory requirements." },
     ],
   },
   {

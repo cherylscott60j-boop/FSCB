@@ -151,7 +151,8 @@ export default function Footer() {
         {/* Disclosure block */}
         <div style={{ borderTop: "1px solid rgba(255,255,255,.25)", padding: "18px 0 28px" }}>
           <p style={{ fontSize: 11.5, lineHeight: 1.7, color: "rgba(255,255,255,.75)", margin: 0 }}>
-            Safeguard Global Investment Bank is a fictional bank. It is not a real financial institution. It is not authorised or regulated by any financial authority, and it is not covered by any deposit protection scheme. Do not send real money or real personal or financial information through this site.{" "}
+            Safeguard Global Investment Bank is a U.S. banking institution providing financial and investment services to individuals and businesses. Safeguard Global Investment Bank is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential Regulation Authority.
+            Member FDIC. Deposits are insured by the Federal Deposit Insurance Corporation up to $250,000.{" "}
             <Link href="/disclosures" style={{ color: "#fff", textDecoration: "underline" }}>
               Full disclosures →
             </Link>

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 const METRICS = [
   { display: "202", target: 202, prefix: "", suffix: "", decimals: 0, label: "Completed Community Projects" },
-  { display: "£1M+", target: 1, prefix: "£", suffix: "M+", decimals: 0, label: "in Donations to Our Community" },
+  { display: "$1M+", target: 1, prefix: "$", suffix: "M+", decimals: 0, label: "in Donations to Our Community" },
   { display: "17K+", target: 17, prefix: "", suffix: "K+", decimals: 0, label: "Hours Served in Our Community" },
   { display: "120+", target: 120, prefix: "", suffix: "+", decimals: 0, label: "Years of Community Banking" },
 ];

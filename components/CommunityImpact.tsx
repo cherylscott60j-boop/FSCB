@@ -15,7 +15,7 @@ const ITEMS = [
   },
   {
     title: "Small Business Support",
-    body: "£1M+ in local donations and grants to founders traditional banks overlook.",
+    body: "$1M+ in local donations and grants to founders traditional banks overlook.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <rect x="3" y="7" width="18" height="13" rx="2" />
@@ -99,7 +99,7 @@ export default function CommunityImpact() {
                 lineHeight: 1,
               }}
             >
-              £1M+
+              $1M+
             </div>
             <div style={{ fontSize: 13, fontWeight: 600, marginTop: 5 }}>reinvested locally</div>
           </div>
@@ -131,7 +131,7 @@ export default function CommunityImpact() {
             We measure success by who we lift up
           </h2>
           <p style={{ fontSize: 17, color: "#6B7280", lineHeight: 1.62, margin: "0 0 30px" }}>
-            We believe in building stronger communities. With over 200 projects, £875,000 in donations and 17,000 hours
+            We believe in building stronger communities. With over 200 projects, $875,000 in donations and 17,000 hours
             of service, we are proud of the impact we make in our communities every day.
           </p>
 

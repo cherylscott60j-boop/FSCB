@@ -14,7 +14,7 @@ const OPEN_ACCOUNT = [
     name: "Open a checking account",
     tagline: "Fee-free everyday banking for you, with your pay up to 2 days early.",
     rows: [
-      ["Monthly fee", "£0"],
+      ["Monthly fee", "$0"],
       ["Minimum balance", "None"],
       ["Early pay", "Up to 2 days"],
       ["Contactless debit card", "Included"],
@@ -28,7 +28,7 @@ const OPEN_ACCOUNT = [
     tagline: "Banking for sole traders, start-ups and growing companies.",
     featured: true,
     rows: [
-      ["Monthly fee", "£0 for 12 months"],
+      ["Monthly fee", "$0 for 12 months"],
       ["Electronic payments", "Unlimited, free"],
       ["Invoicing tools", "Included"],
       ["Multi-user access", "Included"],
@@ -42,9 +42,9 @@ const OPEN_ACCOUNT = [
 const PRODUCTS = [
   { t: "Checking accounts", d: "Fee-free everyday banking with early pay and instant card controls.", href: "/personal/checking", icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3z" },
   { t: "Savings", d: "Earn interest every month and save automatically with round-ups.", href: "/personal/savings", icon: "M4 19V5M4 19h16M8 15l3-4 3 2 4-6" },
-  { t: "Personal loans", d: "Borrow £1,000 to £50,000 with a fixed rate and fixed payments.", href: "/loans/personal", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
+  { t: "Personal loans", d: "Borrow $1,000 to $50,000 with a fixed rate and fixed payments.", href: "/loans/personal", icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 6h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z" },
   { t: "Mortgages", d: "Buy your first home, move or remortgage with options from 3% deposit.", href: "/loans/mortgage", icon: "M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
-  { t: "Safe deposit boxes", d: "Keep documents and valuables in our secure vault from £60 a year.", href: "/personal/safe-deposit-boxes", icon: "M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z" },
+  { t: "Safe deposit boxes", d: "Keep documents and valuables in our secure vault from $60 a year.", href: "/personal/safe-deposit-boxes", icon: "M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z" },
   { t: "Private banking", d: "A dedicated relationship manager, investments and retirement planning.", href: "/financial/retirement", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0" },
 ];
 
@@ -53,7 +53,7 @@ const ACCOUNTS = [
     name: "Everyday Checking",
     tagline: "Simple, fee-free banking for day-to-day spending.",
     rows: [
-      ["Monthly fee", "£0"],
+      ["Monthly fee", "$0"],
       ["Minimum balance", "None"],
       ["Early pay", "Up to 2 days"],
       ["Contactless debit card", "Included"],
@@ -66,8 +66,8 @@ const ACCOUNTS = [
     tagline: "Extra perks for people who bank with us for everything.",
     featured: true,
     rows: [
-      ["Monthly fee", "£0 with qualifying balance"],
-      ["ATM fee refunds", "Up to £15 / month"],
+      ["Monthly fee", "$0 with qualifying balance"],
+      ["ATM fee refunds", "Up to $15 / month"],
       ["Foreign card fees", "2 free each month"],
       ["Overdraft cover", "Included"],
     ] as [string, string][],
@@ -79,7 +79,7 @@ const ACCOUNTS = [
     tagline: "Flexible savings you can dip into whenever you need.",
     rows: [
       ["Example rate", "3.25% AER"],
-      ["Monthly fee", "£0"],
+      ["Monthly fee", "$0"],
       ["Minimum to open", "Any amount"],
       ["Round-ups & goals", "Included"],
     ] as [string, string][],
@@ -140,7 +140,7 @@ export default function Home() {
       <OverlapSection className="home-overlap" maxWidth={1040}>
         <AccountCards accounts={OPEN_ACCOUNT} />
         <p style={{ fontSize: 12, color: GRAY, lineHeight: 1.6, marginTop: 12 }}>
-          Business accounts are £6 a month after your first 12 months. Eligibility criteria apply.
+          Business accounts are $6 a month after your first 12 months. Eligibility criteria apply.
         </p>
       </OverlapSection>
 
@@ -155,7 +155,7 @@ export default function Home() {
         <SectionTitle eyebrow="Our accounts" title="Find the right account for you" />
         <AccountCards accounts={ACCOUNTS} />
         <p style={{ fontSize: 12, color: GRAY, lineHeight: 1.6, marginTop: 12 }}>
-          Rates are examples and can change. Premium Checking fee waived with a £500 average daily balance or £1,500 paid in each month; otherwise £9 a month.
+          Rates are examples and can change. Premium Checking fee waived with a $500 average daily balance or $1,500 paid in each month; otherwise $9 a month.
         </p>
       </Section>
 
@@ -182,15 +182,15 @@ export default function Home() {
             <div style={{ width: 280, background: "#fff", borderRadius: 28, padding: 14, border: "1px solid rgba(17,24,39,.1)" }}>
               <div style={{ background: BLUE, color: "#fff", borderRadius: 18, padding: "22px 20px" }}>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Everyday Checking</div>
-                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 30, margin: "4px 0 2px" }}>£2,418.60</div>
+                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 30, margin: "4px 0 2px" }}>$2,418.60</div>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)" }}>Available balance</div>
               </div>
               <div style={{ padding: "16px 8px 6px" }}>
                 {[
-                  ["Salary", "+£1,850.00", "Today"],
-                  ["Supermarket", "−£64.21", "Yesterday"],
-                  ["Coffee shop", "−£4.75", "Yesterday"],
-                  ["Electricity", "−£92.40", "Mon"],
+                  ["Salary", "+$1,850.00", "Today"],
+                  ["Supermarket", "−$64.21", "Yesterday"],
+                  ["Coffee shop", "−$4.75", "Yesterday"],
+                  ["Electricity", "−$92.40", "Mon"],
                 ].map(([n, a, d]) => (
                   <div key={n} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid rgba(17,24,39,.06)" }}>
                     <div>

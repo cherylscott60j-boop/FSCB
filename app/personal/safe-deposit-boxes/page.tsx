@@ -52,7 +52,7 @@ const ACCESS_HOURS = [
 const FAQS = [
   { q: "Are the contents of my box insured?", a: "No. Safe deposit box contents aren't covered by the bank or by any deposit insurance. We recommend adding them to your home insurance or taking out a separate valuables policy, and keeping a list and photos of what's inside." },
   { q: "Can the bank see what's in my box?", a: "No. Only you and any joint renters or deputies know what's inside. Staff never open your box with you, and we don't hold a copy of your key." },
-  { q: "What happens if I lose a key?", a: "Let us know straight away. If you still have one key, we'll order a replacement for £25. If both keys are lost, the lock is drilled and replaced in your presence for £175." },
+  { q: "What happens if I lose a key?", a: "Let us know straight away. If you still have one key, we'll order a replacement for $25. If both keys are lost, the lock is drilled and replaced in your presence for $175." },
   { q: "Do I need a bank account to rent a box?", a: "Yes, you'll need a checking or savings account with us. Your annual fee is paid automatically from that account each year." },
   { q: "Who can access my box?", a: "Only renters named on the agreement and any deputies you've authorized. Each person must show photo ID and sign the access log on every visit." },
   { q: "What happens to my box if I pass away?", a: "A joint renter can keep accessing the box as normal. Otherwise the executor of your estate can access it once they provide the required legal documents." },
@@ -81,7 +81,7 @@ export default function SafeDepositBoxesPage() {
         primary={{ label: "Check availability", href: "/about/contact" }}
         secondary={{ label: "Compare box sizes", href: "#sizes" }}
         highlights={[
-          { v: "From £60", l: "Per year" },
+          { v: "From $60", l: "Per year" },
           { v: "5 sizes", l: "To choose from" },
           { v: "2 keys", l: "Needed to open" },
         ]}
@@ -98,7 +98,7 @@ export default function SafeDepositBoxesPage() {
                 <BoxGlyph w={s.w} h={s.h} />
                 <div style={{ fontFamily: FONT, fontWeight: 600, fontSize: 17, color: DARK }}>{s.name}</div>
                 <div style={{ fontSize: 13, color: GRAY, marginBottom: 12 }}>{s.w}&quot; × {s.h}&quot; × 24&quot;</div>
-                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 26, color: BLUE, lineHeight: 1 }}>£{s.price}</div>
+                <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 26, color: BLUE, lineHeight: 1 }}>${s.price}</div>
                 <div style={{ fontSize: 12, color: GRAY, marginBottom: 14 }}>per year</div>
                 <div style={{ fontSize: 13, color: GRAY, lineHeight: 1.5, borderTop: "1px solid rgba(17,24,39,.08)", paddingTop: 12, marginTop: "auto" }}>{s.fits}</div>
               </div>

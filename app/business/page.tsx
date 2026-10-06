@@ -16,7 +16,7 @@ const PRODUCTS = [
 
 const TOP = [
   { t: "Open an account online", d: "Apply in about 10 minutes.", icon: "M12 4v16m8-8H4" },
-  { t: "A named business manager", d: "For businesses turning over £500K+.", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0" },
+  { t: "A named business manager", d: "For businesses turning over $500K+.", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0" },
   { t: "Free banking for 12 months", d: "For new businesses and switchers.", icon: "M12 8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 14C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z" },
   { t: "Accounting software links", d: "Sync transactions automatically.", icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 0 1-15.357-2m15.357 2H15" },
 ];
@@ -26,9 +26,9 @@ const ACCOUNTS = [
     name: "Start-up",
     tagline: "For new businesses in their first year of trading.",
     rows: [
-      ["Monthly fee", "£0 for 12 months"],
+      ["Monthly fee", "$0 for 12 months"],
       ["Electronic payments", "Unlimited, free"],
-      ["Cash deposits", "£1,000 / month free"],
+      ["Cash deposits", "$1,000 / month free"],
       ["Cheques paid in", "50p each"],
       ["Invoicing tools", "Included"],
     ] as [string, string][],
@@ -40,9 +40,9 @@ const ACCOUNTS = [
     tagline: "Our most popular account for established small businesses.",
     featured: true,
     rows: [
-      ["Monthly fee", "£6"],
+      ["Monthly fee", "$6"],
       ["Electronic payments", "Unlimited, free"],
-      ["Cash deposits", "£3,000 / month free"],
+      ["Cash deposits", "$3,000 / month free"],
       ["Cheques paid in", "Free"],
       ["Users with access", "Up to 5"],
     ] as [string, string][],
@@ -53,9 +53,9 @@ const ACCOUNTS = [
     name: "Business Plus",
     tagline: "For larger businesses with higher volumes and a named manager.",
     rows: [
-      ["Monthly fee", "£18"],
+      ["Monthly fee", "$18"],
       ["Electronic payments", "Unlimited, free"],
-      ["Cash deposits", "£10,000 / month free"],
+      ["Cash deposits", "$10,000 / month free"],
       ["International payments", "5 free / month"],
       ["Users with access", "Unlimited"],
     ] as [string, string][],
@@ -65,8 +65,8 @@ const ACCOUNTS = [
 ];
 
 const SIZES = [
-  { name: "Sole traders & start-ups", desc: "Simple accounts and tools to get you up and running.", points: ["Free banking for 12 months", "Invoicing and expense tracking in the app", "Start-up loans from £1,000"] },
-  { name: "Small & growing businesses", desc: "Room to grow, with lending and payments that scale with you.", points: ["Multi-user access with permissions", "Overdrafts and loans up to £250,000", "Card payments from 1.39% per transaction"] },
+  { name: "Sole traders & start-ups", desc: "Simple accounts and tools to get you up and running.", points: ["Free banking for 12 months", "Invoicing and expense tracking in the app", "Start-up loans from $1,000"] },
+  { name: "Small & growing businesses", desc: "Room to grow, with lending and payments that scale with you.", points: ["Multi-user access with permissions", "Overdrafts and loans up to $250,000", "Card payments from 1.39% per transaction"] },
   { name: "Established businesses", desc: "A dedicated relationship team for more complex needs.", points: ["A named business manager", "Commercial mortgages and asset finance", "International payments and currency accounts"] },
 ];
 
@@ -80,18 +80,18 @@ const TOOLS = [
 ];
 
 const LENDING = [
-  { type: "Business overdraft", amount: "£500 – £50,000", term: "Reviewed yearly", rate: "From 9.9% EAR" },
-  { type: "Small business loan", amount: "£1,000 – £50,000", term: "1 – 7 years", rate: "From 7.4% APR" },
-  { type: "Growth loan", amount: "£50,000 – £250,000", term: "1 – 10 years", rate: "From 6.5% APR" },
-  { type: "Commercial mortgage", amount: "£100,000 – £2m", term: "Up to 25 years", rate: "Ask us" },
-  { type: "Asset finance", amount: "£5,000 – £500,000", term: "1 – 7 years", rate: "Ask us" },
+  { type: "Business overdraft", amount: "$500 – $50,000", term: "Reviewed yearly", rate: "From 9.9% EAR" },
+  { type: "Small business loan", amount: "$1,000 – $50,000", term: "1 – 7 years", rate: "From 7.4% APR" },
+  { type: "Growth loan", amount: "$50,000 – $250,000", term: "1 – 10 years", rate: "From 6.5% APR" },
+  { type: "Commercial mortgage", amount: "$100,000 – $2m", term: "Up to 25 years", rate: "Ask us" },
+  { type: "Asset finance", amount: "$5,000 – $500,000", term: "1 – 7 years", rate: "Ask us" },
 ];
 
 const CARD_FEES = [
   ["In person (debit cards)", "1.39%"],
   ["In person (credit cards)", "1.69%"],
   ["Online payments", "1.49% + 20p"],
-  ["Card reader", "£29 one-off"],
+  ["Card reader", "$29 one-off"],
   ["Money in your account", "Next business day"],
 ];
 
@@ -139,11 +139,11 @@ const FAQS = [
   { q: "What do I need to open a business account?", a: "Details of your business, including its registered address and company number if it has one, plus ID and home addresses for all directors and anyone owning 25% or more." },
   { q: "How long does it take to open an account?", a: "Most applications are approved within 2 business days. Some need extra checks, and we'll let you know if we need more information." },
   { q: "Can I switch my business account to you?", a: "Yes. We'll move your balance and payments across for you in 7 working days, and redirect payments made to your old account for 3 years." },
-  { q: "Are there fees for business banking?", a: "New businesses and switchers get 12 months of free everyday banking. After that, Business Everyday is £6 a month including unlimited electronic payments." },
+  { q: "Are there fees for business banking?", a: "New businesses and switchers get 12 months of free everyday banking. After that, Business Everyday is $6 a month including unlimited electronic payments." },
   { q: "Can I open an account as a sole trader?", a: "Yes. Sole traders can open any of our business accounts. Keeping business and personal money separate makes your tax return much easier." },
   { q: "Can my accountant access my account?", a: "Yes. You can give your accountant or bookkeeper view-only access with their own login, and connect your account to popular accounting software." },
   { q: "Can I pay in cash and cheques?", a: "Yes, at any of our branches. Each account includes a free monthly cash deposit allowance, shown in the account comparison above." },
-  { q: "How do I apply for a loan or overdraft?", a: "Existing customers can apply in the app or online banking. For loans over £50,000, your business manager will talk through your plans and what you need." },
+  { q: "How do I apply for a loan or overdraft?", a: "Existing customers can apply in the app or online banking. For loans over $50,000, your business manager will talk through your plans and what you need." },
 ];
 
 function SectionShell({ bg, id, children, max = 1240 }: { bg: string; id?: string; children: React.ReactNode; max?: number }) {
@@ -197,7 +197,7 @@ export default function BusinessPage() {
         <SectionTitle eyebrow="Business accounts" title="Compare our business accounts" />
         <AccountCards accounts={ACCOUNTS} />
         <p style={{ fontSize: 12, color: GRAY, lineHeight: 1.6, marginTop: 12 }}>
-          Example pricing. Cash deposits above your monthly allowance cost 0.7% of the amount paid in. International payments £15 each above any free allowance.
+          Example pricing. Cash deposits above your monthly allowance cost 0.7% of the amount paid in. International payments $15 each above any free allowance.
         </p>
       </SectionShell>
 
