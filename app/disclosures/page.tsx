@@ -151,7 +151,7 @@ export default function DisclosuresPage() {
             {[
               ["Phone", "(555) 302-1900"],
               ["Fraud line (24/7)", "(555) 302-1911"],
-              ["Email", "help@sgginv.com"],
+              ["Email", "customercare@sgginv.com"],
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "13px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15 }}>
                 <span style={{ color: "rgba(255,255,255,.72)" }}>{k}</span>

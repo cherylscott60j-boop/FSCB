@@ -34,8 +34,8 @@ export const metadata: Metadata = {
   description:
     "Decades of community trust. Banking built for your family, your business, and your future.",
   icons: {
-    icon: "/pngfavicon.svg",
-    apple: "/pngfavicon.svg",
+    icon: "/icon.svg",
+    apple: "/apple-icon.png",
   },
   robots: {
     index: false,

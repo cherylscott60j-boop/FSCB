@@ -170,7 +170,7 @@ export default function TermsPage() {
             <h3 style={{ fontFamily: FONT, fontWeight: 600, fontSize: 26, margin: "0 0 20px", letterSpacing: "-.01em" }}>Questions about these terms?</h3>
             {[
               ["Phone", "(555) 302-1900"],
-              ["Email", "help@sgginv.com"],
+              ["Email", "customercare@sgginv.com"],
               ["Mail", "Customer Care, 102 Main Street, Downtown, ST 00001"],
             ].map(([k, v]) => (
               <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "13px 0", borderTop: "1px solid rgba(255,255,255,.18)", fontSize: 15 }}>

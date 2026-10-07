@@ -25,7 +25,7 @@ const ICONS = {
 const CHANNELS = [
   { title: "Call us", detail: "(555) 302-1900", sub: "Mon–Fri 8am–8pm · Sat 9am–4pm", icon: ICONS.phone },
   { title: "Chat in the app", detail: "Secure messaging", sub: "Available 24/7 for digital banking help", icon: ICONS.chat },
-  { title: "Email us", detail: "help@sgginv.com", sub: "We reply within 1 business day", icon: ICONS.mail },
+  { title: "Email us", detail: "customercare@sgginv.com", sub: "We reply within 1 business day", icon: ICONS.mail },
   { title: "Lost or stolen card", detail: "(555) 302-1999", sub: "24 hours a day, 7 days a week", icon: ICONS.card },
 ];
 

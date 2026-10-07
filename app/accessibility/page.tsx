@@ -16,7 +16,7 @@ const ICONS = {
 const CONTACT = [
   { title: "Accessibility team", detail: "(555) 302-1975", sub: "Mon–Fri 8am–8pm · Sat 9am–4pm", icon: ICONS.phone },
   { title: "TTY / relay", detail: "Dial 711", sub: "Then ask for (555) 302-1975", icon: ICONS.chat },
-  { title: "Email", detail: "accessibility@sgginv.com", sub: "We reply within 2 business days", icon: ICONS.mail },
+  { title: "Email", detail: "support@sgginv.com", sub: "We reply within 2 business days", icon: ICONS.mail },
   { title: "At a branch", detail: "Any of our branches", sub: "Staff trained to help with access needs", icon: ICONS.pin },
 ];
 
